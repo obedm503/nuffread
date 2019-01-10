@@ -1,0 +1,8 @@
+{
+  "recommendations": [
+    "esbenp.prettier-vscode",
+    "prisma.vscode-graphql",
+    "mikestead.dotenv",
+    "webreflection.literally-html"
+  ]
+}
