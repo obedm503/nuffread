@@ -1,0 +1,53 @@
+scalar Date
+
+type Query {
+  currentUser: Seller
+}
+
+type Mutation {
+  createSeller(seller: SellerInput!): Seller!
+  deleteSeller(id: ID!): Boolean!
+
+  createSchool(school: SchoolInput!): School!
+  deleteSchool(id: ID!): Boolean!
+}
+
+type Seller {
+  id: ID!
+  createdAt: Date!
+  updatedAt: Date!
+
+  name: String!
+  email: String
+  photo: String!
+
+  school: School!
+  schoolId: String!
+}
+
+input SellerInput {
+  schoolId: ID!
+  name: String!
+}
+
+type School {
+  id: ID!
+  createdAt: Date!
+  updatedAt: Date!
+
+  name: String!
+}
+
+type SchoolInput {
+  name: String!
+}
+
+type Admin {
+  id: ID!
+  createdAt: Date!
+  updatedAt: Date!
+
+  email: String!
+}
+
+union User = Admin | Seller
