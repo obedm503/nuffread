@@ -14,50 +14,56 @@ import * as React from 'react';
 import { Link } from 'react-router-dom';
 import { Icon } from '../../components';
 
-export const ListingDetails: React.SFC<{
-  listingId: string;
-  price: string;
-}> = ({ listingId, price }) => {
-  return (
-    <Media>
-      <MediaLeft>
-        <Image isSize="128x128" src="/public/128x128.png" />
-      </MediaLeft>
-      <MediaContent>
-        <Content>
-          <p>
-            <strong>The Hobbit</strong> <small>JRR Tolkien</small>
-            <br />
-            <small>
-              <b>ISBN </b>7382716921767
-            </small>
-            <br />
-            <small>
-              <b>Posted </b>
-              {new Date().toLocaleDateString()}
-            </small>
-          </p>
-        </Content>
-        <Level isMobile>
-          <LevelLeft>
-            <LevelItem>
-              <Link to={`/${listingId}/details`}>
-                <Tag isColor="info" isSize="medium">
-                  More Details
-                </Tag>
-              </Link>
-            </LevelItem>
-            <LevelItem href="#">
-              <Icon size="small" name="barcode" />
-            </LevelItem>
-          </LevelLeft>
-        </Level>
-      </MediaContent>
-      <MediaRight>
-        <Tag isColor="success" isSize="large">
-          ${price}
-        </Tag>
-      </MediaRight>
-    </Media>
-  );
-};
+export const ListingDetails: React.SFC<GQL.IListing> = item => (
+  <Media>
+    <MediaLeft>
+      <Image
+        // isSize="128x128"
+        src={item.thumbnail || '/public/128x128.png'}
+      />
+    </MediaLeft>
+    <MediaContent>
+      <Content>
+        <p>
+          <strong>
+            {item.title}
+            {item.subTitle ? ' - ' + item.subTitle : ' '}
+          </strong>
+          <small>{item.authors.join(' - ')}</small>
+          <br />
+          <small>
+            <b>ISBN: </b>
+            {item.isbn.join(' - ')}
+          </small>
+          <br />
+          <small>
+            <b>Sold By: </b>John Doe
+          </small>
+          <small>
+            <b>Posted </b>
+            {new Date(item.publishedAt).toLocaleDateString()}
+          </small>
+        </p>
+      </Content>
+      <Level isMobile>
+        <LevelLeft>
+          <LevelItem>
+            <Link to={`/${item.id}/details`}>
+              <Tag isColor="info" isSize="medium">
+                More Details
+              </Tag>
+            </Link>
+          </LevelItem>
+          <LevelItem href="#">
+            <Icon size="small" name="barcode" />
+          </LevelItem>
+        </LevelLeft>
+      </Level>
+    </MediaContent>
+    <MediaRight>
+      <Tag isColor="success" isSize="large">
+        ${item.price / 100}
+      </Tag>
+    </MediaRight>
+  </Media>
+);

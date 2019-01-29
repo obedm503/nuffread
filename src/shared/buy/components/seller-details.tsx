@@ -13,11 +13,13 @@ import { Icon } from '../../components';
 
 export const SellerDetails: React.SFC<{
   listingId: string;
-  price: string;
 }> = () => (
   <Media>
     <MediaLeft>
-      <Image isSize="128x128" src="/public/128x128.png" />
+      <Image
+        // isSize="128x128"
+        src="/public/128x128.png"
+      />
     </MediaLeft>
     <MediaContent>
       <Content>

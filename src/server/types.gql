@@ -2,6 +2,8 @@ scalar Date
 
 type Query {
   currentUser: Seller
+
+  search(query: String, maxPrice: Int, minPrice: Int): [Listing!]!
 }
 
 type Mutation {
@@ -38,7 +40,7 @@ type School {
   name: String!
 }
 
-type SchoolInput {
+input SchoolInput {
   name: String!
 }
 
@@ -51,3 +53,18 @@ type Admin {
 }
 
 union User = Admin | Seller
+
+type Listing {
+  id: ID!
+  createdAt: Date!
+  updatedAt: Date!
+
+  isbn: [String!]!
+  thumbnail: String
+  title: String!
+  subTitle: String
+  authors: [String!]!
+  publishedAt: Date!
+  publisher: String
+  price: Int!
+}

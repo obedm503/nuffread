@@ -1,23 +1,17 @@
 import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
-import {
-  Column,
-  CreateDateColumn,
-  Entity,
-  PrimaryGeneratedColumn,
-  Unique,
-  UpdateDateColumn,
-} from 'typeorm';
+import { Column, Entity, Unique } from 'typeorm';
+import { Created, PrimaryKey, Updated } from '../util/config';
 
 @Entity()
 @Unique(['email'])
 export class Admin {
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryKey()
   readonly id: string;
 
-  @CreateDateColumn({ type: 'timestamp with time zone' })
+  @Created()
   readonly createdAt: Date;
 
-  @UpdateDateColumn({ type: 'timestamp with time zone' })
+  @Updated()
   readonly updatedAt: Date;
 
   @Column()

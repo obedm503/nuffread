@@ -1,7 +1,10 @@
 import { Column, Columns, Container, Image } from 'bloomer';
 import { range } from 'lodash';
 import * as React from 'react';
+import { Query, QueryResult } from 'react-apollo';
 import { RouteComponentProps } from 'react-router';
+import { Error } from '../components';
+import { SEARCH } from '../queries';
 import { ListingDetails } from './components/listing-details';
 import { SellerDetails } from './components/seller-details';
 
@@ -10,25 +13,44 @@ export const Details: React.SFC<RouteComponentProps<{ listingId: string }>> = ({
     params: { listingId },
   },
 }) => (
-  <>
-    <Container>
-      <Columns>
-        <Column className="scrolls">
-          <ListingDetails listingId={listingId} price={'10'} />
-        </Column>
+  <Query query={SEARCH}>
+    {({ error, data, loading }: QueryResult<GQL.IQuery>) => {
+      if (error) {
+        return <Error value={error} />;
+      }
+      if (loading || !data || !data.search) {
+        return <Container>Loading</Container>;
+      }
 
-        <Column>
-          <SellerDetails listingId={listingId} price={'10'} />
-        </Column>
-      </Columns>
+      const listing = data.search.find(b => b.id === listingId);
 
-      <Columns isMultiline>
-        {range(12).map(i => (
-          <Column isSize="narrow" key={i}>
-            <Image isSize="96x96" src="/public/128x128.png" />
-          </Column>
-        ))}
-      </Columns>
-    </Container>
-  </>
+      if (!listing) {
+        return <Container>Loading</Container>;
+      }
+
+      return (
+        <>
+          <Container>
+            <Columns>
+              <Column className="scrolls">
+                <ListingDetails {...listing} />
+              </Column>
+
+              <Column>
+                <SellerDetails listingId={listingId} />
+              </Column>
+            </Columns>
+
+            <Columns isMultiline>
+              {range(12).map(i => (
+                <Column isSize="narrow" key={i}>
+                  <Image isSize="96x96" src="/public/128x128.png" />
+                </Column>
+              ))}
+            </Columns>
+          </Container>
+        </>
+      );
+    }}
+  </Query>
 );

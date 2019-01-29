@@ -6,6 +6,7 @@ import { normalizeUrl } from '../util';
 type Props = {
   routes: RouteProps[];
   base?: string;
+  [key: string]: any;
 };
 
 export class Routes extends React.Component<Props> {

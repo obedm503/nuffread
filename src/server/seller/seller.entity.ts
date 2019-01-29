@@ -1,27 +1,19 @@
 import { IsEmail, IsInstance, IsNotEmpty, IsString } from 'class-validator';
-import {
-  Column,
-  CreateDateColumn,
-  Entity,
-  JoinColumn,
-  ManyToOne,
-  PrimaryGeneratedColumn,
-  Unique,
-  UpdateDateColumn,
-} from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, Unique } from 'typeorm';
 import { School } from '../school/school.entity';
+import { Created, PrimaryKey, Updated } from '../util/config';
 
 @Entity()
 @Unique(['email'])
 @Unique(['schoolId'])
 export class Seller {
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryKey()
   readonly id: string;
 
-  @CreateDateColumn({ type: 'timestamp with time zone' })
+  @Created()
   readonly createdAt: Date;
 
-  @UpdateDateColumn({ type: 'timestamp with time zone' })
+  @Updated()
   readonly updatedAt: Date;
 
   @Column()

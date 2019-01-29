@@ -3,11 +3,12 @@ import { ModuleRef } from '@nestjs/core';
 import { Connection, createConnection } from 'typeorm';
 import { PostgresConnectionOptions } from 'typeorm/driver/postgres/PostgresConnectionOptions';
 import { Admin } from '../admin/admin.entity';
+import { Listing } from '../listing/listing.entity';
 import { School } from '../school/school.entity';
 import { Seller } from '../seller/seller.entity';
 import { SnakeNamingStrategy } from './snake-case';
 
-const entities = [Seller, School, Admin];
+const entities = [Seller, School, Admin, Listing];
 
 export const connectionOptions: PostgresConnectionOptions = {
   type: 'postgres',

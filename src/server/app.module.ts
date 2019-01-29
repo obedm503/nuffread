@@ -10,6 +10,8 @@ import { Connection } from 'typeorm';
 import { AdminResolver } from './admin/admin.resolver';
 import { AdminService } from './admin/admin.service';
 import { AppController } from './app.controller';
+import { ListingResolver } from './listing/listing.resolver';
+import { ListingService } from './listing/listing.service';
 import { Schema, UserResolver } from './schema';
 import { SchoolResolver } from './school/school.resolver';
 import { SchoolService } from './school/school.service';
@@ -41,6 +43,9 @@ const production = process.env.NODE_ENV === 'production';
     AdminResolver,
 
     UserResolver,
+
+    ListingService,
+    ListingResolver,
   ],
   controllers: [
     // AuthController,

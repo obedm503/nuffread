@@ -25,40 +25,42 @@ const routes: RouteProps[] = [
   },
 ];
 
-export const Buy: React.SFC<RouteComponentProps<{}>> = ({ match }) => (
-  <>
-    <TopNav>
-      <NavbarBrand>
-        <NavbarItem>company logo</NavbarItem>
-        <NavbarItem>
-          <span>
-            Buy <small>@ Dordt University</small>
-          </span>
-        </NavbarItem>
-        <NavbarBurger isActive={false} />
-      </NavbarBrand>
-
-      <NavbarMenu>
-        <NavbarStart>
-          <NavbarLink href="/">Home</NavbarLink>
-        </NavbarStart>
-
-        <NavbarEnd>
-          <NavbarItem isHidden="touch">
-            <Icon name="logo-github" />
-            <span>Desktop</span>
+export const Buy: React.SFC<RouteComponentProps<{}>> = ({ match }) => {
+  return (
+    <>
+      <TopNav>
+        <NavbarBrand>
+          <NavbarItem>company logo</NavbarItem>
+          <NavbarItem>
+            <span>
+              Buy <small>@ Dordt University</small>
+            </span>
           </NavbarItem>
+          <NavbarBurger isActive={false} />
+        </NavbarBrand>
 
-          <NavbarLink href="/sell">
-            <Icon name="logo-usd" />
-            <span>Sell Your Books</span>
-          </NavbarLink>
-        </NavbarEnd>
-      </NavbarMenu>
-    </TopNav>
+        <NavbarMenu>
+          <NavbarStart>
+            <NavbarLink href="/">Home</NavbarLink>
+          </NavbarStart>
 
-    <main className="has-navbar-fixed-top">
-      <Routes key={match.url} base={match.url} routes={routes} />
-    </main>
-  </>
-);
+          <NavbarEnd>
+            <NavbarItem isHidden="touch">
+              <Icon name="logo-github" />
+              <span>Desktop</span>
+            </NavbarItem>
+
+            <NavbarLink href="/sell">
+              <Icon name="logo-usd" />
+              <span>Sell Your Books</span>
+            </NavbarLink>
+          </NavbarEnd>
+        </NavbarMenu>
+      </TopNav>
+
+      <main className="has-navbar-fixed-top">
+        <Routes key={match.url} base={match.url} routes={routes} />
+      </main>
+    </>
+  );
+};
