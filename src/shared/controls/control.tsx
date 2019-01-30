@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { FormattedMessage } from 'react-intl';
 
 export type ControlProps = {
   label: React.ReactNode;
@@ -23,8 +22,7 @@ export const Control: React.SFC<ControlProps> = ({
   const color = showError ? 'is-danger' : '';
   const field =
     typeof children === 'function' ? (children as Function)(color) : children;
-  const errorMessage =
-    error || (errors[name] ? <FormattedMessage id={errors[name]} /> : '');
+  const errorMessage = error || (errors[name] ? errors[name] : '');
   return (
     <div className="field">
       <label className="label">{label}</label>

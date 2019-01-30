@@ -56,7 +56,7 @@ export function getApolloConfig(req: Request): GraphQLServerOptions<IContext> {
   }
 
   const context: IContext = {
-    user: req.user,
+    // user: req.user,
     req,
     sellerLoader: makeLoader(Seller),
     adminLoader: makeLoader(Admin),

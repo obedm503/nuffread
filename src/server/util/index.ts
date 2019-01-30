@@ -46,7 +46,7 @@ export async function getMany<T>(repo: Repository<T>, ids: string[]) {
 
 export type IContext = {
   req: Request;
-  user: Seller | Admin;
+  // user: Seller | Admin;
   sellerLoader: DataLoader<string, Seller | null>;
   adminLoader: DataLoader<string, Admin | null>;
   schoolLoader: DataLoader<string, School | null>;

@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { NavLink } from 'react-router-dom';
-import { FormattedMessage } from 'react-intl';
 import { normalizeUrl } from '../util';
 
 const links = base =>
@@ -34,7 +33,7 @@ export const SideNav: React.SFC<Props> = ({ base }) => (
       {links(base).map((link, i) => (
         <li key={i}>
           <NavLink activeClassName="is-active" exact={link.exact} to={link.to}>
-            <FormattedMessage id={link.label} />
+            {link.label}
           </NavLink>
         </li>
       ))}

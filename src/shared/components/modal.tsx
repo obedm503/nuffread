@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { FormattedMessage } from 'react-intl';
 
 declare var document;
 
@@ -47,14 +46,14 @@ export class Modal extends React.PureComponent<Props> {
           <section className="modal-card-body">{children}</section>
           <footer className="modal-card-foot">
             <button className="button is-success" onClick={save}>
-              <FormattedMessage id="Save" />
+              Save
             </button>
             <button
               className="button"
               onClick={this.esc}
               style={{ marginLeft: 'auto' }}
             >
-              <FormattedMessage id="Cancel" />
+              Cancel
             </button>
           </footer>
         </div>
