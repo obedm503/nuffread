@@ -1,8 +1,6 @@
 const { production } = require('./util/env');
 import { NestFactory } from '@nestjs/core';
 import { graphiqlExpress, graphqlExpress } from 'apollo-server-express';
-// import * as client from '@sendgrid/client';
-// import * as mail from '@sendgrid/mail';
 import * as bodyParser from 'body-parser';
 import * as cookieParser from 'cookie-parser';
 import * as express from 'express';
@@ -10,11 +8,12 @@ import { join, resolve } from 'path';
 import { ServeStaticOptions } from 'serve-static';
 import { ApplicationModule } from './app.module';
 import { getApolloConfig } from './schema';
+import * as db from './util/db';
 
 const distPublicDir = resolve(__dirname, '../../dist/public');
 const publicDir = resolve(__dirname, '../../public');
 
-const server = express()
+const app = express()
   .disable('etag')
   .disable('x-powered-by')
   .set('trust proxy', true)
@@ -23,7 +22,7 @@ const server = express()
 
 if (production) {
   // force ssl
-  server.use((req: express.Request, res: express.Response, next) => {
+  app.use((req: express.Request, res: express.Response, next) => {
     if (req.header('x-forwarded-proto') !== 'https') {
       res.redirect(join(`https://${req.hostname}`, req.url));
     } else {
@@ -33,7 +32,7 @@ if (production) {
 }
 
 const staticOptions: ServeStaticOptions = { etag: false, index: false };
-server.use(
+app.use(
   '/public',
   express.static(distPublicDir, staticOptions),
   express.static(publicDir, staticOptions),
@@ -44,27 +43,32 @@ server.use(
 );
 
 // graphql
-server.use('/graphql', graphqlExpress(req => getApolloConfig(req!)));
+app.use('/graphql', graphqlExpress(req => getApolloConfig(req!)));
 
 if (!production) {
   // graphiql
-  server.get('/graphiql', graphiqlExpress({ endpointURL: '/graphql' }));
+  app.get('/graphiql', graphiqlExpress({ endpointURL: '/graphql' }));
 }
 
 const port = Number(process.env.PORT) || 3000;
 
 (async () => {
-  // client.setApiKey(process.env.SENDGRID_API_KEY!);
-  // mail.setApiKey(process.env.SENDGRID_API_KEY!);
+  await db.connect();
 
-  const app = await NestFactory.create(ApplicationModule, server, {});
-  // const httpRef = app.get(HTTP_SERVER_REF);
-  // app.useGlobalFilters(new NoAuthExceptionFilter(httpRef));
-  await app.listen(port);
+  const server = await NestFactory.create(ApplicationModule, app, {});
+  // const httpRef = nest.get(HTTP_SERVER_REF);
+  // nest.useGlobalFilters(new NoAuthExceptionFilter(httpRef));
+  await server.listen(port);
 
-  process.once('SIGUSR2', function() {
-    app.close();
-    console.info(`Closed on port ${port}`);
+  const close = async () => {
+    console.info('Closing server');
+    await server.close();
+    console.info('Closing db');
+    await db.close();
+  };
+  process.once('exit', close);
+  process.once('SIGUSR2', async () => {
+    await close();
     process.kill(process.pid, 'SIGUSR2');
   });
 

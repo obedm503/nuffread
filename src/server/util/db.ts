@@ -1,5 +1,3 @@
-import { Module, OnModuleDestroy } from '@nestjs/common';
-import { ModuleRef } from '@nestjs/core';
 import { Connection, createConnection } from 'typeorm';
 import { PostgresConnectionOptions } from 'typeorm/driver/postgres/PostgresConnectionOptions';
 import { Admin } from '../admin/admin.entity';
@@ -8,12 +6,10 @@ import { School } from '../school/school.entity';
 import { Seller } from '../seller/seller.entity';
 import { SnakeNamingStrategy } from './snake-case';
 
-const entities = [Seller, School, Admin, Listing];
-
-export const connectionOptions: PostgresConnectionOptions = {
+const connectionOptions: PostgresConnectionOptions = {
   type: 'postgres',
   url: process.env.DATABASE_URL,
-  entities: entities,
+  entities: [Seller, School, Admin, Listing],
   // migrations: ['./migration/**/*.ts'],
   // subscribers: ['./subscriber/**/*.ts'],
   logging: 'all',
@@ -25,30 +21,19 @@ export const connectionOptions: PostgresConnectionOptions = {
   namingStrategy: new SnakeNamingStrategy(),
 };
 
-const connectionProvider = {
-  provide: Connection,
-  useFactory: () => createConnection(connectionOptions),
-};
+let connection: Connection;
 
-const repoProviders = entities.map(entity => {
-  return {
-    provide: entity,
-    useFactory: (connection: Connection) => connection.getRepository(entity),
-    inject: [Connection],
-  };
-});
-
-const providers = [connectionProvider, ...repoProviders];
-
-@Module({
-  providers,
-  exports: providers,
-})
-export class DBModule implements OnModuleDestroy {
-  constructor(private readonly moduleRef: ModuleRef) {}
-
-  async onModuleDestroy() {
-    const connection = this.moduleRef.get(Connection);
-    await connection.close();
+export async function connect(): Promise<Connection> {
+  if (!connection) {
+    connection = await createConnection(connectionOptions);
   }
+
+  if (process.env.DB_SYNC === 'true') {
+    connection.synchronize();
+  }
+
+  return connection;
+}
+export async function close() {
+  await connection.close();
 }
