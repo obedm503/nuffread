@@ -71,11 +71,3 @@ export interface IService<T> {
   get(id: string): Promise<T>;
   getMany(ids: string[]): Promise<Array<T | null>>;
 }
-
-export type IResolver<T, P> = {
-  [key in keyof T]?: (
-    parent: P,
-    args: any,
-    ctx: IContext,
-  ) => Promise<T[key] | any | null>
-};

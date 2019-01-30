@@ -9,8 +9,8 @@ import { App, createCache } from '../shared/app';
 import { HostProvider } from '../shared/state/host';
 import { UAProvider } from '../shared/state/ua';
 import { render } from './render';
-import { Schema } from './schema';
 import { getUrl } from './util';
+import { getApolloConfig } from './schema';
 
 const production = process.env.NODE_ENV === 'production';
 // export const usePassport = (req: Request, res: Response, next) => {
@@ -22,8 +22,6 @@ const production = process.env.NODE_ENV === 'production';
 
 @Controller('/')
 export class AppController {
-  constructor(private readonly schema: Schema) {}
-
   @Get('logout')
   logout(@Req() req: Request, @Res() res: Response) {
     res
@@ -55,7 +53,7 @@ export class AppController {
 
   async render(req: Request, res: Response) {
     try {
-      const link = new SchemaLink(this.schema.getConfig(req));
+      const link = new SchemaLink(getApolloConfig(req));
       const client = new ApolloClient({
         ssrMode: true,
         link,

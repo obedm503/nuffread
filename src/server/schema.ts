@@ -1,21 +1,21 @@
-import { Injectable } from '@nestjs/common';
-import { GraphQLFactory, ResolveProperty, Resolver } from '@nestjs/graphql';
 import { GraphQLServerOptions } from 'apollo-server-core/dist/graphqlOptions';
 import * as DataLoader from 'dataloader';
 import { Request } from 'express';
+import * as fs from 'fs';
 import { GraphQLSchema } from 'graphql';
+import { makeExecutableSchema } from 'graphql-tools';
 import { IResolvers } from 'graphql-tools/dist/Interfaces';
+import { resolve } from 'path';
+import { getRepository } from 'typeorm';
 import { Admin } from './admin/admin.entity';
-import { AdminService } from './admin/admin.service';
+import { QueryResolver } from './query/query.resolver';
 import { DateResolver } from './scalars/date';
-import { SchoolService } from './school/school.service';
+import { School } from './school/school.entity';
 import { Seller } from './seller/seller.entity';
-import { SellerService } from './seller/seller.service';
-import { IContext, IService } from './util';
+import { SellerResolver } from './seller/seller.resolver';
+import { getMany, IContext } from './util';
 
-@Resolver('User')
-export class UserResolver {
-  @ResolveProperty()
+const UserResolver = {
   __resolveType(user: Admin | Seller) {
     if (user instanceof Seller) {
       return 'Seller';
@@ -24,49 +24,47 @@ export class UserResolver {
       return 'Admin';
     }
     return null;
-  }
+  },
+};
+
+const makeLoader = <T>(entity: any) => {
+  const repo = getRepository<T>(entity);
+  return new DataLoader((ids: string[]) => getMany(repo, ids));
+};
+
+function createSchema(): GraphQLSchema {
+  const typeDefs = fs.readFileSync(
+    resolve(__dirname, '../../src/server/types.gql'),
+    'utf-8',
+  );
+  const resolvers: IResolvers<any, IContext> = {
+    Date: DateResolver,
+    User: UserResolver,
+    Query: QueryResolver,
+    Seller: SellerResolver,
+  };
+  return makeExecutableSchema<IContext>({
+    typeDefs,
+    resolvers,
+  });
 }
 
-const makeLoader = <T>(service: IService<T>) =>
-  new DataLoader((ids: string[]) => service.getMany(ids));
-
-@Injectable()
-export class Schema {
-  constructor(
-    private readonly graphQLFactory: GraphQLFactory,
-    private readonly sellerService: SellerService,
-    private readonly adminService: AdminService,
-    private readonly schoolService: SchoolService,
-  ) {}
-
-  private schema: GraphQLSchema | undefined = undefined;
-
-  createSchema() {
-    const typeDefs = this.graphQLFactory.mergeTypesByPaths('./**/*.gql');
-    const resolvers: IResolvers<Request, IContext> = { Date: DateResolver };
-    const schema: GraphQLSchema = this.graphQLFactory.createSchema({
-      typeDefs,
-      resolvers,
-    });
-    return schema;
+let schema: GraphQLSchema;
+export function getApolloConfig(req: Request): GraphQLServerOptions<IContext> {
+  if (!schema) {
+    schema = createSchema();
   }
 
-  getConfig(req: Request): GraphQLServerOptions<IContext> {
-    if (!this.schema) {
-      this.schema = this.createSchema();
-    }
-
-    const context: IContext = {
-      user: req.user,
-      req,
-      sellerLoader: makeLoader(this.sellerService),
-      adminLoader: makeLoader(this.adminService),
-      schoolLoader: makeLoader(this.schoolService),
-    };
-    return {
-      schema: this.schema,
-      rootValue: req,
-      context,
-    };
-  }
+  const context: IContext = {
+    user: req.user,
+    req,
+    sellerLoader: makeLoader(Seller),
+    adminLoader: makeLoader(Admin),
+    schoolLoader: makeLoader(School),
+  };
+  return {
+    schema,
+    rootValue: req,
+    context,
+  };
 }

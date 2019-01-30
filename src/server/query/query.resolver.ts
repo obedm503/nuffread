@@ -1,44 +1,35 @@
-import { Query, Resolver } from '@nestjs/graphql';
 import { Request } from 'express';
+import { IResolverObject } from 'graphql-tools';
+import { books } from '../listing/books';
 import { IContext } from '../util';
-import { books } from './books';
-import { ListingService } from './listing.service';
 
-const includes = (a: string, b: string) => {
+const search = (a: string, b: string) => {
   a = a.trim().toLowerCase();
   b = b.trim().toLowerCase();
 
   return a.includes(b) || b.includes(a);
 };
 
-@Resolver('Listing')
-export class ListingResolver {
-  constructor(private readonly service: ListingService) {}
-
-  @Query()
-  search(
-    req: Request,
-    { query, maxPrice, minPrice }: GQL.ISearchOnQueryArguments,
-    ctx: IContext,
-  ) {
+export const QueryResolver: IResolverObject<Request, IContext> = {
+  search(req, { query, maxPrice, minPrice }: GQL.ISearchOnQueryArguments, ctx) {
     if (!query) {
       return books;
     }
 
     let filtered = books.filter(b => {
-      if (b.isbn.find(code => includes(code, query))) {
+      if (b.isbn.find(code => search(code, query))) {
         return true;
       }
-      if (includes(b.title, query)) {
+      if (search(b.title, query)) {
         return true;
       }
-      if (b.subTitle && includes(b.subTitle, query)) {
+      if (b.subTitle && search(b.subTitle, query)) {
         return true;
       }
-      if (b.authors.find(a => includes(a, query))) {
+      if (b.authors.find(a => search(a, query))) {
         return true;
       }
-      if (b.publisher && includes(b.publisher, query)) {
+      if (b.publisher && search(b.publisher, query)) {
         return true;
       }
     });
@@ -57,5 +48,5 @@ export class ListingResolver {
       });
     }
     return filtered;
-  }
-}
+  },
+};
