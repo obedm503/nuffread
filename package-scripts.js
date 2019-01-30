@@ -12,7 +12,7 @@ const parcelConfig = [
 
 const buildTypes = [
   'gql2ts',
-  'src/server/types.gql',
+  'src/types.gql',
   '--output-file types.d.ts',
   `--external-options ${resolve('./gql2tsrc.js')}`,
 ].join(' ');
@@ -31,7 +31,7 @@ module.exports.scripts = {
     ),
     types: [
       'nodemon',
-      '--watch "src/server/types.gql"',
+      '--watch "src/types.gql"',
       `--exec "${buildTypes}"`,
     ].join(' '),
     server: [
