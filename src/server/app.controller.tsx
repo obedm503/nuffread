@@ -53,7 +53,7 @@ export class AppController {
 
   async render(req: Request, res: Response) {
     try {
-      const link = new SchemaLink(getApolloConfig(req));
+      const link = new SchemaLink(await getApolloConfig(req));
       const client = new ApolloClient({
         ssrMode: true,
         link,

@@ -1,11 +1,9 @@
-import { IsEmail, IsInstance, IsNotEmpty, IsString } from 'class-validator';
-import { Column, Entity, JoinColumn, ManyToOne, Unique } from 'typeorm';
-import { School } from '../school/school.entity';
+import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
+import { Column, Entity, Unique } from 'typeorm';
 import { Created, PrimaryKey, Updated } from '../util/config';
 
 @Entity()
 @Unique(['email'])
-@Unique(['schoolId'])
 export class Seller {
   @PrimaryKey()
   readonly id: string;
@@ -42,14 +40,4 @@ export class Seller {
   // @Column({ type: 'simple-array' /*, enum: Scopes, array: true */ })
   // @IsEnum(Scopes, { each: true })
   // scopes: string[];
-
-  @Column()
-  @IsString()
-  schoolId: string;
-
-  @ManyToOne(() => School, school => school.users)
-  @JoinColumn({ name: 'school_id' })
-  @IsNotEmpty()
-  @IsInstance(School)
-  school: School;
 }

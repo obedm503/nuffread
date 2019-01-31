@@ -8,12 +8,13 @@ import { IResolvers } from 'graphql-tools/dist/Interfaces';
 import { resolve } from 'path';
 import { getRepository } from 'typeorm';
 import { Admin } from './admin/admin.entity';
+import { ListingResolver } from './listing/listing.resolver';
 import { QueryResolver } from './query/query.resolver';
 import { DateResolver } from './scalars/date';
 import { School } from './school/school.entity';
 import { Seller } from './seller/seller.entity';
-import { SellerResolver } from './seller/seller.resolver';
 import { getMany, IContext } from './util';
+import { getUser } from './util/jwt';
 
 const UserResolver = {
   __resolveType(user: Admin | Seller) {
@@ -41,7 +42,7 @@ function createSchema(): GraphQLSchema {
     Date: DateResolver,
     User: UserResolver,
     Query: QueryResolver,
-    Seller: SellerResolver,
+    Listing: ListingResolver,
   };
   return makeExecutableSchema<IContext>({
     typeDefs,
@@ -50,13 +51,17 @@ function createSchema(): GraphQLSchema {
 }
 
 let schema: GraphQLSchema;
-export function getApolloConfig(req: Request): GraphQLServerOptions<IContext> {
+export async function getApolloConfig(
+  req: Request,
+): Promise<GraphQLServerOptions<IContext>> {
   if (!schema) {
     schema = createSchema();
   }
 
+  const auth = req.header('authorization');
+  const user = auth ? await getUser(auth) : undefined;
   const context: IContext = {
-    // user: req.user,
+    user,
     req,
     sellerLoader: makeLoader(Seller),
     adminLoader: makeLoader(Admin),

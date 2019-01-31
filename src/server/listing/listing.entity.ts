@@ -2,14 +2,16 @@ import {
   IsInstance,
   IsISBN,
   IsNotEmpty,
+  IsNumber,
   IsString,
   IsUrl,
-  IsNumber,
 } from 'class-validator';
-import { Column, Entity } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, Unique } from 'typeorm';
+import { School } from '../school/school.entity';
 import { Created, PrimaryKey, Updated } from '../util/config';
 
 @Entity()
+@Unique(['schoolId'])
 export class Listing {
   @PrimaryKey()
   readonly id: string;
@@ -57,4 +59,14 @@ export class Listing {
   @Column()
   @IsNumber()
   price: number;
+
+  @Column()
+  @IsString()
+  schoolId: string;
+
+  @ManyToOne(() => School, school => school.listings)
+  @JoinColumn({ name: 'school_id' })
+  @IsNotEmpty()
+  @IsInstance(School)
+  school: School;
 }

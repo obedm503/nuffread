@@ -3,9 +3,9 @@ import { validate as validator } from 'class-validator';
 import DataLoader from 'dataloader';
 import { Request } from 'express';
 import { FindOneOptions, Repository } from 'typeorm';
+import { Admin } from '../admin/admin.entity';
 import { School } from '../school/school.entity';
 import { Seller } from '../seller/seller.entity';
-import { Admin } from '../admin/admin.entity';
 
 export async function validate<T>(input: T) {
   const errors = await validator(input, {
@@ -46,7 +46,7 @@ export async function getMany<T>(repo: Repository<T>, ids: string[]) {
 
 export type IContext = {
   req: Request;
-  // user: Seller | Admin;
+  user: Seller | Admin | undefined;
   sellerLoader: DataLoader<string, Seller | null>;
   adminLoader: DataLoader<string, Admin | null>;
   schoolLoader: DataLoader<string, School | null>;
