@@ -54,14 +54,11 @@ if (!production) {
   app.get('/graphiql', graphiqlExpress({ endpointURL: '/graphql' }));
 }
 
-const port = Number(process.env.PORT) || 3000;
-
 (async () => {
   await db.connect([Seller, School, Admin, Listing]);
 
   const server = await NestFactory.create(ApplicationModule, app, {});
-  // const httpRef = nest.get(HTTP_SERVER_REF);
-  // nest.useGlobalFilters(new NoAuthExceptionFilter(httpRef));
+  const port = Number(process.env.PORT) || 8080;
   await server.listen(port);
 
   const close = async () => {
