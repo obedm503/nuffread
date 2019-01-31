@@ -1,39 +1,52 @@
-import { Connection, createConnection } from 'typeorm';
+import {
+  Connection,
+  createConnection,
+  CreateDateColumn,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 import { PostgresConnectionOptions } from 'typeorm/driver/postgres/PostgresConnectionOptions';
-import { Admin } from '../admin/admin.entity';
-import { Listing } from '../listing/listing.entity';
-import { School } from '../school/school.entity';
-import { Seller } from '../seller/seller.entity';
 import { SnakeNamingStrategy } from './snake-case';
 
-const connectionOptions: PostgresConnectionOptions = {
-  type: 'postgres',
-  url: process.env.DATABASE_URL,
-  entities: [Seller, School, Admin, Listing],
-  // migrations: ['./migration/**/*.ts'],
-  // subscribers: ['./subscriber/**/*.ts'],
-  logging: 'all',
-  maxQueryExecutionTime: 300,
-  extra: {
-    ssl: true,
-  },
-  // cache: true,
-  namingStrategy: new SnakeNamingStrategy(),
-};
+export const PrimaryKey = () => PrimaryGeneratedColumn('uuid');
+export const Created = () =>
+  CreateDateColumn({
+    type: 'timestamp with time zone',
+  });
+export const Updated = () =>
+  UpdateDateColumn({
+    type: 'timestamp with time zone',
+  });
 
-let connection: Connection;
+let connection: Connection | undefined;
 
-export async function connect(): Promise<Connection> {
+export async function connect(entities: any[]): Promise<Connection> {
   if (!connection) {
+    const connectionOptions: PostgresConnectionOptions = {
+      type: 'postgres',
+      url: process.env.DATABASE_URL,
+      entities,
+      // migrations: ['./migration/**/*.ts'],
+      // subscribers: ['./subscriber/**/*.ts'],
+      logging: 'all',
+      maxQueryExecutionTime: 300,
+      extra: {
+        ssl: true,
+      },
+      // cache: true,
+      namingStrategy: new SnakeNamingStrategy(),
+    };
     connection = await createConnection(connectionOptions);
-  }
 
-  if (process.env.DB_SYNC === 'true') {
-    connection.synchronize();
+    if (process.env.DB_SYNC === 'true') {
+      await connection.synchronize();
+    }
   }
 
   return connection;
 }
 export async function close() {
-  await connection.close();
+  if (connection) {
+    await connection.close();
+  }
 }

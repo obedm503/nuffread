@@ -8,7 +8,7 @@ import {
 } from 'class-validator';
 import { Column, Entity, JoinColumn, ManyToOne, Unique } from 'typeorm';
 import { School } from '../school/school.entity';
-import { Created, PrimaryKey, Updated } from '../util/config';
+import { Created, PrimaryKey, Updated } from '../util/db';
 
 @Entity()
 @Unique(['schoolId'])

@@ -1,6 +1,6 @@
 import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
 import { Column, Entity, Unique } from 'typeorm';
-import { Created, PrimaryKey, Updated } from '../util/config';
+import { Created, PrimaryKey, Updated } from '../util/db';
 
 @Entity()
 @Unique(['email'])

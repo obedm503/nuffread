@@ -6,8 +6,12 @@ import * as cookieParser from 'cookie-parser';
 import * as express from 'express';
 import { join, resolve } from 'path';
 import { ServeStaticOptions } from 'serve-static';
+import { Admin } from './admin/admin.entity';
 import { ApplicationModule } from './app.module';
+import { Listing } from './listing/listing.entity';
 import { getApolloConfig } from './schema';
+import { School } from './school/school.entity';
+import { Seller } from './seller/seller.entity';
 import * as db from './util/db';
 
 const distPublicDir = resolve(__dirname, '../../dist/public');
@@ -53,7 +57,7 @@ if (!production) {
 const port = Number(process.env.PORT) || 3000;
 
 (async () => {
-  await db.connect();
+  await db.connect([Seller, School, Admin, Listing]);
 
   const server = await NestFactory.create(ApplicationModule, app, {});
   // const httpRef = nest.get(HTTP_SERVER_REF);
