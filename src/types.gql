@@ -22,9 +22,6 @@ type Seller {
   name: String!
   email: String
   photo: String!
-
-  school: School!
-  schoolId: String!
 }
 
 input SellerInput {
@@ -67,4 +64,7 @@ type Listing {
   publishedAt: Date!
   publisher: String
   price: Int!
+
+  school: School!
+  schoolId: String!
 }
