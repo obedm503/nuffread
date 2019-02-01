@@ -8,12 +8,13 @@ import { resolve } from 'path';
 import { BaseEntity } from 'typeorm';
 import { Admin } from './admin/admin.entity';
 import { ListingResolver } from './listing/listing.resolver';
+import { MutationResolver } from './mutation/mutation.resolver';
 import { QueryResolver } from './query/query.resolver';
 import { DateResolver } from './scalars/date';
 import { School } from './school/school.entity';
 import { Seller } from './seller/seller.entity';
-import { IContext, IResolver, IResolvers } from './util/types';
 import { getUser } from './util/jwt';
+import { IContext, IResolver, IResolvers } from './util/types';
 
 const UserResolver: IResolver<GQL.User, Admin | Seller> = {
   __resolveType(user) {
@@ -44,6 +45,7 @@ function createSchema(): GraphQLSchema {
     User: UserResolver,
     Query: QueryResolver,
     Listing: ListingResolver,
+    Mutation: MutationResolver,
   };
   return makeExecutableSchema<IContext>({
     typeDefs,

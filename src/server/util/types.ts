@@ -18,9 +18,7 @@ export type IContext = {
 
 type IFieldResolver<TSource, TContext, R> = (
   source: TSource,
-  args: {
-    [argument: string]: any;
-  },
+  args: any,
   context: TContext,
   info: GraphQLResolveInfo & {
     mergeInfo: MergeInfo;

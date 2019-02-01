@@ -14,10 +14,9 @@ export class Seller extends BaseEntity {
   @Updated()
   readonly updatedAt: Date;
 
-  @Column()
+  @Column({ nullable: true })
   @IsString()
-  @IsNotEmpty()
-  name: string;
+  name?: string;
 
   @Column()
   @IsEmail()
