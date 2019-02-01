@@ -1,6 +1,6 @@
 const { production } = require('./util/env');
 import { NestFactory } from '@nestjs/core';
-import { graphiqlExpress, graphqlExpress } from 'apollo-server-express';
+import { ApolloServer } from 'apollo-server-express';
 import * as bodyParser from 'body-parser';
 import * as cookieParser from 'cookie-parser';
 import * as express from 'express';
@@ -9,7 +9,7 @@ import { ServeStaticOptions } from 'serve-static';
 import { Admin } from './admin/admin.entity';
 import { ApplicationModule } from './app.module';
 import { Listing } from './listing/listing.entity';
-import { getApolloConfig } from './schema';
+import { getContext, getSchema } from './schema';
 import { School } from './school/school.entity';
 import { Seller } from './seller/seller.entity';
 import * as db from './util/db';
@@ -46,13 +46,14 @@ app.use(
   },
 );
 
-// graphql
-app.use('/graphql', graphqlExpress(req => getApolloConfig(req!)));
+const apollo = new ApolloServer({
+  context: ({ req }) => getContext(req),
+  schema: getSchema(),
+  introspection: true,
+  playground: true,
+});
 
-if (!production) {
-  // graphiql
-  app.get('/graphiql', graphiqlExpress({ endpointURL: '/graphql' }));
-}
+apollo.applyMiddleware({ app });
 
 (async () => {
   await db.connect([Seller, School, Admin, Listing]);

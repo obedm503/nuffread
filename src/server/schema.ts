@@ -1,4 +1,3 @@
-import { GraphQLServerOptions } from 'apollo-server-core/dist/graphqlOptions';
 import * as DataLoader from 'dataloader';
 import { Request } from 'express';
 import * as fs from 'fs';
@@ -54,25 +53,20 @@ function createSchema(): GraphQLSchema {
 }
 
 let schema: GraphQLSchema;
-export async function getApolloConfig(
-  req: Request,
-): Promise<GraphQLServerOptions<IContext>> {
+export const getSchema = () => {
   if (!schema) {
     schema = createSchema();
   }
-
+  return schema;
+};
+export async function getContext(req: Request): Promise<IContext> {
   const auth = req.header('authorization');
   const user = auth ? await getUser(auth) : undefined;
-  const context: IContext = {
+  return {
     user,
     req,
     sellerLoader: makeLoader(Seller),
     adminLoader: makeLoader(Admin),
     schoolLoader: makeLoader(School),
-  };
-  return {
-    schema,
-    rootValue: req,
-    context,
   };
 }

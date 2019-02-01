@@ -9,8 +9,8 @@ import { App, createCache } from '../shared/app';
 import { HostProvider } from '../shared/state/host';
 import { UAProvider } from '../shared/state/ua';
 import { render } from './render';
+import { getContext, getSchema } from './schema';
 import { getUrl } from './util';
-import { getApolloConfig } from './schema';
 
 const production = process.env.NODE_ENV === 'production';
 // export const usePassport = (req: Request, res: Response, next) => {
@@ -53,7 +53,11 @@ export class AppController {
 
   async render(req: Request, res: Response) {
     try {
-      const link = new SchemaLink(await getApolloConfig(req));
+      const link = new SchemaLink({
+        rootValue: req,
+        schema: getSchema(),
+        context: await getContext(req),
+      });
       const client = new ApolloClient({
         ssrMode: true,
         link,
