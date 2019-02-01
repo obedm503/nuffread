@@ -1,4 +1,3 @@
-import { Request } from 'express';
 import { books } from '../listing/books';
 import { IResolver } from '../util/types';
 
@@ -9,8 +8,8 @@ const search = (a: string, b: string) => {
   return a.includes(b) || b.includes(a);
 };
 
-export const QueryResolver: IResolver<GQL.IQuery, Request> = {
-  search(req, { query, maxPrice, minPrice }: GQL.ISearchOnQueryArguments, ctx) {
+export const QueryResolver: IResolver<GQL.IQuery> = {
+  search(_, { query, maxPrice, minPrice }: GQL.ISearchOnQueryArguments, ctx) {
     if (!query) {
       return books;
     }

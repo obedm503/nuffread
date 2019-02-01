@@ -16,24 +16,24 @@ export type IContext = {
 
 // these types are based on graphql-tools types
 
-type IFieldResolver<TSource, TContext, R> = (
+type IFieldResolver<TSource, TReturn> = (
   source: TSource,
   args: any,
-  context: TContext,
+  context: IContext,
   info: GraphQLResolveInfo & {
     mergeInfo: MergeInfo;
   },
-) => R | Promise<R>;
+) => TReturn | Promise<TReturn>;
 
 type IBaseResolver = {
   __resolveType: string | null;
 };
 
-export type IResolver<TQuery = any, TRoot = any> = {
+export type IResolver<TQuery = any, TRoot = never> = {
   [key in keyof (TQuery & IBaseResolver)]?:
-    | IFieldResolver<TRoot, IContext, (TQuery & IBaseResolver)[key]>
+    | IFieldResolver<TRoot, (TQuery & IBaseResolver)[key]>
     | IResolverOptions<TRoot, IContext>
-    | IResolver<TRoot, IContext>
+    | IResolver<TQuery, TRoot>
 };
 
 export interface IResolvers {

@@ -54,7 +54,6 @@ export class AppController {
   async render(req: Request, res: Response) {
     try {
       const link = new SchemaLink({
-        rootValue: req,
         schema: getSchema(),
         context: await getContext(req),
       });

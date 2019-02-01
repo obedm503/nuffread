@@ -1,12 +1,11 @@
-import { Request } from 'express';
-import { IResolver } from '../util/types';
-import { Seller } from '../seller/seller.entity';
 import { hash } from 'bcryptjs';
+import { Seller } from '../seller/seller.entity';
 import { validate } from '../util';
 import { sign } from '../util/jwt';
+import { IResolver } from '../util/types';
 
-export const MutationResolver: IResolver<GQL.IMutation, Request> = {
-  async register(req, { email, password }: GQL.IRegisterOnMutationArguments) {
+export const MutationResolver: IResolver<GQL.IMutation> = {
+  async register(_, { email, password }: GQL.IRegisterOnMutationArguments) {
     const passwordHash = await hash(password, 12);
     const seller = Seller.create({ email, passwordHash });
     await validate(seller);
