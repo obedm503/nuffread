@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus } from '@nestjs/common';
+import { UserInputError } from 'apollo-server-express';
 import { validate as validator } from 'class-validator';
 import { Request } from 'express';
 import { BaseEntity, FindOneOptions } from 'typeorm';
@@ -9,17 +9,14 @@ export async function validate<T>(input: T) {
     forbidUnknownValues: true,
   });
   if (errors.length > 0) {
-    const s = errors
+    const msg = errors
       .map(err => {
         const constraints = Object.values(err.constraints).join(', ');
-        return `${err.property}: ${constraints} got ${JSON.stringify(
-          input[err.property],
-        )}`;
+        return `${err.property}: ${constraints} got '${input[err.property]}'`;
       })
       .join(';\n');
-    throw new HttpException(s, HttpStatus.BAD_REQUEST);
+    throw new UserInputError(msg);
   }
-  return input;
 }
 
 export async function findOne<T extends BaseEntity>(
