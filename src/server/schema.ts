@@ -60,8 +60,8 @@ export const getSchema = () => {
   return schema;
 };
 export async function getContext(req: Request): Promise<IContext> {
-  const auth = req.header('authorization');
-  const user = auth ? await getUser(auth) : undefined;
+  const token = req.header('authorization');
+  const user = token ? await getUser(token) : undefined;
   return {
     user,
     req,

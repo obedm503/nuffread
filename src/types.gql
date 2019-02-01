@@ -1,11 +1,18 @@
 scalar Date
 
+enum UserType {
+  ADMIN
+  SELLER
+}
+
 type Query {
   currentUser: Seller
 
   search(query: String, maxPrice: Int, minPrice: Int): [Listing!]!
 
-  me: User
+  me: User!
+
+  login(email: String!, password: String!, type: UserType!): String!
 }
 
 type Mutation {
@@ -24,7 +31,7 @@ type Seller {
   updatedAt: Date!
 
   name: String!
-  email: String
+  email: String!
   photo: String!
 }
 

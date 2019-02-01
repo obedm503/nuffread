@@ -9,8 +9,8 @@ export const MutationResolver: IResolver<GQL.IMutation> = {
     const passwordHash = await hash(password, 12);
     const seller = Seller.create({ email, passwordHash });
     await validate(seller);
-    // const { id } = await Seller.save(seller);
-    const token = await sign({ email, id: '20' });
+    const { id } = await Seller.save(seller);
+    const token = await sign({ email, id, type: GQL.UserType.SELLER });
     return token;
   },
 };
