@@ -1,7 +1,6 @@
 import { Request } from 'express';
-import { IResolverObject } from 'graphql-tools';
 import { books } from '../listing/books';
-import { IContext } from '../util';
+import { IResolver } from '../util/types';
 
 const search = (a: string, b: string) => {
   a = a.trim().toLowerCase();
@@ -10,7 +9,7 @@ const search = (a: string, b: string) => {
   return a.includes(b) || b.includes(a);
 };
 
-export const QueryResolver: IResolverObject<Request, IContext> = {
+export const QueryResolver: IResolver<GQL.IQuery, Request> = {
   search(req, { query, maxPrice, minPrice }: GQL.ISearchOnQueryArguments, ctx) {
     if (!query) {
       return books;
@@ -48,5 +47,12 @@ export const QueryResolver: IResolverObject<Request, IContext> = {
       });
     }
     return filtered;
+  },
+
+  async me(req, args, { user }) {
+    if (!user) {
+      return null;
+    }
+    return (user as any) as GQL.User;
   },
 };

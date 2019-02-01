@@ -4,20 +4,19 @@ import { Request } from 'express';
 import * as fs from 'fs';
 import { GraphQLSchema } from 'graphql';
 import { makeExecutableSchema } from 'graphql-tools';
-import { IResolvers } from 'graphql-tools/dist/Interfaces';
 import { resolve } from 'path';
-import { getRepository } from 'typeorm';
+import { BaseEntity } from 'typeorm';
 import { Admin } from './admin/admin.entity';
 import { ListingResolver } from './listing/listing.resolver';
 import { QueryResolver } from './query/query.resolver';
 import { DateResolver } from './scalars/date';
 import { School } from './school/school.entity';
 import { Seller } from './seller/seller.entity';
-import { getMany, IContext } from './util';
+import { IContext, IResolver, IResolvers } from './util/types';
 import { getUser } from './util/jwt';
 
-const UserResolver = {
-  __resolveType(user: Admin | Seller) {
+const UserResolver: IResolver<GQL.User, Admin | Seller> = {
+  __resolveType(user) {
     if (user instanceof Seller) {
       return 'Seller';
     }
@@ -28,9 +27,11 @@ const UserResolver = {
   },
 };
 
-const makeLoader = <T>(entity: any) => {
-  const repo = getRepository<T>(entity);
-  return new DataLoader((ids: string[]) => getMany(repo, ids));
+const makeLoader = <T extends BaseEntity>(Ent: typeof BaseEntity) => {
+  return new DataLoader(async (ids: string[]) => {
+    const items = await Ent.findByIds<T>(ids);
+    return ids.map(id => items.find(item => (item as any).id === id) || null);
+  });
 };
 
 function createSchema(): GraphQLSchema {
@@ -38,7 +39,7 @@ function createSchema(): GraphQLSchema {
     resolve(__dirname, '../../src/types.gql'),
     'utf-8',
   );
-  const resolvers: IResolvers<any, IContext> = {
+  const resolvers: IResolvers = {
     Date: DateResolver,
     User: UserResolver,
     Query: QueryResolver,

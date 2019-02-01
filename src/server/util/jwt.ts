@@ -1,5 +1,4 @@
 import * as jwt from 'jsonwebtoken';
-import { getRepository } from 'typeorm';
 import { Admin } from '../admin/admin.entity';
 import { Seller } from '../seller/seller.entity';
 
@@ -37,12 +36,10 @@ export const getUser = async (token: string): Promise<Seller | Admin> => {
   }
 
   if (payload.type === 'seller') {
-    const sellerRepo = getRepository(Seller);
-    return sellerRepo.findOneOrFail(payload.id);
+    return Seller.findOneOrFail(payload.id);
   }
   if (payload.type === 'admin') {
-    const adminRepo = getRepository(Admin);
-    return adminRepo.findOneOrFail(payload.id);
+    return Admin.findOneOrFail(payload.id);
   }
   throw new Error('Invalid token');
 };

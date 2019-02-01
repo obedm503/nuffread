@@ -1,6 +1,6 @@
 import { v4 as uuid } from 'uuid';
 
-export const books = [
+export const books: any[] = [
   {
     authors: ['Peter Green'],
     isbn: ['9780520954694', '0520954696'],

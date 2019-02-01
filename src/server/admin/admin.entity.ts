@@ -1,10 +1,10 @@
 import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
-import { Column, Entity, Unique } from 'typeorm';
+import { BaseEntity, Column, Entity, Unique } from 'typeorm';
 import { Created, PrimaryKey, Updated } from '../util/db';
 
 @Entity()
 @Unique(['email'])
-export class Admin {
+export class Admin extends BaseEntity {
   @PrimaryKey()
   readonly id: string;
 

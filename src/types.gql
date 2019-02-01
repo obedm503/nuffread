@@ -4,6 +4,8 @@ type Query {
   currentUser: Seller
 
   search(query: String, maxPrice: Int, minPrice: Int): [Listing!]!
+
+  me: User
 }
 
 type Mutation {

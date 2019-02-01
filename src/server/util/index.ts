@@ -1,11 +1,7 @@
-import { HttpException, HttpStatus, NotFoundException } from '@nestjs/common';
+import { HttpException, HttpStatus } from '@nestjs/common';
 import { validate as validator } from 'class-validator';
-import DataLoader from 'dataloader';
 import { Request } from 'express';
-import { FindOneOptions, Repository } from 'typeorm';
-import { Admin } from '../admin/admin.entity';
-import { School } from '../school/school.entity';
-import { Seller } from '../seller/seller.entity';
+import { BaseEntity, FindOneOptions } from 'typeorm';
 
 export async function validate<T>(input: T) {
   const errors = await validator(input, {
@@ -26,32 +22,17 @@ export async function validate<T>(input: T) {
   return input;
 }
 
-export async function findOne<T>(
-  repo: Repository<T>,
+export async function findOne<T extends BaseEntity>(
+  Ent: typeof BaseEntity,
   id: string,
   config?: FindOneOptions<T>,
 ) {
-  const value = await repo.findOne(id, { cache: true, ...config });
+  const value = await Ent.findOne<T>(id, { cache: true, ...config });
   if (!value) {
-    const type = repo.metadata.targetName;
-    throw new NotFoundException(`Could not find ${type} with id ${id}`);
+    throw new Error(`Could not find ${Ent.name} with id ${id}`);
   }
   return value;
 }
-
-export async function getMany<T>(repo: Repository<T>, ids: string[]) {
-  const items = await repo.findByIds(ids);
-  return ids.map(id => items.find(item => (item as any).id === id) || null);
-}
-
-export type IContext = {
-  req: Request;
-  user: Seller | Admin | undefined;
-  sellerLoader: DataLoader<string, Seller | null>;
-  adminLoader: DataLoader<string, Admin | null>;
-  schoolLoader: DataLoader<string, School | null>;
-};
-
 /**  gets the server's base url */
 export const getUrl = (req: Request) => {
   const includePort = req.hostname === 'localhost';
@@ -61,13 +42,3 @@ export const getUrl = (req: Request) => {
     return `${req.protocol}://${req.hostname}`;
   }
 };
-
-export interface IService<T> {
-  create(
-    obj: { id: never; createdAt: never; updatedAt: never } & Partial<T>,
-  ): Promise<T>;
-  update(obj: Partial<T> & { id: string }): Promise<T>;
-  delete(id: string): Promise<void>;
-  get(id: string): Promise<T>;
-  getMany(ids: string[]): Promise<Array<T | null>>;
-}
