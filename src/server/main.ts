@@ -49,8 +49,6 @@ app.use(
 const apollo = new ApolloServer({
   context: ({ req }) => getContext(req),
   schema: getSchema(),
-  introspection: true,
-  playground: true,
 });
 
 apollo.applyMiddleware({ app });
