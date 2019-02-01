@@ -41,7 +41,6 @@ const authLink = setContext((_, ctx) => {
 const client = new ApolloClient({
   link: errorLink.concat(authLink).concat(httpLink),
   cache: createCache().restore(window['__APOLLO_STATE__']),
-  connectToDevTools: process.env.NODE_ENV !== 'production',
 });
 
 const main = (
