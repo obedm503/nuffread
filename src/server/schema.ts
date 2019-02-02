@@ -4,6 +4,7 @@ import * as fs from 'fs';
 import { GraphQLSchema } from 'graphql';
 import { makeExecutableSchema } from 'graphql-tools';
 import { resolve } from 'path';
+import Stripe from 'stripe';
 import { BaseEntity } from 'typeorm';
 import { Admin } from './admin/admin.entity';
 import { ListingResolver } from './listing/listing.resolver';
@@ -70,6 +71,15 @@ export const getSchema = () => {
   }
   return schema;
 };
+
+let stripe;
+const getStripe = (): Stripe => {
+  if (!stripe) {
+    stripe = new Stripe(process.env.STRIPE_API_KEY!);
+  }
+  return stripe;
+};
+
 export async function getContext({
   req,
   res,
@@ -84,6 +94,7 @@ export async function getContext({
     user,
     req,
     res,
+    stripe: getStripe(),
     sellerLoader: makeLoader(Seller),
     adminLoader: makeLoader(Admin),
     schoolLoader: makeLoader(School),

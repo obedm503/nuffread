@@ -47,6 +47,7 @@
     "reflect-metadata": "^0.1.13",
     "rxjs": "^6.4.0",
     "shared": "^0.2.0",
+    "stripe": "^6.23.0",
     "typeorm": "^0.2.12",
     "yup": "^0.26.10"
   },
@@ -63,6 +64,7 @@
     "@types/react-dom": "^16.0.11",
     "@types/react-router": "^4.0.23",
     "@types/react-router-dom": "^4.3.1",
+    "@types/stripe": "^6.19.5",
     "@types/uuid": "^3.4.4",
     "@types/yup": "^0.26.7",
     "nodemon": "^1.18.7",
