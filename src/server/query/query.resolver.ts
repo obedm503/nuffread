@@ -1,9 +1,5 @@
 import { AuthenticationError } from 'apollo-server-core';
-import { compare } from 'bcryptjs';
-import { Admin } from '../admin/admin.entity';
 import { books } from '../listing/books';
-import { Seller } from '../seller/seller.entity';
-import { sign } from '../util/jwt';
 import { IResolver } from '../util/types';
 
 const search = (a: string, b: string) => {
@@ -58,29 +54,5 @@ export const QueryResolver: IResolver<GQL.IQuery> = {
       throw new AuthenticationError('Unknown type');
     }
     return (user as any) as GQL.User;
-  },
-
-  async login(_, { email, password, type }: GQL.ILoginOnQueryArguments) {
-    let Ent: typeof Admin | typeof Seller;
-    if (type === 'SELLER') {
-      Ent = Seller;
-    } else if (type === 'ADMIN') {
-      Ent = Admin;
-    } else {
-      throw new AuthenticationError('Unknown type');
-    }
-
-    const user = await Ent.findOne({ email });
-
-    if (!user) {
-      throw new AuthenticationError('Wrong email or password');
-    }
-
-    if (!(await compare(password, user.passwordHash))) {
-      throw new AuthenticationError('Wrong email or password');
-    }
-
-    const token = await sign({ email, id: user.id, type });
-    return token;
   },
 };
