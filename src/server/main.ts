@@ -1,9 +1,8 @@
 const { production } = require('./util/env');
 import { NestFactory } from '@nestjs/core';
 import { ApolloServer } from 'apollo-server-express';
-import * as bodyParser from 'body-parser';
-import * as cookieParser from 'cookie-parser';
 import * as express from 'express';
+import * as session from 'express-session';
 import { join, resolve } from 'path';
 import { ServeStaticOptions } from 'serve-static';
 import { Admin } from './admin/admin.entity';
@@ -21,8 +20,14 @@ const app = express()
   .disable('etag')
   .disable('x-powered-by')
   .set('trust proxy', true)
-  .use(cookieParser())
-  .use(bodyParser.json());
+  .use(
+    session({
+      secret: process.env.SECRET!,
+      resave: false,
+      saveUninitialized: false,
+      name: 'session',
+    }),
+  );
 
 if (production) {
   // force ssl
@@ -47,7 +52,7 @@ app.use(
 );
 
 const apollo = new ApolloServer({
-  context: ({ req }) => getContext(req),
+  context: ({ req, res }) => getContext({ req, res }),
   schema: getSchema(),
 });
 

@@ -1,5 +1,5 @@
 import DataLoader from 'dataloader';
-import { Request } from 'express';
+import { Request, Response } from 'express';
 import { GraphQLResolveInfo, GraphQLScalarType } from 'graphql';
 import { IEnumResolver, IResolverOptions, MergeInfo } from 'graphql-tools';
 import { Admin } from '../admin/admin.entity';
@@ -8,6 +8,7 @@ import { Seller } from '../seller/seller.entity';
 
 export type IContext = {
   req: Request;
+  res: Response;
   user: Seller | Admin | undefined;
   sellerLoader: DataLoader<string, Seller | null>;
   adminLoader: DataLoader<string, Admin | null>;

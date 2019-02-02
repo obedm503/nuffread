@@ -6,13 +6,9 @@ enum UserType {
 }
 
 type Query {
-  currentUser: Seller
-
   search(query: String, maxPrice: Int, minPrice: Int): [Listing!]!
 
   me: User!
-
-  login(email: String!, password: String!, type: UserType!): String!
 }
 
 type Mutation {
@@ -22,7 +18,9 @@ type Mutation {
   createSchool(school: SchoolInput!): School!
   deleteSchool(id: ID!): Boolean!
 
-  register(email: String!, password: String!): String!
+  register(email: String!, password: String!): Boolean!
+  login(email: String!, password: String!, type: UserType!): Boolean!
+  logout: Boolean!
 }
 
 type Seller {

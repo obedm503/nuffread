@@ -1,5 +1,5 @@
 import * as DataLoader from 'dataloader';
-import { Request } from 'express';
+import { Request, Response } from 'express';
 import * as fs from 'fs';
 import { GraphQLSchema } from 'graphql';
 import { makeExecutableSchema } from 'graphql-tools';
@@ -12,7 +12,6 @@ import { QueryResolver } from './query/query.resolver';
 import { DateResolver } from './scalars/date';
 import { School } from './school/school.entity';
 import { Seller } from './seller/seller.entity';
-import { getUser } from './util/jwt';
 import { IContext, IResolver, IResolvers } from './util/types';
 
 const UserResolver: IResolver<GQL.User, Admin | Seller> = {
@@ -52,6 +51,18 @@ function createSchema(): GraphQLSchema {
   });
 }
 
+async function getUser(
+  id: string,
+  type: GQL.UserType,
+): Promise<Seller | Admin | undefined> {
+  if (type === 'SELLER') {
+    return Seller.findOne(id);
+  }
+  if (type === 'ADMIN') {
+    return Admin.findOne(id);
+  }
+}
+
 let schema: GraphQLSchema;
 export const getSchema = () => {
   if (!schema) {
@@ -59,12 +70,20 @@ export const getSchema = () => {
   }
   return schema;
 };
-export async function getContext(req: Request): Promise<IContext> {
-  const token = req.header('authorization');
-  const user = token ? await getUser(token) : undefined;
+export async function getContext({
+  req,
+  res,
+}: {
+  req: Request;
+  res: Response;
+}): Promise<IContext> {
+  const user = req.session
+    ? await getUser(req.session.userId, req.session.userType)
+    : undefined;
   return {
     user,
     req,
+    res,
     sellerLoader: makeLoader(Seller),
     adminLoader: makeLoader(Admin),
     schoolLoader: makeLoader(School),
