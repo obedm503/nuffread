@@ -30,7 +30,7 @@ export const createCache = () =>
   });
 
 const routes: RouteProps[] =
-  process.env.MODE === 'launch'
+  process.env.MODE !== 'ready'
     ? [{ component: Launch }]
     : [
         { path: '/sell', component: Sell },
