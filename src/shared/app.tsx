@@ -7,6 +7,7 @@ import * as React from 'react';
 import { RouteProps, withRouter } from 'react-router';
 import { Buy } from './buy';
 import { Footer, Routes } from './components';
+import { Launch } from './launch';
 import { Sell } from './sell';
 import { IsDesktopProvider } from './state/desktop';
 import { UserProvider } from './state/user';
@@ -28,11 +29,14 @@ export const createCache = () =>
     }),
   });
 
-const routes: RouteProps[] = [
-  { path: '/sell', component: Sell },
-  { path: '/', component: Buy },
-  { component: () => <p>Page not Found</p> },
-];
+const routes: RouteProps[] =
+  process.env.MODE === 'launch'
+    ? [{ component: Launch }]
+    : [
+        { path: '/sell', component: Sell },
+        { path: '/', component: Buy },
+        { component: () => <p>Page not Found</p> },
+      ];
 
 export const App = withRouter(({ match }) => (
   <IsDesktopProvider>
