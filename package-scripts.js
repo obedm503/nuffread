@@ -7,7 +7,7 @@ const mkdirp = require('mkdirp');
 const parcelConfig = [
   'src/client/index.html',
   '--out-dir dist/public',
-  '--public-url /public',
+  '--public-url /',
 ].join(' ');
 
 const buildTypes = [

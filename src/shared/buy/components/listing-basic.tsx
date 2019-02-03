@@ -34,7 +34,7 @@ export const ListingBasic = ({
           <MediaLeft>
             <Image
               // isSize="64x64"
-              src={listing.thumbnail || '/public/128x128.png'}
+              src={listing.thumbnail || '/img/128x128.png'}
             />
           </MediaLeft>
           <MediaContent>

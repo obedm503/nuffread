@@ -44,7 +44,7 @@ export const Details: React.SFC<RouteComponentProps<{ listingId: string }>> = ({
             <Columns isMultiline>
               {range(12).map(i => (
                 <Column isSize="narrow" key={i}>
-                  <Image isSize="96x96" src="/public/128x128.png" />
+                  <Image isSize="96x96" src="/img/128x128.png" />
                 </Column>
               ))}
             </Columns>

@@ -19,7 +19,7 @@ export const ListingDetails: React.SFC<GQL.IListing> = item => (
     <MediaLeft>
       <Image
         // isSize="128x128"
-        src={item.thumbnail || '/public/128x128.png'}
+        src={item.thumbnail || '/img/128x128.png'}
       />
     </MediaLeft>
     <MediaContent>

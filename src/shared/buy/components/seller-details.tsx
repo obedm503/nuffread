@@ -18,7 +18,7 @@ export const SellerDetails: React.SFC<{
     <MediaLeft>
       <Image
         // isSize="128x128"
-        src="/public/128x128.png"
+        src="/img/128x128.png"
       />
     </MediaLeft>
     <MediaContent>

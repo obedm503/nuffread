@@ -42,13 +42,9 @@ if (production) {
 
 const staticOptions: ServeStaticOptions = { etag: false, index: false };
 app.use(
-  '/public',
+  '/',
   express.static(distPublicDir, staticOptions),
   express.static(publicDir, staticOptions),
-  (req, res) => {
-    res.statusCode = 404;
-    res.end();
-  },
 );
 
 const apollo = new ApolloServer({
