@@ -23,7 +23,7 @@ export const SellPrivate: React.SFC<RouteComponentProps<{}>> = ({ match }) => (
   <>
     <TopNav>
       <NavbarBrand>
-        <NavbarItem>company logo</NavbarItem>
+        <NavbarItem>NuffRead</NavbarItem>
         <NavbarItem>Sell</NavbarItem>
         <NavbarBurger isActive={false} />
       </NavbarBrand>

@@ -7,7 +7,8 @@ export const Footer = () => (
       <Container>
         <Content hasTextAlign="centered">
           <p>
-            <strong>Shellph</strong> &copy; Copyright {new Date().getFullYear()}
+            <strong>NuffRead</strong> &copy; Copyright{' '}
+            {new Date().getFullYear()}
           </p>
         </Content>
       </Container>

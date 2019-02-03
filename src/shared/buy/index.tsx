@@ -30,7 +30,7 @@ export const Buy: React.SFC<RouteComponentProps<{}>> = ({ match }) => {
     <>
       <TopNav>
         <NavbarBrand>
-          <NavbarItem>company logo</NavbarItem>
+          <NavbarItem>NuffRead</NavbarItem>
           <NavbarItem>
             <span>
               Buy <small>@ Dordt University</small>
