@@ -2,7 +2,7 @@
 @import '~bulma/sass/utilities/initial-variables';
 @import '~bulma/sass/utilities/functions';
 
-$blue: rgb(88, 88, 252);
+// $blue: rgb(88, 88, 252);
 
 $light-orange: rgb(255, 218, 181);
 $orange: rgb(252, 170, 88);
@@ -86,7 +86,7 @@ $menu-item-active-color: $link;
 
 @media screen {
   .has-navbar-fixed-top {
-    margin-top: 3.5rem;
+    margin-top: $navbar-height + $navbar-top-height;
   }
 
   img.print-cover.print-page {
