@@ -2,7 +2,7 @@ import { Container, Content, Hero, HeroBody } from 'bloomer';
 import * as React from 'react';
 
 export const Footer = () => (
-  <Hero tag="footer" isColor="primary">
+  <Hero tag="footer" isColor="light">
     <HeroBody>
       <Container>
         <Content hasTextAlign="centered">
