@@ -1,7 +1,5 @@
 import { join, normalize } from 'path';
 
-export enum Scopes {}
-
 const ensureString = str => (typeof str === 'string' ? str : '');
 const removeSlash = (str: string) => {
   let s = ensureString(str);
@@ -28,3 +26,22 @@ export type Callable<R, P> =
 
 export const callable = <R, P>(fn?: Callable<R, P>, props?: P) =>
   typeof fn === 'function' ? ((fn as Function)(props) as R) : fn;
+
+const filterKeys = (o: { [key: string]: any }): string[] =>
+  Object.keys(o).filter(key => o[key]);
+
+export const classes = (
+  ...names: Array<undefined | string | { [key: string]: any }>
+) =>
+  names
+    .filter(Boolean)
+    .map(name => {
+      if (!name) {
+        return;
+      }
+      if (typeof name === 'string') {
+        return name;
+      }
+      return filterKeys(name).join(' ');
+    })
+    .join(' ');
