@@ -45,3 +45,15 @@ export const classes = (
       return filterKeys(name).join(' ');
     })
     .join(' ');
+
+export type BulmaColor =
+  | 'primary'
+  | 'link'
+  | 'info'
+  | 'success'
+  | 'warning'
+  | 'danger'
+  | 'black'
+  | 'dark'
+  | 'light'
+  | 'white';
