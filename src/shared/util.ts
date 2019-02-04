@@ -46,8 +46,9 @@ export const classes = (
     })
     .join(' ');
 
-export type BulmaColor =
+export type Color =
   | 'primary'
+  | 'secondary'
   | 'link'
   | 'info'
   | 'success'

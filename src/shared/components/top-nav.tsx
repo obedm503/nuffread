@@ -1,11 +1,11 @@
 import * as React from 'react';
 import { Navbar, Container } from 'bloomer';
-import { classes, BulmaColor } from '../util';
+import { classes, Color } from '../util';
 
 type Props = {
   className?: string;
-  isTopColor?: BulmaColor;
-  isColor?: BulmaColor;
+  isTopColor?: Color;
+  isColor?: Color;
   hasShaddow?: boolean;
 };
 export const TopNav: React.SFC<Props> = ({

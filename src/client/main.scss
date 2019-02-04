@@ -2,15 +2,30 @@
 @import '~bulma/sass/utilities/initial-variables';
 @import '~bulma/sass/utilities/functions';
 
+$blue: rgb(88, 88, 252);
+
+$light-orange: rgb(255, 218, 181);
+$orange: rgb(252, 170, 88);
+$dark-orange: rgb(239, 148, 57);
+
 // posible variables https://bulma.io/documentation/overview/variables/
-// $primary: #d68b19;
-// $link: #06bb8e;
-// $info:
+$primary: $orange;
+$secondary: $dark-orange;
+// $link:
+// $info: $light-orange;
 // $success:
-// $warning: #d6b319;
-// $danger: #f53d3d;
-// $dark: #1a1224;
+// $warning:
+// $danger:
+// $dark:
 // $text:
+
+$secondary-invert: findColorInvert($secondary) !default;
+$custom-colors: (
+  'secondary': (
+    $secondary,
+    $secondary-invert,
+  ),
+);
 
 // calculates "derived" variables
 @import '~bulma/sass/utilities/derived-variables';
