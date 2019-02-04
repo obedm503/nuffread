@@ -110,8 +110,17 @@ $menu-item-active-color: $link;
   }
 }
 
+$navbar-top-height: 0.25rem;
 nav.navbar {
-  border-top: 0.25rem solid $primary;
+  border-top: $navbar-top-height solid;
+  @each $name, $values in $colors {
+    &.is-#{$name} {
+      border-top-color: nth($values, 1); // inherits color
+    }
+    &.is-top-#{$name} {
+      border-top-color: nth($values, 1) !important;
+    }
+  }
 
   > .shadow {
     background-image: linear-gradient(rgba(0, 0, 0, 0.1), transparent);
@@ -123,10 +132,11 @@ nav.navbar {
   }
 }
 
-main {
+main,
+.hero.is-fullheight {
   // min-height: 100vh;
   // main content is full height - footer height
-  min-height: calc(100vh - 3.5rem);
+  min-height: calc(100vh - #{$navbar-height + $navbar-top-height});
   // OR
   // main content is full height and footer is hidden until scroll
   // min-height: 100vh;
