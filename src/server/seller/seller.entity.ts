@@ -59,12 +59,4 @@ export class Seller extends BaseEntity {
   @Column({ nullable: true })
   @IsString()
   photo?: string;
-
-  // @Column({ type: 'varchar', nullable: true })
-  // @IsNotEmpty()
-  // googleId?: string;
-
-  // @Column({ type: 'simple-array' /*, enum: Scopes, array: true */ })
-  // @IsEnum(Scopes, { each: true })
-  // scopes: string[];
 }
