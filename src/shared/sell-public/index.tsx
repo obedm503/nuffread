@@ -21,22 +21,26 @@ const routes: RouteProps[] = [
 export const SellPublic: React.SFC<RouteComponentProps<{}>> = ({ match }) => (
   <>
     <TopNav>
-      <NavbarBrand>
-        <NavbarItem>NuffRead</NavbarItem>
-        <NavbarItem>Sell</NavbarItem>
-        <NavbarBurger isActive={false} />
-      </NavbarBrand>
+      {({ isActive, onClick }) => (
+        <>
+          <NavbarBrand>
+            <NavbarItem>NuffRead</NavbarItem>
+            <NavbarItem>Sell</NavbarItem>
+            <NavbarBurger isActive={isActive} onClick={onClick} />
+          </NavbarBrand>
 
-      <NavbarMenu>
-        <NavbarStart>
-          <NavbarLink href="/sell">Home</NavbarLink>
-          <NavbarLink href="/sell/pricing">Pricing</NavbarLink>
-        </NavbarStart>
+          <NavbarMenu isActive={isActive}>
+            <NavbarStart>
+              <NavbarLink href="/sell">Home</NavbarLink>
+              <NavbarLink href="/sell/pricing">Pricing</NavbarLink>
+            </NavbarStart>
 
-        <NavbarEnd>
-          <NavbarItem>Buy Books</NavbarItem>
-        </NavbarEnd>
-      </NavbarMenu>
+            <NavbarEnd>
+              <NavbarItem>Buy Books</NavbarItem>
+            </NavbarEnd>
+          </NavbarMenu>
+        </>
+      )}
     </TopNav>
 
     <main className="has-navbar-fixed-top">

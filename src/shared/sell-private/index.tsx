@@ -22,28 +22,32 @@ const routes: RouteProps[] = [
 export const SellPrivate: React.SFC<RouteComponentProps<{}>> = ({ match }) => (
   <>
     <TopNav>
-      <NavbarBrand>
-        <NavbarItem>NuffRead</NavbarItem>
-        <NavbarItem>Sell</NavbarItem>
-        <NavbarBurger isActive={false} />
-      </NavbarBrand>
+      {({ isActive, onClick }) => (
+        <>
+          <NavbarBrand>
+            <NavbarItem>NuffRead</NavbarItem>
+            <NavbarItem>Sell</NavbarItem>
+            <NavbarBurger isActive={isActive} onClick={onClick} />
+          </NavbarBrand>
 
-      <NavbarMenu>
-        <NavbarStart>
-          <NavbarLink href="/sell">Home</NavbarLink>
-        </NavbarStart>
+          <NavbarMenu isActive={isActive}>
+            <NavbarStart>
+              <NavbarLink href="/sell">Home</NavbarLink>
+            </NavbarStart>
 
-        <NavbarEnd>
-          <NavbarItem hasDropdown isHoverable>
-            <NavbarLink href="/sell/profile">John Doe</NavbarLink>
-            <NavbarDropdown>
-              <NavbarItem href="/sell/profile">My Profile</NavbarItem>
-              <NavbarItem href="/sell/new">New Listing</NavbarItem>
-              <NavbarItem href="/sell/listings">My Listings</NavbarItem>
-            </NavbarDropdown>
-          </NavbarItem>
-        </NavbarEnd>
-      </NavbarMenu>
+            <NavbarEnd>
+              <NavbarItem hasDropdown isHoverable>
+                <NavbarLink href="/sell/profile">John Doe</NavbarLink>
+                <NavbarDropdown>
+                  <NavbarItem href="/sell/profile">My Profile</NavbarItem>
+                  <NavbarItem href="/sell/new">New Listing</NavbarItem>
+                  <NavbarItem href="/sell/listings">My Listings</NavbarItem>
+                </NavbarDropdown>
+              </NavbarItem>
+            </NavbarEnd>
+          </NavbarMenu>
+        </>
+      )}
     </TopNav>
 
     <main className="has-navbar-fixed-top">

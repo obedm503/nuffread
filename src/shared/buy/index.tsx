@@ -29,33 +29,27 @@ export const Buy: React.SFC<RouteComponentProps<{}>> = ({ match }) => {
   return (
     <>
       <TopNav>
-        <NavbarBrand>
-          <NavbarItem>NuffRead</NavbarItem>
-          <NavbarItem>
-            <span>
-              Buy <small>@ Dordt University</small>
-            </span>
-          </NavbarItem>
-          <NavbarBurger isActive={false} />
-        </NavbarBrand>
+        {({ isActive, onClick }) => (
+          <>
+            <NavbarBrand>
+              <NavbarItem>NuffRead</NavbarItem>
+              <NavbarBurger isActive={isActive} onClick={onClick} />
+            </NavbarBrand>
 
-        <NavbarMenu>
-          <NavbarStart>
-            <NavbarLink href="/">Home</NavbarLink>
-          </NavbarStart>
+            <NavbarMenu isActive={isActive}>
+              <NavbarStart>
+                <NavbarLink href="/">Home</NavbarLink>
+              </NavbarStart>
 
-          <NavbarEnd>
-            <NavbarItem isHidden="touch">
-              <Icon name="logo-github" />
-              <span>Desktop</span>
-            </NavbarItem>
-
-            <NavbarLink href="/sell">
-              <Icon name="logo-usd" />
-              <span>Sell Your Books</span>
-            </NavbarLink>
-          </NavbarEnd>
-        </NavbarMenu>
+              <NavbarEnd>
+                <NavbarLink href="/sell">
+                  <Icon name="logo-usd" />
+                  <span>Sell Your Books</span>
+                </NavbarLink>
+              </NavbarEnd>
+            </NavbarMenu>
+          </>
+        )}
       </TopNav>
 
       <main className="has-navbar-fixed-top">
