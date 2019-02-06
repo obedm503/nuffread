@@ -11,7 +11,6 @@ import { School } from '../school/school.entity';
 import { Created, PrimaryKey, Updated } from '../util/db';
 
 @Entity()
-@Unique(['schoolId'])
 export class Listing {
   @PrimaryKey()
   readonly id: string;
