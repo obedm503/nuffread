@@ -8,6 +8,7 @@ import {
 } from 'class-validator';
 import { BaseEntity, Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
 import { School } from '../school/school.entity';
+import { Seller } from '../seller/seller.entity';
 import { Created, PrimaryKey, Updated } from '../util/db';
 
 @Entity()
@@ -55,7 +56,6 @@ export class Listing extends BaseEntity {
   price: number;
 
   @Column()
-  @IsString()
   schoolId: string;
 
   @ManyToOne(() => School, school => school.listings)
@@ -63,4 +63,13 @@ export class Listing extends BaseEntity {
   @IsNotEmpty()
   @IsInstance(School)
   school: School;
+
+  @Column()
+  sellerId: string;
+
+  @ManyToOne(() => Seller, seller => seller.listings)
+  @JoinColumn({ name: 'seller_id' })
+  @IsNotEmpty()
+  @IsInstance(Seller)
+  seller: Seller;
 }

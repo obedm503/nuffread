@@ -1,12 +1,13 @@
 import {
+  IsDate,
   IsEmail,
   IsNotEmpty,
   IsString,
   registerDecorator,
   ValidationOptions,
-  IsDate,
 } from 'class-validator';
-import { BaseEntity, Column, Entity, Unique } from 'typeorm';
+import { BaseEntity, Column, Entity, OneToMany, Unique } from 'typeorm';
+import { Listing } from '../listing/listing.entity';
 import { Created, PrimaryKey, Updated } from '../util/db';
 
 function IsEdu(validationOptions?: ValidationOptions) {
@@ -59,4 +60,7 @@ export class Seller extends BaseEntity {
   @Column({ nullable: true })
   @IsString()
   photo?: string;
+
+  @OneToMany(() => Listing, listing => listing.seller)
+  listings: Listing[];
 }
