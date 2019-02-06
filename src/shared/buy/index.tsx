@@ -14,14 +14,11 @@ import { Home } from './home';
 
 const routes: RouteProps[] = [
   {
-    path: '/search/:listingId/details',
+    path: '/:listingId/details',
     component: Details,
     exact: true,
   },
-  {
-    path: '/search/:listingId?',
-    component: Home,
-  },
+  { path: '/:listingId?', component: Home },
 ];
 
 export const Buy: React.SFC<RouteComponentProps<{}>> = ({ match }) => {

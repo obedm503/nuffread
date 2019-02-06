@@ -19,3 +19,23 @@ export const SEARCH = gql`
     }
   }
 `;
+
+export const GET_LISTING = gql`
+  query GetListing($id: ID!) {
+    listing(id: $id) {
+      id
+      isbn
+      thumbnail
+      title
+      subTitle
+      publishedAt
+      authors
+      price
+
+      seller {
+        id
+        name
+      }
+    }
+  }
+`;

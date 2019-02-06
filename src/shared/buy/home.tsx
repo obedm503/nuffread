@@ -12,17 +12,25 @@ import {
 import { resolve } from 'path';
 import * as React from 'react';
 import { Query, QueryResult } from 'react-apollo';
-import { Redirect, RouteComponentProps } from 'react-router';
+import { RouteComponentProps } from 'react-router';
 import { Error, Icon } from '../components';
-import { SEARCH } from '../queries';
+import { GET_LISTING, SEARCH } from '../queries';
 import { IsDesktop } from '../state/desktop';
 import { Listing } from './components/listing';
 import { ListingDetails } from './components/listing-details';
 import { SellerDetails } from './components/seller-details';
 
-type SearchProps = { onSearch: any; searchValue: string };
-const SearchBar: React.SFC<SearchProps> = ({ onSearch, searchValue }) => (
-  <Hero isColor="light" isSize="small">
+type SearchBarProps = { onSearch: any; searchValue: string; isLarge: boolean };
+const SearchBar: React.SFC<SearchBarProps> = ({
+  onSearch,
+  searchValue,
+  isLarge: large,
+}) => (
+  <Hero
+    isColor="light"
+    isSize={large ? undefined : 'small'}
+    isFullHeight={large}
+  >
     <HeroBody style={{ paddingTop: '1rem', paddingBottom: '1rem' }}>
       <Container>
         <Field hasAddons style={{ width: '100%' }}>
@@ -30,9 +38,7 @@ const SearchBar: React.SFC<SearchProps> = ({ onSearch, searchValue }) => (
             <Icon name="search" size="small" align="left" />
             <Input
               placeholder="Find your book"
-              onChange={({ target }: React.ChangeEvent<HTMLInputElement>) =>
-                onSearch(target['value'])
-              }
+              onChange={onSearch}
               value={searchValue}
             />
           </Control>
@@ -47,23 +53,34 @@ const SearchBar: React.SFC<SearchProps> = ({ onSearch, searchValue }) => (
 
 const Details: React.SFC<{
   id: string;
-  listings: GQL.IListing[];
   base: string;
-}> = ({ id, listings, base }) => {
-  const listing = listings.find(item => !!item && id === item.id);
-  if (!listing) {
-    return null;
-  }
+}> = ({ id, base }) => (
+  <Query<GQL.IQuery> query={GET_LISTING} variables={{ id }}>
+    {({ loading, error, data }) => {
+      if (loading) {
+        return null;
+      }
 
-  return (
-    <>
-      <ListingDetails listing={listing} base={base} />
-      <SellerDetails listingId={listing.id} />
-    </>
-  );
-};
+      if (error || !data) {
+        return <Error value={error} />;
+      }
 
-export const Listings: React.SFC<{
+      const listing = data.listing;
+      if (!listing) {
+        return null;
+      }
+
+      return (
+        <>
+          <ListingDetails listing={listing} base={base} />
+          <SellerDetails listingId={listing.id} />
+        </>
+      );
+    }}
+  </Query>
+);
+
+const Listings: React.SFC<{
   onClick;
   currentId?: string;
   listings: GQL.IListing[];
@@ -106,16 +123,11 @@ class Main extends React.Component<{
             return <Error value={error} />;
           }
 
-          if (isDesktop && !listingId) {
-            // redirect to first
-            return <Redirect to={resolve(base, data.search[0].id)} />;
-          }
-
           return (
-            <Container className="buy-main">
+            <Container className={listingId ? 'buy-main' : ''}>
               <Columns>
                 {isDesktop || !listingId ? (
-                  <Column className="scrolls">
+                  <Column className={listingId ? 'scrolls' : ''}>
                     <Listings
                       onClick={onClick}
                       currentId={listingId}
@@ -126,11 +138,7 @@ class Main extends React.Component<{
 
                 {listingId ? (
                   <Column>
-                    <Details
-                      id={listingId}
-                      listings={data.search}
-                      base={base}
-                    />
+                    <Details id={listingId} base={base} />
                   </Column>
                 ) : null}
               </Columns>
@@ -142,35 +150,65 @@ class Main extends React.Component<{
   }
 }
 
+const setParam = (params: string, searchQuery: string) => {
+  const query = new URLSearchParams(params);
+  query.set('query', searchQuery);
+  return query.toString();
+};
+
+type SearchProps = RouteComponentProps<{ listingId?: string }>;
 export class Home extends React.Component<
-  RouteComponentProps<{ listingId?: string }>
+  SearchProps,
+  { searchValue: string }
 > {
-  onSearch = searchValue => this.setState({ searchValue });
+  onSearch = ({ target }: React.ChangeEvent<HTMLInputElement>) => {
+    const search = setParam(this.props.location.search, target.value);
+    this.props.history.push({ pathname: this.props.match.url, search });
+  };
+
+  onListingClick = listingId => {
+    const search = setParam(this.props.location.search, this.state.searchValue);
+    this.props.history.push({
+      pathname: resolve(this.props.match.url, '..', listingId),
+      search,
+    });
+  };
+
+  static getDerivedStateFromProps({ location }: SearchProps) {
+    const search = new URLSearchParams(location.search);
+    return { searchValue: search.get('query') || '' };
+  }
+
   state = { searchValue: '' };
 
   render() {
     const {
       match: { params, url },
-      history,
     } = this.props;
+
+    const search = new URLSearchParams(this.props.location.search);
+
     return (
       <>
         <SearchBar
           onSearch={this.onSearch}
           searchValue={this.state.searchValue}
+          isLarge={!search.has('query')}
         />
 
-        <IsDesktop>
-          {({ isDesktop }) => (
-            <Main
-              onClick={listingId => history.push(resolve(url, '..', listingId))}
-              isDesktop={isDesktop}
-              listingId={params.listingId}
-              searchValue={this.state.searchValue}
-              base={url}
-            />
-          )}
-        </IsDesktop>
+        {search.has('query') ? (
+          <IsDesktop>
+            {({ isDesktop }) => (
+              <Main
+                onClick={this.onListingClick}
+                isDesktop={isDesktop}
+                listingId={params.listingId}
+                searchValue={this.state.searchValue}
+                base={url}
+              />
+            )}
+          </IsDesktop>
+        ) : null}
       </>
     );
   }
