@@ -48,7 +48,12 @@ app.use(
 );
 
 const apollo = new ApolloServer({
-  context: ({ req, res }) => getContext({ req, res }),
+  context: ({ req, res }) => {
+    if (!production) {
+      console.debug('Incoming!!!');
+    }
+    return getContext({ req, res });
+  },
   schema: getSchema(),
 });
 
