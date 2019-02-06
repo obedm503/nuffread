@@ -43,7 +43,9 @@ export const ListingBasic = ({
                 <strong>
                   {listing.title}
                   {listing.subTitle ? ' - ' + listing.subTitle : ''}
-                </strong>{' '}
+                </strong>
+              </p>
+              <p>
                 <small>{listing.authors.join(' - ')}</small>
                 <br />
                 <small>

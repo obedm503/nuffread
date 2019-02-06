@@ -27,8 +27,10 @@ export const ListingDetails: React.SFC<GQL.IListing> = item => (
         <p>
           <strong>
             {item.title}
-            {item.subTitle ? ' - ' + item.subTitle : ' '}
+            {item.subTitle ? ' - ' + item.subTitle : ''}
           </strong>
+        </p>
+        <p>
           <small>{item.authors.join(' - ')}</small>
           <br />
           <small>

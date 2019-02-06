@@ -1,5 +1,5 @@
 import { AuthenticationError } from 'apollo-server-core';
-import { books } from '../listing/books';
+import { Listing } from '../listing/listing.entity';
 import { IResolver } from '../util/types';
 
 const search = (a: string, b: string) => {
@@ -10,7 +10,11 @@ const search = (a: string, b: string) => {
 };
 
 export const QueryResolver: IResolver<GQL.IQuery> = {
-  search(_, { query, maxPrice, minPrice }: GQL.ISearchOnQueryArguments) {
+  async search(
+    _,
+    { query, maxPrice, minPrice }: GQL.ISearchOnQueryArguments,
+  ): Promise<any[]> {
+    const books = await Listing.find();
     if (!query) {
       return books;
     }
@@ -26,9 +30,6 @@ export const QueryResolver: IResolver<GQL.IQuery> = {
         return true;
       }
       if (b.authors.find(a => search(a, query))) {
-        return true;
-      }
-      if (b.publisher && search(b.publisher, query)) {
         return true;
       }
     });
@@ -51,8 +52,15 @@ export const QueryResolver: IResolver<GQL.IQuery> = {
 
   async me(_, args, { user }) {
     if (!user) {
-      throw new AuthenticationError('Unknown type');
+      throw new AuthenticationError('Unauthenticated');
     }
     return (user as any) as GQL.User;
+  },
+
+  listing(_, { id }: GQL.IListingOnQueryArguments, { user, listingLoader }) {
+    if (!user) {
+      throw new AuthenticationError('Unauthenticated');
+    }
+    return (listingLoader.load(id) as any) as GQL.IListing;
   },
 };

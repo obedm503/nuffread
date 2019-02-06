@@ -1,6 +1,7 @@
 import { v4 as uuid } from 'uuid';
+import { Listing } from './listing.entity';
 
-export const books: any[] = [
+export const books = [
   {
     authors: ['Peter Green'],
     isbn: ['9780520954694', '0520954696'],
@@ -219,3 +220,15 @@ export const books: any[] = [
     publishedAt: new Date(b.publishedAt),
   }),
 );
+
+export const saveBooks = con =>
+  con.transaction(async manager => {
+    const listings = books.map(book =>
+      Listing.create({
+        ...book,
+        schoolId: 'f3560244-0fee-4b63-bb79-966a8c04a950',
+        id: undefined,
+      }),
+    );
+    await Listing.save(listings);
+  });

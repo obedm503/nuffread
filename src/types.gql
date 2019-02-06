@@ -9,6 +9,8 @@ type Query {
   search(query: String, maxPrice: Int, minPrice: Int): [Listing!]!
 
   me: User!
+
+  listing(id: ID!): Listing
 }
 
 type Mutation {

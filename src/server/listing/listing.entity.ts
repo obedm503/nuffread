@@ -6,12 +6,12 @@ import {
   IsString,
   IsUrl,
 } from 'class-validator';
-import { Column, Entity, JoinColumn, ManyToOne, Unique } from 'typeorm';
+import { BaseEntity, Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
 import { School } from '../school/school.entity';
 import { Created, PrimaryKey, Updated } from '../util/db';
 
 @Entity()
-export class Listing {
+export class Listing extends BaseEntity {
   @PrimaryKey()
   readonly id: string;
 
@@ -26,10 +26,10 @@ export class Listing {
   @IsNotEmpty()
   isbn: string[];
 
-  @Column()
+  @Column({ nullable: true })
   @IsNotEmpty()
   @IsUrl()
-  thumbnail: string;
+  thumbnail?: string;
 
   @Column()
   @IsNotEmpty()
@@ -49,11 +49,6 @@ export class Listing {
   @IsNotEmpty()
   @IsInstance(Date)
   publishedAt: Date;
-
-  @Column()
-  @IsNotEmpty()
-  @IsString()
-  publisher: string;
 
   @Column()
   @IsNumber()

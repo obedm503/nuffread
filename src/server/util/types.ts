@@ -4,6 +4,7 @@ import { GraphQLResolveInfo, GraphQLScalarType } from 'graphql';
 import { IEnumResolver, IResolverOptions, MergeInfo } from 'graphql-tools';
 import Stripe from 'stripe';
 import { Admin } from '../admin/admin.entity';
+import { Listing } from '../listing/listing.entity';
 import { School } from '../school/school.entity';
 import { Seller } from '../seller/seller.entity';
 
@@ -15,6 +16,7 @@ export type IContext = {
   sellerLoader: DataLoader<string, Seller | null>;
   adminLoader: DataLoader<string, Admin | null>;
   schoolLoader: DataLoader<string, School | null>;
+  listingLoader: DataLoader<string, Listing | null>;
 };
 
 // these types are based on graphql-tools types

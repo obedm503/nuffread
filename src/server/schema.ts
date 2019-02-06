@@ -7,6 +7,7 @@ import { resolve } from 'path';
 import * as Stripe from 'stripe';
 import { BaseEntity } from 'typeorm';
 import { Admin } from './admin/admin.entity';
+import { Listing } from './listing/listing.entity';
 import { ListingResolver } from './listing/listing.resolver';
 import { MutationResolver } from './mutation/mutation.resolver';
 import { QueryResolver } from './query/query.resolver';
@@ -98,5 +99,6 @@ export async function getContext({
     sellerLoader: makeLoader(Seller),
     adminLoader: makeLoader(Admin),
     schoolLoader: makeLoader(School),
+    listingLoader: makeLoader(Listing),
   };
 }
