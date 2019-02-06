@@ -25,12 +25,10 @@ type Mutation {
 
 type Seller {
   id: ID!
-  createdAt: Date!
-  updatedAt: Date!
 
-  name: String!
   email: String!
-  photo: String!
+  name: String
+  photo: String
 }
 
 input SellerInput {
@@ -40,8 +38,6 @@ input SellerInput {
 
 type School {
   id: ID!
-  createdAt: Date!
-  updatedAt: Date!
 
   name: String!
 }
@@ -52,8 +48,6 @@ input SchoolInput {
 
 type Admin {
   id: ID!
-  createdAt: Date!
-  updatedAt: Date!
 
   email: String!
 }
@@ -62,8 +56,6 @@ union User = Admin | Seller
 
 type Listing {
   id: ID!
-  createdAt: Date!
-  updatedAt: Date!
 
   isbn: [String!]!
   thumbnail: String
