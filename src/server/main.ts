@@ -47,13 +47,15 @@ app.use(
   express.static(publicDir, staticOptions),
 );
 
+if (!production) {
+  app.use((req, res, next) => {
+    console.info('\n\nIncoming Request!!!', req.url);
+    next();
+  });
+}
+
 const apollo = new ApolloServer({
-  context: ({ req, res }) => {
-    if (!production) {
-      console.debug('Incoming!!!');
-    }
-    return getContext({ req, res });
-  },
+  context: ({ req, res }) => getContext({ req, res }),
   schema: getSchema(),
 });
 
