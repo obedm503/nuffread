@@ -18,14 +18,13 @@ const routes: RouteProps[] = [
   { path: '/', component: Home },
 ];
 
-export const SellPublic: React.SFC<RouteComponentProps<{}>> = ({ match }) => (
+export const Join: React.SFC<RouteComponentProps<{}>> = ({ match }) => (
   <>
     <TopNav>
       {({ isActive, onClick }) => (
         <>
           <NavbarBrand>
             <NavbarItem>NuffRead</NavbarItem>
-            <NavbarItem>Sell</NavbarItem>
             <NavbarBurger isActive={isActive} onClick={onClick} />
           </NavbarBrand>
 
