@@ -60,9 +60,6 @@ export const QueryResolver: IResolver<GQL.IQuery> = {
   },
 
   listing(_, { id }: GQL.IListingOnQueryArguments, { user, listingLoader }) {
-    if (!user) {
-      throw new AuthenticationError('Unauthenticated');
-    }
     return (listingLoader.load(id) as any) as GQL.IListing;
   },
 
