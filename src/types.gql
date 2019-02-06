@@ -11,6 +11,7 @@ type Query {
   me: User!
 
   listing(id: ID!): Listing
+  sellers: [Seller!]!
 }
 
 type Mutation {

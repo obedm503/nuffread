@@ -8,10 +8,14 @@ export const SEARCH = gql`
       thumbnail
       title
       subTitle
-      publisher
       publishedAt
       authors
       price
+
+      seller {
+        id
+        name
+      }
     }
   }
 `;

@@ -31,15 +31,15 @@ export const ListingDetails: React.SFC<GQL.IListing> = item => (
           </strong>
         </p>
         <p>
-          <small>{item.authors.join(' - ')}</small>
+          <small>{item.authors.join(', ')}</small>
           <br />
           <small>
             <b>ISBN: </b>
-            {item.isbn.join(' - ')}
+            {item.isbn.join(', ')}
           </small>
           <br />
           <small>
-            <b>Sold By: </b>John Doe
+            <b>Sold By: </b> {item.seller.name}
           </small>
           <small>
             <b>Posted </b>

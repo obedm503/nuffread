@@ -46,15 +46,15 @@ export const ListingBasic = ({
                 </strong>
               </p>
               <p>
-                <small>{listing.authors.join(' - ')}</small>
+                <small>{listing.authors.join(', ')}</small>
                 <br />
                 <small>
                   <b>ISBN: </b>
-                  {listing.isbn.join(' - ')}
+                  {listing.isbn.join(', ')}
                 </small>
                 <br />
                 <small>
-                  <b>Sold By: </b>John Doe
+                  <b>Sold By: </b> {listing.seller.name}
                 </small>
               </p>
             </Content>
