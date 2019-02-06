@@ -65,9 +65,10 @@ type Listing {
   subTitle: String
   authors: [String!]!
   publishedAt: Date!
-  publisher: String
   price: Int!
 
-  school: School!
   schoolId: String!
+  school: School!
+  sellerId: String!
+  seller: Seller!
 }

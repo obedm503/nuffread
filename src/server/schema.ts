@@ -14,6 +14,7 @@ import { QueryResolver } from './query/query.resolver';
 import { DateResolver } from './scalars/date';
 import { School } from './school/school.entity';
 import { Seller } from './seller/seller.entity';
+import { SellerResolver } from './seller/seller.resolver';
 import { IContext, IResolver, IResolvers } from './util/types';
 
 const UserResolver: IResolver<GQL.User, Admin | Seller> = {
@@ -46,6 +47,7 @@ function createSchema(): GraphQLSchema {
     Query: QueryResolver,
     Listing: ListingResolver,
     Mutation: MutationResolver,
+    Seller: SellerResolver,
   };
   return makeExecutableSchema<IContext>({
     typeDefs,
