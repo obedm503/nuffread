@@ -4,23 +4,22 @@ import {
   NavbarEnd,
   NavbarItem,
   NavbarMenu,
-  NavbarStart,
 } from 'bloomer';
 import * as React from 'react';
 import { RouteComponentProps, RouteProps } from 'react-router';
-import { Icon, Routes, TopNav } from '../components';
+import { Routes, TopNav } from '../components';
 import { NavbarLink } from '../components/navbar-link';
 import { Details } from './details';
 import { Home } from './home';
 
 const routes: RouteProps[] = [
   {
-    path: '/:listingId/details',
+    path: '/search/:listingId/details',
     component: Details,
     exact: true,
   },
   {
-    path: '/:listingId?',
+    path: '/search/:listingId?',
     component: Home,
   },
 ];
@@ -37,14 +36,12 @@ export const Buy: React.SFC<RouteComponentProps<{}>> = ({ match }) => {
             </NavbarBrand>
 
             <NavbarMenu isActive={isActive}>
-              <NavbarStart>
-                <NavbarLink href="/">Home</NavbarLink>
-              </NavbarStart>
-
               <NavbarEnd>
-                <NavbarLink href="/sell">
-                  <Icon name="logo-usd" />
-                  <span>Sell Your Books</span>
+                <NavbarLink href="/join">
+                  <b>Join</b>
+                </NavbarLink>
+                <NavbarLink href="/login">
+                  <span>Login</span>
                 </NavbarLink>
               </NavbarEnd>
             </NavbarMenu>
@@ -53,7 +50,7 @@ export const Buy: React.SFC<RouteComponentProps<{}>> = ({ match }) => {
       </TopNav>
 
       <main className="has-navbar-fixed-top">
-        <Routes key={match.url} base={match.url} routes={routes} />
+        <Routes base={match.url} routes={routes} />
       </main>
     </>
   );

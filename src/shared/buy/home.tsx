@@ -9,14 +9,14 @@ import {
   HeroBody,
   Input,
 } from 'bloomer';
-import { range } from 'lodash';
+import { resolve } from 'path';
 import * as React from 'react';
 import { Query, QueryResult } from 'react-apollo';
 import { Redirect, RouteComponentProps } from 'react-router';
 import { Error, Icon } from '../components';
 import { SEARCH } from '../queries';
 import { IsDesktop } from '../state/desktop';
-import { ListingBasic } from './components/listing-basic';
+import { Listing } from './components/listing';
 import { ListingDetails } from './components/listing-details';
 import { SellerDetails } from './components/seller-details';
 
@@ -48,7 +48,8 @@ const SearchBar: React.SFC<SearchProps> = ({ onSearch, searchValue }) => (
 const Details: React.SFC<{
   id: string;
   listings: GQL.IListing[];
-}> = ({ id, listings }) => {
+  base: string;
+}> = ({ id, listings, base }) => {
   const listing = listings.find(item => !!item && id === item.id);
   if (!listing) {
     return null;
@@ -56,8 +57,8 @@ const Details: React.SFC<{
 
   return (
     <>
-      <ListingDetails {...listing} />
-      <SellerDetails {...listing as any} />
+      <ListingDetails listing={listing} base={base} />
+      <SellerDetails listingId={listing.id} />
     </>
   );
 };
@@ -73,7 +74,7 @@ export const Listings: React.SFC<{
         return null;
       }
       return (
-        <ListingBasic
+        <Listing
           key={listing.id}
           isFirst={i === 0}
           isActive={currentId === listing.id}
@@ -90,9 +91,10 @@ class Main extends React.Component<{
   listingId?: string;
   onClick;
   searchValue: string;
+  base: string;
 }> {
   render() {
-    const { isDesktop, listingId, onClick, searchValue } = this.props;
+    const { isDesktop, listingId, onClick, searchValue, base } = this.props;
     return (
       <Query query={SEARCH} variables={{ query: searchValue }}>
         {({ error, data, loading }: QueryResult<GQL.IQuery>) => {
@@ -106,7 +108,7 @@ class Main extends React.Component<{
 
           if (isDesktop && !listingId) {
             // redirect to first
-            return <Redirect to={`/${data.search[0].id}`} />;
+            return <Redirect to={resolve(base, data.search[0].id)} />;
           }
 
           return (
@@ -124,7 +126,11 @@ class Main extends React.Component<{
 
                 {listingId ? (
                   <Column>
-                    <Details id={listingId} listings={data.search} />
+                    <Details
+                      id={listingId}
+                      listings={data.search}
+                      base={base}
+                    />
                   </Column>
                 ) : null}
               </Columns>
@@ -144,7 +150,7 @@ export class Home extends React.Component<
 
   render() {
     const {
-      match: { params },
+      match: { params, url },
       history,
     } = this.props;
     return (
@@ -157,10 +163,11 @@ export class Home extends React.Component<
         <IsDesktop>
           {({ isDesktop }) => (
             <Main
-              onClick={listingId => history.push(`/${listingId}`)}
+              onClick={listingId => history.push(resolve(url, '..', listingId))}
               isDesktop={isDesktop}
               listingId={params.listingId}
               searchValue={this.state.searchValue}
+              base={url}
             />
           )}
         </IsDesktop>
