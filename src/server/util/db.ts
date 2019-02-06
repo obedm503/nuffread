@@ -1,4 +1,5 @@
 import {
+  BaseEntity,
   Connection,
   createConnection,
   CreateDateColumn,
@@ -20,7 +21,9 @@ export const Updated = () =>
 
 let connection: Connection | undefined;
 
-export async function connect(entities: any[]): Promise<Connection> {
+export async function connect(
+  entities: Array<typeof BaseEntity>,
+): Promise<Connection> {
   if (!connection) {
     const connectionOptions: PostgresConnectionOptions = {
       type: 'postgres',
