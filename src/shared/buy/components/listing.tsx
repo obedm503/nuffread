@@ -41,13 +41,10 @@ export const Listing: React.SFC<{
           <small>
             <b>Sold By: </b> {listing.seller.name}
           </small>
+          <br />
           <small>
             <b>Posted on: </b>
             {new Date(listing.publishedAt).toLocaleDateString()}
-          </small>
-          <br />
-          <small>
-            <b>Sold By: </b> {listing.seller.name}
           </small>
         </p>
       </Content>
