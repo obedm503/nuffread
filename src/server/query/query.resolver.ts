@@ -54,7 +54,7 @@ export const QueryResolver: IResolver<GQL.IQuery> = {
 
   async me(_, args, { user }) {
     if (!user) {
-      throw new AuthenticationError('Unauthenticated');
+      return null;
     }
     return (user as any) as GQL.User;
   },
