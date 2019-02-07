@@ -1,6 +1,7 @@
 import { Field } from 'formik';
 import * as React from 'react';
 import { Control, ControlProps } from './control';
+import { classes } from '../util';
 
 type Props = ControlProps &
   React.DetailedHTMLProps<
@@ -25,13 +26,14 @@ export const Text: React.SFC<Props> = ({
     name,
     touched,
   };
-  const className = type === 'range' ? inputProps.className : 'input';
   return (
     <Control {...controlProps}>
       {color => (
         <Field
           {...inputProps as any}
-          className={`${className} ${color}`}
+          className={classes(inputProps.className, color, {
+            input: type !== 'range',
+          })}
           type={type}
           name={name}
         />

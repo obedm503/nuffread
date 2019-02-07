@@ -1,6 +1,5 @@
 import { Field, FieldProps } from 'formik';
 import { range } from 'lodash';
-import memoizeOne from 'memoize-one';
 import * as React from 'react';
 import { Control, ControlProps } from './control';
 
@@ -87,7 +86,7 @@ const DayPicker: React.SFC<PickerProps & { month: number }> = ({
   />
 );
 
-const localToUtc = memoizeOne((local: string) => {
+const localToUtc = (local: string) => {
   const [year, month, day] = local.split('-').map(Number);
   const date = new Date();
   date.setHours(0, 0, 0, 0);
@@ -95,8 +94,8 @@ const localToUtc = memoizeOne((local: string) => {
   date.setMonth(month - 1); // month is 0-indexed
   date.setDate(day);
   return date.toISOString();
-});
-const utcToLocal = memoizeOne((utc: string) => {
+};
+const utcToLocal = (utc: string) => {
   const date = new Date(utc);
   date.setHours(0, 0, 0, 0);
   return {
@@ -104,7 +103,7 @@ const utcToLocal = memoizeOne((utc: string) => {
     month: date.getMonth() + 1, // month is 0-indexed
     day: date.getDate(),
   };
-});
+};
 
 type DatePickerProps = FieldProps<string> & { color?: string };
 type DatePickerState = { year: number; month: number; day: number };

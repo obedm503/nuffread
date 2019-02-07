@@ -8,6 +8,7 @@ export type ControlProps = {
   errors;
   values?;
   children?: ((color: string) => React.ReactNode) | React.ReactNode;
+  className?: string;
 };
 
 export const Control: React.SFC<ControlProps> = ({
