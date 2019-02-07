@@ -6,12 +6,14 @@ import {
   NavbarItem,
   NavbarMenu,
   NavbarStart,
+  DropdownDivider,
 } from 'bloomer';
 import * as React from 'react';
 import { RouteComponentProps, RouteProps } from 'react-router';
 import { Routes, TopNav, NavbarLink } from '../components';
 import { Home } from './home';
 import { Profile } from './profile';
+import { Logout } from '../logout';
 
 const routes: RouteProps[] = [
   { path: '/profile', component: Profile },
@@ -40,7 +42,9 @@ export const Sell: React.SFC<RouteComponentProps<{}>> = ({ match }) => (
                   <NavbarLink href="/sell/profile">My Profile</NavbarLink>
                   <NavbarLink href="/sell/new">New Listing</NavbarLink>
                   <NavbarLink href="/sell/listings">My Listings</NavbarLink>
-                  <NavbarLink href="/logout">Logout</NavbarLink>
+
+                  <DropdownDivider />
+                  <Logout />
                 </NavbarDropdown>
               </NavbarItem>
             </NavbarEnd>
