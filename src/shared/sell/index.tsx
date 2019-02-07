@@ -9,8 +9,7 @@ import {
 } from 'bloomer';
 import * as React from 'react';
 import { RouteComponentProps, RouteProps } from 'react-router';
-import { Routes, TopNav } from '../components';
-import { NavbarLink } from '../components/navbar-link';
+import { Routes, TopNav, NavbarLink } from '../components';
 import { Home } from './home';
 import { Profile } from './profile';
 
@@ -38,9 +37,10 @@ export const Sell: React.SFC<RouteComponentProps<{}>> = ({ match }) => (
               <NavbarItem hasDropdown isHoverable>
                 <NavbarLink href="/sell/profile">John Doe</NavbarLink>
                 <NavbarDropdown>
-                  <NavbarItem href="/sell/profile">My Profile</NavbarItem>
-                  <NavbarItem href="/sell/new">New Listing</NavbarItem>
-                  <NavbarItem href="/sell/listings">My Listings</NavbarItem>
+                  <NavbarLink href="/sell/profile">My Profile</NavbarLink>
+                  <NavbarLink href="/sell/new">New Listing</NavbarLink>
+                  <NavbarLink href="/sell/listings">My Listings</NavbarLink>
+                  <NavbarLink href="/logout">Logout</NavbarLink>
                 </NavbarDropdown>
               </NavbarItem>
             </NavbarEnd>

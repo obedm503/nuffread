@@ -8,8 +8,7 @@ import {
 } from 'bloomer';
 import * as React from 'react';
 import { RouteComponentProps, RouteProps } from 'react-router';
-import { Routes, TopNav } from '../components';
-import { NavbarLink } from '../components/navbar-link';
+import { Routes, TopNav, NavbarLink } from '../components';
 import { Home } from './home';
 import { Pricing } from './pricing';
 
