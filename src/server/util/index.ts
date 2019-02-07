@@ -1,7 +1,13 @@
-import { UserInputError } from 'apollo-server-express';
+import { UserInputError, ApolloError } from 'apollo-server-express';
 import { validate as validator } from 'class-validator';
 import { Request } from 'express';
 import { BaseEntity, FindOneOptions } from 'typeorm';
+
+export class AuthorizationError extends ApolloError {
+  constructor(detail?: Record<string, string>) {
+    super('Unauthorized', 'UNAUTHORIZED', detail);
+  }
+}
 
 export async function validate<T>(input: T) {
   const errors = await validator(input, {

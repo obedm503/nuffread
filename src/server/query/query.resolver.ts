@@ -1,8 +1,9 @@
 import { AuthenticationError } from 'apollo-server-core';
-import { Listing } from '../listing/listing.entity';
-import { IResolver } from '../util/types';
 import { Admin } from '../admin/admin.entity';
+import { Listing } from '../listing/listing.entity';
 import { Seller } from '../seller/seller.entity';
+import { AuthorizationError } from '../util';
+import { IResolver } from '../util/types';
 
 const search = (a: string, b: string) => {
   a = a.trim().toLowerCase();
@@ -68,7 +69,7 @@ export const QueryResolver: IResolver<GQL.IQuery> = {
       throw new AuthenticationError('Unauthenticated');
     }
     if (!(user instanceof Admin)) {
-      throw new AuthenticationError('Unauthorized');
+      throw new AuthorizationError();
     }
     return Seller.find() as any;
   },
