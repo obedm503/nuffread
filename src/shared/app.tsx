@@ -11,6 +11,7 @@ import { Buy } from './buy';
 import { Error, Footer, Routes } from './components';
 import { Join } from './join';
 import { Launch } from './launch';
+import { Login } from './login';
 import { Sell } from './sell';
 import { IsDesktopProvider } from './state/desktop';
 import { UserProvider } from './state/user';
@@ -38,7 +39,7 @@ const makeRoutes = (user?: GQL.User): RouteProps[] => {
   }
 
   let routes: RouteProps[] = [
-    { path: '/login', exact: true, component: () => <div>Login page</div> },
+    { path: '/login', exact: true, component: Login },
     { path: '/join', exact: true, component: Join },
   ];
 
