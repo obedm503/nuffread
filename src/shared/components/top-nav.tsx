@@ -1,6 +1,7 @@
 import { Container, Navbar } from 'bloomer';
 import * as React from 'react';
 import { classes, Color } from '../util';
+import { NavLink } from 'react-router-dom';
 
 type RenderChildren =
   | React.ReactNode
@@ -25,7 +26,7 @@ export class TopNav extends React.PureComponent<Props, { isActive: boolean }> {
     const {
       children,
       className,
-      isTopColor,
+      isTopColor = 'primary',
       isColor,
       hasShaddow = true,
     } = this.props;
@@ -50,3 +51,18 @@ export class TopNav extends React.PureComponent<Props, { isActive: boolean }> {
     );
   }
 }
+
+export const NavbarLink: React.SFC<{ href: string; className?: string }> = ({
+  children,
+  href,
+  className,
+}) => (
+  <NavLink
+    to={href}
+    className={classes('navbar-item', className)}
+    activeClassName="is-active"
+    exact
+  >
+    {children}
+  </NavLink>
+);
