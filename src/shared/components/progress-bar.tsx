@@ -1,5 +1,4 @@
-import { mean } from 'lodash';
-import memoizeOne from 'memoize-one';
+import { mean, memoize } from 'lodash';
 import * as React from 'react';
 
 type Props = { color: string };
@@ -17,7 +16,7 @@ export const ProgressBar: React.SFC<Props & { value: number }> = ({
 };
 
 export class AvgBar extends React.PureComponent<Props & { numbers: number[] }> {
-  mean = memoizeOne(mean);
+  mean = memoize(mean);
   render() {
     const { numbers, ...props } = this.props;
     const value = this.mean(numbers);
