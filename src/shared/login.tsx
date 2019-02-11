@@ -25,19 +25,11 @@ const LOGIN = gql`
   }
 `;
 
-const validationSchema = yup.object().shape({
-  email: yup
-    .string()
-    .email()
-    .test('edu', 'Must be student email', (value: string) =>
-      value.endsWith('.edu'),
-    ),
-  password: yup.string(),
-});
-
 class LoginForm extends React.Component<{
   type: keyof typeof GQL.UserType;
   history: History;
+  schema;
+  admin?: boolean;
 }> {
   onSubmit = (
     mutate: MutationFn<GQL.IMutation>,
@@ -52,13 +44,14 @@ class LoginForm extends React.Component<{
     }
   };
   render() {
+    const { schema, admin } = this.props;
     return (
       <Mutation<GQL.IMutation> mutation={LOGIN}>
         {(mutate, { loading, client }) => {
           return (
             <Formik<{ email: string; password: string }>
               onSubmit={this.onSubmit(mutate, client)}
-              validationSchema={validationSchema}
+              validationSchema={schema}
               initialValues={{ email: '', password: '' }}
             >
               {({ touched, errors }) => {
@@ -81,10 +74,12 @@ class LoginForm extends React.Component<{
                       touched={touched}
                       errors={errors}
                     />
-                    <Button href="/join">
-                      <Icon name="add" />
-                      <span>Join</span>
-                    </Button>
+                    {admin ? null : (
+                      <Button href="/join">
+                        <Icon name="add" />
+                        <span>Join</span>
+                      </Button>
+                    )}
                     <Button isPulled="right" isColor="primary" type="submit">
                       <Icon name="log-in" />
                       <span>Login</span>
@@ -100,7 +95,23 @@ class LoginForm extends React.Component<{
   }
 }
 
-export const Login: React.SFC<RouteComponentProps<{}>> = ({ history }) => {
+const adminSchema = yup.object().shape({
+  email: yup.string().email(),
+  password: yup.string(),
+});
+const sellerSchema = yup.object().shape({
+  email: yup
+    .string()
+    .email()
+    .test('edu', 'Must be student email', (value: string) =>
+      value.endsWith('.edu'),
+    ),
+  password: yup.string(),
+});
+
+export const Login: React.SFC<
+  RouteComponentProps<{}> & { admin?: boolean }
+> = ({ history, admin = false }) => {
   return (
     <>
       <TopNav>
@@ -115,7 +126,12 @@ export const Login: React.SFC<RouteComponentProps<{}>> = ({ history }) => {
             <Container>
               <Columns isCentered>
                 <Column isSize={4}>
-                  <LoginForm history={history} type="SELLER" />
+                  <LoginForm
+                    history={history}
+                    type={admin ? 'ADMIN' : 'SELLER'}
+                    schema={admin ? adminSchema : sellerSchema}
+                    admin={admin}
+                  />
                 </Column>
               </Columns>
             </Container>
@@ -124,4 +140,8 @@ export const Login: React.SFC<RouteComponentProps<{}>> = ({ history }) => {
       </main>
     </>
   );
+};
+
+export const Admin: React.SFC<RouteComponentProps<{}>> = props => {
+  return <Login {...props} admin />;
 };
