@@ -6,6 +6,7 @@ import { Kind } from 'graphql';
 import gql from 'graphql-tag';
 import * as React from 'react';
 import { Query } from 'react-apollo';
+import Helmet from 'react-helmet-async';
 import { RouteProps, withRouter } from 'react-router';
 import { Buy } from './buy';
 import { Error, Footer, Routes } from './components';
@@ -86,6 +87,14 @@ export const App = withRouter(({ match }) => {
         return (
           <IsDesktopProvider>
             <UserProvider value={{ user: me }}>
+              <Helmet>
+                <title>NuffRead</title>
+                <meta
+                  name="description"
+                  content="The book marketplace for students"
+                />
+                <meta name="theme-color" content="#ef9439" />
+              </Helmet>
               <Routes routes={routes} key={match.url} />
 
               <Footer />

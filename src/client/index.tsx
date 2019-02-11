@@ -7,6 +7,7 @@ import { createHttpLink } from 'apollo-link-http';
 import * as React from 'react';
 import { ApolloProvider } from 'react-apollo';
 import { hydrate } from 'react-dom';
+import { HelmetProvider } from 'react-helmet-async';
 import { BrowserRouter } from 'react-router-dom';
 import { App, createCache } from '../shared/app';
 import { HostProvider } from '../shared/state/host';
@@ -46,11 +47,13 @@ const client = new ApolloClient({
 const main = (
   <UAProvider value={navigator.userAgent}>
     <HostProvider value={location.origin}>
-      <ApolloProvider client={client}>
-        <BrowserRouter>
-          <App />
-        </BrowserRouter>
-      </ApolloProvider>
+      <HelmetProvider>
+        <ApolloProvider client={client}>
+          <BrowserRouter>
+            <App />
+          </BrowserRouter>
+        </ApolloProvider>
+      </HelmetProvider>
     </HostProvider>
   </UAProvider>
 );

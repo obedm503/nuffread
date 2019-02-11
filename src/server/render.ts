@@ -4,6 +4,7 @@ import { Request, Response } from 'express';
 import * as fs from 'fs';
 import { resolve } from 'path';
 import { stringify } from 'querystring';
+import { FilledContext } from 'react-helmet-async';
 import { promisify } from 'util';
 
 const readFile = promisify(fs.readFile);
@@ -19,13 +20,32 @@ if (production) {
   template = fs.readFileSync(indexUrl, 'utf-8');
 }
 
+function setAttrs($el: Cheerio, attrString: string) {
+  if (!attrString) {
+    return;
+  }
+
+  const attrs = attrString.split(' ').map(s => {
+    const [name, value] = s.split('=');
+    // remove "" surrounding quotes
+    return [name, value.substring(1, value.length - 1)];
+  });
+  attrs.forEach(([name, value]) => {
+    $el.attr(name, value);
+  });
+}
+
 type Params = {
   html: string;
-  title?: string;
   state: NormalizedCacheObject;
+  helmetContext: FilledContext;
 };
 
-export async function render({ html, title, state }: Params) {
+export async function render({
+  html,
+  state,
+  helmetContext: { helmet },
+}: Params) {
   if (!template && !production) {
     // load index.html on first request only in development
     // has to wait for parcel to build it as the server boots up
@@ -33,9 +53,14 @@ export async function render({ html, title, state }: Params) {
   }
 
   const $template = load(template);
-  if (title) {
-    $template('title').text(title);
-  }
+
+  $template('head').append(
+    `${helmet.title.toString()} ${helmet.meta.toString()}`,
+  );
+
+  setAttrs($template('html'), helmet.htmlAttributes.toString());
+  setAttrs($template('body'), helmet.bodyAttributes.toString());
+
   $template('#root').html(html);
   $template('#state').html(script(state));
 
