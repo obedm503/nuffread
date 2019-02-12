@@ -1,9 +1,10 @@
 import { compare, hash } from 'bcryptjs';
 import { Admin } from '../admin/admin.entity';
 import { Seller } from '../seller/seller.entity';
-import { validate, AuthenticationError } from '../util';
+import { validate } from '../util';
 import { IResolver } from '../util/types';
 import { Request, Response } from 'express';
+import { AuthenticationError } from '../util/auth';
 
 export async function logout(req: Request, res: Response) {
   if (req.session) {

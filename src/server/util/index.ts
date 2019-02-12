@@ -1,23 +1,7 @@
-import {
-  ApolloError,
-  AuthenticationError as AuthError,
-  UserInputError,
-} from 'apollo-server-express';
+import { UserInputError } from 'apollo-server-express';
 import { validate as validator } from 'class-validator';
 import { Request } from 'express';
 import { BaseEntity, FindOneOptions } from 'typeorm';
-
-export class AuthorizationError extends ApolloError {
-  constructor(msg?: string) {
-    super(msg || 'Unauthorized', 'UNAUTHORIZED');
-  }
-}
-
-export class AuthenticationError extends AuthError {
-  constructor(msg?: string) {
-    super(msg || 'Unauthenticated');
-  }
-}
 
 export async function validate<T>(input: T) {
   const errors = await validator(input, {

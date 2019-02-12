@@ -1,8 +1,8 @@
 import { Admin } from '../admin/admin.entity';
 import { Listing } from '../listing/listing.entity';
 import { Seller } from '../seller/seller.entity';
-import { AuthenticationError, AuthorizationError } from '../util';
 import { IResolver } from '../util/types';
+import { checkUser } from '../util/auth';
 
 const search = (a: string, b: string) => {
   a = a.trim().toLowerCase();
@@ -64,12 +64,8 @@ export const QueryResolver: IResolver<GQL.IQuery> = {
   },
 
   async sellers(_, args, { user }) {
-    if (!user) {
-      throw new AuthenticationError();
-    }
-    if (!(user instanceof Admin)) {
-      throw new AuthorizationError();
-    }
+    checkUser(Admin, user);
+
     return Seller.find() as any;
   },
 };
