@@ -49,7 +49,7 @@ app.use(
 
 if (!production) {
   app.use((req, res, next) => {
-    console.info('\n\nIncoming Request!!!', req.url);
+    console.info('\n\nRequest for ', req.url);
     next();
   });
 }

@@ -38,13 +38,21 @@ export const Listing: React.SFC<{
             {listing.isbn.join(', ')}
           </small>
           <br />
-          <small>
-            <b>Sold By: </b> {listing.seller.name}
-          </small>
+          {listing.seller ? (
+            <small>
+              <b>Sold By: </b> {listing.seller.name}
+            </small>
+          ) : null}
+
           <br />
           <small>
-            <b>Posted on: </b>
+            <b>Published on: </b>
             {new Date(listing.publishedAt).toLocaleDateString()}
+          </small>
+          <br/>
+          <small>
+            <b>Posted on: </b>
+            {new Date(listing.createdAt).toLocaleDateString()}
           </small>
         </p>
       </Content>
