@@ -61,6 +61,7 @@ union User = Admin | Seller
 
 type Listing {
   id: ID!
+  createdAt: Date!
 
   isbn: [String!]!
   thumbnail: String
