@@ -1,8 +1,7 @@
-import { AuthenticationError } from 'apollo-server-core';
 import { Admin } from '../admin/admin.entity';
 import { Listing } from '../listing/listing.entity';
 import { Seller } from '../seller/seller.entity';
-import { AuthorizationError } from '../util';
+import { AuthenticationError, AuthorizationError } from '../util';
 import { IResolver } from '../util/types';
 
 const search = (a: string, b: string) => {
@@ -66,7 +65,7 @@ export const QueryResolver: IResolver<GQL.IQuery> = {
 
   async sellers(_, args, { user }) {
     if (!user) {
-      throw new AuthenticationError('Unauthenticated');
+      throw new AuthenticationError();
     }
     if (!(user instanceof Admin)) {
       throw new AuthorizationError();

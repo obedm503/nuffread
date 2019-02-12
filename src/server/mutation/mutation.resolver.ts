@@ -1,8 +1,7 @@
-import { AuthenticationError } from 'apollo-server-core';
 import { compare, hash } from 'bcryptjs';
 import { Admin } from '../admin/admin.entity';
 import { Seller } from '../seller/seller.entity';
-import { validate } from '../util';
+import { validate, AuthenticationError } from '../util';
 import { IResolver } from '../util/types';
 import { Request, Response } from 'express';
 
@@ -35,7 +34,7 @@ export const MutationResolver: IResolver<GQL.IMutation> = {
     } else if (type === 'ADMIN') {
       Ent = Admin;
     } else {
-      throw new AuthenticationError('Unknown type');
+      throw new AuthenticationError();
     }
 
     const user = await Ent.findOne({ email });
