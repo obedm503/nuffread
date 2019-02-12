@@ -32,6 +32,8 @@ type Seller {
   email: String!
   name: String
   photo: String
+
+  listings: [Listing!]!
 }
 
 input SellerInput {
