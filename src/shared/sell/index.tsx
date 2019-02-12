@@ -1,4 +1,5 @@
 import {
+  DropdownDivider,
   NavbarBrand,
   NavbarBurger,
   NavbarDropdown,
@@ -6,17 +7,20 @@ import {
   NavbarItem,
   NavbarMenu,
   NavbarStart,
-  DropdownDivider,
 } from 'bloomer';
 import * as React from 'react';
 import { RouteComponentProps, RouteProps } from 'react-router';
-import { Routes, TopNav, NavbarLink } from '../components';
-import { Home } from './home';
-import { Profile } from './profile';
+import { NavbarLink, Routes, TopNav } from '../components';
 import { Logout } from '../logout';
+import { Home } from './home';
+import { New } from './new';
+import { Profile } from './profile';
+import { Listings } from './listings';
 
 const routes: RouteProps[] = [
-  { path: '/profile', component: Profile },
+  { path: '/profile', exact: true, component: Profile },
+  { path: '/listings', exact: true, component: Listings },
+  { path: '/new', exact: true, component: New },
   { path: '/', component: Home },
 ];
 
@@ -32,16 +36,16 @@ export const Sell: React.SFC<RouteComponentProps<{}>> = ({ match }) => (
 
           <NavbarMenu isActive={isActive}>
             <NavbarStart>
-              <NavbarLink href="/sell">Home</NavbarLink>
+              <NavbarLink href="/">Home</NavbarLink>
             </NavbarStart>
 
             <NavbarEnd>
               <NavbarItem hasDropdown isHoverable>
-                <NavbarLink href="/sell/profile">John Doe</NavbarLink>
+                <NavbarLink href="/profile">John Doe</NavbarLink>
                 <NavbarDropdown>
-                  <NavbarLink href="/sell/profile">My Profile</NavbarLink>
-                  <NavbarLink href="/sell/new">New Listing</NavbarLink>
-                  <NavbarLink href="/sell/listings">My Listings</NavbarLink>
+                  <NavbarLink href="/profile">My Profile</NavbarLink>
+                  <NavbarLink href="/new">New Listing</NavbarLink>
+                  <NavbarLink href="/listings">My Listings</NavbarLink>
 
                   <DropdownDivider />
                   <Logout />

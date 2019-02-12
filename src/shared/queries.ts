@@ -20,17 +20,26 @@ export const SEARCH = gql`
   }
 `;
 
+export const BASIC_LISTING = gql`
+  fragment BasicListing on Listing {
+    id
+    createdAt
+    isbn
+    thumbnail
+    title
+    subTitle
+    publishedAt
+    authors
+    price
+  }
+`;
+
 export const GET_LISTING = gql`
+  ${BASIC_LISTING}
+
   query GetListing($id: ID!) {
     listing(id: $id) {
-      id
-      isbn
-      thumbnail
-      title
-      subTitle
-      publishedAt
-      authors
-      price
+      ...BasicListing
 
       seller {
         id
