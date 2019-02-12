@@ -69,8 +69,8 @@ class App extends React.Component<RouteComponentProps<{}>> {
       }
 
       let routes: RouteProps[] = [
+        { path: '/join', component: user ? ToHome : Join },
         { path: '/login', exact: true, component: user ? ToHome : Login },
-        { path: '/join', exact: true, component: user ? ToHome : Join },
         { path: '/admin', exact: true, component: user ? ToHome : Admin },
       ];
 
