@@ -7,7 +7,6 @@ import {
   Hero,
   HeroBody,
   NavbarBrand,
-  NavbarItem,
 } from 'bloomer';
 import { Form, Formik } from 'formik';
 import gql from 'graphql-tag';
@@ -16,7 +15,7 @@ import * as React from 'react';
 import { Mutation, MutationFn } from 'react-apollo';
 import { RouteComponentProps } from 'react-router';
 import * as yup from 'yup';
-import { Icon, TopNav } from './components';
+import { Icon, NavbarLink, TopNav } from './components';
 import { Email, Password } from './controls';
 import { AuthErrors } from './util';
 
@@ -136,7 +135,7 @@ export const Login: React.SFC<
     <>
       <TopNav>
         <NavbarBrand>
-          <NavbarItem>NuffRead</NavbarItem>
+          <NavbarLink href="/">NuffRead</NavbarLink>
         </NavbarBrand>
       </TopNav>
 

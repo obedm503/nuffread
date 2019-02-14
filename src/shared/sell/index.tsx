@@ -13,9 +13,9 @@ import { RouteComponentProps, RouteProps } from 'react-router';
 import { NavbarLink, Routes, TopNav } from '../components';
 import { Logout } from '../logout';
 import { Home } from './home';
+import { Listings } from './listings';
 import { New } from './new';
 import { Profile } from './profile';
-import { Listings } from './listings';
 
 const routes: RouteProps[] = [
   { path: '/profile', exact: true, component: Profile },
@@ -30,7 +30,7 @@ export const Sell: React.SFC<RouteComponentProps<{}>> = ({ match }) => (
       {({ isActive, onClick }) => (
         <>
           <NavbarBrand>
-            <NavbarItem>NuffRead</NavbarItem>
+            <NavbarLink href="/">NuffRead</NavbarLink>
             <NavbarBurger isActive={isActive} onClick={onClick} />
           </NavbarBrand>
 

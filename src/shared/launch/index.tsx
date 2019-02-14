@@ -1,19 +1,12 @@
-import {
-  Container,
-  Hero,
-  HeroBody,
-  NavbarBrand,
-  NavbarItem,
-  Title,
-} from 'bloomer';
+import { Container, Hero, HeroBody, NavbarBrand, Title } from 'bloomer';
 import * as React from 'react';
-import { TopNav } from '../components';
+import { NavbarLink, TopNav } from '../components';
 
 export const Launch = () => (
   <>
     <TopNav isColor="primary" hasShaddow={false}>
       <NavbarBrand>
-        <NavbarItem>NuffRead</NavbarItem>
+        <NavbarLink href="/">NuffRead</NavbarLink>
       </NavbarBrand>
     </TopNav>
 

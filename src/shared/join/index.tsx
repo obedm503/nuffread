@@ -2,7 +2,6 @@ import {
   NavbarBrand,
   NavbarBurger,
   NavbarEnd,
-  NavbarItem,
   NavbarMenu,
   NavbarStart,
 } from 'bloomer';
@@ -28,7 +27,7 @@ export const Join: React.SFC<RouteComponentProps<{}>> = ({
       {({ isActive, onClick }) => (
         <>
           <NavbarBrand>
-            <NavbarItem>NuffRead</NavbarItem>
+            <NavbarLink href="/">NuffRead</NavbarLink>
             <NavbarBurger isActive={isActive} onClick={onClick} />
           </NavbarBrand>
 
