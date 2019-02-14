@@ -18,6 +18,7 @@ import { RouteComponentProps } from 'react-router';
 import * as yup from 'yup';
 import { Icon, TopNav } from './components';
 import { Email, Password } from './controls';
+import { AuthErrors } from './util';
 
 const LOGIN = gql`
   mutation Login($email: String!, $password: String!, $type: UserType!) {
@@ -47,7 +48,13 @@ class LoginForm extends React.Component<{
     const { schema, admin } = this.props;
     return (
       <Mutation<GQL.IMutation> mutation={LOGIN}>
-        {(mutate, { loading, client }) => {
+        {(mutate, { loading, client, error }) => {
+          const unconfirmedError =
+            error &&
+            error.graphQLErrors.find(
+              err => err.message === AuthErrors.notConfimed,
+            );
+
           return (
             <Formik<{ email: string; password: string }>
               onSubmit={this.onSubmit(mutate, client)}
@@ -74,6 +81,13 @@ class LoginForm extends React.Component<{
                       touched={touched}
                       errors={errors}
                     />
+
+                    {unconfirmedError ? (
+                      <div className="field">
+                        <p className="help is-danger">Unconfirmed email.</p>
+                      </div>
+                    ) : null}
+
                     {admin ? null : (
                       <Button href="/join">
                         <Icon name="add" />
@@ -96,17 +110,23 @@ class LoginForm extends React.Component<{
 }
 
 const adminSchema = yup.object().shape({
-  email: yup.string().email(),
-  password: yup.string(),
+  email: yup
+    .string()
+    .required()
+    .email(),
+  password: yup.string().required(),
 });
 const sellerSchema = yup.object().shape({
   email: yup
     .string()
+    .required()
     .email()
-    .test('edu', 'Must be student email', (value: string) =>
-      value.endsWith('.edu'),
+    .test(
+      'edu',
+      'Must be student email',
+      value => !!value && value.endsWith('.edu'),
     ),
-  password: yup.string(),
+  password: yup.string().required(),
 });
 
 export const Login: React.SFC<
@@ -121,7 +141,7 @@ export const Login: React.SFC<
       </TopNav>
 
       <main className="has-navbar-fixed-top">
-        <Hero isSize="medium">
+        <Hero isFullHeight>
           <HeroBody>
             <Container>
               <Columns isCentered>

@@ -1,4 +1,4 @@
-import { Controller, Get, Req, Res } from '@nestjs/common';
+import { Controller, Get, Query, Req, Res } from '@nestjs/common';
 import { ApolloClient, ApolloError } from 'apollo-client';
 import { SchemaLink } from 'apollo-link-schema';
 import { Request, Response } from 'express';
@@ -13,11 +13,29 @@ import { logout } from './mutation/mutation.resolver';
 import { render } from './render';
 import { getContext, getSchema } from './schema';
 import { getUrl } from './util';
+import { Seller } from './seller/seller.entity';
 
 const production = process.env.NODE_ENV === 'production';
 
 @Controller('/')
 export class AppController {
+  @Get('/confirm')
+  async confirmEmail(@Res() res: Response, @Query('email') email?: string) {
+    if (!email) {
+      return res.redirect('/');
+    }
+
+    const seller = await Seller.findOne({ where: { email } });
+    if (!seller) {
+      return res.redirect('/');
+    }
+
+    seller.confirmedAt = new Date();
+    await Seller.save(seller);
+
+    res.redirect('/login');
+  }
+
   @Get('*')
   index(@Req() req: Request, @Res() res: Response) {
     this.render(req, res);

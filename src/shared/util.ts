@@ -1,4 +1,5 @@
 import { join, normalize } from 'path';
+import * as yup from 'yup';
 
 const ensureString = str => (typeof str === 'string' ? str : '');
 const removeSlash = (str: string) => {
@@ -58,3 +59,29 @@ export type Color =
   | 'dark'
   | 'light'
   | 'white';
+
+export const passwordSchema = yup
+  .string()
+  .required('Passphrase is required')
+  .min(10, 'Must be at least 8 characters long')
+  .test('uppercase', 'Must contain at least one uppercase letter', value => {
+    return !!value && value.split('').some(char => char === char.toUpperCase());
+  })
+  .test('lowercase', 'Must contain at least one lowercase letter', value => {
+    return !!value && value.split('').some(char => char === char.toLowerCase());
+  })
+  .test('number', 'Must contain at least one digit', value => {
+    return !!value && /\d+/.test(value);
+  })
+  .test('special', 'Must contain at least one special character', value => {
+    return !!value && /[ !@#$%^&*~?<>_+-]+/.test(value);
+  });
+export function validatePassword(password: string): boolean {
+  return passwordSchema.isValidSync(password);
+}
+
+export enum AuthErrors {
+  duplicateUser = 'Email is already registered.',
+  notConfimed = 'Email is not yet confirmed.',
+  wrongCredentials = 'Wrong email or password.',
+}

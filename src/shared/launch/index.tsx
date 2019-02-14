@@ -18,7 +18,7 @@ export const Launch = () => (
     </TopNav>
 
     <main className="has-navbar-fixed-top">
-      <Hero isColor="primary" isSize="medium" isFullHeight>
+      <Hero isColor="primary" isFullHeight>
         <HeroBody>
           <Container>
             <Title

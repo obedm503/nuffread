@@ -6,35 +6,39 @@ client.setApiKey(process.env.SENDGRID_API_KEY!);
 client.setDefaultHeader('Accept', '*/*');
 mail.setApiKey(process.env.SENDGRID_API_KEY!);
 
-export const send = async ({
-  email,
-  subject,
-  text,
-  sendInSeconds,
-}: {
-  email: string;
-  subject: string;
-  text: string;
-  sendInSeconds?: number;
-}): Promise<string> => {
+export const createBatchId = async (): Promise<string> => {
   const [res, body] = await client.request({
     method: 'POST',
     url: '/v3/mail/batch',
   });
   const id: string = body.batch_id;
+  return id;
+};
 
+type SendParameters = {
+  email: string;
+  subject: string;
+  html: string;
+  sendInSeconds?: number;
+  batchId?: string;
+};
+export const send = async ({
+  email,
+  subject,
+  html,
+  sendInSeconds,
+  batchId,
+}: SendParameters) => {
   const msg: MailData = {
-    from: 'no-reply@survey.engageforequity.org',
+    from: { name: 'Nuffread', email: 'no-reply@nuffread.com' },
     to: email,
-    text,
+    html,
     subject,
     sendAt: sendInSeconds, // undefined send email immediatelly
-    batchId: id, // this will allow us to cancel this email
+    batchId, // this will allow us to cancel this email
   };
 
-  await mail.send(msg); // schedule email
-
-  return id;
+  await mail.send(msg); // send or schedule email
 };
 
 export const cancel = async id => {

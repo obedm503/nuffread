@@ -47,6 +47,13 @@ app.use(
   express.static(publicDir, staticOptions),
 );
 
+app.use((req, res, next) => {
+  if (!process.env.URL) {
+    process.env.URL = `${req.protocol}://${req.hostname}:${process.env.PORT}`;
+  }
+  next();
+});
+
 if (!production) {
   app.use((req, res, next) => {
     console.info('\n\nRequest for ', req.url);

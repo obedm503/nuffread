@@ -19,7 +19,10 @@ const routes: RouteProps[] = [
   { path: '/', component: Home },
 ];
 
-export const Join: React.SFC<RouteComponentProps<{}>> = ({ match }) => (
+export const Join: React.SFC<RouteComponentProps<{}>> = ({
+  match,
+  location,
+}) => (
   <>
     <TopNav>
       {({ isActive, onClick }) => (
@@ -35,9 +38,11 @@ export const Join: React.SFC<RouteComponentProps<{}>> = ({ match }) => (
               <NavbarLink href="/join/pricing">Pricing</NavbarLink>
             </NavbarStart>
 
-            <NavbarEnd>
-              <NavbarLink href="/join/signup">Signup</NavbarLink>
-            </NavbarEnd>
+            {location.pathname.endsWith('/join/signup') ? null : (
+              <NavbarEnd>
+                <NavbarLink href="/join/signup">Signup</NavbarLink>
+              </NavbarEnd>
+            )}
           </NavbarMenu>
         </>
       )}
