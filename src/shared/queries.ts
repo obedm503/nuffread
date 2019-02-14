@@ -1,25 +1,5 @@
 import gql from 'graphql-tag';
 
-export const SEARCH = gql`
-  query Search($query: String) {
-    search(query: $query) {
-      id
-      isbn
-      thumbnail
-      title
-      subTitle
-      publishedAt
-      authors
-      price
-
-      seller {
-        id
-        name
-      }
-    }
-  }
-`;
-
 export const BASIC_LISTING = gql`
   fragment BasicListing on Listing {
     id
@@ -31,6 +11,21 @@ export const BASIC_LISTING = gql`
     publishedAt
     authors
     price
+  }
+`;
+
+export const SEARCH = gql`
+  ${BASIC_LISTING}
+
+  query Search($query: String) {
+    search(query: $query) {
+      ...BasicListing
+
+      seller {
+        id
+        name
+      }
+    }
   }
 `;
 
