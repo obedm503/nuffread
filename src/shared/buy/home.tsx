@@ -11,7 +11,7 @@ import {
 } from 'bloomer';
 import { resolve } from 'path';
 import * as React from 'react';
-import { Query, QueryResult } from 'react-apollo';
+import { Query } from 'react-apollo';
 import { RouteComponentProps } from 'react-router';
 import { Error, Icon } from '../components';
 import { GET_LISTING, SEARCH } from '../queries';
@@ -20,17 +20,9 @@ import { Listing } from './components/listing';
 import { ListingDetails } from './components/listing-details';
 import { SellerDetails } from './components/seller-details';
 
-type SearchBarProps = { onSearch: any; searchValue: string; isLarge: boolean };
-const SearchBar: React.SFC<SearchBarProps> = ({
-  onSearch,
-  searchValue,
-  isLarge: large,
-}) => (
-  <Hero
-    isColor="light"
-    isSize={large ? undefined : 'small'}
-    isFullHeight={large}
-  >
+type SearchBarProps = { onSearch: any; searchValue: string };
+const SearchBar: React.SFC<SearchBarProps> = ({ onSearch, searchValue }) => (
+  <Hero isSize="medium" isColor="light">
     <HeroBody style={{ paddingTop: '1rem', paddingBottom: '1rem' }}>
       <Container>
         <Field hasAddons style={{ width: '100%' }}>
@@ -113,8 +105,8 @@ class Main extends React.Component<{
   render() {
     const { isDesktop, listingId, onClick, searchValue, base } = this.props;
     return (
-      <Query query={SEARCH} variables={{ query: searchValue }}>
-        {({ error, data, loading }: QueryResult<GQL.IQuery>) => {
+      <Query<GQL.IQuery> query={SEARCH} variables={{ query: searchValue }}>
+        {({ error, data, loading }) => {
           if (loading) {
             return <p>Loading...</p>;
           }
@@ -193,7 +185,6 @@ export class Home extends React.Component<
         <SearchBar
           onSearch={this.onSearch}
           searchValue={this.state.searchValue}
-          isLarge={!search.has('query')}
         />
 
         {search.has('query') ? (

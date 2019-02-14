@@ -1,7 +1,7 @@
 import { Column, Columns, Container, Image } from 'bloomer';
 import { range } from 'lodash';
 import * as React from 'react';
-import { Query, QueryResult } from 'react-apollo';
+import { Query } from 'react-apollo';
 import { RouteComponentProps } from 'react-router';
 import { Error } from '../components';
 import { SEARCH } from '../queries';
@@ -13,8 +13,8 @@ export const Details: React.SFC<RouteComponentProps<{ listingId: string }>> = ({
     params: { listingId },
   },
 }) => (
-  <Query query={SEARCH}>
-    {({ error, data, loading }: QueryResult<GQL.IQuery>) => {
+  <Query<GQL.IQuery> query={SEARCH}>
+    {({ error, data, loading }) => {
       if (error) {
         return <Error value={error} />;
       }
