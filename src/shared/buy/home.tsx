@@ -9,6 +9,7 @@ import {
   HeroBody,
   Input,
 } from 'bloomer';
+import { debounce } from 'lodash';
 import { resolve } from 'path';
 import * as React from 'react';
 import { Query } from 'react-apollo';
@@ -21,27 +22,40 @@ import { ListingDetails } from './components/listing-details';
 import { SellerDetails } from './components/seller-details';
 
 type SearchBarProps = { onSearch: any; searchValue: string };
-const SearchBar: React.SFC<SearchBarProps> = ({ onSearch, searchValue }) => (
-  <Hero isSize="medium" isColor="light">
-    <HeroBody style={{ paddingTop: '1rem', paddingBottom: '1rem' }}>
-      <Container>
-        <Field hasAddons style={{ width: '100%' }}>
-          <Control hasIcons isExpanded>
-            <Icon name="search" size="small" align="left" />
-            <Input
-              placeholder="Find your book"
-              onChange={onSearch}
-              value={searchValue}
-            />
-          </Control>
-          <Control>
-            <Button>Search</Button>
-          </Control>
-        </Field>
-      </Container>
-    </HeroBody>
-  </Hero>
-);
+class SearchBar extends React.PureComponent<SearchBarProps> {
+  onSearch: any;
+  onChange = e => {
+    if (!this.onSearch) {
+      this.onSearch = debounce(this.props.onSearch, 150);
+    }
+    this.onSearch && this.onSearch({ ...e });
+  };
+
+  render() {
+    const { searchValue } = this.props;
+    return (
+      <Hero isSize="medium" isColor="light">
+        <HeroBody style={{ paddingTop: '1rem', paddingBottom: '1rem' }}>
+          <Container>
+            <Field hasAddons style={{ width: '100%' }}>
+              <Control hasIcons isExpanded>
+                <Icon name="search" size="small" align="left" />
+                <Input
+                  placeholder="Find your book"
+                  onChange={this.onChange}
+                  defaultValue={searchValue}
+                />
+              </Control>
+              <Control>
+                <Button>Search</Button>
+              </Control>
+            </Field>
+          </Container>
+        </HeroBody>
+      </Hero>
+    );
+  }
+}
 
 const Details: React.SFC<{
   id: string;
@@ -106,11 +120,7 @@ class Main extends React.Component<{
     const { isDesktop, listingId, onClick, searchValue, base } = this.props;
     return (
       <Query<GQL.IQuery> query={SEARCH} variables={{ query: searchValue }}>
-        {({ error, data, loading }) => {
-          if (loading) {
-            return <p>Loading...</p>;
-          }
-
+        {({ error, data }) => {
           if (error || !data || !data.search) {
             return <Error value={error} />;
           }
