@@ -7,6 +7,7 @@ enum UserType {
 
 type Query {
   search(query: String, maxPrice: Int, minPrice: Int): [Listing!]!
+  top: [Listing!]!
 
   me: User
 
