@@ -1,7 +1,5 @@
 import {
   Button,
-  Column,
-  Columns,
   Container,
   Control,
   Field,
@@ -9,17 +7,16 @@ import {
   HeroBody,
   Input,
 } from 'bloomer';
+import gql from 'graphql-tag';
 import { debounce } from 'lodash';
 import { resolve } from 'path';
 import * as React from 'react';
 import { Query } from 'react-apollo';
 import { RouteComponentProps } from 'react-router';
 import { Error, Icon } from '../components';
-import { GET_LISTING, SEARCH } from '../queries';
+import { BASIC_LISTING, SEARCH } from '../queries';
 import { IsDesktop } from '../state/desktop';
-import { Listing } from './components/listing';
-import { ListingDetails } from './components/listing-details';
-import { SellerDetails } from './components/seller-details';
+import { ListingsMain } from './components/listings';
 
 type SearchBarProps = { onSearch: any; searchValue: string };
 class SearchBar extends React.PureComponent<SearchBarProps> {
@@ -57,100 +54,78 @@ class SearchBar extends React.PureComponent<SearchBarProps> {
   }
 }
 
-const Details: React.SFC<{
-  id: string;
+type ListingsProps = {
+  isDesktop: boolean;
+  listingId?: string;
+  onClick;
   base: string;
-}> = ({ id, base }) => (
-  <Query<GQL.IQuery> query={GET_LISTING} variables={{ id }}>
-    {({ loading, error, data }) => {
-      if (loading) {
-        return null;
-      }
+};
+const SearchListings = ({
+  isDesktop,
+  listingId,
+  onClick,
+  searchValue,
+  base,
+}: ListingsProps & { searchValue: string }) => {
+  return (
+    <Query<GQL.IQuery> query={SEARCH} variables={{ query: searchValue }}>
+      {({ error, data }) => {
+        if (error || !data || !data.search) {
+          return <Error value={error} />;
+        }
 
-      if (error || !data) {
+        return (
+          <ListingsMain
+            isDesktop={isDesktop}
+            listingId={listingId}
+            onClick={onClick}
+            base={base}
+            listings={data.search}
+          />
+        );
+      }}
+    </Query>
+  );
+};
+
+export const TOP_LISTINGS = gql`
+  ${BASIC_LISTING}
+
+  query TopListings {
+    top {
+      ...BasicListing
+
+      seller {
+        id
+        name
+      }
+    }
+  }
+`;
+
+const TopListings = ({
+  isDesktop,
+  listingId,
+  onClick,
+  base,
+}: ListingsProps) => (
+  <Query<GQL.IQuery> query={TOP_LISTINGS}>
+    {({ error, data }) => {
+      if (error || !data || !data.top) {
         return <Error value={error} />;
       }
-
-      const listing = data.listing;
-      if (!listing) {
-        return null;
-      }
-
       return (
-        <>
-          <ListingDetails listing={listing} base={base} />
-          <SellerDetails listingId={listing.id} />
-        </>
+        <ListingsMain
+          isDesktop={isDesktop}
+          listingId={listingId}
+          onClick={onClick}
+          base={base}
+          listings={data.top}
+        />
       );
     }}
   </Query>
 );
-
-const Listings: React.SFC<{
-  onClick;
-  currentId?: string;
-  listings: GQL.IListing[];
-}> = ({ onClick, currentId, listings }) => (
-  <>
-    {listings.map((listing, i) => {
-      if (!listing) {
-        return null;
-      }
-      return (
-        <Listing
-          key={listing.id}
-          isFirst={i === 0}
-          isActive={currentId === listing.id}
-          onClick={() => onClick(listing.id)}
-          listing={listing}
-        />
-      );
-    })}
-  </>
-);
-
-class Main extends React.Component<{
-  isDesktop: boolean;
-  listingId?: string;
-  onClick;
-  searchValue: string;
-  base: string;
-}> {
-  render() {
-    const { isDesktop, listingId, onClick, searchValue, base } = this.props;
-    return (
-      <Query<GQL.IQuery> query={SEARCH} variables={{ query: searchValue }}>
-        {({ error, data }) => {
-          if (error || !data || !data.search) {
-            return <Error value={error} />;
-          }
-
-          return (
-            <Container className={listingId ? 'buy-main' : ''}>
-              <Columns>
-                {isDesktop || !listingId ? (
-                  <Column className={listingId ? 'scrolls' : ''}>
-                    <Listings
-                      onClick={onClick}
-                      currentId={listingId}
-                      listings={data.search}
-                    />
-                  </Column>
-                ) : null}
-
-                {listingId ? (
-                  <Column>
-                    <Details id={listingId} base={base} />
-                  </Column>
-                ) : null}
-              </Columns>
-            </Container>
-          );
-        }}
-      </Query>
-    );
-  }
-}
 
 const setParam = (params: string, searchQuery: string) => {
   const query = new URLSearchParams(params);
@@ -161,7 +136,7 @@ const setParam = (params: string, searchQuery: string) => {
 type SearchProps = RouteComponentProps<{ listingId?: string }>;
 export class Home extends React.Component<
   SearchProps,
-  { searchValue: string }
+  { searchValue: string; search: URLSearchParams }
 > {
   onSearch = ({ target }: React.ChangeEvent<HTMLInputElement>) => {
     const search = setParam(this.props.location.search, target.value);
@@ -178,17 +153,18 @@ export class Home extends React.Component<
 
   static getDerivedStateFromProps({ location }: SearchProps) {
     const search = new URLSearchParams(location.search);
-    return { searchValue: search.get('query') || '' };
+    return {
+      searchValue: search.get('query') || '',
+      search,
+    };
   }
 
-  state = { searchValue: '' };
+  state = { searchValue: '', search: new URLSearchParams() };
 
   render() {
     const {
       match: { params, url },
     } = this.props;
-
-    const search = new URLSearchParams(this.props.location.search);
 
     return (
       <>
@@ -196,20 +172,26 @@ export class Home extends React.Component<
           onSearch={this.onSearch}
           searchValue={this.state.searchValue}
         />
-
-        {search.has('query') ? (
-          <IsDesktop>
-            {({ isDesktop }) => (
-              <Main
+        <IsDesktop>
+          {({ isDesktop }) =>
+            this.state.search.has('query') ? (
+              <SearchListings
                 onClick={this.onListingClick}
                 isDesktop={isDesktop}
                 listingId={params.listingId}
                 searchValue={this.state.searchValue}
                 base={url}
               />
-            )}
-          </IsDesktop>
-        ) : null}
+            ) : (
+              <TopListings
+                onClick={this.onListingClick}
+                isDesktop={isDesktop}
+                listingId={params.listingId}
+                base={url}
+              />
+            )
+          }
+        </IsDesktop>
       </>
     );
   }
