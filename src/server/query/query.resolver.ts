@@ -54,7 +54,7 @@ export const QueryResolver: IResolver<GQL.IQuery> = {
 
   async top() {
     // TODO: implement real top listings, whatever that means
-    return (await Listing.find()) as any[];
+    return (await Listing.find({ take: 10 })) as any[];
   },
 
   async me(_, args, { user }) {

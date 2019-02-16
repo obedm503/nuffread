@@ -138,16 +138,20 @@ export class Home extends React.Component<
   SearchProps,
   { searchValue: string; search: URLSearchParams }
 > {
+  navigate = ({ base, search }) => {
+    this.props.history.push({
+      pathname: base,
+      search: search ? setParam(this.props.location.search, search) : undefined,
+    });
+  };
   onSearch = ({ target }: React.ChangeEvent<HTMLInputElement>) => {
-    const search = setParam(this.props.location.search, target.value);
-    this.props.history.push({ pathname: this.props.match.url, search });
+    this.navigate({ base: this.props.match.url, search: target.value });
   };
 
   onListingClick = listingId => {
-    const search = setParam(this.props.location.search, this.state.searchValue);
-    this.props.history.push({
-      pathname: resolve(this.props.match.url, '..', listingId),
-      search,
+    this.navigate({
+      base: resolve(this.props.match.url, '..', listingId),
+      search: this.state.searchValue,
     });
   };
 
