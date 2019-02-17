@@ -1,6 +1,7 @@
 const { production } = require('./util/env');
 import { NestFactory } from '@nestjs/core';
 import { ApolloServer } from 'apollo-server-express';
+import * as pgSession from 'connect-pg-simple';
 import * as express from 'express';
 import * as session from 'express-session';
 import { join, resolve } from 'path';
@@ -12,6 +13,8 @@ import { getContext, getSchema } from './schema';
 import { School } from './school/school.entity';
 import { Seller } from './seller/seller.entity';
 import * as db from './util/db';
+
+const Store = pgSession(session);
 
 const distPublicDir = resolve(__dirname, '../../dist/public');
 const publicDir = resolve(__dirname, '../../public');
@@ -26,6 +29,9 @@ const app = express()
       resave: false,
       saveUninitialized: false,
       name: 'session',
+      store: new Store({
+        conString: process.env.DATABASE_URL,
+      }),
     }),
   );
 
