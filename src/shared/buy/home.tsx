@@ -1,58 +1,44 @@
-import {
-  Button,
-  Container,
-  Control,
-  Field,
-  Hero,
-  HeroBody,
-  Input,
-} from 'bloomer';
 import gql from 'graphql-tag';
-import { debounce } from 'lodash';
 import { resolve } from 'path';
 import * as React from 'react';
 import { Query } from 'react-apollo';
 import { RouteComponentProps } from 'react-router';
-import { Error, Icon } from '../components';
-import { BASIC_LISTING, SEARCH } from '../queries';
+import { Error } from '../components';
+import { SearchBar } from '../components/search-bar';
+import { BASIC_LISTING, GET_LISTING, SEARCH } from '../queries';
 import { IsDesktop } from '../state/desktop';
+import { ListingDetails } from './components/listing-details';
 import { ListingsMain } from './components/listings';
+import { SellerDetails } from './components/seller-details';
 
-type SearchBarProps = { onSearch: any; searchValue: string };
-class SearchBar extends React.PureComponent<SearchBarProps> {
-  onSearch: any;
-  onChange = e => {
-    if (!this.onSearch) {
-      this.onSearch = debounce(this.props.onSearch, 150);
-    }
-    this.onSearch && this.onSearch({ ...e });
-  };
+const Listing: React.SFC<{
+  id: string;
+  base: string;
+}> = ({ id, base }) => (
+  <Query<GQL.IQuery> query={GET_LISTING} variables={{ id }}>
+    {({ loading, error, data }) => {
+      if (loading) {
+        return null;
+      }
 
-  render() {
-    const { searchValue } = this.props;
-    return (
-      <Hero isSize="medium" isColor="light">
-        <HeroBody style={{ paddingTop: '1rem', paddingBottom: '1rem' }}>
-          <Container>
-            <Field hasAddons style={{ width: '100%' }}>
-              <Control hasIcons isExpanded>
-                <Icon name="search" size="small" align="left" />
-                <Input
-                  placeholder="Find your book"
-                  onChange={this.onChange}
-                  defaultValue={searchValue}
-                />
-              </Control>
-              <Control>
-                <Button>Search</Button>
-              </Control>
-            </Field>
-          </Container>
-        </HeroBody>
-      </Hero>
-    );
-  }
-}
+      if (error || !data) {
+        return <Error value={error} />;
+      }
+
+      const listing = data.listing;
+      if (!listing) {
+        return null;
+      }
+
+      return (
+        <>
+          <ListingDetails listing={listing} base={base} />
+          <SellerDetails listingId={listing.id} />
+        </>
+      );
+    }}
+  </Query>
+);
 
 type ListingsProps = {
   isDesktop: boolean;
@@ -77,10 +63,11 @@ const SearchListings = ({
         return (
           <ListingsMain
             isDesktop={isDesktop}
-            listingId={listingId}
+            id={listingId}
             onClick={onClick}
             base={base}
             listings={data.search}
+            children={Listing}
           />
         );
       }}
@@ -88,7 +75,7 @@ const SearchListings = ({
   );
 };
 
-export const TOP_LISTINGS = gql`
+const TOP_LISTINGS = gql`
   ${BASIC_LISTING}
 
   query TopListings {
@@ -117,10 +104,11 @@ const TopListings = ({
       return (
         <ListingsMain
           isDesktop={isDesktop}
-          listingId={listingId}
+          id={listingId}
           onClick={onClick}
           base={base}
           listings={data.top}
+          children={Listing}
         />
       );
     }}
@@ -144,8 +132,8 @@ export class Home extends React.Component<
       search: search ? setParam(this.props.location.search, search) : undefined,
     });
   };
-  onSearch = ({ target }: React.ChangeEvent<HTMLInputElement>) => {
-    this.navigate({ base: this.props.match.url, search: target.value });
+  onSearch = search => {
+    this.navigate({ base: this.props.match.url, search });
   };
 
   onListingClick = listingId => {
