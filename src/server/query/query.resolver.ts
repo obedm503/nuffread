@@ -3,6 +3,7 @@ import { Listing } from '../listing/listing.entity';
 import { Seller } from '../seller/seller.entity';
 import { IResolver } from '../util/types';
 import { checkUser } from '../util/auth';
+import { searchBooks, getBook } from '../util/books';
 
 const search = (a: string, b: string) => {
   a = a.trim().toLowerCase();
@@ -69,5 +70,16 @@ export const QueryResolver: IResolver<GQL.IQuery> = {
     checkUser(Admin, user);
 
     return Seller.find() as any;
+  },
+
+  async searchGoogle(_, { query }: GQL.ISearchGoogleOnQueryArguments) {
+    return await searchBooks(query);
+  },
+  async googleBook(_, { id }: GQL.IGoogleBookOnQueryArguments) {
+    const book = await getBook(id);
+    if (!book) {
+      throw new Error(`Book ${id} not found`);
+    }
+    return book;
   },
 };
