@@ -9,7 +9,7 @@ import {
 } from 'bloomer';
 import { debounce } from 'lodash';
 import * as React from 'react';
-import { Icon } from './icon';
+import { IonIcon } from './icon';
 
 type SearchBarProps = {
   onSearch: (search: string) => void;
@@ -32,7 +32,7 @@ export class SearchBar extends React.PureComponent<SearchBarProps> {
           <Container>
             <Field hasAddons style={{ width: '100%' }}>
               <Control hasIcons isExpanded>
-                <Icon name="search" size="small" align="left" />
+                <IonIcon name="search" size="small" align="left" />
                 <Input
                   placeholder="Find your book"
                   onChange={this.onChange}

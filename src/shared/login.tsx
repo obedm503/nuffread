@@ -15,7 +15,7 @@ import * as React from 'react';
 import { Mutation, MutationFn } from 'react-apollo';
 import { RouteComponentProps } from 'react-router';
 import * as yup from 'yup';
-import { Icon, NavbarLink, TopNav } from './components';
+import { IonIcon, NavbarLink, TopNav } from './components';
 import { Email, Password } from './controls';
 import { AuthErrors } from './util';
 
@@ -89,12 +89,12 @@ class LoginForm extends React.Component<{
 
                     {admin ? null : (
                       <Button href="/join">
-                        <Icon name="add" />
+                        <IonIcon name="add" />
                         <span>Join</span>
                       </Button>
                     )}
                     <Button isPulled="right" isColor="primary" type="submit">
-                      <Icon name="log-in" />
+                      <IonIcon name="log-in" />
                       <span>Login</span>
                     </Button>
                   </Form>

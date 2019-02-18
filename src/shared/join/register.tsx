@@ -3,20 +3,20 @@ import {
   Column,
   Columns,
   Container,
+  Content,
   Hero,
   HeroBody,
-  Content,
 } from 'bloomer';
 import { Form, Formik } from 'formik';
 import gql from 'graphql-tag';
 import * as React from 'react';
 import { Mutation, MutationFn } from 'react-apollo';
 import { RouteComponentProps } from 'react-router';
-import * as yup from 'yup';
-import { Icon } from '../components';
-import { Email, Password } from '../controls';
-import { classes, passwordSchema, AuthErrors } from '../util';
 import { Link } from 'react-router-dom';
+import * as yup from 'yup';
+import { IonIcon } from '../components';
+import { Email, Password } from '../controls';
+import { AuthErrors, classes, passwordSchema } from '../util';
 
 const REGISTER = gql`
   mutation Register($email: String!, $password: String!) {
@@ -118,7 +118,7 @@ class RegisterForm extends React.Component<RouteComponentProps<never>> {
                     ) : null}
 
                     <Button isPulled="right" isColor="primary" type="submit">
-                      <Icon name="add" />
+                      <IonIcon name="add" />
                       <span>Join</span>
                     </Button>
                   </Form>

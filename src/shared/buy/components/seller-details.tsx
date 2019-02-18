@@ -1,15 +1,15 @@
-import * as React from 'react';
 import {
-  Media,
-  MediaLeft,
-  Image,
-  MediaContent,
   Content,
+  Image,
   Level,
-  LevelLeft,
   LevelItem,
+  LevelLeft,
+  Media,
+  MediaContent,
+  MediaLeft,
 } from 'bloomer';
-import { Icon } from '../../components';
+import * as React from 'react';
+import { IonIcon } from '../../components';
 
 export const SellerDetails: React.SFC<{
   listingId: string;
@@ -40,13 +40,13 @@ export const SellerDetails: React.SFC<{
       <Level isMobile>
         <LevelLeft>
           <LevelItem href="#">
-            <Icon size="small" name="call" />
+            <IonIcon size="small" name="call" />
           </LevelItem>
           <LevelItem href="#">
-            <Icon size="small" name="logo-facebook" />
+            <IonIcon size="small" name="logo-facebook" />
           </LevelItem>
           <LevelItem href="#">
-            <Icon size="small" name="mail" />
+            <IonIcon size="small" name="mail" />
           </LevelItem>
         </LevelLeft>
       </Level>

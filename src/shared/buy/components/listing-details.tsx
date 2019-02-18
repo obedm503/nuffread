@@ -2,7 +2,7 @@ import { Level, LevelItem, LevelLeft, Tag } from 'bloomer';
 import { resolve } from 'path';
 import * as React from 'react';
 import { Link } from 'react-router-dom';
-import { Icon } from '../../components';
+import { IonIcon } from '../../components';
 import { Listing } from '../../components/listing';
 
 export const ListingDetails: React.SFC<{
@@ -20,7 +20,7 @@ export const ListingDetails: React.SFC<{
           </Link>
         </LevelItem>
         <LevelItem href="#">
-          <Icon size="small" name="barcode" />
+          <IonIcon size="small" name="barcode" />
         </LevelItem>
       </LevelLeft>
     </Level>

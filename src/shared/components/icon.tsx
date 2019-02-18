@@ -1,6 +1,7 @@
 import { Bulma } from 'bloomer/lib/bulma';
 import * as React from 'react';
 import { getTheme, UAConsumer } from '../state/ua';
+import { classes } from '../util';
 
 declare global {
   namespace JSX {
@@ -13,7 +14,7 @@ declare global {
   }
 }
 
-export class Icon extends React.PureComponent<{
+export class IonIcon extends React.PureComponent<{
   name: string;
   size?: Bulma.Sizes;
   align?: Bulma.Alignments;
@@ -33,14 +34,15 @@ export class Icon extends React.PureComponent<{
   render() {
     const { className, name, size, align, ...rest } = this.props;
 
-    const classes = [
-      size ? `is-size-${size}` : '',
-      align ? `is-align-${align}` : '',
-    ]
-      .filter(Boolean)
-      .join(' ');
     return (
-      <span className={`icon ${className || ''} ${classes}`} {...rest} aria-hidden="true">
+      <span
+        className={classes('icon', className, {
+          [`is-size-${size}`]: size,
+          [`is-align-${align}`]: align,
+        })}
+        {...rest}
+        aria-hidden="true"
+      >
         <UAConsumer children={this.children} />
       </span>
     );
