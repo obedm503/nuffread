@@ -69,7 +69,7 @@ type Listing {
   title: String!
   subTitle: String
   authors: [String!]!
-  publishedAt: Date!
+  publishedAt: Date
   price: Int!
 
   schoolId: String!

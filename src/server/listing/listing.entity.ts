@@ -22,6 +22,16 @@ export class Listing extends BaseEntity {
   @Updated()
   readonly updatedAt: Date;
 
+  @Column()
+  @IsNotEmpty()
+  @IsString()
+  googleId: string;
+
+  @Column()
+  @IsNotEmpty()
+  @IsString()
+  etag: string;
+
   @Column({ type: 'simple-array' })
   @IsISBN(undefined, { each: true })
   @IsNotEmpty()
@@ -46,10 +56,9 @@ export class Listing extends BaseEntity {
   @IsString({ each: true })
   authors: string[];
 
-  @Column()
-  @IsNotEmpty()
+  @Column({ nullable: true })
   @IsInstance(Date)
-  publishedAt: Date;
+  publishedAt?: Date;
 
   @Column()
   @IsNumber()
