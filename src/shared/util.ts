@@ -16,9 +16,6 @@ export const normalizeUrl = (str: (string | undefined)[] | string) => {
   return normal;
 };
 
-export const participantUrl = (token?: string, page?: string) =>
-  token ? normalizeUrl(['/s', token, page]) : '/s/:token/:page?';
-
 export type Callable<R, P> =
   | R
   | {
@@ -30,7 +27,6 @@ export const callable = <R, P>(fn?: Callable<R, P>, props?: P) =>
 
 const filterKeys = (o: { [key: string]: any }): string[] =>
   Object.keys(o).filter(key => o[key]);
-
 export const classes = (
   ...names: Array<undefined | string | { [key: string]: any }>
 ) =>
