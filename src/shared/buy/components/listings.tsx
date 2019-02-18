@@ -1,6 +1,6 @@
 import { Column, Columns, Container } from 'bloomer';
 import * as React from 'react';
-import { Listing } from './listing';
+import { Listing } from '../../components/listing';
 
 export class ListingsMain extends React.PureComponent<{
   id?: string;
@@ -26,8 +26,8 @@ export class ListingsMain extends React.PureComponent<{
                 return (
                   <Listing
                     key={listing.id}
-                    isFirst={i === 0}
-                    isActive={id === listing.id}
+                    priceColor={i === 0 ? 'success' : undefined}
+                    priceSize={id === listing.id ? 'large' : undefined}
                     onClick={this.onClick(listing.id)}
                     listing={listing}
                   />

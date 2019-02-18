@@ -5,7 +5,7 @@ import { Query } from 'react-apollo';
 import { RouteComponentProps } from 'react-router';
 import { Error } from '../components';
 import { SEARCH } from '../queries';
-import { Listing } from './components/listing';
+import { Listing } from '../components/listing';
 import { SellerDetails } from './components/seller-details';
 
 export const Details: React.SFC<RouteComponentProps<{ listingId: string }>> = ({
@@ -33,7 +33,11 @@ export const Details: React.SFC<RouteComponentProps<{ listingId: string }>> = ({
           <Container>
             <Columns>
               <Column className="scrolls">
-                <Listing listing={listing} isFirst isActive />
+                <Listing
+                  listing={listing}
+                  priceColor="success"
+                  priceSize="large"
+                />
               </Column>
 
               <Column>

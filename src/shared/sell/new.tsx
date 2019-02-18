@@ -3,7 +3,7 @@ import gql from 'graphql-tag';
 import * as React from 'react';
 import { Query } from 'react-apollo';
 import { RouteComponentProps } from 'react-router';
-import { Listing } from '../buy/components/listing';
+import { Listing } from '../components/listing';
 import { ListingsMain } from '../buy/components/listings';
 import { Error } from '../components';
 import { SearchBar } from '../components/search-bar';
@@ -40,7 +40,7 @@ const GoogleBook: React.SFC<{ id: string }> = ({ id }) => (
       }
 
       return (
-        <Listing isActive={true} isFirst={true} listing={googleBook}>
+        <Listing priceColor="success" priceSize="large" listing={googleBook}>
           <Level isMobile>
             <LevelLeft>
               <LevelItem>

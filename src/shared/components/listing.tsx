@@ -8,13 +8,20 @@ import {
   Tag,
 } from 'bloomer';
 import * as React from 'react';
+import { Color } from '../util';
 
 export const Listing: React.SFC<{
   listing: GQL.IListing | GQL.IBook;
-  isActive?: boolean;
-  isFirst?: boolean;
   onClick?;
-}> = ({ listing, isActive, isFirst, onClick, children }) => (
+  priceColor?: Color;
+  priceSize?: 'medium' | 'large';
+}> = ({
+  listing,
+  onClick,
+  children,
+  priceColor = 'light',
+  priceSize = 'medium',
+}) => (
   <Media onClick={onClick}>
     <MediaLeft>
       <Image
@@ -74,10 +81,7 @@ export const Listing: React.SFC<{
 
     {'price' in listing ? (
       <MediaRight>
-        <Tag
-          isColor={isActive ? 'success' : 'light'}
-          isSize={isFirst ? 'large' : 'medium'}
-        >
+        <Tag isColor={priceColor} isSize={priceSize}>
           ${listing.price / 100}
         </Tag>
       </MediaRight>

@@ -2,7 +2,7 @@ import { Column, Columns, Container } from 'bloomer';
 import gql from 'graphql-tag';
 import * as React from 'react';
 import { Query } from 'react-apollo';
-import { Listing } from '../buy/components/listing';
+import { Listing } from '../components/listing';
 import { Error } from '../components';
 import { BASIC_LISTING } from '../queries';
 

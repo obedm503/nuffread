@@ -3,13 +3,13 @@ import { resolve } from 'path';
 import * as React from 'react';
 import { Link } from 'react-router-dom';
 import { Icon } from '../../components';
-import { Listing } from './listing';
+import { Listing } from '../../components/listing';
 
 export const ListingDetails: React.SFC<{
   listing: GQL.IListing;
   base: string;
 }> = ({ listing, base }) => (
-  <Listing isActive={true} isFirst={true} listing={listing}>
+  <Listing priceColor="success" priceSize="large" listing={listing}>
     <Level isMobile>
       <LevelLeft>
         <LevelItem>
