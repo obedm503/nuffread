@@ -12,11 +12,8 @@ const search = (a: string, b: string) => {
 };
 
 export const QueryResolver: IResolver<GQL.IQuery> = {
-  async search(
-    _,
-    { query, maxPrice, minPrice }: GQL.ISearchOnQueryArguments,
-  ): Promise<any[]> {
-    const books = await Listing.find();
+  async search(_, { query, maxPrice, minPrice }: GQL.ISearchOnQueryArguments) {
+    const books: any[] = await Listing.find();
     if (!query) {
       return books;
     }
