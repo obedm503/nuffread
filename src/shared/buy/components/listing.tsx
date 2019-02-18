@@ -10,7 +10,7 @@ import {
 import * as React from 'react';
 
 export const Listing: React.SFC<{
-  listing: GQL.IListing;
+  listing: GQL.IListing | GQL.IBook;
   isActive?: boolean;
   isFirst?: boolean;
   onClick?;
@@ -37,35 +37,50 @@ export const Listing: React.SFC<{
             <b>ISBN: </b>
             {listing.isbn.join(', ')}
           </small>
-          <br />
-          {listing.seller ? (
-            <small>
-              <b>Sold By: </b> {listing.seller.name}
-            </small>
+
+          {'seller' in listing ? (
+            <>
+              <br />
+              <small>
+                <b>Sold By: </b> {listing.seller.name}
+              </small>
+            </>
           ) : null}
 
-          <br />
-          <small>
-            <b>Published on: </b>
-            {new Date(listing.publishedAt).toLocaleDateString()}
-          </small>
-          <br/>
-          <small>
-            <b>Posted on: </b>
-            {new Date(listing.createdAt).toLocaleDateString()}
-          </small>
+          {listing.publishedAt ? (
+            <>
+              <br />
+              <small>
+                <b>Published on: </b>
+                {new Date(listing.publishedAt).toLocaleDateString()}
+              </small>
+            </>
+          ) : null}
+
+          {'createdAt' in listing ? (
+            <>
+              <br />
+              <small>
+                <b>Posted on: </b>
+                {new Date(listing.createdAt).toLocaleDateString()}
+              </small>
+            </>
+          ) : null}
         </p>
       </Content>
 
       {children}
     </MediaContent>
-    <MediaRight>
-      <Tag
-        isColor={isActive ? 'success' : 'light'}
-        isSize={isFirst ? 'large' : 'medium'}
-      >
-        ${listing.price / 100}
-      </Tag>
-    </MediaRight>
+
+    {'price' in listing ? (
+      <MediaRight>
+        <Tag
+          isColor={isActive ? 'success' : 'light'}
+          isSize={isFirst ? 'large' : 'medium'}
+        >
+          ${listing.price / 100}
+        </Tag>
+      </MediaRight>
+    ) : null}
   </Media>
 );
