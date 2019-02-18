@@ -42,7 +42,7 @@ export const Sell: React.SFC<RouteComponentProps<{}>> = ({ match }) => (
             <NavbarEnd>
               <NavbarItem hasDropdown isHoverable>
                 <NavbarLink href="/profile">John Doe</NavbarLink>
-                <NavbarDropdown>
+                <NavbarDropdown className="is-right">
                   <NavbarLink href="/profile">My Profile</NavbarLink>
                   <NavbarLink href="/new">New Listing</NavbarLink>
                   <NavbarLink href="/listings">My Listings</NavbarLink>
