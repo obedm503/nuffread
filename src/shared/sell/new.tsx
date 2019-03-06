@@ -1,11 +1,11 @@
-import { Container, Level, LevelLeft, LevelItem, Tag, Button } from 'bloomer';
+import { Button, Container, Level, LevelItem, LevelLeft } from 'bloomer';
 import gql from 'graphql-tag';
 import * as React from 'react';
 import { Query } from 'react-apollo';
 import { RouteComponentProps } from 'react-router';
-import { Listing } from '../components/listing';
 import { ListingsMain } from '../buy/components/listings';
 import { Error } from '../components';
+import { Listing } from '../components/listing';
 import { SearchBar } from '../components/search-bar';
 import { IsDesktop } from '../state/desktop';
 
@@ -124,7 +124,7 @@ export class New extends React.Component<
 
   render() {
     const {
-      match: { params, url },
+      match: { url },
     } = this.props;
 
     return (
