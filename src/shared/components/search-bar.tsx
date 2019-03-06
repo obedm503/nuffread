@@ -31,6 +31,12 @@ export class SearchBar extends React.PureComponent<SearchBarProps> {
         <HeroBody style={{ paddingTop: '1rem', paddingBottom: '1rem' }}>
           <Container>
             <Field hasAddons style={{ width: '100%' }}>
+              <Control>
+                <Button>
+                  <IonIcon name="qr-scanner" />
+                </Button>
+              </Control>
+
               <Control hasIcons isExpanded>
                 <IonIcon name="search" size="small" align="left" />
                 <Input
@@ -39,6 +45,7 @@ export class SearchBar extends React.PureComponent<SearchBarProps> {
                   defaultValue={searchValue}
                 />
               </Control>
+
               <Control>
                 <Button>Search</Button>
               </Control>
