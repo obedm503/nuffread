@@ -6,7 +6,6 @@ require('dotenv-safe').config({
 });
 
 const { concurrent, series, crossEnv, rimraf } = require('nps-utils');
-const mkdirp = require('mkdirp');
 
 const parcelConfig = [
   'web/src/client/index.html',
