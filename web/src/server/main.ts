@@ -54,7 +54,8 @@ const getBase = (req: express.Request) => {
 app.get('*', async (req, res) => {
   try {
     const html = await render({
-      ua: req.header('user-agent') || '',
+      cookie: req.get('cookie'),
+      ua: req.get('user-agent') || '',
       base: getBase(req),
       url: req.url,
     });

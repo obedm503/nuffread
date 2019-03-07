@@ -37,18 +37,21 @@ if (production) {
   template = fs.readFileSync(indexUrl, 'utf-8');
 }
 
+type Params = {
+  ua: string;
+  url: string;
+  base: string;
+  cookie?: string;
+};
 export async function render({
   ua,
   url,
   base,
-}: {
-  ua: string;
-  url: string;
-  base: string;
-}): Promise<string> {
+  cookie,
+}: Params): Promise<string> {
   const link = createHttpLink({
     uri: process.env.API,
-    credentials: 'include',
+    headers: { cookie },
   });
 
   const client = new ApolloClient({

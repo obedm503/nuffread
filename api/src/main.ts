@@ -63,12 +63,12 @@ app.use((req, res, next) => {
   next();
 });
 
-if (!production) {
-  app.use((req, res, next) => {
-    console.info('\n\nRequest for ', req.url);
-    next();
-  });
-}
+// if (!production) {
+//   app.use((req, res, next) => {
+//     console.info('\n\nRequest for ', req.url);
+//     next();
+//   });
+// }
 
 const apollo = new ApolloServer({
   context: ({ req, res }) => getContext({ req, res }),
