@@ -39,7 +39,7 @@ export const Listings: React.SFC = () => (
 
           return data.me.listings.map(listing => {
             return (
-              <Column isSize="narrow" key={listing.id}>
+              <Column isSize="full" key={listing.id}>
                 <Listing listing={listing} />
               </Column>
             );
