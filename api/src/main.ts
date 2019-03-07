@@ -52,12 +52,13 @@ if (production) {
   });
 }
 
+const port = Number(process.env.PORT) || 8081;
 app.use((req, res, next) => {
   if (!process.env.URL) {
     process.env.URL =
       req.hostname === 'localhost'
         ? `${req.protocol}://${req.hostname}`
-        : `${req.protocol}://${req.hostname}:${process.env.PORT}`;
+        : `${req.protocol}://${req.hostname}:${port}`;
   }
   next();
 });
@@ -83,7 +84,6 @@ apollo.applyMiddleware({
   await db.connect([Seller, School, Admin, Listing]);
 
   const server = await NestFactory.create(ApplicationModule, app, {});
-  const port = Number(process.env.PORT) || 8081;
   await server.listen(port);
 
   const close = async () => {

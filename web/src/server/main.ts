@@ -10,6 +10,7 @@ if (!production) {
 }
 
 require('isomorphic-fetch');
+import { ApolloError } from 'apollo-client';
 import * as express from 'express';
 import { ServeStaticOptions } from 'serve-static';
 import { render } from './render';
@@ -40,16 +41,45 @@ app.use(
   express.static(publicDir, staticOptions),
 );
 
-if (!production) {
-  app.use((req, res, next) => {
-    console.info('\n\nRequest for ', req.url);
-    next();
-  });
-}
-
-app.get('*', (req, res, done) => render(req, res).then(() => done()));
-
 const port = Number(process.env.PORT) || 8080;
+const getBase = (req: express.Request) => {
+  const includePort = req.hostname === 'localhost';
+  if (includePort) {
+    return `${req.protocol}://${req.hostname}:${port}`;
+  } else {
+    return `${req.protocol}://${req.hostname}`;
+  }
+};
+
+app.get('*', async (req, res) => {
+  try {
+    const html = await render({
+      ua: req.header('user-agent') || '',
+      base: getBase(req),
+      url: req.url,
+    });
+
+    res.send(html);
+  } catch (e) {
+    if (e instanceof ApolloError) {
+      console.error(JSON.stringify(e));
+    } else if (e instanceof Error) {
+      console.error(e.name, e.message, e.stack);
+    } else {
+      console.error(e);
+    }
+
+    if (production) {
+      // the assumption is that if something goes wrong in production, the
+      // user was being nefarious and they should be logged out
+      // await logout(req, res);
+      res.redirect('/');
+    } else {
+      res.end();
+    }
+  }
+});
+
 const server = app.listen(port, () => {
   console.info(`Listening on port ${port}`);
 });
