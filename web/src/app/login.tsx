@@ -51,7 +51,7 @@ class LoginForm extends React.Component<{
           const unconfirmedError =
             error &&
             error.graphQLErrors.find(
-              err => err.message === AuthErrors.notConfimed,
+              err => err.message === AuthErrors.NOT_CONFIRMED,
             );
 
           return (

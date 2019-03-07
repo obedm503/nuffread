@@ -38,7 +38,7 @@ const makeLoader = <T extends BaseEntity>(Ent: typeof BaseEntity) => {
 
 function createSchema(): GraphQLSchema {
   const typeDefs = fs.readFileSync(
-    resolve(__dirname, '../../src/types.gql'),
+    resolve(__dirname, '../../types.gql'),
     'utf-8',
   );
   const resolvers: IResolvers = {

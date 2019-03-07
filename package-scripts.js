@@ -1,18 +1,22 @@
-require('./src/server/util/env');
+// @ts-check
+const { resolve } = require('path');
+require('dotenv-safe').config({
+  path: resolve('./api/.env'),
+  example: resolve('./api/.env.example'),
+});
 
 const { concurrent, series, crossEnv, rimraf } = require('nps-utils');
-const { resolve } = require('path');
 const mkdirp = require('mkdirp');
 
 const parcelConfig = [
-  'src/client/index.html',
-  '--out-dir dist/public',
+  'web/src/client/index.html',
+  '--out-dir web/dist/public',
   '--public-url /',
 ].join(' ');
 
 const buildTypes = [
   'gql2ts',
-  'src/types.gql',
+  'types.gql',
   '--output-file types.d.ts',
   `--external-options ${resolve('./gql2tsrc.js')}`,
 ].join(' ');
@@ -22,53 +26,42 @@ module.exports.scripts = {
   dev: {
     default: series(
       'nps clean',
-      concurrent({
-        server: 'nps dev.server',
-        client: 'nps dev.client',
-        types: 'nps dev.types',
-        start: 'nps dev.start',
-      }),
+      concurrent.nps('dev.types', 'dev.server', 'dev.client', 'dev.api'),
     ),
-    types: [
-      'nodemon',
-      '--watch "src/types.gql"',
-      `--exec "${buildTypes}"`,
-    ].join(' '),
+    types: `nodemon --watch "types.gql" --exec "${buildTypes}"`,
     server: [
-      'tsc',
-      '--project src/server/tsconfig.json',
-      '--watch',
-      '--preserveWatchOutput',
-      '--pretty',
-    ].join(' '),
-    start: [
       'nodemon',
-      '--watch "dist/server"',
-      '--watch "dist/shared"',
-      '--watch ".env"',
-      '--delay 2000ms',
-      '--exec "node dist/server/main.js"',
+      '--watch "web/src/app"',
+      '--watch "web/src/server"',
+      '--ext ts,tsx',
+      '--exec "ts-node --project web/src/server/tsconfig.json --pretty --files web/src/server/main"',
     ].join(' '),
     client: `parcel watch ${parcelConfig}`,
+    api: [
+      'nodemon',
+      '--watch api/src',
+      '--ext ts',
+      '--exec "ts-node --project api/tsconfig.json --pretty --files api/src/main"',
+    ].join(' '),
   },
   start:
-    'node --optimize_for_size --max_old_space_size=512 --gc_interval=100 dist/server/main.js',
+    'node --optimize_for_size --max_old_space_size=512 --gc_interval=100 web/dist/server/main.js',
   build: {
     default: series('nps build.before', 'nps build.client', 'nps build.server'),
     before: series(
       'nps clean',
-      mkdirp.sync('./dist/server/'),
-      mkdirp.sync('./dist/shared/'),
+      mkdirp.sync('./web/dist/server/'),
+      mkdirp.sync('./web/dist/app/'),
       buildTypes,
-    ),
-    server: crossEnv(
-      'NODE_ENV=production tsc --project src/server/tsconfig.json',
     ),
     client: crossEnv(
       `NODE_ENV=production parcel build ${parcelConfig} --no-cache`,
     ),
+    server: crossEnv(
+      'NODE_ENV=production tsc --project web/src/server/tsconfig.json',
+    ),
   },
-  clean: rimraf('dist .cache'),
+  clean: rimraf('web/dist .cache api/dist'),
   db: {
     info: [
       'psql',

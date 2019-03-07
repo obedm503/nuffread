@@ -1,11 +1,15 @@
-require('./src/server/util/env');
+const { resolve } = require('path');
+require('dotenv-safe').config({
+  path: resolve('./api/.env'),
+  sample: resolve('./api/.env.example'),
+});
 
 module.exports = {
-  entities: 'src/server/**/*.entity.ts',
-  migrations: 'src/server/migrations/*.ts',
+  entities: 'api/src/**/*.entity.ts',
+  migrations: 'api/src/migrations/*.ts',
   url: process.env.DATABASE_URL,
   cli: {
-    subscribersDir: './src/server/subscribers',
-    migrationsDir: './src/server/migrations',
+    subscribersDir: './api/src/subscribers',
+    migrationsDir: './api/src/migrations',
   },
 };

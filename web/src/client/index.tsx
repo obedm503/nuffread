@@ -9,13 +9,13 @@ import { ApolloProvider } from 'react-apollo';
 import { hydrate } from 'react-dom';
 import { HelmetProvider } from 'react-helmet-async';
 import { BrowserRouter } from 'react-router-dom';
-import { App, createCache } from '../shared/app';
-import { HostProvider } from '../shared/state/host';
-import { UAProvider } from '../shared/state/ua';
+import { App, createCache } from '../app/app';
+import { HostProvider } from '../app/state/host';
+import { UAProvider } from '../app/state/ua';
 
 const httpLink = createHttpLink({
-  uri: '/graphql',
-  credentials: 'same-origin',
+  uri: process.env.API,
+  credentials: 'include',
 });
 
 const errorLink = onError(({ networkError }) => {

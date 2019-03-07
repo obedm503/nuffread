@@ -5,6 +5,6 @@
     "sourceMap": false,
     "target": "es2018"
   },
-  "extends": "../../tsconfig.json",
-  "include": [".", "../shared"]
+  "extends": "../../../tsconfig.json",
+  "include": [".", "../app"]
 }

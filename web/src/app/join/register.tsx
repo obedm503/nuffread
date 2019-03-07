@@ -58,7 +58,7 @@ class RegisterForm extends React.Component<RouteComponentProps<never>> {
           const duplicateUserError =
             error &&
             error.graphQLErrors.find(
-              err => err.message === AuthErrors.duplicateUser,
+              err => err.message === AuthErrors.DUPLICATE_USER,
             );
 
           return (

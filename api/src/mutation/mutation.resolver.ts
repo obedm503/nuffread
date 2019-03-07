@@ -1,6 +1,5 @@
 import { compare, hash } from 'bcryptjs';
 import { Request, Response } from 'express';
-import { AuthErrors } from '../../shared/util';
 import { Admin } from '../admin/admin.entity';
 import { Seller } from '../seller/seller.entity';
 import { validate } from '../util';
@@ -20,7 +19,7 @@ export async function logout(req: Request, res: Response) {
 export const MutationResolver: IResolver<GQL.IMutation> = {
   async register(_, { email, password }: GQL.IRegisterOnMutationArguments) {
     if (await Seller.findOne({ where: { email } })) {
-      throw new AuthenticationError(AuthErrors.duplicateUser);
+      throw new AuthenticationError('DUPLICATE_USER');
     }
 
     const passwordHash = await hash(password, 12);
@@ -58,15 +57,15 @@ export const MutationResolver: IResolver<GQL.IMutation> = {
     const user = await Ent.findOne({ where: { email } });
 
     if (!user) {
-      throw new AuthenticationError(AuthErrors.wrongCredentials);
+      throw new AuthenticationError('WRONG_CREDENTIALS');
     }
 
     if (user instanceof Seller && !user.confirmedAt) {
-      throw new AuthenticationError(AuthErrors.notConfimed);
+      throw new AuthenticationError('NOT_CONFIRMED');
     }
 
     if (!(await compare(password, user.passwordHash))) {
-      throw new AuthenticationError(AuthErrors.wrongCredentials);
+      throw new AuthenticationError('WRONG_CREDENTIALS');
     }
 
     if (req.session) {

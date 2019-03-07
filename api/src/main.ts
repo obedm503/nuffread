@@ -1,11 +1,20 @@
-const { production } = require('./util/env');
+const production = process.env.NODE_ENV === 'production';
+const { config } = require('dotenv-safe');
+const { join, resolve } = require('path');
+
+if (!production) {
+  config({
+    path: resolve(__dirname, '../.env'),
+    example: resolve(__dirname, '../.env.example'),
+  });
+}
+require('isomorphic-fetch');
+require('reflect-metadata');
 import { NestFactory } from '@nestjs/core';
 import { ApolloServer } from 'apollo-server-express';
 import * as pgSession from 'connect-pg-simple';
 import * as express from 'express';
 import * as session from 'express-session';
-import { join, resolve } from 'path';
-import { ServeStaticOptions } from 'serve-static';
 import { Admin } from './admin/admin.entity';
 import { ApplicationModule } from './app.module';
 import { Listing } from './listing/listing.entity';
@@ -15,9 +24,6 @@ import { Seller } from './seller/seller.entity';
 import * as db from './util/db';
 
 const Store = pgSession(session);
-
-const distPublicDir = resolve(__dirname, '../../dist/public');
-const publicDir = resolve(__dirname, '../../public');
 
 const app = express()
   .disable('etag')
@@ -46,16 +52,12 @@ if (production) {
   });
 }
 
-const staticOptions: ServeStaticOptions = { etag: false, index: false };
-app.use(
-  '/',
-  express.static(distPublicDir, staticOptions),
-  express.static(publicDir, staticOptions),
-);
-
 app.use((req, res, next) => {
   if (!process.env.URL) {
-    process.env.URL = `${req.protocol}://${req.hostname}:${process.env.PORT}`;
+    process.env.URL =
+      req.hostname === 'localhost'
+        ? `${req.protocol}://${req.hostname}`
+        : `${req.protocol}://${req.hostname}:${process.env.PORT}`;
   }
   next();
 });
@@ -72,13 +74,16 @@ const apollo = new ApolloServer({
   schema: getSchema(),
 });
 
-apollo.applyMiddleware({ app });
+apollo.applyMiddleware({
+  app,
+  cors: { credentials: true, origin: process.env.ORIGIN },
+});
 
 (async () => {
   await db.connect([Seller, School, Admin, Listing]);
 
   const server = await NestFactory.create(ApplicationModule, app, {});
-  const port = Number(process.env.PORT) || 8080;
+  const port = Number(process.env.PORT) || 8081;
   await server.listen(port);
 
   const close = async () => {

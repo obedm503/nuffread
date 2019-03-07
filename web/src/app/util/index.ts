@@ -77,7 +77,7 @@ export function validatePassword(password: string): boolean {
 }
 
 export enum AuthErrors {
-  duplicateUser = 'Email is already registered.',
-  notConfimed = 'Email is not yet confirmed.',
-  wrongCredentials = 'Wrong email or password.',
+  DUPLICATE_USER = 'Email is already registered.',
+  NOT_CONFIRMED = 'Email is not yet confirmed.',
+  WRONG_CREDENTIALS = 'Wrong email or password.',
 }
