@@ -19,5 +19,6 @@
     "target": "es5"
   },
   "files": ["./types.d.ts"],
-  "include": ["api", "web"]
+  "include": ["api", "web"],
+  "exclude": ["**/node_modules/**/*", "**/dist/**/*"]
 }
