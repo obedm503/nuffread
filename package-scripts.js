@@ -44,10 +44,13 @@ module.exports.scripts = {
       '--exec "ts-node --project api/tsconfig.json --pretty --files api/src/main"',
     ].join(' '),
   },
-  start:
-    'node --optimize_for_size --max_old_space_size=512 --gc_interval=100 web/dist/server/main.js',
   build: {
-    default: series('nps build.before', 'nps build.client', 'nps build.server'),
+    default: series.nps(
+      'build.before',
+      'build.client',
+      'build.server',
+      'build.api',
+    ),
     before: series(
       'nps clean',
       mkdirp.sync('./web/dist/server/'),
@@ -58,10 +61,19 @@ module.exports.scripts = {
       `NODE_ENV=production parcel build ${parcelConfig} --no-cache`,
     ),
     server: crossEnv(
-      'NODE_ENV=production tsc --project web/src/server/tsconfig.json',
+      'NODE_ENV=production tsc --project web/src/server/tsconfig.json --outDir web/dist',
+    ),
+    api: crossEnv(
+      'NODE_ENV=production tsc --project api/tsconfig.json --outDir api/dist',
     ),
   },
   clean: rimraf('web/dist .cache api/dist'),
+  start: {
+    server:
+      'node --optimize_for_size --max_old_space_size=512 --gc_interval=100 web/dist/server/main.js',
+    api:
+      'node --optimize_for_size --max_old_space_size=512 --gc_interval=100 api/dist/main.js',
+  },
   db: {
     info: [
       'psql',

@@ -5,7 +5,8 @@
   ],
   "scripts": {
     "heroku-postbuild": "nps build",
-    "start": "nps start"
+    "start:server": "nps start.server",
+    "start:api": "nps start.api"
   },
   "dependencies": {
     "dotenv-safe": "^6.1.0",
