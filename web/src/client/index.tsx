@@ -1,7 +1,6 @@
 import 'isomorphic-fetch';
 import './main.scss';
 import { ApolloClient } from 'apollo-client';
-import { setContext } from 'apollo-link-context';
 import { onError } from 'apollo-link-error';
 import { createHttpLink } from 'apollo-link-http';
 import * as React from 'react';
@@ -26,21 +25,8 @@ const errorLink = onError(({ networkError }) => {
   }
 });
 
-const authLink = setContext((_, ctx) => {
-  const token = localStorage.getItem('token');
-  if (!token) {
-    return ctx;
-  }
-  return {
-    headers: {
-      ...ctx.headers,
-      authorization: token,
-    },
-  };
-});
-
 const client = new ApolloClient({
-  link: errorLink.concat(authLink).concat(httpLink),
+  link: errorLink.concat(httpLink),
   cache: createCache().restore(window['__APOLLO_STATE__']),
 });
 
