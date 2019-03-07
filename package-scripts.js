@@ -45,17 +45,10 @@ module.exports.scripts = {
     ].join(' '),
   },
   build: {
-    default: series.nps(
-      'build.before',
-      'build.client',
-      'build.server',
-      'build.api',
-    ),
-    before: series(
+    default: series(
       'nps clean',
-      mkdirp.sync('./web/dist/server/'),
-      mkdirp.sync('./web/dist/app/'),
       buildTypes,
+      concurrent.nps('build.client', 'build.server', 'build.api'),
     ),
     client: crossEnv(
       `NODE_ENV=production parcel build ${parcelConfig} --no-cache`,
