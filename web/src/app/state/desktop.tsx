@@ -10,13 +10,11 @@ export class IsDesktopProvider extends React.Component<
   { isDesktop: boolean }
 > {
   state = { isDesktop: false };
-  // @ts-ignore
   match: MediaQueryList;
   onChange = e => {
     this.setState({ isDesktop: e.matches });
   };
   componentDidMount() {
-    // @ts-ignore
     this.match = matchMedia('(min-width: 769px)');
 
     this.setState({ isDesktop: this.match.matches });

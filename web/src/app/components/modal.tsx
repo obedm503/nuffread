@@ -15,9 +15,7 @@ export class Modal extends React.PureComponent<Props> {
     if (!this.props.cancel) {
       return;
     }
-    // @ts-ignore
     const isClick = e.nativeEvent instanceof MouseEvent;
-    // @ts-ignore
     const isEsc = e instanceof KeyboardEvent && e.key === 'Escape';
 
     if (isClick || isEsc) {
