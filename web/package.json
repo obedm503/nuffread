@@ -1,5 +1,8 @@
 {
   "private": true,
+  "scripts": {
+    "start": "node --optimize_for_size --max_old_space_size=512 --gc_interval=100 dist/server/main.js"
+  },
   "dependencies": {
     "apollo-cache-inmemory": "^1.4.2",
     "apollo-client": "^2.4.12",

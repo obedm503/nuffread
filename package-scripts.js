@@ -59,12 +59,18 @@ module.exports.scripts = {
       'NODE_ENV=production tsc --project api/tsconfig.json --outDir api/dist',
     ),
   },
+  deploy: {
+    web: series(
+      'cd web',
+      'git commit -a -m "deploy"',
+      'git push https://git.heroku.com/nuffread-web-staging.git master',
+      'cd ..',
+    ),
+  },
   clean: rimraf('web/dist .cache api/dist'),
   start: {
-    server:
-      'node --optimize_for_size --max_old_space_size=512 --gc_interval=100 web/dist/server/main.js',
-    api:
-      'node --optimize_for_size --max_old_space_size=512 --gc_interval=100 api/dist/main.js',
+    server: 'cd web && npm run start',
+    api: 'cd api && npm run start',
   },
   db: {
     info: [

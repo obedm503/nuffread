@@ -1,5 +1,8 @@
 {
   "private": true,
+  "scripts": {
+    "start": "node --optimize_for_size --max_old_space_size=512 --gc_interval=100 dist/main.js"
+  },
   "dependencies": {
     "@nestjs/common": "^5.6.2",
     "@nestjs/core": "^5.6.2",
