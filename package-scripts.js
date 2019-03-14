@@ -62,7 +62,7 @@ module.exports.scripts = {
   deploy: {
     web: series(
       'cd web',
-      'git commit -a -m "deploy"',
+      `git commit -a -m "deploying at ${new Date().toISOString()}"`,
       'git push https://git.heroku.com/nuffread-web-staging.git master',
       'cd ..',
     ),
