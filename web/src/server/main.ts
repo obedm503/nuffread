@@ -73,8 +73,7 @@ app.get('*', async (req, res) => {
     if (production) {
       // the assumption is that if something goes wrong in production, the
       // user was being nefarious and they should be logged out
-      // await logout(req, res);
-      res.redirect('/');
+      res.clearCookie('session').redirect('/');
     } else {
       res.end();
     }
