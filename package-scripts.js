@@ -20,6 +20,13 @@ const buildTypes = [
   `--external-options ${resolve('./gql2tsrc.js')}`,
 ].join(' ');
 
+const deploy = name =>
+  [
+    `git push https://git.heroku.com/nuffread-${name}-staging.git`,
+    `\`git subtree split --prefix ${name} $(git branch | grep \* | cut -d " " -f2)\`:master`,
+    '--force',
+  ].join(' ');
+
 module.exports.scripts = {
   default: 'nps dev',
   dev: {
@@ -60,10 +67,8 @@ module.exports.scripts = {
     ),
   },
   deploy: {
-    web:
-      'git subtree push --prefix web https://git.heroku.com/nuffread-web-staging.git master',
-    api:
-      'git subtree push --prefix api https://git.heroku.com/nuffread-api-staging.git master',
+    web: deploy('web'),
+    api: deploy('api'),
   },
   clean: rimraf('web/dist .cache api/dist'),
   start: {
