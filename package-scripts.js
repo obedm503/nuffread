@@ -23,7 +23,7 @@ const buildTypes = [
 const deploy = name =>
   [
     `git push https://git.heroku.com/nuffread-${name}-staging.git`,
-    `\`git subtree split --prefix ${name} $(git branch | grep \* | cut -d " " -f2)\`:master`,
+    `\`git subtree split --prefix ${name} $(git branch | grep \\* | cut -d ' ' -f2)\`:master`,
     '--force',
   ].join(' ');
 
