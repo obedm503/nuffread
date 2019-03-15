@@ -60,12 +60,10 @@ module.exports.scripts = {
     ),
   },
   deploy: {
-    web: series(
-      'cd web',
-      `git commit -a -m "deploying at ${new Date().toISOString()}"`,
-      'git push https://git.heroku.com/nuffread-web-staging.git master',
-      'cd ..',
-    ),
+    web:
+      'git subtree push --prefix web https://git.heroku.com/nuffread-web-staging.git master',
+    api:
+      'git subtree push --prefix api https://git.heroku.com/nuffread-api-staging.git master',
   },
   clean: rimraf('web/dist .cache api/dist'),
   start: {
