@@ -77,7 +77,16 @@ const apollo = new ApolloServer({
 apollo.applyMiddleware({
   app,
   path: '/',
-  cors: { credentials: true, origin: process.env.ORIGIN },
+  cors: {
+    credentials: true,
+    origin: production
+      ? [
+          'https://nuffread.com',
+          'https://nuffread-web-staging.herokuapp.com',
+          'https://nuffread-web-production.herokuapp.com',
+        ]
+      : process.env.ORIGIN,
+  },
 });
 
 (async () => {
