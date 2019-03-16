@@ -10,6 +10,7 @@ if (!production) {
 }
 
 require('isomorphic-fetch');
+require('reflect-metadata');
 import { ApolloServer } from 'apollo-server-express';
 import * as pgSession from 'connect-pg-simple';
 import * as express from 'express';
