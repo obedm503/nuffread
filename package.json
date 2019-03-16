@@ -3,11 +3,6 @@
   "browserslist": [
     "last 2 versions"
   ],
-  "scripts": {
-    "heroku-postbuild": "nps build",
-    "start:server": "nps start.server",
-    "start:api": "nps start.api"
-  },
   "dependencies": {
     "dotenv-safe": "^6.1.0",
     "nps": "^5.9.3",
