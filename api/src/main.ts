@@ -1,22 +1,20 @@
 const production = process.env.NODE_ENV === 'production';
-const { config } = require('dotenv-safe');
 const { join, resolve } = require('path');
 
 if (!production) {
+  const { config } = require('dotenv-safe');
   config({
     path: resolve(__dirname, '../.env'),
     example: resolve(__dirname, '../.env.example'),
   });
 }
+
 require('isomorphic-fetch');
-require('reflect-metadata');
-import { NestFactory } from '@nestjs/core';
 import { ApolloServer } from 'apollo-server-express';
 import * as pgSession from 'connect-pg-simple';
 import * as express from 'express';
 import * as session from 'express-session';
 import { Admin } from './admin/admin.entity';
-import { ApplicationModule } from './app.module';
 import { Listing } from './listing/listing.entity';
 import { getContext, getSchema } from './schema';
 import { School } from './school/school.entity';
@@ -77,18 +75,22 @@ const apollo = new ApolloServer({
 
 apollo.applyMiddleware({
   app,
+  path: '/',
   cors: { credentials: true, origin: process.env.ORIGIN },
 });
 
 (async () => {
   await db.connect([Seller, School, Admin, Listing]);
 
-  const server = await NestFactory.create(ApplicationModule, app, {});
-  await server.listen(port);
+  const server = app.listen(port, () => {
+    console.info(`Listening on port ${port}`);
+  });
 
   const close = async () => {
-    console.info('Closing server');
-    await server.close();
+    await new Promise(resolve => {
+      console.info('Closing server');
+      server.close(resolve);
+    });
     console.info('Closing db');
     await db.close();
   };
@@ -97,6 +99,4 @@ apollo.applyMiddleware({
     await close();
     process.kill(process.pid, 'SIGUSR2');
   });
-
-  console.info(`Listening on port ${port}`);
 })().catch(e => console.error('main error', e));

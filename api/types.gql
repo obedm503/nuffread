@@ -28,6 +28,7 @@ type Mutation {
   register(email: String!, password: String!): Boolean!
   login(email: String!, password: String!, type: UserType!): Boolean!
   logout: Boolean!
+  confirm(email: String!): Boolean!
 }
 
 type Seller {
