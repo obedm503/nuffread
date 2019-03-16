@@ -20,22 +20,22 @@ const buildTypes = [
   `--external-options ${resolve('./gql2tsrc.js')}`,
 ].join(' ');
 
-const deploy = name => {
-  // based on https://stackoverflow.com/a/40178818/4371892
-  const push = [
+// based on https://stackoverflow.com/a/40178818/4371892
+const push = name =>
+  [
     `git push https://git.heroku.com/nuffread-${name}-staging.git`,
     `\`git subtree split --prefix ${name} $(git branch | grep \\* | cut -d ' ' -f2)\`:refs/heads/master`,
     '--force',
   ].join(' ');
-  return series(
-    'sed -i /dist/d .gitignore',
-    'git add .',
-    'git commit -m "Edit .gitignore to publish"',
-    push,
-    'git reset HEAD~',
-    'git checkout .gitignore',
-  );
-};
+const deploy = series(
+  'sed -i /dist/d .gitignore',
+  'git add .',
+  'git commit -m "Edit .gitignore to publish"',
+  push('web'),
+  push('api'),
+  'git reset HEAD~',
+  'git checkout .gitignore',
+);
 
 module.exports.scripts = {
   default: 'nps dev',
@@ -76,10 +76,7 @@ module.exports.scripts = {
       'NODE_ENV=production tsc --project api/tsconfig.json --outDir api/dist',
     ),
   },
-  deploy: {
-    web: deploy('web'),
-    api: deploy('api'),
-  },
+  deploy,
   clean: rimraf('web/dist .cache api/dist'),
   start: {
     server: 'cd web && npm run start',
