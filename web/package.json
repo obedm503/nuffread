@@ -11,7 +11,6 @@
     "bloomer": "^0.6.5",
     "bulma": "^0.7.2",
     "cheerio": "^1.0.0-rc.2",
-    "dotenv-safe": "^6.0.0",
     "express": "^4.16.4",
     "formik": "^1.4.3",
     "graphql": "^14.1.1",
@@ -38,6 +37,7 @@
     "@types/react-helmet": "^5.0.8",
     "@types/react-router": "^4.0.23",
     "@types/react-router-dom": "^4.3.1",
-    "@types/yup": "^0.26.7"
+    "@types/yup": "^0.26.7",
+    "dotenv-safe": "^6.0.0"
   }
 }
