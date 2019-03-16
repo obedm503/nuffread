@@ -15,7 +15,7 @@ const parcelConfig = [
 
 const buildTypes = [
   'gql2ts',
-  'types.gql',
+  'api/types.gql',
   '--output-file types.d.ts',
   `--external-options ${resolve('./gql2tsrc.js')}`,
 ].join(' ');
@@ -44,7 +44,7 @@ module.exports.scripts = {
       'nps clean',
       concurrent.nps('dev.types', 'dev.server', 'dev.client', 'dev.api'),
     ),
-    types: `nodemon --watch "types.gql" --exec "${buildTypes}"`,
+    types: `nodemon --watch "api/types.gql" --exec "${buildTypes}"`,
     server: [
       'nodemon',
       '--watch "web/src/app"',
