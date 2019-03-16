@@ -88,7 +88,7 @@ app.get('*', async (req, res) => {
     res.send(html);
   } catch (e) {
     if (e instanceof ApolloError) {
-      console.error(JSON.stringify(e));
+      console.error(JSON.stringify(e, null, 2));
     } else if (e instanceof Error) {
       console.error(e.name, e.message, e.stack);
     } else {
