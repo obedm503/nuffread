@@ -20,7 +20,6 @@ npm-debug.log*
 .tmp/
 .versions/
 coverage/
-dist
 node_modules/
 tmp/
 temp/
@@ -35,3 +34,4 @@ $RECYCLE.BIN/
 .DS_Store
 Thumbs.db
 UserInterfaceState.xcuserstate
+dist
