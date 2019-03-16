@@ -35,7 +35,10 @@ const app = express()
       saveUninitialized: false,
       name: 'session',
       store: new Store({
-        conString: process.env.DATABASE_URL,
+        conObject: {
+          connectionString: process.env.DATABASE_URL,
+          ssl: true,
+        },
       }),
     }),
   );
