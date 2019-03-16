@@ -20,12 +20,22 @@ const buildTypes = [
   `--external-options ${resolve('./gql2tsrc.js')}`,
 ].join(' ');
 
-const deploy = name =>
-  [
+const deploy = name => {
+  // based on https://stackoverflow.com/a/40178818/4371892
+  const push = [
     `git push https://git.heroku.com/nuffread-${name}-staging.git`,
     `\`git subtree split --prefix ${name} $(git branch | grep \\* | cut -d ' ' -f2)\`:master`,
     '--force',
   ].join(' ');
+  return series(
+    'sed -i /dist/d .gitignore',
+    'git add .',
+    'git commit -m "Edit .gitignore to publish"',
+    push,
+    'git reset HEAD~',
+    'git checkout .gitignore',
+  );
+};
 
 module.exports.scripts = {
   default: 'nps dev',
