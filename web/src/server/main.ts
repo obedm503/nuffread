@@ -1,8 +1,8 @@
 const production = process.env.NODE_ENV === 'production';
-const { config } = require('dotenv-safe');
 const { join, resolve } = require('path');
 
 if (!production) {
+  const { config } = require('dotenv-safe');
   config({
     path: resolve(__dirname, '../../.env'),
     example: resolve(__dirname, '../../.env.example'),
@@ -12,8 +12,9 @@ if (!production) {
 require('isomorphic-fetch');
 import { ApolloError } from 'apollo-client';
 import * as express from 'express';
+import gql from 'graphql-tag';
 import { ServeStaticOptions } from 'serve-static';
-import { render } from './render';
+import { getClient, render } from './render';
 
 const distPublicDir = resolve(__dirname, '../../dist/public');
 const publicDir = resolve(__dirname, '../../public');
@@ -50,6 +51,30 @@ const getBase = (req: express.Request) => {
     return `${req.protocol}://${req.hostname}`;
   }
 };
+
+app.get('/confirm', async (req, res) => {
+  const email = req.query.email;
+  if (!email) {
+    return res.redirect('/');
+  }
+
+  const client = getClient(req.get('cookie'));
+
+  const { errors, data } = await client.mutate<GQL.IMutation>({
+    mutation: gql`
+      mutation Confirm($email: String!) {
+        confirm(email: $email)
+      }
+    `,
+    variables: { email },
+  });
+
+  if (errors || !data || !data.confirm) {
+    return res.redirect('/');
+  }
+
+  res.redirect('/login');
+});
 
 app.get('*', async (req, res) => {
   try {

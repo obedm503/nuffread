@@ -1,5 +1,4 @@
 import { compare, hash } from 'bcryptjs';
-import { Request, Response } from 'express';
 import { Admin } from '../admin/admin.entity';
 import { Seller } from '../seller/seller.entity';
 import { validate } from '../util';
@@ -8,13 +7,6 @@ import { IResolver } from '../util/types';
 import { send } from '../util/email';
 import { join } from 'path';
 import { stringify } from 'querystring';
-
-export async function logout(req: Request, res: Response) {
-  if (req.session) {
-    await new Promise(done => req.session!.destroy(done));
-  }
-  res.clearCookie('session');
-}
 
 export const MutationResolver: IResolver<GQL.IMutation> = {
   async register(_, { email, password }: GQL.IRegisterOnMutationArguments) {
@@ -76,7 +68,23 @@ export const MutationResolver: IResolver<GQL.IMutation> = {
     return true;
   },
   async logout(_, args, { req, res }) {
-    await logout(req, res);
+    if (req.session) {
+      await new Promise(done => req.session!.destroy(done));
+    }
+    res.clearCookie('session');
+
+    return true;
+  },
+  async confirm(_, { email }: GQL.IConfirmOnMutationArguments) {
+    const seller = await Seller.findOne({ where: { email } });
+
+    if (!seller) {
+      throw new AuthenticationError('WRONG_CREDENTIALS');
+    }
+
+    seller.confirmedAt = new Date();
+    await Seller.save(seller);
+
     return true;
   },
 };
