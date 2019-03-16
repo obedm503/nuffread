@@ -24,7 +24,7 @@ const deploy = name => {
   // based on https://stackoverflow.com/a/40178818/4371892
   const push = [
     `git push https://git.heroku.com/nuffread-${name}-staging.git`,
-    `\`git subtree split --prefix ${name} $(git branch | grep \\* | cut -d ' ' -f2)\`:master`,
+    `\`git subtree split --prefix ${name} $(git branch | grep \\* | cut -d ' ' -f2)\`:refs/heads/master`,
     '--force',
   ].join(' ');
   return series(
