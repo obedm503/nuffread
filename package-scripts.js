@@ -5,6 +5,8 @@ require('dotenv-safe').config({
   example: resolve('./api/.env.example'),
 });
 
+const { execSync } = require('child_process');
+const { EOL } = require('os');
 const { concurrent, series, crossEnv, rimraf } = require('nps-utils');
 
 const parcelConfig = [
@@ -67,7 +69,14 @@ module.exports.scripts = {
       concurrent.nps('build.client', 'build.server', 'build.api'),
     ),
     client: crossEnv(
-      `NODE_ENV=production parcel build ${parcelConfig} --no-cache`,
+      [
+        'NODE_ENV=production',
+        execSync('heroku config --shell --app nuffread-web-staging')
+          .toString()
+          .split(EOL)
+          .join(' '),
+        `parcel build ${parcelConfig} --no-cache`,
+      ].join(' '),
     ),
     server: crossEnv(
       'NODE_ENV=production tsc --project web/src/server/tsconfig.json --outDir web/dist',
