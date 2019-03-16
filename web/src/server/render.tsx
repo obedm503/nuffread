@@ -37,6 +37,19 @@ if (production) {
   template = fs.readFileSync(indexUrl, 'utf-8');
 }
 
+export const getClient = (cookie?: string) => {
+  const link = createHttpLink({
+    uri: process.env.API,
+    headers: { cookie },
+  });
+
+  return new ApolloClient({
+    ssrMode: true,
+    link,
+    cache: createCache(),
+  });
+};
+
 type Params = {
   ua: string;
   url: string;
@@ -49,16 +62,7 @@ export async function render({
   base,
   cookie,
 }: Params): Promise<string> {
-  const link = createHttpLink({
-    uri: process.env.API,
-    headers: { cookie },
-  });
-
-  const client = new ApolloClient({
-    ssrMode: true,
-    link,
-    cache: createCache(),
-  });
+  const client = getClient(cookie);
 
   const routerContext = {};
   const helmetContext: FilledContext = {} as any;
