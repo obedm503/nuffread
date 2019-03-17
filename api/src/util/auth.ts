@@ -17,11 +17,24 @@ export class AuthenticationError extends AuthError {
   }
 }
 
-export function checkUser(Type: typeof Seller | typeof Admin, user?: any) {
+export function isSeller(user?: Admin | Seller): user is Seller {
   if (!user) {
     throw new AuthenticationError();
   }
-  if (!(user instanceof Type)) {
+  if (!(user instanceof Seller)) {
     throw new AuthorizationError();
   }
+
+  return user instanceof Seller;
+}
+
+export function isAdmin(user?: Admin | Seller): user is Admin {
+  if (!user) {
+    throw new AuthenticationError();
+  }
+  if (!(user instanceof Admin)) {
+    throw new AuthorizationError();
+  }
+
+  return user instanceof Admin;
 }

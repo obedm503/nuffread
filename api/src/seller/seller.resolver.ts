@@ -1,5 +1,5 @@
 import { Listing } from '../listing/listing.entity';
-import { checkUser } from '../util/auth';
+import { isSeller } from '../util/auth';
 import { IResolver } from '../util/types';
 import { Seller } from './seller.entity';
 
@@ -8,7 +8,9 @@ export const SellerResolver: IResolver<GQL.ISeller, Seller> = {
     return seller.name || seller.email;
   },
   async listings(seller, args, { user }) {
-    checkUser(Seller, user);
+    if (!isSeller(user)) {
+      return [];
+    }
 
     const listings = await Listing.find({
       where: { sellerId: seller.id },

@@ -1,9 +1,8 @@
-import { Admin } from '../admin/admin.entity';
 import { Listing } from '../listing/listing.entity';
 import { Seller } from '../seller/seller.entity';
+import { isAdmin } from '../util/auth';
+import { getBook, searchBooks } from '../util/books';
 import { IResolver } from '../util/types';
-import { checkUser } from '../util/auth';
-import { searchBooks, getBook } from '../util/books';
 
 const search = (a: string, b: string) => {
   a = a.trim().toLowerCase();
@@ -67,7 +66,9 @@ export const QueryResolver: IResolver<GQL.IQuery> = {
   },
 
   async sellers(_, args, { user }) {
-    checkUser(Admin, user);
+    if (!isAdmin(user)) {
+      return;
+    }
 
     return Seller.find() as any;
   },
