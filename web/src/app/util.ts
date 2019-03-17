@@ -75,9 +75,3 @@ export const passwordSchema = yup
 export function validatePassword(password: string): boolean {
   return passwordSchema.isValidSync(password);
 }
-
-export enum AuthErrors {
-  DUPLICATE_USER = 'Email is already registered.',
-  NOT_CONFIRMED = 'Email is not yet confirmed.',
-  WRONG_CREDENTIALS = 'Wrong email or password.',
-}

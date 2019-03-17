@@ -1,23 +1,15 @@
 import ApolloClient from 'apollo-client';
-import {
-  Button,
-  Column,
-  Columns,
-  Container,
-  Hero,
-  HeroBody,
-  NavbarBrand,
-} from 'bloomer';
+import { Button, Column, Columns, Container, Hero, HeroBody, NavbarBrand } from 'bloomer';
 import { Form, Formik } from 'formik';
 import gql from 'graphql-tag';
 import { History } from 'history';
 import * as React from 'react';
 import { Mutation, MutationFn } from 'react-apollo';
 import { RouteComponentProps } from 'react-router';
+import { Link } from 'react-router-dom';
 import * as yup from 'yup';
 import { IonIcon, NavbarLink, TopNav } from './components';
 import { Email, Password } from './controls';
-import { AuthErrors } from './util';
 
 const LOGIN = gql`
   mutation Login($email: String!, $password: String!, $type: UserType!) {
@@ -76,15 +68,33 @@ class LoginForm extends React.Component<{
                     />
 
                     {error
-                      ? error.graphQLErrors.map(err =>
-                          AuthErrors[err.message] ? (
+                      ? error.graphQLErrors.map(err => {
+                          let errMsg;
+                          switch (err.message) {
+                            case 'DUPLICATE_USER':
+                              errMsg = 'Email is already registered.';
+                              break;
+                            case 'NOT_CONFIRMED':
+                              errMsg = (
+                                <>
+                                  Email is not yet confirmed. To confirm your
+                                  email{' '}
+                                  <Link to="/join/confirm">click here</Link>.
+                                </>
+                              );
+                              break;
+                            case 'WRONG_CREDENTIALS':
+                              errMsg = 'Wrong email or password.';
+                              break;
+                            default:
+                              return null;
+                          }
+                          return (
                             <div className="field" key={err.message}>
-                              <p className="help is-danger">
-                                {AuthErrors[err.message]}
-                              </p>
+                              <p className="help is-danger">{errMsg}</p>
                             </div>
-                          ) : null,
-                        )
+                          );
+                        })
                       : null}
 
                     {admin ? null : (

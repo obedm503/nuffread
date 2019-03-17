@@ -16,7 +16,7 @@ import { Register } from './register';
 const routes: RouteProps[] = [
   { path: '/pricing', component: Pricing },
   { path: '/signup', component: Register },
-  { path: '/confirm/:binId', component: Confirm },
+  { path: '/confirm/:binId?', component: Confirm },
   { path: '/', component: Home },
 ];
 
