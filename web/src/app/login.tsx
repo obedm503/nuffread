@@ -88,7 +88,7 @@ class LoginForm extends React.Component<{
                       : null}
 
                     {admin ? null : (
-                      <Button href="/join">
+                      <Button href="/join/signup">
                         <IonIcon name="add" />
                         <span>Join</span>
                       </Button>
