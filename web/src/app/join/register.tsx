@@ -1,17 +1,10 @@
-import {
-  Button,
-  Column,
-  Columns,
-  Container,
-  Content,
-  Hero,
-  HeroBody,
-} from 'bloomer';
+import { Button, Column, Columns, Container, Hero, HeroBody } from 'bloomer';
 import { Form, Formik } from 'formik';
 import gql from 'graphql-tag';
+import { join } from 'path';
 import * as React from 'react';
 import { Mutation, MutationFn } from 'react-apollo';
-import { RouteComponentProps } from 'react-router';
+import { Redirect, RouteComponentProps } from 'react-router';
 import { Link } from 'react-router-dom';
 import * as yup from 'yup';
 import { IonIcon } from '../components';
@@ -71,15 +64,16 @@ class RegisterForm extends React.Component<RouteComponentProps<never>> {
                 password2: '',
               }}
             >
-              {({ touched, errors, values }) => {
+              {({ touched, errors }) => {
                 if (data && data.register) {
                   return (
-                    <Content>
-                      <p className="is-size-5">
-                        An email has been sent to {values.email}. Please click
-                        the link to confirm it and continue to your account.
-                      </p>
-                    </Content>
+                    <Redirect
+                      to={join(
+                        this.props.match.url,
+                        '../confirm',
+                        data.register,
+                      )}
+                    />
                   );
                 }
 
