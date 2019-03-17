@@ -8,6 +8,7 @@ import {
 import * as React from 'react';
 import { RouteComponentProps, RouteProps } from 'react-router';
 import { NavbarLink, Routes, TopNav } from '../components';
+import { Confirm } from './confirm';
 import { Home } from './home';
 import { Pricing } from './pricing';
 import { Register } from './register';
@@ -15,6 +16,7 @@ import { Register } from './register';
 const routes: RouteProps[] = [
   { path: '/pricing', component: Pricing },
   { path: '/signup', component: Register },
+  { path: '/confirm/:binId', component: Confirm },
   { path: '/', component: Home },
 ];
 
