@@ -5,11 +5,19 @@ import { compare, hash } from 'bcryptjs';
 import { Admin } from '../admin/admin.entity';
 import { Seller, sendConfirmationEmail } from '../seller/seller.entity';
 import { validate } from '../util';
-import { AuthenticationError } from '../util/auth';
+import { AuthenticationError, isSeller } from '../util/auth';
 import { IResolver } from '../util/types';
 
 export const MutationResolver: IResolver<GQL.IMutation> = {
-  async register(_, { email, password }: GQL.IRegisterOnMutationArguments) {
+  async register(
+    _,
+    { email, password }: GQL.IRegisterOnMutationArguments,
+    { req },
+  ) {
+    const origin = req.get('origin');
+    if (!origin) {
+      throw new ApolloError('BAD_REQUEST');
+    }
     if (await Seller.findOne({ where: { email } })) {
       throw new AuthenticationError('DUPLICATE_USER');
     }
@@ -22,7 +30,8 @@ export const MutationResolver: IResolver<GQL.IMutation> = {
 
     await sendConfirmationEmail(origin, seller.id, seller.email);
 
-    return true;
+    // return id in binary
+    return btoa(seller.id);
   },
 
   async login(
@@ -36,7 +45,7 @@ export const MutationResolver: IResolver<GQL.IMutation> = {
     } else if (type === 'ADMIN') {
       Ent = Admin;
     } else {
-      throw new AuthenticationError('Invalid Type');
+      throw new AuthenticationError('INVALID_TYPE');
     }
 
     const user = await Ent.findOne({ where: { email } });

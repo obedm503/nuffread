@@ -25,7 +25,7 @@ type Mutation {
   createSchool(school: SchoolInput!): School!
   deleteSchool(id: ID!): Boolean!
 
-  register(email: String!, password: String!): Boolean!
+  register(email: String!, password: String!): String!
   login(email: String!, password: String!, type: UserType!): Boolean!
   logout: Boolean!
   confirm(id: String!): Boolean!
