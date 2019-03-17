@@ -65,8 +65,9 @@ export const MutationResolver: IResolver<GQL.IMutation> = {
 
     return true;
   },
-  async confirm(_, { email }: GQL.IConfirmOnMutationArguments) {
-    const seller = await Seller.findOne({ where: { email } });
+  async confirm(_, { id: binId }: GQL.IConfirmOnMutationArguments) {
+    const id = atob(binId);
+    const seller = await Seller.findOne({ where: { id } });
 
     if (!seller) {
       throw new AuthenticationError('WRONG_CREDENTIALS');
