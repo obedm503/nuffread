@@ -59,8 +59,8 @@ app.use((req, res, next) => {
   if (!process.env.URL) {
     process.env.URL =
       req.hostname === 'localhost'
-        ? `${req.protocol}://${req.hostname}`
-        : `${req.protocol}://${req.hostname}:${port}`;
+        ? `${req.protocol}://${req.hostname}:${port}`
+        : `${req.protocol}://${req.hostname}`;
   }
   next();
 });
