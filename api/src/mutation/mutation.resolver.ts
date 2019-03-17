@@ -92,12 +92,12 @@ export const MutationResolver: IResolver<GQL.IMutation> = {
   },
   async resendEmail(
     _,
-    { id: binId }: GQL.IResendEmailOnMutationArguments,
+    { binId, email }: GQL.IResendEmailOnMutationArguments,
     { user, req },
   ) {
     if (user) {
       // is already logged in, no need to resend
-      return true;
+      return btoa(user.id);
     }
 
     const origin = req.get('origin');
@@ -105,19 +105,24 @@ export const MutationResolver: IResolver<GQL.IMutation> = {
       throw new ApolloError('BAD_REQUEST');
     }
 
-    const id = atob(binId);
+    if (!email && !binId) {
+      throw new ApolloError('BAD_REQUEST');
+    }
 
-    const seller = await Seller.findOne({ where: { id } });
+    const seller = email
+      ? await Seller.findOne({ where: { email } })
+      : await Seller.findOne({ where: { id: atob(binId) } });
+
     if (!isSeller(seller)) {
-      return false;
+      return '';
     }
 
     if (seller.confirmedAt) {
-      return true;
+      return btoa(seller.id);
     }
 
     await sendConfirmationEmail(origin, seller.id, seller.email);
 
-    return true;
+    return btoa(seller.id);
   },
 };
