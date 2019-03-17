@@ -9,7 +9,7 @@ import { Link } from 'react-router-dom';
 import * as yup from 'yup';
 import { IonIcon } from '../components';
 import { Email, Password } from '../controls';
-import { AuthErrors, classes, passwordSchema } from '../util';
+import { classes, passwordSchema } from '../util';
 
 const REGISTER = gql`
   mutation Register($email: String!, $password: String!) {
@@ -50,9 +50,7 @@ class RegisterForm extends React.Component<RouteComponentProps<never>> {
         {(mutate, { loading, error, data }) => {
           const duplicateUserError =
             error &&
-            error.graphQLErrors.find(
-              err => err.message === AuthErrors.DUPLICATE_USER,
-            );
+            error.graphQLErrors.find(err => err.message === 'DUPLICATE_USER');
 
           return (
             <Formik<FormSchema>
