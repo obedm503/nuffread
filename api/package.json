@@ -7,7 +7,9 @@
     "@sendgrid/client": "^6.3.0",
     "@sendgrid/mail": "^6.3.1",
     "apollo-server-express": "^2.4.8",
+    "atob": "^2.1.2",
     "bcryptjs": "^2.4.3",
+    "btoa": "^1.2.1",
     "class-validator": "^0.9.1",
     "connect-pg-simple": "^5.0.0",
     "dataloader": "^1.4.0",
@@ -22,7 +24,9 @@
     "typeorm": "^0.2.12"
   },
   "devDependencies": {
+    "@types/atob": "^2.1.2",
     "@types/bcryptjs": "^2.4.2",
+    "@types/btoa": "^1.2.2",
     "@types/connect-pg-simple": "^4.2.0",
     "@types/express": "^4.16.1",
     "@types/express-session": "^1.15.11",
