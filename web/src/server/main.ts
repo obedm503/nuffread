@@ -52,9 +52,9 @@ const getBase = (req: express.Request) => {
   }
 };
 
-app.get('/confirm', async (req, res) => {
-  const email = req.query.email;
-  if (!email) {
+app.get('/confirm/:binId', async (req, res) => {
+  const binId = req.param('binId');
+  if (!binId) {
     return res.redirect('/');
   }
 
@@ -62,11 +62,11 @@ app.get('/confirm', async (req, res) => {
 
   const { errors, data } = await client.mutate<GQL.IMutation>({
     mutation: gql`
-      mutation Confirm($email: String!) {
-        confirm(email: $email)
+      mutation Confirm($id: String!) {
+        confirm(id: $id)
       }
     `,
-    variables: { email },
+    variables: { id: binId },
   });
 
   if (errors || !data || !data.confirm) {
