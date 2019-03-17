@@ -4,9 +4,6 @@ import { Seller } from '../seller/seller.entity';
 import { validate } from '../util';
 import { AuthenticationError } from '../util/auth';
 import { IResolver } from '../util/types';
-import { send } from '../util/email';
-import { join } from 'path';
-import { stringify } from 'querystring';
 
 export const MutationResolver: IResolver<GQL.IMutation> = {
   async register(_, { email, password }: GQL.IRegisterOnMutationArguments) {
@@ -20,14 +17,7 @@ export const MutationResolver: IResolver<GQL.IMutation> = {
     await validate(seller);
     await Seller.save(seller);
 
-    const link = `${join(process.env.URL!, '/confirm')}?${stringify({
-      email,
-    })}`;
-    await send({
-      email,
-      subject: 'Click to confirm email',
-      html: `Please click the link to confirm your email. <br /><br /> ${link}`,
-    });
+    await sendConfirmationEmail(origin, seller.id, seller.email);
 
     return true;
   },
