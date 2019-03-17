@@ -1,6 +1,9 @@
+const atob = require('atob');
+const btoa = require('btoa');
+import { ApolloError } from 'apollo-server-core';
 import { compare, hash } from 'bcryptjs';
 import { Admin } from '../admin/admin.entity';
-import { Seller } from '../seller/seller.entity';
+import { Seller, sendConfirmationEmail } from '../seller/seller.entity';
 import { validate } from '../util';
 import { AuthenticationError } from '../util/auth';
 import { IResolver } from '../util/types';
@@ -75,6 +78,36 @@ export const MutationResolver: IResolver<GQL.IMutation> = {
 
     seller.confirmedAt = new Date();
     await Seller.save(seller);
+
+    return true;
+  },
+  async resendEmail(
+    _,
+    { id: binId }: GQL.IResendEmailOnMutationArguments,
+    { user, req },
+  ) {
+    if (user) {
+      // is already logged in, no need to resend
+      return true;
+    }
+
+    const origin = req.get('origin');
+    if (!origin) {
+      throw new ApolloError('BAD_REQUEST');
+    }
+
+    const id = atob(binId);
+
+    const seller = await Seller.findOne({ where: { id } });
+    if (!isSeller(seller)) {
+      return false;
+    }
+
+    if (seller.confirmedAt) {
+      return true;
+    }
+
+    await sendConfirmationEmail(origin, seller.id, seller.email);
 
     return true;
   },
