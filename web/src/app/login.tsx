@@ -48,12 +48,6 @@ class LoginForm extends React.Component<{
     return (
       <Mutation<GQL.IMutation> mutation={LOGIN}>
         {(mutate, { loading, client, error }) => {
-          const unconfirmedError =
-            error &&
-            error.graphQLErrors.find(
-              err => err.message === AuthErrors.NOT_CONFIRMED,
-            );
-
           return (
             <Formik<{ email: string; password: string }>
               onSubmit={this.onSubmit(mutate, client)}
@@ -81,11 +75,17 @@ class LoginForm extends React.Component<{
                       errors={errors}
                     />
 
-                    {unconfirmedError ? (
-                      <div className="field">
-                        <p className="help is-danger">Unconfirmed email.</p>
-                      </div>
-                    ) : null}
+                    {error
+                      ? error.graphQLErrors.map(err =>
+                          AuthErrors[err.message] ? (
+                            <div className="field" key={err.message}>
+                              <p className="help is-danger">
+                                {AuthErrors[err.message]}
+                              </p>
+                            </div>
+                          ) : null,
+                        )
+                      : null}
 
                     {admin ? null : (
                       <Button href="/join">
