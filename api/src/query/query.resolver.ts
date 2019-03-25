@@ -1,52 +1,70 @@
+import { getConnection } from 'typeorm';
 import { Listing } from '../listing/listing.entity';
 import { Seller } from '../seller/seller.entity';
 import { isAdmin } from '../util/auth';
 import { getBook, searchBooks } from '../util/books';
 import { IResolver } from '../util/types';
+// import { books } from '../listing/books';
 
-const search = (a: string, b: string) => {
-  a = a.trim().toLowerCase();
-  b = b.trim().toLowerCase();
+// const search = (a: string, b: string) => {
+//   a = a.trim().toLowerCase();
+//   b = b.trim().toLowerCase();
 
-  return a.includes(b) || b.includes(a);
-};
+//   return a.includes(b) || b.includes(a);
+// };
+
+const getTopListings = () => Listing.find();
 
 export const QueryResolver: IResolver<GQL.IQuery> = {
   async search(_, { query, maxPrice, minPrice }: GQL.ISearchOnQueryArguments) {
-    const books: any[] = await Listing.find();
     if (!query) {
-      return books;
+      return (await getTopListings()) as any;
     }
 
-    let filtered = books.filter(b => {
-      if (b.isbn.find(code => search(code, query))) {
-        return true;
-      }
-      if (search(b.title, query)) {
-        return true;
-      }
-      if (b.subTitle && search(b.subTitle, query)) {
-        return true;
-      }
-      if (b.authors.find(a => search(a, query))) {
-        return true;
-      }
-    });
+    const builder = getConnection()
+      .createQueryBuilder(Listing, 'listing')
+      .select()
+      .where('document_with_weights @@ plainto_tsquery(:query)', {
+        query: query.trim().toLowerCase(),
+      })
+      .orderBy(
+        'ts_rank(document_with_weights, plainto_tsquery(:query))',
+        'DESC',
+      );
 
-    if (minPrice || maxPrice) {
-      filtered = filtered.filter(b => {
-        if (minPrice && !maxPrice) {
-          return b.price >= minPrice;
-        }
-        if (!minPrice && maxPrice) {
-          return b.price <= maxPrice;
-        }
-        if (minPrice && maxPrice) {
-          return minPrice <= b.price && b.price <= maxPrice;
-        }
-      });
-    }
-    return filtered;
+    return (await builder.getMany()) as any;
+
+    // const books: any[] = await Listing.find();
+
+    // let filtered = books.filter(b => {
+    //   if (b.isbn.find(code => search(code, query))) {
+    //     return true;
+    //   }
+    //   if (search(b.title, query)) {
+    //     return true;
+    //   }
+    //   if (b.subTitle && search(b.subTitle, query)) {
+    //     return true;
+    //   }
+    //   if (b.authors.find(a => search(a, query))) {
+    //     return true;
+    //   }
+    // });
+
+    // if (minPrice || maxPrice) {
+    //   filtered = filtered.filter(b => {
+    //     if (minPrice && !maxPrice) {
+    //       return b.price >= minPrice;
+    //     }
+    //     if (!minPrice && maxPrice) {
+    //       return b.price <= maxPrice;
+    //     }
+    //     if (minPrice && maxPrice) {
+    //       return minPrice <= b.price && b.price <= maxPrice;
+    //     }
+    //   });
+    // }
+    // return filtered;
   },
 
   async top() {

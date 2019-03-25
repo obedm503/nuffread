@@ -81,4 +81,8 @@ export class Listing extends BaseEntity {
   @IsNotEmpty()
   @IsInstance(Seller)
   seller: Seller;
+
+  // for full-text search
+  @Column('tsvector', { select: false })
+  private document_with_weights: any;
 }
