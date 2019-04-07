@@ -11,7 +11,7 @@ import {
 import React, { Component } from 'react';
 import './theme.css';
 
-export default class App extends Component {
+export class App extends Component {
   render() {
     return (
       <IonApp>
