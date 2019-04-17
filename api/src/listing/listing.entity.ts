@@ -82,6 +82,11 @@ export class Listing extends BaseEntity {
   @IsInstance(Seller)
   seller: Seller;
 
+  // give recommendations based on books used for the same class
+  // give recommendations based on books bought by other people who also bought this one
+  @Column()
+  className: string;
+
   // for full-text search
   @Column('tsvector', { select: false })
   private document_with_weights: any;
