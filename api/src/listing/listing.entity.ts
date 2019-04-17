@@ -81,4 +81,9 @@ export class Listing extends BaseEntity {
   @IsNotEmpty()
   @IsInstance(Seller)
   seller: Seller;
+
+  // give recommendations based on books used for the same class
+  // give recommendations based on books bought by other people who also bought this one
+  @Column()
+  className: string;
 }
