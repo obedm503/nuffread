@@ -9,12 +9,6 @@ const { execSync } = require('child_process');
 const { EOL } = require('os');
 const { concurrent, series, crossEnv, rimraf } = require('nps-utils');
 
-const parcelConfig = [
-  'web/src/client/index.html',
-  '--out-dir web/dist/public',
-  '--public-url /',
-].join(' ');
-
 const buildTypes = [
   'gql2ts',
   'api/types.gql',
@@ -44,17 +38,13 @@ module.exports.scripts = {
   dev: {
     default: series(
       'nps clean',
-      concurrent.nps('dev.types', 'dev.server', 'dev.client', 'dev.api'),
+      concurrent.nps('dev.types', 'dev.web', 'dev.api'),
     ),
     types: `nodemon --watch "api/types.gql" --exec "${buildTypes}"`,
-    server: [
-      'nodemon',
-      '--watch "web/src/app"',
-      '--watch "web/src/server"',
-      '--ext ts,tsx',
-      '--exec "ts-node --project web/src/server/tsconfig.json --pretty --files web/src/server/main"',
-    ].join(' '),
-    client: `parcel watch ${parcelConfig}`,
+    web: series(
+      'cd web',
+      crossEnv('REACT_APP_NO_CLEAR_CONSOLE=true PORT=8080 npm run start'),
+    ),
     api: [
       'nodemon',
       '--watch api/src',
@@ -66,20 +56,20 @@ module.exports.scripts = {
     default: series(
       'nps clean',
       buildTypes,
-      concurrent.nps('build.client', 'build.server', 'build.api'),
+      concurrent.nps('build.web', 'build.api'),
     ),
-    client: crossEnv(
-      [
-        'NODE_ENV=production',
-        execSync('heroku config --shell --app nuffread-web-staging')
-          .toString()
-          .split(EOL)
-          .join(' '),
-        `parcel build ${parcelConfig} --no-cache`,
-      ].join(' '),
-    ),
-    server: crossEnv(
-      'NODE_ENV=production tsc --project web/src/server/tsconfig.json --outDir web/dist',
+    web: series(
+      'cd web',
+      crossEnv(
+        [
+          'NODE_ENV=production',
+          execSync('heroku config --shell --app nuffread-web-staging')
+            .toString()
+            .split(EOL)
+            .join(' '),
+          'npm run build',
+        ].join(' '),
+      ),
     ),
     api: crossEnv(
       'NODE_ENV=production tsc --project api/tsconfig.json --outDir api/dist',
@@ -88,7 +78,6 @@ module.exports.scripts = {
   deploy,
   clean: rimraf('web/dist .cache api/dist'),
   start: {
-    server: 'cd web && npm run start',
     api: 'cd api && npm run start',
   },
   db: {

@@ -1,3 +1,5 @@
+import '@ionic/core/css/core.css';
+import '@ionic/core/css/ionic.bundle.css';
 import {
   InMemoryCache,
   IntrospectionFragmentMatcher,
@@ -7,7 +9,7 @@ import gql from 'graphql-tag';
 import { memoize } from 'lodash';
 import * as React from 'react';
 import { Query } from 'react-apollo';
-import Helmet from 'react-helmet-async';
+import { Helmet } from 'react-helmet-async';
 import {
   Redirect,
   RouteComponentProps,
@@ -22,6 +24,7 @@ import { Admin, Login } from './login';
 import { Sell } from './sell';
 import { IsDesktopProvider } from './state/desktop';
 import { UserProvider } from './state/user';
+import './theme.css';
 
 export const createCache = () =>
   new InMemoryCache({
@@ -107,7 +110,6 @@ class App extends React.Component<RouteComponentProps<{}>> {
                     name="description"
                     content="The book marketplace for students"
                   />
-                  <meta name="theme-color" content="#ef9439" />
                 </Helmet>
                 <Routes routes={routes} key={match.url} />
 

@@ -1,16 +1,16 @@
-import 'isomorphic-fetch';
-import './main.scss';
+import React from 'react';
+import ReactDOM from 'react-dom';
+import * as serviceWorker from './serviceWorker';
+
 import { ApolloClient } from 'apollo-client';
 import { onError } from 'apollo-link-error';
 import { createHttpLink } from 'apollo-link-http';
-import * as React from 'react';
 import { ApolloProvider } from 'react-apollo';
-import { hydrate } from 'react-dom';
 import { HelmetProvider } from 'react-helmet-async';
 import { BrowserRouter } from 'react-router-dom';
-import { App, createCache } from '../app/app';
-import { HostProvider } from '../app/state/host';
-import { UAProvider } from '../app/state/ua';
+import { App, createCache } from './app';
+import { HostProvider } from './state/host';
+import { UAProvider } from './state/ua';
 
 const httpLink = createHttpLink({
   uri: process.env.API,
@@ -19,7 +19,7 @@ const httpLink = createHttpLink({
 
 const errorLink = onError(({ networkError }) => {
   // logout on unauthorized error
-  if (networkError && networkError['statusCode'] === 401) {
+  if (networkError && (networkError as any)['statusCode'] === 401) {
     localStorage.removeItem('token');
     location.replace('/');
   }
@@ -27,7 +27,7 @@ const errorLink = onError(({ networkError }) => {
 
 const client = new ApolloClient({
   link: errorLink.concat(httpLink),
-  cache: createCache().restore(window['__APOLLO_STATE__']),
+  cache: createCache(),
 });
 
 const main = (
@@ -44,4 +44,9 @@ const main = (
   </UAProvider>
 );
 
-hydrate(main, document.getElementById('root'));
+ReactDOM.render(main, document.getElementById('root'));
+
+// If you want your app to work offline and load faster, you can change
+// unregister() to register() below. Note this comes with some pitfalls.
+// Learn more about service workers: https://bit.ly/CRA-PWA
+serviceWorker.unregister();

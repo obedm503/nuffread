@@ -6,7 +6,6 @@
     "checkJs": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "jsx": "react",
     "lib": ["dom", "esnext"],
     "module": "esnext",
     "moduleResolution": "node",
