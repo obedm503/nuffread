@@ -11,8 +11,8 @@ const { concurrent, series, crossEnv, rimraf } = require('nps-utils');
 
 const buildTypes = [
   'gql2ts',
-  'api/types.gql',
-  '--output-file types.d.ts',
+  'api/schema.gql',
+  '--output-file schema.gql.ts',
   `--external-options ${resolve('./gql2tsrc.js')}`,
 ].join(' ');
 
@@ -40,11 +40,8 @@ module.exports.scripts = {
       'nps clean',
       concurrent.nps('dev.types', 'dev.web', 'dev.api'),
     ),
-    types: `nodemon --watch "api/types.gql" --exec "${buildTypes}"`,
-    web: series(
-      'cd web',
-      crossEnv('REACT_APP_NO_CLEAR_CONSOLE=true PORT=8080 npm run start'),
-    ),
+    types: `nodemon --watch "api/schema.gql" --exec "${buildTypes}"`,
+    web: series('cd web', 'npm run start'),
     api: [
       'nodemon',
       '--watch api/src',

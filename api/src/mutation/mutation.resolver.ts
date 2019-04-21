@@ -2,16 +2,23 @@ const atob = require('atob');
 const btoa = require('btoa');
 import { ApolloError } from 'apollo-server-core';
 import { compare, hash } from 'bcryptjs';
+import {
+  IConfirmOnMutationArguments,
+  ILoginOnMutationArguments,
+  IMutation,
+  IRegisterOnMutationArguments,
+  IResendEmailOnMutationArguments,
+} from '../../../schema.gql';
 import { Admin } from '../admin/admin.entity';
 import { Seller, sendConfirmationEmail } from '../seller/seller.entity';
 import { validate } from '../util';
 import { AuthenticationError, isSeller } from '../util/auth';
 import { IResolver } from '../util/types';
 
-export const MutationResolver: IResolver<GQL.IMutation> = {
+export const MutationResolver: IResolver<IMutation> = {
   async register(
     _,
-    { email, password }: GQL.IRegisterOnMutationArguments,
+    { email, password }: IRegisterOnMutationArguments,
     { req },
   ) {
     const origin = req.get('origin');
@@ -36,7 +43,7 @@ export const MutationResolver: IResolver<GQL.IMutation> = {
 
   async login(
     _,
-    { email, password, type }: GQL.ILoginOnMutationArguments,
+    { email, password, type }: ILoginOnMutationArguments,
     { req },
   ) {
     let Ent: typeof Admin | typeof Seller;
@@ -77,7 +84,7 @@ export const MutationResolver: IResolver<GQL.IMutation> = {
 
     return true;
   },
-  async confirm(_, { id: binId }: GQL.IConfirmOnMutationArguments) {
+  async confirm(_, { id: binId }: IConfirmOnMutationArguments) {
     const id = atob(binId);
     const seller = await Seller.findOne({ where: { id } });
 
@@ -92,7 +99,7 @@ export const MutationResolver: IResolver<GQL.IMutation> = {
   },
   async resendEmail(
     _,
-    { binId, email }: GQL.IResendEmailOnMutationArguments,
+    { binId, email }: IResendEmailOnMutationArguments,
     { user, req },
   ) {
     if (user) {

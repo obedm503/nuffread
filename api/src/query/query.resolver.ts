@@ -1,3 +1,12 @@
+import {
+  IGoogleBookOnQueryArguments,
+  IListing,
+  IListingOnQueryArguments,
+  IQuery,
+  ISearchGoogleOnQueryArguments,
+  ISearchOnQueryArguments,
+  User,
+} from '../../../schema.gql';
 import { Listing } from '../listing/listing.entity';
 import { Seller } from '../seller/seller.entity';
 import { isAdmin } from '../util/auth';
@@ -11,8 +20,8 @@ const search = (a: string, b: string) => {
   return a.includes(b) || b.includes(a);
 };
 
-export const QueryResolver: IResolver<GQL.IQuery> = {
-  async search(_, { query, maxPrice, minPrice }: GQL.ISearchOnQueryArguments) {
+export const QueryResolver: IResolver<IQuery> = {
+  async search(_, { query, maxPrice, minPrice }: ISearchOnQueryArguments) {
     const books: any[] = await Listing.find();
     if (!query) {
       return books;
@@ -58,11 +67,11 @@ export const QueryResolver: IResolver<GQL.IQuery> = {
     if (!user) {
       return null;
     }
-    return (user as any) as GQL.User;
+    return (user as any) as User;
   },
 
-  listing(_, { id }: GQL.IListingOnQueryArguments, { user, listingLoader }) {
-    return (listingLoader.load(id) as any) as GQL.IListing;
+  listing(_, { id }: IListingOnQueryArguments, { user, listingLoader }) {
+    return (listingLoader.load(id) as any) as IListing;
   },
 
   async sellers(_, args, { user }) {
@@ -73,10 +82,10 @@ export const QueryResolver: IResolver<GQL.IQuery> = {
     return Seller.find() as any;
   },
 
-  async searchGoogle(_, { query }: GQL.ISearchGoogleOnQueryArguments) {
+  async searchGoogle(_, { query }: ISearchGoogleOnQueryArguments) {
     return await searchBooks(query);
   },
-  async googleBook(_, { id }: GQL.IGoogleBookOnQueryArguments) {
+  async googleBook(_, { id }: IGoogleBookOnQueryArguments) {
     const book = await getBook(id);
     if (!book) {
       throw new Error(`Book ${id} not found`);
