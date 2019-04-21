@@ -1,3 +1,4 @@
+import { IonContent } from '@ionic/react';
 import {
   NavbarBrand,
   NavbarBurger,
@@ -29,7 +30,7 @@ export const Join: React.SFC<RouteComponentProps<{}>> = ({
       {({ isActive, onClick }) => (
         <>
           <NavbarBrand>
-            <NavbarLink href="/">NuffRead</NavbarLink>
+            <NavbarLink href="/">nuffread</NavbarLink>
             <NavbarBurger isActive={isActive} onClick={onClick} />
           </NavbarBrand>
 
@@ -49,8 +50,10 @@ export const Join: React.SFC<RouteComponentProps<{}>> = ({
       )}
     </TopNav>
 
-    <main className="has-navbar-fixed-top">
-      <Routes base={match.url} routes={routes} />
+    <main>
+      <IonContent>
+        <Routes base={match.url} routes={routes} />
+      </IonContent>
     </main>
   </>
 );

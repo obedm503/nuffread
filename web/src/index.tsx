@@ -1,19 +1,19 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import * as serviceWorker from './serviceWorker';
-
+import { IonApp } from '@ionic/react';
 import { ApolloClient } from 'apollo-client';
 import { onError } from 'apollo-link-error';
 import { createHttpLink } from 'apollo-link-http';
+import React from 'react';
 import { ApolloProvider } from 'react-apollo';
+import ReactDOM from 'react-dom';
 import { HelmetProvider } from 'react-helmet-async';
 import { BrowserRouter } from 'react-router-dom';
 import { App, createCache } from './app';
+import * as serviceWorker from './serviceWorker';
 import { HostProvider } from './state/host';
 import { UAProvider } from './state/ua';
 
 const httpLink = createHttpLink({
-  uri: process.env.API,
+  uri: process.env.REACT_APP_API,
   credentials: 'include',
 });
 
@@ -36,7 +36,9 @@ const main = (
       <HelmetProvider>
         <ApolloProvider client={client}>
           <BrowserRouter>
-            <App />
+            <IonApp>
+              <App />
+            </IonApp>
           </BrowserRouter>
         </ApolloProvider>
       </HelmetProvider>

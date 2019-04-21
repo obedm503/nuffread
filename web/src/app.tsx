@@ -16,11 +16,13 @@ import {
   RouteProps,
   withRouter,
 } from 'react-router';
+import { IQuery, User } from '../../schema.gql';
 import { Buy } from './buy';
 import { Error, Footer, Routes } from './components';
 import { Join } from './join';
 import { Launch } from './launch';
 import { Admin, Login } from './login';
+import './main.scss';
 import { Sell } from './sell';
 import { IsDesktopProvider } from './state/desktop';
 import { UserProvider } from './state/user';
@@ -66,8 +68,8 @@ function ToHome() {
 
 class App extends React.Component<RouteComponentProps<{}>> {
   makeRoutes = memoize(
-    (user?: GQL.User): RouteProps[] => {
-      if (process.env.MODE !== 'ready') {
+    (user?: User): RouteProps[] => {
+      if (process.env.REACT_APP_MODE !== 'ready') {
         return [{ component: Launch }];
       }
 
@@ -90,7 +92,7 @@ class App extends React.Component<RouteComponentProps<{}>> {
   render() {
     const { match } = this.props;
     return (
-      <Query<GQL.IQuery> query={ME}>
+      <Query<IQuery> query={ME}>
         {({ loading, data, error }) => {
           if (loading || !data) {
             return null;
@@ -105,7 +107,7 @@ class App extends React.Component<RouteComponentProps<{}>> {
             <IsDesktopProvider>
               <UserProvider value={{ user: me }}>
                 <Helmet>
-                  <title>NuffRead</title>
+                  <title>nuffread</title>
                   <meta
                     name="description"
                     content="The book marketplace for students"

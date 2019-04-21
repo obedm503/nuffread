@@ -1,15 +1,9 @@
-import {
-  NavbarBrand,
-  NavbarBurger,
-  NavbarEnd,
-  NavbarItem,
-  NavbarMenu,
-} from 'bloomer';
 import * as React from 'react';
 import { RouteComponentProps, RouteProps } from 'react-router';
-import { Routes, TopNav, NavbarLink } from '../components';
+import { Routes, TopNav } from '../components';
 import { Details } from './details';
 import { Home } from './home';
+import { IonItem, IonLabel, IonContent } from '@ionic/react';
 
 const routes: RouteProps[] = [
   {
@@ -26,27 +20,29 @@ export const Buy: React.SFC<RouteComponentProps<{}>> = ({ match }) => {
       <TopNav>
         {({ isActive, onClick }) => (
           <>
-            <NavbarBrand>
-              <NavbarItem>NuffRead</NavbarItem>
-              <NavbarBurger isActive={isActive} onClick={onClick} />
-            </NavbarBrand>
-
-            <NavbarMenu isActive={isActive}>
-              <NavbarEnd>
-                <NavbarLink href="/join">
-                  <b>Join</b>
-                </NavbarLink>
-                <NavbarLink href="/login">
-                  <span>Login</span>
-                </NavbarLink>
-              </NavbarEnd>
-            </NavbarMenu>
+            <IonItem>
+              <IonLabel>nuffread</IonLabel>
+            </IonItem>
+            {/* <NavbarMenu isActive={isActive}>
+              <NavbarEnd> */}
+            <IonItem href="/join">
+              <IonLabel>
+                <b>Join</b>
+              </IonLabel>
+            </IonItem>
+            <IonItem href="/login">
+              <IonLabel>Login</IonLabel>
+            </IonItem>
+            {/* </NavbarEnd>
+            </NavbarMenu> */}
           </>
         )}
       </TopNav>
 
-      <main className="has-navbar-fixed-top">
-        <Routes base={match.url} routes={routes} />
+      <main>
+        <IonContent>
+          <Routes base={match.url} routes={routes} />
+        </IonContent>
       </main>
     </>
   );

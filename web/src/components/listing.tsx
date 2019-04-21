@@ -8,10 +8,11 @@ import {
   Tag,
 } from 'bloomer';
 import * as React from 'react';
+import { IBook, IListing } from '../../../schema.gql';
 import { Color } from '../util';
 
 export const Listing: React.SFC<{
-  listing: GQL.IListing | GQL.IBook;
+  listing: IListing | IBook;
   onClick?;
   priceColor?: Color;
   priceSize?: 'medium' | 'large';

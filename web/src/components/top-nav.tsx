@@ -1,7 +1,7 @@
-import { Container, Navbar } from 'bloomer';
+import { IonNav, IonToolbar } from '@ionic/react';
 import * as React from 'react';
-import { classes, Color } from '../util';
 import { NavLink } from 'react-router-dom';
+import { classes, Color } from '../util';
 
 type RenderChildren =
   | React.ReactNode
@@ -13,7 +13,7 @@ type RenderChildren =
 type Props = {
   className?: string;
   isTopColor?: Color;
-  isColor?: Color;
+  color?: Color;
   hasShaddow?: boolean;
   children: RenderChildren;
 };
@@ -27,27 +27,20 @@ export class TopNav extends React.PureComponent<Props, { isActive: boolean }> {
       children,
       className,
       isTopColor = 'primary',
-      isColor,
+      color,
       hasShaddow = true,
     } = this.props;
     return (
-      <Navbar
-        className={classes('is-fixed-top', className, {
-          [`is-top-${isTopColor}`]: isTopColor,
-          [`is-${isColor}`]: isColor,
-        })}
-      >
-        {hasShaddow === false ? null : <div className="shadow" />}
-
-        <Container>
+      <IonNav color={color}>
+        <IonToolbar>
           {typeof children === 'function'
             ? (children as Function)({
                 isActive: this.state.isActive,
                 onClick: this.onClick,
               })
             : children}
-        </Container>
-      </Navbar>
+        </IonToolbar>
+      </IonNav>
     );
   }
 }

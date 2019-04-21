@@ -1,17 +1,12 @@
-import { Container, Content, Hero, HeroBody } from 'bloomer';
+import { IonFooter, IonToolbar, IonTitle } from '@ionic/react';
 import * as React from 'react';
 
 export const Footer = () => (
-  <Hero tag="footer" isColor="light">
-    <HeroBody>
-      <Container>
-        <Content hasTextAlign="centered">
-          <p>
-            <strong>NuffRead</strong> &copy; Copyright{' '}
-            {new Date().getFullYear()}
-          </p>
-        </Content>
-      </Container>
-    </HeroBody>
-  </Hero>
+  <IonFooter>
+    <IonToolbar color="light">
+      <p style={{ textAlign: 'center' }}>
+        <strong>nuffread</strong> &copy; Copyright {new Date().getFullYear()}
+      </p>
+    </IonToolbar>
+  </IonFooter>
 );

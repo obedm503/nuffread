@@ -1,11 +1,12 @@
-import { Column, Columns, Container, Image } from 'bloomer';
+import { IonCol, IonImg, IonRow } from '@ionic/react';
 import { range } from 'lodash';
 import * as React from 'react';
 import { Query } from 'react-apollo';
 import { RouteComponentProps } from 'react-router';
+import { IQuery } from '../../../schema.gql';
 import { Error } from '../components';
-import { SEARCH } from '../queries';
 import { Listing } from '../components/listing';
+import { SEARCH } from '../queries';
 import { SellerDetails } from './components/seller-details';
 
 export const Details: React.SFC<RouteComponentProps<{ listingId: string }>> = ({
@@ -13,46 +14,46 @@ export const Details: React.SFC<RouteComponentProps<{ listingId: string }>> = ({
     params: { listingId },
   },
 }) => (
-  <Query<GQL.IQuery> query={SEARCH}>
+  <Query<IQuery> query={SEARCH}>
     {({ error, data, loading }) => {
       if (error) {
         return <Error value={error} />;
       }
       if (loading || !data || !data.search) {
-        return <Container>Loading</Container>;
+        return <section>Loading</section>;
       }
 
       const listing = data.search.find(b => b.id === listingId);
 
       if (!listing) {
-        return <Container>Loading</Container>;
+        return <section>Loading</section>;
       }
 
       return (
         <>
-          <Container>
-            <Columns>
-              <Column className="scrolls">
+          <section>
+            <IonRow>
+              <IonCol class="scrolls">
                 <Listing
                   listing={listing}
                   priceColor="success"
                   priceSize="large"
                 />
-              </Column>
+              </IonCol>
 
-              <Column>
+              <IonCol>
                 <SellerDetails listingId={listingId} />
-              </Column>
-            </Columns>
+              </IonCol>
+            </IonRow>
 
-            <Columns isMultiline>
+            <IonRow>
               {range(12).map(i => (
-                <Column isSize="narrow" key={i}>
-                  <Image isSize="96x96" src="/img/128x128.png" />
-                </Column>
+                <IonCol key={i}>
+                  <IonImg src="/img/128x128.png" />
+                </IonCol>
               ))}
-            </Columns>
-          </Container>
+            </IonRow>
+          </section>
         </>
       );
     }}

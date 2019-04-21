@@ -3,6 +3,7 @@ import gql from 'graphql-tag';
 import * as React from 'react';
 import { Query } from 'react-apollo';
 import { RouteComponentProps } from 'react-router';
+import { IQuery } from '../../../schema.gql';
 import { ListingsMain } from '../buy/components/listings';
 import { Error } from '../components';
 import { Listing } from '../components/listing';
@@ -24,7 +25,7 @@ const GET_GOOGLE_BOOK = gql`
 `;
 
 const GoogleBook: React.SFC<{ id: string }> = ({ id }) => (
-  <Query<GQL.IQuery> query={GET_GOOGLE_BOOK} variables={{ id }}>
+  <Query<IQuery> query={GET_GOOGLE_BOOK} variables={{ id }}>
     {({ loading, error, data }) => {
       if (loading) {
         return null;
@@ -82,7 +83,7 @@ const SearchListings = ({
   searchValue: string;
 }) => {
   return (
-    <Query<GQL.IQuery> query={SEARCH_GOOGLE} variables={{ query: searchValue }}>
+    <Query<IQuery> query={SEARCH_GOOGLE} variables={{ query: searchValue }}>
       {({ error, data, loading }) => {
         if (loading) {
           return null;

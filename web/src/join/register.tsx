@@ -10,6 +10,7 @@ import * as yup from 'yup';
 import { IonIcon } from '../components';
 import { Email, Password } from '../controls';
 import { classes, passwordSchema } from '../util';
+import { IMutation } from '../../../schema.gql';
 
 const REGISTER = gql`
   mutation Register($email: String!, $password: String!) {
@@ -39,14 +40,14 @@ const schema = yup.object<FormSchema>().shape({
 });
 
 class RegisterForm extends React.Component<RouteComponentProps<never>> {
-  onSubmit = (mutate: MutationFn<GQL.IMutation>) => ({ email, password }) =>
+  onSubmit = (mutate: MutationFn<IMutation>) => ({ email, password }) =>
     mutate({
       variables: { email, password },
     });
 
   render() {
     return (
-      <Mutation<GQL.IMutation> mutation={REGISTER}>
+      <Mutation<IMutation> mutation={REGISTER}>
         {(mutate, { loading, error, data }) => {
           const duplicateUserError =
             error &&

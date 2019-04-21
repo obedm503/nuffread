@@ -14,6 +14,7 @@ import * as React from 'react';
 import { Mutation } from 'react-apollo';
 import { Redirect, RouteComponentProps } from 'react-router';
 import * as yup from 'yup';
+import { IMutation } from '../../../schema.gql';
 import { Error, IonIcon } from '../components';
 import { Email } from '../controls';
 import { UserConsumer } from '../state/user';
@@ -28,7 +29,7 @@ const RESEND_EMAIL = gql`
 class ResendEmail extends React.PureComponent<{ binId: string }> {
   render() {
     return (
-      <Mutation<GQL.IMutation>
+      <Mutation<IMutation>
         mutation={RESEND_EMAIL}
         variables={{ binId: this.props.binId }}
       >
@@ -69,7 +70,7 @@ class ConfirmEmail extends React.Component<{
 }> {
   render() {
     return (
-      <Mutation<GQL.IMutation> mutation={RESEND_EMAIL}>
+      <Mutation<IMutation> mutation={RESEND_EMAIL}>
         {(mutate, { loading, data, error }) => {
           if (data && data.resendEmail) {
             return <Redirect to={`/join/confirm/${data.resendEmail}`} />;

@@ -1,3 +1,4 @@
+import { IonContent } from '@ionic/react';
 import {
   DropdownDivider,
   NavbarBrand,
@@ -30,7 +31,7 @@ export const Sell: React.SFC<RouteComponentProps<{}>> = ({ match }) => (
       {({ isActive, onClick }) => (
         <>
           <NavbarBrand>
-            <NavbarLink href="/">NuffRead</NavbarLink>
+            <NavbarLink href="/">nuffread</NavbarLink>
             <NavbarBurger isActive={isActive} onClick={onClick} />
           </NavbarBrand>
 
@@ -57,8 +58,10 @@ export const Sell: React.SFC<RouteComponentProps<{}>> = ({ match }) => (
       )}
     </TopNav>
 
-    <main className="has-navbar-fixed-top">
-      <Routes base={match.url} routes={routes} />
+    <main>
+      <IonContent>
+        <Routes base={match.url} routes={routes} />
+      </IonContent>
     </main>
   </>
 );

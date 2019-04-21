@@ -2,8 +2,9 @@ import { Column, Columns, Container } from 'bloomer';
 import gql from 'graphql-tag';
 import * as React from 'react';
 import { Query } from 'react-apollo';
-import { Listing } from '../components/listing';
+import { IQuery } from '../../../schema.gql';
 import { Error } from '../components';
+import { Listing } from '../components/listing';
 import { BASIC_LISTING } from '../queries';
 
 const MY_LISTINGS = gql`
@@ -24,7 +25,7 @@ const MY_LISTINGS = gql`
 export const Listings: React.SFC = () => (
   <Container>
     <Columns isMultiline>
-      <Query<GQL.IQuery> query={MY_LISTINGS}>
+      <Query<IQuery> query={MY_LISTINGS}>
         {({ loading, error, data }) => {
           if (loading) {
             return null;

@@ -1,28 +1,18 @@
-import {
-  Content,
-  Image,
-  Level,
-  LevelItem,
-  LevelLeft,
-  Media,
-  MediaContent,
-  MediaLeft,
-} from 'bloomer';
+import { IonIcon, IonImg, IonItem } from '@ionic/react';
 import * as React from 'react';
-import { IonIcon } from '../../components';
 
 export const SellerDetails: React.SFC<{
   listingId: string;
 }> = () => (
-  <Media>
-    <MediaLeft>
-      <Image
+  <div>
+    <div>
+      <IonImg
         // isSize="128x128"
         src="/img/128x128.png"
       />
-    </MediaLeft>
-    <MediaContent>
-      <Content>
+    </div>
+    <div>
+      <div>
         <p>
           <strong>John Doe</strong>
           <br />
@@ -36,20 +26,20 @@ export const SellerDetails: React.SFC<{
             <a href="tel: +123456789">+123456789</a>
           </small>
         </p>
-      </Content>
-      <Level isMobile>
-        <LevelLeft>
-          <LevelItem href="#">
+      </div>
+      <div>
+        <div>
+          <IonItem href="#">
             <IonIcon size="small" name="call" />
-          </LevelItem>
-          <LevelItem href="#">
+          </IonItem>
+          <IonItem href="#">
             <IonIcon size="small" name="logo-facebook" />
-          </LevelItem>
-          <LevelItem href="#">
+          </IonItem>
+          <IonItem href="#">
             <IonIcon size="small" name="mail" />
-          </LevelItem>
-        </LevelLeft>
-      </Level>
-    </MediaContent>
-  </Media>
+          </IonItem>
+        </div>
+      </div>
+    </div>
+  </div>
 );

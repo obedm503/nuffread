@@ -1,7 +1,8 @@
 import * as React from 'react';
+import { User } from '../../../schema.gql';
 
 export type UserState = {
-  user?: GQL.User;
+  user?: User;
 };
 
 const { Provider: UserProvider, Consumer: UserConsumer } = React.createContext<

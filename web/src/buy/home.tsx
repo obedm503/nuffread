@@ -3,6 +3,7 @@ import { resolve } from 'path';
 import * as React from 'react';
 import { Query } from 'react-apollo';
 import { RouteComponentProps } from 'react-router';
+import { IQuery } from '../../../schema.gql';
 import { Error } from '../components';
 import { SearchBar } from '../components/search-bar';
 import { BASIC_LISTING, GET_LISTING, SEARCH } from '../queries';
@@ -15,7 +16,7 @@ const Listing: React.SFC<{
   id: string;
   base: string;
 }> = ({ id, base }) => (
-  <Query<GQL.IQuery> query={GET_LISTING} variables={{ id }}>
+  <Query<IQuery> query={GET_LISTING} variables={{ id }}>
     {({ loading, error, data }) => {
       if (loading) {
         return null;
@@ -54,7 +55,7 @@ const SearchListings = ({
   base,
 }: ListingsProps & { searchValue: string }) => {
   return (
-    <Query<GQL.IQuery> query={SEARCH} variables={{ query: searchValue }}>
+    <Query<IQuery> query={SEARCH} variables={{ query: searchValue }}>
       {({ error, data }) => {
         if (error || !data || !data.search) {
           return <Error value={error} />;
@@ -96,7 +97,7 @@ const TopListings = ({
   onClick,
   base,
 }: ListingsProps) => (
-  <Query<GQL.IQuery> query={TOP_LISTINGS}>
+  <Query<IQuery> query={TOP_LISTINGS}>
     {({ error, data }) => {
       if (error || !data || !data.top) {
         return <Error value={error} />;

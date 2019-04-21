@@ -1,12 +1,13 @@
-import { Column, Columns, Container } from 'bloomer';
+import { IonCol, IonRow } from '@ionic/react';
 import * as React from 'react';
+import { IBook, IListing } from '../../../../schema.gql';
 import { Listing } from '../../components/listing';
 
 export class ListingsMain extends React.PureComponent<{
   id?: string;
   isDesktop: boolean;
   onClick: any;
-  listings: Array<GQL.IListing | GQL.IBook>;
+  listings: Array<IListing | IBook>;
   base: string;
   children: (props: { id: string; base: string }) => React.ReactNode;
 }> {
@@ -15,10 +16,10 @@ export class ListingsMain extends React.PureComponent<{
     const { id, isDesktop, listings, base, children } = this.props;
     const Details = children as Function;
     return (
-      <Container className={id ? 'buy-main' : ''}>
-        <Columns>
+      <div className={id ? 'buy-main' : ''}>
+        <IonRow>
           {isDesktop || !id ? (
-            <Column className={id ? 'scrolls' : ''}>
+            <IonCol class={id ? 'scrolls' : ''}>
               {listings.map((listing, i) => {
                 if (!listing) {
                   return null;
@@ -33,16 +34,16 @@ export class ListingsMain extends React.PureComponent<{
                   />
                 );
               })}
-            </Column>
+            </IonCol>
           ) : null}
 
           {id ? (
-            <Column style={{ width: '50%' }}>
+            <IonCol style={{ width: '50%' }}>
               <Details id={id} base={base} />
-            </Column>
+            </IonCol>
           ) : null}
-        </Columns>
-      </Container>
+        </IonRow>
+      </div>
     );
   }
 }

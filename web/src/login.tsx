@@ -1,5 +1,12 @@
+import {
+  IonCol,
+  IonIcon,
+  IonItem,
+  IonLabel,
+  IonContent,
+  IonRow,
+} from '@ionic/react';
 import ApolloClient from 'apollo-client';
-import { Button, Column, Columns, Container, Hero, HeroBody, NavbarBrand } from 'bloomer';
 import { Form, Formik } from 'formik';
 import gql from 'graphql-tag';
 import { History } from 'history';
@@ -8,7 +15,8 @@ import { Mutation, MutationFn } from 'react-apollo';
 import { RouteComponentProps } from 'react-router';
 import { Link } from 'react-router-dom';
 import * as yup from 'yup';
-import { IonIcon, NavbarLink, TopNav } from './components';
+import { IMutation, UserType } from '../../schema.gql';
+import { TopNav } from './components';
 import { Email, Password } from './controls';
 
 const LOGIN = gql`
@@ -18,13 +26,13 @@ const LOGIN = gql`
 `;
 
 class LoginForm extends React.Component<{
-  type: keyof typeof GQL.UserType;
+  type: keyof typeof UserType;
   history: History;
   schema;
   admin?: boolean;
 }> {
   onSubmit = (
-    mutate: MutationFn<GQL.IMutation>,
+    mutate: MutationFn<IMutation>,
     client: ApolloClient<Object>,
   ) => async ({ email, password }) => {
     const res = await mutate({
@@ -38,7 +46,7 @@ class LoginForm extends React.Component<{
   render() {
     const { schema, admin } = this.props;
     return (
-      <Mutation<GQL.IMutation> mutation={LOGIN}>
+      <Mutation<IMutation> mutation={LOGIN}>
         {(mutate, { loading, client, error }) => {
           return (
             <Formik<{ email: string; password: string }>
@@ -98,15 +106,15 @@ class LoginForm extends React.Component<{
                       : null}
 
                     {admin ? null : (
-                      <Button href="/join/signup">
+                      <IonItem href="/join/signup">
                         <IonIcon name="add" />
-                        <span>Join</span>
-                      </Button>
+                        <IonLabel>Join</IonLabel>
+                      </IonItem>
                     )}
-                    <Button isPulled="right" isColor="primary" type="submit">
+                    <IonItem color="primary" type="submit">
                       <IonIcon name="log-in" />
-                      <span>Login</span>
-                    </Button>
+                      <IonLabel>Login</IonLabel>
+                    </IonItem>
                   </Form>
                 );
               }}
@@ -144,28 +152,22 @@ export const Login: React.SFC<
   return (
     <>
       <TopNav>
-        <NavbarBrand>
-          <NavbarLink href="/">NuffRead</NavbarLink>
-        </NavbarBrand>
+        <IonItem href="/">nuffread</IonItem>
       </TopNav>
 
-      <main className="has-navbar-fixed-top">
-        <Hero isFullHeight>
-          <HeroBody>
-            <Container>
-              <Columns isCentered>
-                <Column isSize={4}>
-                  <LoginForm
-                    history={history}
-                    type={admin ? 'ADMIN' : 'SELLER'}
-                    schema={admin ? adminSchema : sellerSchema}
-                    admin={admin}
-                  />
-                </Column>
-              </Columns>
-            </Container>
-          </HeroBody>
-        </Hero>
+      <main>
+        <IonContent>
+          <IonRow>
+            <IonCol size="4">
+              <LoginForm
+                history={history}
+                type={admin ? 'ADMIN' : 'SELLER'}
+                schema={admin ? adminSchema : sellerSchema}
+                admin={admin}
+              />
+            </IonCol>
+          </IonRow>
+        </IonContent>
       </main>
     </>
   );

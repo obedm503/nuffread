@@ -1,15 +1,7 @@
-import {
-  Button,
-  Container,
-  Control,
-  Field,
-  Hero,
-  HeroBody,
-  Input,
-} from 'bloomer';
 import { debounce } from 'lodash';
 import * as React from 'react';
 import { IonIcon } from './icon';
+import { IonSearchbar } from '@ionic/react';
 
 type SearchBarProps = {
   onSearch: (search: string) => void;
@@ -27,8 +19,9 @@ export class SearchBar extends React.PureComponent<SearchBarProps> {
   render() {
     const { searchValue } = this.props;
     return (
-      <Hero isSize="medium" isColor="light">
-        <HeroBody style={{ paddingTop: '1rem', paddingBottom: '1rem' }}>
+      <IonSearchbar color="light">
+
+        {/* <HeroBody style={{ paddingTop: '1rem', paddingBottom: '1rem' }}>
           <Container>
             <Field hasAddons style={{ width: '100%' }}>
               <Control>
@@ -51,8 +44,8 @@ export class SearchBar extends React.PureComponent<SearchBarProps> {
               </Control>
             </Field>
           </Container>
-        </HeroBody>
-      </Hero>
+        </HeroBody> */}
+      </IonSearchbar>
     );
   }
 }

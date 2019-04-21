@@ -1,36 +1,19 @@
-import { Container, Hero, HeroBody, NavbarBrand, Title } from 'bloomer';
+import { IonContent, IonTitle, IonToolbar } from '@ionic/react';
 import * as React from 'react';
-import { NavbarLink, TopNav } from '../components';
 
 export const Launch = () => (
   <>
-    <TopNav isColor="primary" hasShaddow={false}>
-      <NavbarBrand>
-        <NavbarLink href="/">NuffRead</NavbarLink>
-      </NavbarBrand>
-    </TopNav>
+    <IonToolbar>
+      <IonTitle>nuffread</IonTitle>
+    </IonToolbar>
 
-    <main className="has-navbar-fixed-top">
-      <Hero isColor="primary" isFullHeight>
-        <HeroBody>
-          <Container>
-            <Title
-              style={{
-                display: 'flex',
-                flexWrap: 'wrap',
-              }}
-            >
-              <span>NuffRead</span>
-              <span
-                className="has-text-weight-light has-text-black"
-                style={{ borderLeft: '1rem solid transparent' }}
-              >
-                is Coming Soon
-              </span>
-            </Title>
-          </Container>
-        </HeroBody>
-      </Hero>
-    </main>
+    <IonContent color="light">
+      <div style={{ display: 'flex', minHeight: '100%', alignItems: 'center' }}>
+        <p style={{ margin: '5rem' }}>
+          <h1 style={{ fontSize: '4rem' }}>Welcome,</h1>
+          <h2 style={{ fontSize: '3rem' }}>nuffread is Coming Soon</h2>
+        </p>
+      </div>
+    </IonContent>
   </>
 );

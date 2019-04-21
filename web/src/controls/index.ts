@@ -1,4 +1,3 @@
-export { ControlProps } from './control';
 export { Date } from './date';
 export { Email } from './email';
 export { Password } from './password';

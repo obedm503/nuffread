@@ -1,0 +1,40 @@
+$primary: rgb(239, 148, 57);
+$secondary: rgb(252, 170, 88);
+
+@media screen {
+  img.print-cover.print-page {
+    display: none;
+  }
+}
+
+@media print {
+  .is-hidden-print {
+    display: none;
+  }
+
+  @page {
+    margin-top: 1in;
+    margin-bottom: 1in;
+  }
+
+  @page :first {
+    margin: 0;
+  }
+
+  .print-page {
+    page-break-inside: avoid;
+    page-break-after: always;
+
+    padding-left: 1in;
+    padding-right: 1in;
+  }
+
+  img.print-cover.print-page {
+    padding: 0;
+  }
+
+  .box {
+    page-break-inside: avoid;
+  }
+}
+

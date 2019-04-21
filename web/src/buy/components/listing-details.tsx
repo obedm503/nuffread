@@ -1,28 +1,25 @@
-import { Level, LevelItem, LevelLeft, Tag } from 'bloomer';
+import { IonBadge, IonItem } from '@ionic/react';
 import { resolve } from 'path';
 import * as React from 'react';
 import { Link } from 'react-router-dom';
+import { IListing } from '../../../../schema.gql';
 import { IonIcon } from '../../components';
 import { Listing } from '../../components/listing';
 
 export const ListingDetails: React.SFC<{
-  listing: GQL.IListing;
+  listing: IListing;
   base: string;
 }> = ({ listing, base }) => (
   <Listing priceColor="success" priceSize="large" listing={listing}>
-    <Level isMobile>
-      <LevelLeft>
-        <LevelItem>
-          <Link to={resolve(base, 'details')}>
-            <Tag isColor="info" isSize="medium">
-              More Details
-            </Tag>
-          </Link>
-        </LevelItem>
-        <LevelItem href="#">
+    <div>
+      <div>
+        <Link to={resolve(base, 'details')}>
+          <IonBadge color="info">More Details</IonBadge>
+        </Link>
+        <IonItem href="#">
           <IonIcon size="small" name="barcode" />
-        </LevelItem>
-      </LevelLeft>
-    </Level>
+        </IonItem>
+      </div>
+    </div>
   </Listing>
 );
