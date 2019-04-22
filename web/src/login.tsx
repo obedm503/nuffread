@@ -1,10 +1,16 @@
 import {
+  IonButton,
+  IonCard,
+  IonCardContent,
   IonCol,
-  IonIcon,
-  IonItem,
-  IonLabel,
   IonContent,
+  IonGrid,
+  IonIcon,
+  IonLabel,
   IonRow,
+  IonTitle,
+  IonToolbar,
+  IonItem,
 } from '@ionic/react';
 import ApolloClient from 'apollo-client';
 import { Form, Formik } from 'formik';
@@ -16,7 +22,6 @@ import { RouteComponentProps } from 'react-router';
 import { Link } from 'react-router-dom';
 import * as yup from 'yup';
 import { IMutation, UserType } from '../../schema.gql';
-import { TopNav } from './components';
 import { Email, Password } from './controls';
 
 const LOGIN = gql`
@@ -61,60 +66,80 @@ class LoginForm extends React.Component<{
 
                 return (
                   <Form>
-                    <Email
-                      className="is-horizontal"
-                      name="email"
-                      label="Email"
-                      touched={touched}
-                      errors={errors}
-                    />
-                    <Password
-                      name="password"
-                      label="Password"
-                      touched={touched}
-                      errors={errors}
-                    />
+                    <IonGrid>
+                      <IonRow>
+                        <IonCol>
+                          <Email
+                            name="email"
+                            label="Email"
+                            touched={touched}
+                            errors={errors}
+                          />
+                          <Password
+                            name="password"
+                            label="Password"
+                            touched={touched}
+                            errors={errors}
+                          />
 
-                    {error
-                      ? error.graphQLErrors.map(err => {
-                          let errMsg;
-                          switch (err.message) {
-                            case 'DUPLICATE_USER':
-                              errMsg = 'Email is already registered.';
-                              break;
-                            case 'NOT_CONFIRMED':
-                              errMsg = (
-                                <>
-                                  Email is not yet confirmed. To confirm your
-                                  email{' '}
-                                  <Link to="/join/confirm">click here</Link>.
-                                </>
-                              );
-                              break;
-                            case 'WRONG_CREDENTIALS':
-                              errMsg = 'Wrong email or password.';
-                              break;
-                            default:
-                              return null;
-                          }
-                          return (
-                            <div className="field" key={err.message}>
-                              <p className="help is-danger">{errMsg}</p>
-                            </div>
-                          );
-                        })
-                      : null}
+                          {error
+                            ? error.graphQLErrors.map(err => {
+                                let errMsg;
+                                switch (err.message) {
+                                  case 'DUPLICATE_USER':
+                                    errMsg = 'Email is already registered.';
+                                    break;
+                                  case 'NOT_CONFIRMED':
+                                    errMsg = (
+                                      <>
+                                        Email is not yet confirmed. To confirm
+                                        your email{' '}
+                                        <Link to="/join/confirm">
+                                          click here
+                                        </Link>
+                                        .
+                                      </>
+                                    );
+                                    break;
+                                  case 'WRONG_CREDENTIALS':
+                                    errMsg = 'Wrong email or password.';
+                                    break;
+                                  default:
+                                    return null;
+                                }
 
-                    {admin ? null : (
-                      <IonItem href="/join/signup">
-                        <IonIcon name="add" />
-                        <IonLabel>Join</IonLabel>
-                      </IonItem>
-                    )}
-                    <IonItem color="primary" type="submit">
-                      <IonIcon name="log-in" />
-                      <IonLabel>Login</IonLabel>
-                    </IonItem>
+                                return (
+                                  <IonItem key={err.message}>
+                                    <IonLabel color="danger">{errMsg}</IonLabel>
+                                  </IonItem>
+                                );
+                              })
+                            : null}
+                        </IonCol>
+                      </IonRow>
+
+                      <IonRow>
+                        {admin ? null : (
+                          <IonCol>
+                            <IonButton expand="block" href="/join/signup">
+                              <IonIcon slot="start" name="add" />
+                              <IonLabel>Join</IonLabel>
+                            </IonButton>
+                          </IonCol>
+                        )}
+
+                        <IonCol>
+                          <IonButton
+                            expand="block"
+                            color="primary"
+                            type="submit"
+                          >
+                            <IonIcon slot="start" name="log-in" />
+                            <IonLabel>Login</IonLabel>
+                          </IonButton>
+                        </IonCol>
+                      </IonRow>
+                    </IonGrid>
                   </Form>
                 );
               }}
@@ -151,24 +176,28 @@ export const Login: React.SFC<
 > = ({ history, admin = false }) => {
   return (
     <>
-      <TopNav>
-        <IonItem href="/">nuffread</IonItem>
-      </TopNav>
+      <IonToolbar>
+        <IonTitle>nuffread</IonTitle>
+      </IonToolbar>
 
-      <main>
-        <IonContent>
+      <IonContent>
+        <IonGrid>
           <IonRow>
-            <IonCol size="4">
-              <LoginForm
-                history={history}
-                type={admin ? 'ADMIN' : 'SELLER'}
-                schema={admin ? adminSchema : sellerSchema}
-                admin={admin}
-              />
+            <IonCol sizeMd="4" offsetMd="4">
+              <IonCard>
+                <IonCardContent>
+                  <LoginForm
+                    history={history}
+                    type={admin ? 'ADMIN' : 'SELLER'}
+                    schema={admin ? adminSchema : sellerSchema}
+                    admin={admin}
+                  />
+                </IonCardContent>
+              </IonCard>
             </IonCol>
           </IonRow>
-        </IonContent>
-      </main>
+        </IonGrid>
+      </IonContent>
     </>
   );
 };
