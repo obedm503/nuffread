@@ -1,12 +1,11 @@
 import {
-  Button,
-  Column,
-  Columns,
-  Container,
-  Content,
-  Hero,
-  HeroBody,
-} from 'bloomer';
+  IonButton,
+  IonCol,
+  IonGrid,
+  IonLabel,
+  IonRow,
+  IonIcon,
+} from '@ionic/react';
 import { Form, Formik } from 'formik';
 import gql from 'graphql-tag';
 import { History } from 'history';
@@ -15,7 +14,7 @@ import { Mutation } from 'react-apollo';
 import { Redirect, RouteComponentProps } from 'react-router';
 import * as yup from 'yup';
 import { IMutation } from '../../../schema.gql';
-import { Error, IonIcon } from '../components';
+import { Error } from '../components';
 import { Email } from '../controls';
 import { UserConsumer } from '../state/user';
 import { Color } from '../util';
@@ -39,13 +38,13 @@ class ResendEmail extends React.PureComponent<{ binId: string }> {
           }
 
           return (
-            <Button
+            <IonButton
               onClick={() => mutate()}
-              isColor={'primary' as Color}
-              isLoading={loading}
+              color={'primary' as Color}
+              // loading={loading}
             >
               Click here to resend email.
-            </Button>
+            </IonButton>
           );
         }}
       </Mutation>
@@ -90,7 +89,6 @@ class ConfirmEmail extends React.Component<{
                 return (
                   <Form>
                     <Email
-                      className="is-horizontal"
                       name="email"
                       label="Email"
                       touched={touched}
@@ -104,10 +102,10 @@ class ConfirmEmail extends React.Component<{
                               <div className="field" key={err.message}>
                                 <p className="help is-danger">
                                   Email is not registered.
-                                  <Button href="/join/signup">
-                                    <IonIcon name="add" />
-                                    <span>Join Instead</span>
-                                  </Button>
+                                  <IonButton href="/join/signup">
+                                    <IonIcon slot="start" name="add" />
+                                    <IonLabel>Join Instead</IonLabel>
+                                  </IonButton>
                                 </p>
                               </div>
                             );
@@ -116,10 +114,10 @@ class ConfirmEmail extends React.Component<{
                         })
                       : null}
 
-                    <Button isPulled="right" isColor="primary" type="submit">
-                      <IonIcon name="log-in" />
+                    <IonButton color="primary" type="submit">
+                      <IonIcon slot="start" name="log-in" />
                       <span>Send Email</span>
-                    </Button>
+                    </IonButton>
                   </Form>
                 );
               }}
@@ -136,39 +134,35 @@ export class Confirm extends React.PureComponent<
 > {
   render() {
     return (
-      <Hero isFullHeight>
-        <HeroBody>
-          <Container>
-            <Columns isCentered>
-              <Column isSize={4}>
-                <UserConsumer>
-                  {({ user }) => {
-                    if (user) {
-                      return <Redirect to="/" />;
-                    }
+      <IonGrid>
+        <IonRow>
+          <IonCol sizeSm="4" offsetSm="4">
+            <UserConsumer>
+              {({ user }) => {
+                if (user) {
+                  return <Redirect to="/" />;
+                }
 
-                    if (!this.props.match.params.binId) {
-                      return <ConfirmEmail history={this.props.history} />;
-                    }
+                if (!this.props.match.params.binId) {
+                  return <ConfirmEmail history={this.props.history} />;
+                }
 
-                    return (
-                      <Content>
-                        <p className="is-size-5">
-                          An email has been sent to your email. Please click the
-                          link to confirm and continue to your account.
-                        </p>
-                        <p className="is-size-5">
-                          <ResendEmail binId={this.props.match.params.binId} />
-                        </p>
-                      </Content>
-                    );
-                  }}
-                </UserConsumer>
-              </Column>
-            </Columns>
-          </Container>
-        </HeroBody>
-      </Hero>
+                return (
+                  <>
+                    <p className="is-size-5">
+                      An email has been sent to your email. Please click the
+                      link to confirm and continue to your account.
+                    </p>
+                    <p className="is-size-5">
+                      <ResendEmail binId={this.props.match.params.binId} />
+                    </p>
+                  </>
+                );
+              }}
+            </UserConsumer>
+          </IonCol>
+        </IonRow>
+      </IonGrid>
     );
   }
 }

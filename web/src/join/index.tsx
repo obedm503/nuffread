@@ -1,14 +1,13 @@
-import { IonContent } from '@ionic/react';
 import {
-  NavbarBrand,
-  NavbarBurger,
-  NavbarEnd,
-  NavbarMenu,
-  NavbarStart,
-} from 'bloomer';
+  IonButton,
+  IonButtons,
+  IonContent,
+  IonTitle,
+  IonToolbar,
+} from '@ionic/react';
 import * as React from 'react';
 import { RouteComponentProps, RouteProps } from 'react-router';
-import { NavbarLink, Routes, TopNav } from '../components';
+import { Routes } from '../components';
 import { Confirm } from './confirm';
 import { Home } from './home';
 import { Pricing } from './pricing';
@@ -26,34 +25,20 @@ export const Join: React.SFC<RouteComponentProps<{}>> = ({
   location,
 }) => (
   <>
-    <TopNav>
-      {({ isActive, onClick }) => (
-        <>
-          <NavbarBrand>
-            <NavbarLink href="/">nuffread</NavbarLink>
-            <NavbarBurger isActive={isActive} onClick={onClick} />
-          </NavbarBrand>
+    <IonToolbar>
+      <IonTitle>nuffread</IonTitle>
 
-          <NavbarMenu isActive={isActive}>
-            <NavbarStart>
-              <NavbarLink href="/">Search</NavbarLink>
-              <NavbarLink href="/join/pricing">Pricing</NavbarLink>
-            </NavbarStart>
+      <IonButtons slot="end">
+        <IonButton href="/">Search</IonButton>
+        <IonButton href="/join/pricing">Pricing</IonButton>
+        {location.pathname.endsWith('/join/signup') ? null : (
+          <IonButton href="/join/signup">Signup</IonButton>
+        )}
+      </IonButtons>
+    </IonToolbar>
 
-            {location.pathname.endsWith('/join/signup') ? null : (
-              <NavbarEnd>
-                <NavbarLink href="/join/signup">Signup</NavbarLink>
-              </NavbarEnd>
-            )}
-          </NavbarMenu>
-        </>
-      )}
-    </TopNav>
-
-    <main>
-      <IonContent>
-        <Routes base={match.url} routes={routes} />
-      </IonContent>
-    </main>
+    <IonContent>
+      <Routes base={match.url} routes={routes} />
+    </IonContent>
   </>
 );

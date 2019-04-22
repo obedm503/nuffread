@@ -1,9 +1,8 @@
-import { IonBadge, IonItem } from '@ionic/react';
+import { IonBadge, IonItem, IonIcon } from '@ionic/react';
 import { resolve } from 'path';
 import * as React from 'react';
 import { Link } from 'react-router-dom';
 import { IListing } from '../../../../schema.gql';
-import { IonIcon } from '../../components';
 import { Listing } from '../../components/listing';
 
 export const ListingDetails: React.SFC<{

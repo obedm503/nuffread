@@ -1,4 +1,3 @@
-import { Container } from 'bloomer';
 import * as React from 'react';
 
-export const Home: React.SFC = () => <Container>private sell home</Container>;
+export const Home: React.SFC = () => <>private sell home</>;

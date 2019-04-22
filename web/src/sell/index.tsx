@@ -1,14 +1,13 @@
-import { IonContent } from '@ionic/react';
 import {
-  DropdownDivider,
-  NavbarBrand,
-  NavbarBurger,
-  NavbarDropdown,
-  NavbarEnd,
-  NavbarItem,
-  NavbarMenu,
-  NavbarStart,
-} from 'bloomer';
+  IonContent,
+  IonToolbar,
+  IonTitle,
+  IonButtons,
+  IonButton,
+  IonIcon,
+  IonPopover,
+  IonItemDivider,
+} from '@ionic/react';
 import * as React from 'react';
 import { RouteComponentProps, RouteProps } from 'react-router';
 import { NavbarLink, Routes, TopNav } from '../components';
@@ -27,41 +26,28 @@ const routes: RouteProps[] = [
 
 export const Sell: React.SFC<RouteComponentProps<{}>> = ({ match }) => (
   <>
-    <TopNav>
-      {({ isActive, onClick }) => (
-        <>
-          <NavbarBrand>
-            <NavbarLink href="/">nuffread</NavbarLink>
-            <NavbarBurger isActive={isActive} onClick={onClick} />
-          </NavbarBrand>
+    <IonToolbar>
+      <IonTitle>nuffread</IonTitle>
 
-          <NavbarMenu isActive={isActive}>
-            <NavbarStart>
-              <NavbarLink href="/">Home</NavbarLink>
-            </NavbarStart>
+      <IonButtons slot="end">
+        <IonButton>
+          <IonIcon name="ellipsis" />
+          <IonPopover isOpen={true} onDidDismiss={() => {}}>
+            <IonButtons>
+              <IonButton href="/profile">My Profile</IonButton>
+              <IonButton href="/new">New Listing</IonButton>
+              <IonButton href="/listings">My Listings</IonButton>
+              <IonItemDivider />
+              <Logout />
+            </IonButtons>
+            <p>This is popover content</p>
+          </IonPopover>
+        </IonButton>
+      </IonButtons>
+    </IonToolbar>
 
-            <NavbarEnd>
-              <NavbarItem hasDropdown isHoverable>
-                <NavbarLink href="/profile">John Doe</NavbarLink>
-                <NavbarDropdown className="is-right">
-                  <NavbarLink href="/profile">My Profile</NavbarLink>
-                  <NavbarLink href="/new">New Listing</NavbarLink>
-                  <NavbarLink href="/listings">My Listings</NavbarLink>
-
-                  <DropdownDivider />
-                  <Logout />
-                </NavbarDropdown>
-              </NavbarItem>
-            </NavbarEnd>
-          </NavbarMenu>
-        </>
-      )}
-    </TopNav>
-
-    <main>
-      <IonContent>
-        <Routes base={match.url} routes={routes} />
-      </IonContent>
-    </main>
+    <IonContent>
+      <Routes base={match.url} routes={routes} />
+    </IonContent>
   </>
 );

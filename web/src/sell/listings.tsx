@@ -1,4 +1,4 @@
-import { Column, Columns, Container } from 'bloomer';
+import { IonCol, IonGrid, IonRow } from '@ionic/react';
 import gql from 'graphql-tag';
 import * as React from 'react';
 import { Query } from 'react-apollo';
@@ -23,8 +23,8 @@ const MY_LISTINGS = gql`
 `;
 
 export const Listings: React.SFC = () => (
-  <Container>
-    <Columns isMultiline>
+  <IonGrid>
+    <IonRow>
       <Query<IQuery> query={MY_LISTINGS}>
         {({ loading, error, data }) => {
           if (loading) {
@@ -35,18 +35,18 @@ export const Listings: React.SFC = () => (
           }
 
           if (!data.me.listings.length) {
-            return <Column>No listings posted</Column>;
+            return <IonCol size="12">No listings posted</IonCol>;
           }
 
           return data.me.listings.map(listing => {
             return (
-              <Column isSize="full" key={listing.id}>
+              <IonCol size="12" key={listing.id}>
                 <Listing listing={listing} />
-              </Column>
+              </IonCol>
             );
           });
         }}
       </Query>
-    </Columns>
-  </Container>
+    </IonRow>
+  </IonGrid>
 );

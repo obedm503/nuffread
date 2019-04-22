@@ -1,6 +1,5 @@
 import { debounce } from 'lodash';
 import * as React from 'react';
-import { IonIcon } from './icon';
 import { IonSearchbar } from '@ionic/react';
 
 type SearchBarProps = {

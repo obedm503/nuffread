@@ -1,12 +1,4 @@
-import {
-  Content,
-  Image,
-  Media,
-  MediaContent,
-  MediaLeft,
-  MediaRight,
-  Tag,
-} from 'bloomer';
+import { IonBadge, IonImg } from '@ionic/react';
 import * as React from 'react';
 import { IBook, IListing } from '../../../schema.gql';
 import { Color } from '../util';
@@ -23,15 +15,15 @@ export const Listing: React.SFC<{
   priceColor = 'light',
   priceSize = 'medium',
 }) => (
-  <Media onClick={onClick}>
-    <MediaLeft>
-      <Image
+  <div onClick={onClick}>
+    <div>
+      <IonImg
         // isSize="128x128"
         src={listing.thumbnail || '/img/128x128.png'}
       />
-    </MediaLeft>
-    <MediaContent>
-      <Content>
+    </div>
+    <div>
+      <div>
         <p>
           <strong>
             {listing.title}
@@ -75,17 +67,15 @@ export const Listing: React.SFC<{
             </>
           ) : null}
         </p>
-      </Content>
+      </div>
 
       {children}
-    </MediaContent>
+    </div>
 
     {'price' in listing ? (
-      <MediaRight>
-        <Tag isColor={priceColor} isSize={priceSize}>
-          ${listing.price / 100}
-        </Tag>
-      </MediaRight>
+      <div>
+        <IonBadge color={priceColor}>${listing.price / 100}</IonBadge>
+      </div>
     ) : null}
-  </Media>
+  </div>
 );

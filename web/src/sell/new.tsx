@@ -1,4 +1,4 @@
-import { Button, Container, Level, LevelItem, LevelLeft } from 'bloomer';
+import { IonButton } from '@ionic/react';
 import gql from 'graphql-tag';
 import * as React from 'react';
 import { Query } from 'react-apollo';
@@ -42,13 +42,7 @@ const GoogleBook: React.SFC<{ id: string }> = ({ id }) => (
 
       return (
         <Listing priceColor="success" priceSize="large" listing={googleBook}>
-          <Level isMobile>
-            <LevelLeft>
-              <LevelItem>
-                <Button isColor="primary">Select</Button>
-              </LevelItem>
-            </LevelLeft>
-          </Level>
+          <IonButton color="primary">Select</IonButton>
         </Listing>
       );
     }}
@@ -145,7 +139,7 @@ export class New extends React.Component<
                 base={url}
               />
             ) : (
-              <Container>Please scan a book</Container>
+              <div>Please scan a book</div>
             )
           }
         </IsDesktop>

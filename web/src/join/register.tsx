@@ -1,4 +1,13 @@
-import { Button, Column, Columns, Container, Hero, HeroBody } from 'bloomer';
+import {
+  IonButton,
+  IonCard,
+  IonCardContent,
+  IonCol,
+  IonGrid,
+  IonLabel,
+  IonRow,
+  IonIcon,
+} from '@ionic/react';
 import { Form, Formik } from 'formik';
 import gql from 'graphql-tag';
 import { join } from 'path';
@@ -7,10 +16,9 @@ import { Mutation, MutationFn } from 'react-apollo';
 import { Redirect, RouteComponentProps } from 'react-router';
 import { Link } from 'react-router-dom';
 import * as yup from 'yup';
-import { IonIcon } from '../components';
+import { IMutation } from '../../../schema.gql';
 import { Email, Password } from '../controls';
 import { classes, passwordSchema } from '../util';
-import { IMutation } from '../../../schema.gql';
 
 const REGISTER = gql`
   mutation Register($email: String!, $password: String!) {
@@ -18,7 +26,7 @@ const REGISTER = gql`
   }
 `;
 
-type FormSchema = { email: string; password: string; password2: string };
+type FormSchema = { email: string; password: string };
 const schema = yup.object<FormSchema>().shape({
   email: yup
     .string()
@@ -30,13 +38,6 @@ const schema = yup.object<FormSchema>().shape({
       value => !!value && value.endsWith('.edu'),
     ),
   password: passwordSchema,
-  password2: passwordSchema
-    .clone()
-    .test('same', 'Passphrases must match', function(value) {
-      return (
-        this.parent && this.parent.password && this.parent.password === value
-      );
-    }),
 });
 
 class RegisterForm extends React.Component<RouteComponentProps<never>> {
@@ -60,7 +61,6 @@ class RegisterForm extends React.Component<RouteComponentProps<never>> {
               initialValues={{
                 email: '',
                 password: '',
-                password2: '',
               }}
             >
               {({ touched, errors }) => {
@@ -76,44 +76,45 @@ class RegisterForm extends React.Component<RouteComponentProps<never>> {
                   );
                 }
 
-                const className = classes({
-                  'has-error': error,
-                  'is-loading': loading,
-                });
                 return (
                   <Form>
-                    <Email
-                      className={className}
-                      name="email"
-                      label="Email"
-                      touched={touched}
-                      errors={errors}
-                    />
-                    <Password
-                      className={className}
-                      name="password"
-                      label="Passphrase"
-                      touched={touched}
-                      errors={errors}
-                    />
-                    <Password
-                      className={className}
-                      name="password2"
-                      label="Repeat Passphrase"
-                      touched={touched}
-                      errors={errors}
-                    />
+                    <IonGrid>
+                      <IonRow>
+                        <IonCol>
+                          <Email
+                            name="email"
+                            label="Email"
+                            touched={touched}
+                            errors={errors}
+                          />
+                          <Password
+                            name="password"
+                            label="Passphrase"
+                            touched={touched}
+                            errors={errors}
+                          />
+                        </IonCol>
+                      </IonRow>
 
-                    {duplicateUserError ? (
-                      <p className="help is-danger">
-                        User already exists. <Link to="/login">Login?</Link>
-                      </p>
-                    ) : null}
+                      {duplicateUserError ? (
+                        <p className="help is-danger">
+                          User already exists. <Link to="/login">Login?</Link>
+                        </p>
+                      ) : null}
 
-                    <Button isPulled="right" isColor="primary" type="submit">
-                      <IonIcon name="add" />
-                      <span>Join</span>
-                    </Button>
+                      <IonRow>
+                        <IonCol>
+                          <IonButton
+                            color="primary"
+                            expand="block"
+                            type="submit"
+                          >
+                            <IonIcon slot="start" name="add" />
+                            <IonLabel>Join</IonLabel>
+                          </IonButton>
+                        </IonCol>
+                      </IonRow>
+                    </IonGrid>
                   </Form>
                 );
               }}
@@ -126,15 +127,15 @@ class RegisterForm extends React.Component<RouteComponentProps<never>> {
 }
 
 export const Register = props => (
-  <Hero isFullHeight>
-    <HeroBody>
-      <Container>
-        <Columns isCentered>
-          <Column isSize={4}>
+  <IonGrid>
+    <IonRow>
+      <IonCol sizeMd="4" offsetMd="4">
+        <IonCard>
+          <IonCardContent>
             <RegisterForm {...props} />
-          </Column>
-        </Columns>
-      </Container>
-    </HeroBody>
-  </Hero>
+          </IonCardContent>
+        </IonCard>
+      </IonCol>
+    </IonRow>
+  </IonGrid>
 );
