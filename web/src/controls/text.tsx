@@ -1,13 +1,10 @@
+import { Components } from '@ionic/core';
+import { IonInput } from '@ionic/react';
 import { Field } from 'formik';
 import * as React from 'react';
 import { Control, ControlProps } from './control';
-import { classes } from '../util';
 
-type Props = ControlProps &
-  React.DetailedHTMLProps<
-    React.InputHTMLAttributes<HTMLInputElement>,
-    HTMLInputElement
-  >;
+type Props = ControlProps & Partial<Components.IonInput>;
 
 export const Text: React.SFC<Props> = ({
   children,
@@ -28,16 +25,21 @@ export const Text: React.SFC<Props> = ({
   };
   return (
     <Control {...controlProps}>
-      {color => (
-        <Field
-          {...inputProps as any}
-          className={classes(inputProps.className, color, {
-            input: type !== 'range',
-          })}
-          type={type}
-          name={name}
-        />
-      )}
+      <Field
+        name={name}
+        render={({ field }) => {
+          return (
+            <IonInput
+              {...inputProps}
+              type={type}
+              value={field.value}
+              name={field.name}
+              onIonBlur={field.onBlur}
+              onIonChange={field.onChange}
+            />
+          );
+        }}
+      />
     </Control>
   );
 };
