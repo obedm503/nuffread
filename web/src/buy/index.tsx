@@ -1,10 +1,4 @@
-import {
-  IonButton,
-  IonButtons,
-  IonContent,
-  IonTitle,
-  IonToolbar,
-} from '@ionic/react';
+import { IonButton, IonButtons, IonTitle, IonToolbar } from '@ionic/react';
 import * as React from 'react';
 import { RouteComponentProps, RouteProps } from 'react-router';
 import { Routes } from '../components';
@@ -33,9 +27,7 @@ export const Buy: React.SFC<RouteComponentProps<{}>> = ({ match }) => {
         </IonButtons>
       </IonToolbar>
 
-      <IonContent>
-        <Routes base={match.url} routes={routes} />
-      </IonContent>
+      <Routes base={match.url} routes={routes} />
     </>
   );
 };

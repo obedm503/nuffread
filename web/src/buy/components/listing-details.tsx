@@ -1,4 +1,10 @@
-import { IonBadge, IonItem, IonIcon } from '@ionic/react';
+import {
+  IonBadge,
+  IonItem,
+  IonIcon,
+  IonButtons,
+  IonButton,
+} from '@ionic/react';
 import { resolve } from 'path';
 import * as React from 'react';
 import { Link } from 'react-router-dom';
@@ -9,16 +15,17 @@ export const ListingDetails: React.SFC<{
   listing: IListing;
   base: string;
 }> = ({ listing, base }) => (
-  <Listing priceColor="success" priceSize="large" listing={listing}>
-    <div>
-      <div>
+  <Listing priceColor="success" listing={listing}>
+    <IonButtons>
+      <IonButton>
         <Link to={resolve(base, 'details')}>
           <IonBadge color="info">More Details</IonBadge>
         </Link>
-        <IonItem href="#">
-          <IonIcon size="small" name="barcode" />
-        </IonItem>
-      </div>
-    </div>
+      </IonButton>
+      
+      <IonButton href="#">
+        <IonIcon slot="icon-only" name="barcode" />
+      </IonButton>
+    </IonButtons>
   </Listing>
 );

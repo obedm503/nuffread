@@ -1,3 +1,4 @@
+import { IonList, IonContent } from '@ionic/react';
 import gql from 'graphql-tag';
 import { resolve } from 'path';
 import * as React from 'react';
@@ -32,10 +33,10 @@ const Listing: React.SFC<{
       }
 
       return (
-        <>
+        <IonList>
           <ListingDetails listing={listing} base={base} />
           <SellerDetails listingId={listing.id} />
-        </>
+        </IonList>
       );
     }}
   </Query>
@@ -165,6 +166,7 @@ export class Home extends React.Component<
           onSearch={this.onSearch}
           searchValue={this.state.searchValue}
         />
+
         <IsDesktop>
           {({ isDesktop }) =>
             this.state.search.has('query') ? (

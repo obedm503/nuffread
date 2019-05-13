@@ -41,7 +41,7 @@ const GoogleBook: React.SFC<{ id: string }> = ({ id }) => (
       }
 
       return (
-        <Listing priceColor="success" priceSize="large" listing={googleBook}>
+        <Listing priceColor="success" listing={googleBook}>
           <IonButton color="primary">Select</IonButton>
         </Listing>
       );

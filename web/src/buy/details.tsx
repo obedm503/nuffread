@@ -1,4 +1,4 @@
-import { IonCol, IonImg, IonRow } from '@ionic/react';
+import { IonCol, IonContent, IonGrid, IonImg, IonRow } from '@ionic/react';
 import { range } from 'lodash';
 import * as React from 'react';
 import { Query } from 'react-apollo';
@@ -30,15 +30,11 @@ export const Details: React.SFC<RouteComponentProps<{ listingId: string }>> = ({
       }
 
       return (
-        <>
-          <section>
+        <IonContent>
+          <IonGrid>
             <IonRow>
-              <IonCol class="scrolls">
-                <Listing
-                  listing={listing}
-                  priceColor="success"
-                  priceSize="large"
-                />
+              <IonCol>
+                <Listing listing={listing} priceColor="success" />
               </IonCol>
 
               <IonCol>
@@ -53,8 +49,8 @@ export const Details: React.SFC<RouteComponentProps<{ listingId: string }>> = ({
                 </IonCol>
               ))}
             </IonRow>
-          </section>
-        </>
+          </IonGrid>
+        </IonContent>
       );
     }}
   </Query>

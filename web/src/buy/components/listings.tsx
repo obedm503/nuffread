@@ -1,4 +1,4 @@
-import { IonCol, IonRow } from '@ionic/react';
+import { IonCol, IonContent, IonGrid, IonList, IonRow } from '@ionic/react';
 import * as React from 'react';
 import { IBook, IListing } from '../../../../schema.gql';
 import { Listing } from '../../components/listing';
@@ -16,24 +16,27 @@ export class ListingsMain extends React.PureComponent<{
     const { id, isDesktop, listings, base, children } = this.props;
     const Details = children as Function;
     return (
-      <div className={id ? 'buy-main' : ''}>
+      <IonGrid style={{ width: '100%' }}>
         <IonRow>
           {isDesktop || !id ? (
-            <IonCol class={id ? 'scrolls' : ''}>
-              {listings.map((listing, i) => {
-                if (!listing) {
-                  return null;
-                }
-                return (
-                  <Listing
-                    key={listing.id}
-                    priceColor={i === 0 ? 'success' : undefined}
-                    priceSize={id === listing.id ? 'large' : undefined}
-                    onClick={this.onClick(listing.id)}
-                    listing={listing}
-                  />
-                );
-              })}
+            <IonCol>
+              <IonContent style={{ height: 'calc(100vh - 11.99rem)' }}>
+                <IonList>
+                  {listings.map((listing, i) => {
+                    if (!listing) {
+                      return null;
+                    }
+                    return (
+                      <Listing
+                        key={listing.id}
+                        priceColor={i === 0 ? 'success' : undefined}
+                        onClick={this.onClick(listing.id)}
+                        listing={listing}
+                      />
+                    );
+                  })}
+                </IonList>
+              </IonContent>
             </IonCol>
           ) : null}
 
@@ -43,7 +46,7 @@ export class ListingsMain extends React.PureComponent<{
             </IonCol>
           ) : null}
         </IonRow>
-      </div>
+      </IonGrid>
     );
   }
 }

@@ -1,6 +1,6 @@
 import { debounce } from 'lodash';
 import * as React from 'react';
-import { IonSearchbar } from '@ionic/react';
+import { IonSearchbar, IonToolbar } from '@ionic/react';
 
 type SearchBarProps = {
   onSearch: (search: string) => void;
@@ -18,9 +18,9 @@ export class SearchBar extends React.PureComponent<SearchBarProps> {
   render() {
     const { searchValue } = this.props;
     return (
-      <IonSearchbar color="light">
-
-        {/* <HeroBody style={{ paddingTop: '1rem', paddingBottom: '1rem' }}>
+      <IonToolbar>
+        <IonSearchbar color="light">
+          {/* <HeroBody style={{ paddingTop: '1rem', paddingBottom: '1rem' }}>
           <Container>
             <Field hasAddons style={{ width: '100%' }}>
               <Control>
@@ -44,7 +44,8 @@ export class SearchBar extends React.PureComponent<SearchBarProps> {
             </Field>
           </Container>
         </HeroBody> */}
-      </IonSearchbar>
+        </IonSearchbar>
+      </IonToolbar>
     );
   }
 }
