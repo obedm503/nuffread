@@ -41,7 +41,7 @@ module.exports.scripts = {
       concurrent.nps('dev.types', 'dev.web', 'dev.api'),
     ),
     types: `nodemon --watch "api/schema.gql" --exec "${buildTypes}"`,
-    web: series('cd web', 'npm run start'),
+    web: series('cd web', 'npm run dev'),
     api: [
       'nodemon',
       '--watch api/src',
@@ -73,9 +73,9 @@ module.exports.scripts = {
     ),
   },
   deploy,
-  clean: rimraf('web/dist .cache api/dist'),
+  clean: rimraf('.cache web/dist api/dist'),
   start: {
-    api: 'cd api && npm run start',
+    api: series('cd api', 'npm run start'),
   },
   db: {
     info: [
