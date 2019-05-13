@@ -1,6 +1,7 @@
+import { SearchbarChangeEventDetail } from '@ionic/core';
+import { IonButton, IonIcon, IonSearchbar, IonToolbar } from '@ionic/react';
 import { debounce } from 'lodash';
 import * as React from 'react';
-import { IonSearchbar, IonToolbar } from '@ionic/react';
 
 type SearchBarProps = {
   onSearch: (search: string) => void;
@@ -8,43 +9,25 @@ type SearchBarProps = {
 };
 export class SearchBar extends React.PureComponent<SearchBarProps> {
   onSearch: any;
-  onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  onChange = (e: CustomEvent<SearchbarChangeEventDetail>) => {
     if (!this.onSearch) {
       this.onSearch = debounce(this.props.onSearch, 500);
     }
-    this.onSearch && this.onSearch(e.target.value);
+    this.onSearch && this.onSearch(e.detail.value);
   };
 
   render() {
     const { searchValue } = this.props;
     return (
       <IonToolbar>
-        <IonSearchbar color="light">
-          {/* <HeroBody style={{ paddingTop: '1rem', paddingBottom: '1rem' }}>
-          <Container>
-            <Field hasAddons style={{ width: '100%' }}>
-              <Control>
-                <Button>
-                  <IonIcon name="qr-scanner" />
-                </Button>
-              </Control>
-
-              <Control hasIcons isExpanded>
-                <IonIcon name="search" size="small" align="left" />
-                <Input
-                  placeholder="Find your book"
-                  onChange={this.onChange}
-                  defaultValue={searchValue}
-                />
-              </Control>
-
-              <Control>
-                <Button>Search</Button>
-              </Control>
-            </Field>
-          </Container>
-        </HeroBody> */}
-        </IonSearchbar>
+        <IonSearchbar
+          color="light"
+          value={searchValue}
+          onIonChange={this.onChange}
+        />
+        <IonButton slot="end" color="light">
+          <IonIcon slot="icon-only" name="qr-scanner" />
+        </IonButton>
       </IonToolbar>
     );
   }
