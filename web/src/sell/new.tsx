@@ -3,11 +3,11 @@ import gql from 'graphql-tag';
 import * as React from 'react';
 import { Query } from 'react-apollo';
 import { RouteComponentProps } from 'react-router';
-import { IQuery } from '../../../schema.gql';
 import { ListingsMain } from '../buy/components/listings';
 import { Error } from '../components';
 import { Listing } from '../components/listing';
 import { SearchBar } from '../components/search-bar';
+import { IQuery } from '../schema.gql';
 import { IsDesktop } from '../state/desktop';
 
 const GET_GOOGLE_BOOK = gql`

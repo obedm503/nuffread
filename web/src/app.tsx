@@ -16,13 +16,13 @@ import {
   RouteProps,
   withRouter,
 } from 'react-router';
-import { IQuery, User } from '../../schema.gql';
 import { Buy } from './buy';
 import { Error, Footer, Routes } from './components';
 import { Join } from './join';
 import { Launch } from './launch';
 import { Admin, Login } from './login';
 import './main.scss';
+import { IQuery, User } from './schema.gql';
 import { Sell } from './sell';
 import { IsDesktopProvider } from './state/desktop';
 import { UserProvider } from './state/user';

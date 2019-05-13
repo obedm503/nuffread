@@ -1,4 +1,4 @@
-import { IBook } from "../../../schema.gql";
+import { IBook } from "../schema.gql";
 
 type GoogleBook = {
   kind: string;

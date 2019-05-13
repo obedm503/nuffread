@@ -1,7 +1,7 @@
 import { IonCol, IonContent, IonGrid, IonList, IonRow } from '@ionic/react';
 import * as React from 'react';
-import { IBook, IListing } from '../../../../schema.gql';
 import { Listing } from '../../components/listing';
+import { IBook, IListing } from '../../schema.gql';
 
 export class ListingsMain extends React.PureComponent<{
   id?: string;

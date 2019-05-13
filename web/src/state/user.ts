@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { User } from '../../../schema.gql';
+import { User } from '../schema.gql';
 
 export type UserState = {
   user?: User;

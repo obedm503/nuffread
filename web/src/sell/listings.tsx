@@ -2,10 +2,10 @@ import { IonCol, IonGrid, IonRow } from '@ionic/react';
 import gql from 'graphql-tag';
 import * as React from 'react';
 import { Query } from 'react-apollo';
-import { IQuery } from '../../../schema.gql';
 import { Error } from '../components';
 import { Listing } from '../components/listing';
 import { BASIC_LISTING } from '../queries';
+import { IQuery } from '../schema.gql';
 
 const MY_LISTINGS = gql`
   ${BASIC_LISTING}

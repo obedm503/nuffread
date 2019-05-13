@@ -2,9 +2,9 @@ import {
   IonButton,
   IonCol,
   IonGrid,
+  IonIcon,
   IonLabel,
   IonRow,
-  IonIcon,
 } from '@ionic/react';
 import { Form, Formik } from 'formik';
 import gql from 'graphql-tag';
@@ -13,9 +13,9 @@ import * as React from 'react';
 import { Mutation } from 'react-apollo';
 import { Redirect, RouteComponentProps } from 'react-router';
 import * as yup from 'yup';
-import { IMutation } from '../../../schema.gql';
 import { Error } from '../components';
 import { Email } from '../controls';
+import { IMutation } from '../schema.gql';
 import { UserConsumer } from '../state/user';
 import { Color } from '../util';
 

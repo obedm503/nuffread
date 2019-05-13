@@ -6,11 +6,11 @@ import {
   IonContent,
   IonGrid,
   IonIcon,
+  IonItem,
   IonLabel,
   IonRow,
   IonTitle,
   IonToolbar,
-  IonItem,
 } from '@ionic/react';
 import ApolloClient from 'apollo-client';
 import { Form, Formik } from 'formik';
@@ -21,8 +21,8 @@ import { Mutation, MutationFn } from 'react-apollo';
 import { RouteComponentProps } from 'react-router';
 import { Link } from 'react-router-dom';
 import * as yup from 'yup';
-import { IMutation, UserType } from '../../schema.gql';
 import { Email, Password } from './controls';
+import { IMutation, UserType } from './schema.gql';
 
 const LOGIN = gql`
   mutation Login($email: String!, $password: String!, $type: UserType!) {

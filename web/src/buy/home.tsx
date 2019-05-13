@@ -1,13 +1,13 @@
-import { IonList, IonContent } from '@ionic/react';
+import { IonList } from '@ionic/react';
 import gql from 'graphql-tag';
 import { resolve } from 'path';
 import * as React from 'react';
 import { Query } from 'react-apollo';
 import { RouteComponentProps } from 'react-router';
-import { IQuery } from '../../../schema.gql';
 import { Error } from '../components';
 import { SearchBar } from '../components/search-bar';
 import { BASIC_LISTING, GET_LISTING, SEARCH } from '../queries';
+import { IQuery } from '../schema.gql';
 import { IsDesktop } from '../state/desktop';
 import { ListingDetails } from './components/listing-details';
 import { ListingsMain } from './components/listings';

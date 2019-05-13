@@ -2,14 +2,14 @@ const atob = require('atob');
 const btoa = require('btoa');
 import { ApolloError } from 'apollo-server-core';
 import { compare, hash } from 'bcryptjs';
+import { Admin } from '../admin/admin.entity';
 import {
   IConfirmOnMutationArguments,
   ILoginOnMutationArguments,
   IMutation,
   IRegisterOnMutationArguments,
   IResendEmailOnMutationArguments,
-} from '../../../schema.gql';
-import { Admin } from '../admin/admin.entity';
+} from '../schema.gql';
 import { Seller, sendConfirmationEmail } from '../seller/seller.entity';
 import { validate } from '../util';
 import { AuthenticationError, isSeller } from '../util/auth';

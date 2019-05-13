@@ -7,14 +7,17 @@ require('dotenv-safe').config({
 
 const { execSync } = require('child_process');
 const { EOL } = require('os');
-const { concurrent, series, crossEnv, rimraf } = require('nps-utils');
+const { concurrent, series, crossEnv, rimraf, copy } = require('nps-utils');
 
-const buildTypes = [
-  'gql2ts',
-  'api/schema.gql',
-  '--output-file schema.gql.ts',
-  `--external-options ${resolve('./gql2tsrc.js')}`,
-].join(' ');
+const buildTypes = series(
+  [
+    'gql2ts',
+    'api/schema.gql',
+    '--output-file api/src/schema.gql.ts',
+    `--external-options ${resolve('./gql2tsrc.js')}`,
+  ].join(' '),
+  copy('"api/src/schema.gql.ts" web/src/'),
+);
 
 // based on https://stackoverflow.com/a/40178818/4371892
 const push = name =>
@@ -68,9 +71,7 @@ module.exports.scripts = {
         ].join(' '),
       ),
     ),
-    api: crossEnv(
-      'NODE_ENV=production tsc --project api/tsconfig.json --outDir api/dist',
-    ),
+    api: series('cd api', 'npm run build'),
   },
   deploy,
   clean: rimraf('.cache web/dist api/dist'),

@@ -17,7 +17,5 @@
     "strictPropertyInitialization": false,
     "target": "es5"
   },
-  "files": ["schema.gql.ts"],
-  "include": ["api", "web"],
   "exclude": ["**/node_modules/**/*", "**/dist/**/*"]
 }

@@ -3,10 +3,10 @@ import { range } from 'lodash';
 import * as React from 'react';
 import { Query } from 'react-apollo';
 import { RouteComponentProps } from 'react-router';
-import { IQuery } from '../../../schema.gql';
 import { Error } from '../components';
 import { Listing } from '../components/listing';
 import { SEARCH } from '../queries';
+import { IQuery } from '../schema.gql';
 import { SellerDetails } from './components/seller-details';
 
 export const Details: React.SFC<RouteComponentProps<{ listingId: string }>> = ({

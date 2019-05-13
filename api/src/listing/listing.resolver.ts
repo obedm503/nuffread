@@ -1,4 +1,4 @@
-import { IListing, ISchool, ISeller } from '../../../schema.gql';
+import { IListing, ISchool, ISeller } from '../schema.gql';
 import { IResolver } from '../util/types';
 import { Listing } from './listing.entity';
 

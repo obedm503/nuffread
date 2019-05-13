@@ -2,7 +2,7 @@ import { IonItem, IonLabel } from '@ionic/react';
 import gql from 'graphql-tag';
 import * as React from 'react';
 import { Mutation } from 'react-apollo';
-import { IMutation } from '../../schema.gql';
+import { IMutation } from './schema.gql';
 
 const LOGOUT = gql`
   mutation Logout {

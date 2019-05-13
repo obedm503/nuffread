@@ -1,5 +1,5 @@
-import { IListing, ISeller } from '../../../schema.gql';
 import { Listing } from '../listing/listing.entity';
+import { IListing, ISeller } from '../schema.gql';
 import { isSeller } from '../util/auth';
 import { IResolver } from '../util/types';
 import { Seller } from './seller.entity';

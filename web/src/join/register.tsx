@@ -4,9 +4,9 @@ import {
   IonCardContent,
   IonCol,
   IonGrid,
+  IonIcon,
   IonLabel,
   IonRow,
-  IonIcon,
 } from '@ionic/react';
 import { Form, Formik } from 'formik';
 import gql from 'graphql-tag';
@@ -16,9 +16,9 @@ import { Mutation, MutationFn } from 'react-apollo';
 import { Redirect, RouteComponentProps } from 'react-router';
 import { Link } from 'react-router-dom';
 import * as yup from 'yup';
-import { IMutation } from '../../../schema.gql';
 import { Email, Password } from '../controls';
-import { classes, passwordSchema } from '../util';
+import { IMutation } from '../schema.gql';
+import { passwordSchema } from '../util';
 
 const REGISTER = gql`
   mutation Register($email: String!, $password: String!) {

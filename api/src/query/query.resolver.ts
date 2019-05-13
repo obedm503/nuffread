@@ -1,3 +1,4 @@
+import { Listing } from '../listing/listing.entity';
 import {
   IGoogleBookOnQueryArguments,
   IListing,
@@ -6,8 +7,7 @@ import {
   ISearchGoogleOnQueryArguments,
   ISearchOnQueryArguments,
   User,
-} from '../../../schema.gql';
-import { Listing } from '../listing/listing.entity';
+} from '../schema.gql';
 import { Seller } from '../seller/seller.entity';
 import { isAdmin } from '../util/auth';
 import { getBook, searchBooks } from '../util/books';

@@ -1,6 +1,6 @@
 import { IonBadge, IonImg, IonItem, IonLabel } from '@ionic/react';
 import * as React from 'react';
-import { IBook, IListing } from '../../../schema.gql';
+import { IBook, IListing } from '../schema.gql';
 import { Color } from '../util';
 
 export const Listing: React.SFC<{
