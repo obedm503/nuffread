@@ -45,12 +45,7 @@ module.exports.scripts = {
     ),
     types: `nodemon --watch "api/schema.gql" --exec "${buildTypes}"`,
     web: series('cd web', 'npm run dev'),
-    api: [
-      'nodemon',
-      '--watch api/src',
-      '--ext ts',
-      '--exec "ts-node --project api/tsconfig.json --pretty --files api/src/main"',
-    ].join(' '),
+    api: series('cd api', 'npm run dev'),
   },
   build: {
     default: series(

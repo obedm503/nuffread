@@ -1,8 +1,9 @@
 {
   "private": true,
   "scripts": {
-    "start": "node --optimize_for_size --max_old_space_size=512 --gc_interval=100 dist/main.js",
-    "build": "NODE_ENV=production tsc --project tsconfig.json"
+    "dev": "nodemon --watch src --ext ts --exec 'ts-node --project tsconfig.json --pretty --files src/main'",
+    "build": "NODE_ENV=production tsc --project tsconfig.json",
+    "start": "node --optimize_for_size --max_old_space_size=512 --gc_interval=100 dist/main.js"
   },
   "dependencies": {
     "@sendgrid/client": "^6.3.0",
@@ -36,6 +37,8 @@
     "@types/stripe": "^6.19.5",
     "@types/uuid": "^3.4.4",
     "dotenv-safe": "^6.0.0",
+    "nodemon": "^1.19.0",
+    "ts-node": "^8.1.0",
     "typescript": "^3.4.5"
   }
 }
