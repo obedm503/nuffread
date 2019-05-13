@@ -1,9 +1,15 @@
+import {
+  IonButton,
+  IonButtons,
+  IonContent,
+  IonTitle,
+  IonToolbar,
+} from '@ionic/react';
 import * as React from 'react';
 import { RouteComponentProps, RouteProps } from 'react-router';
-import { Routes, TopNav } from '../components';
+import { Routes } from '../components';
 import { Details } from './details';
 import { Home } from './home';
-import { IonItem, IonLabel, IonContent } from '@ionic/react';
 
 const routes: RouteProps[] = [
   {
@@ -17,33 +23,19 @@ const routes: RouteProps[] = [
 export const Buy: React.SFC<RouteComponentProps<{}>> = ({ match }) => {
   return (
     <>
-      <TopNav>
-        {({ isActive, onClick }) => (
-          <>
-            <IonItem>
-              <IonLabel>nuffread</IonLabel>
-            </IonItem>
-            {/* <NavbarMenu isActive={isActive}>
-              <NavbarEnd> */}
-            <IonItem href="/join">
-              <IonLabel>
-                <b>Join</b>
-              </IonLabel>
-            </IonItem>
-            <IonItem href="/login">
-              <IonLabel>Login</IonLabel>
-            </IonItem>
-            {/* </NavbarEnd>
-            </NavbarMenu> */}
-          </>
-        )}
-      </TopNav>
+      <IonToolbar>
+        <IonTitle>nuffread</IonTitle>
+        <IonButtons slot="secondary">
+          <IonButton href="/join">
+            <b>Join</b>
+          </IonButton>
+          <IonButton href="/login">Login</IonButton>
+        </IonButtons>
+      </IonToolbar>
 
-      <main>
-        <IonContent>
-          <Routes base={match.url} routes={routes} />
-        </IonContent>
-      </main>
+      <IonContent>
+        <Routes base={match.url} routes={routes} />
+      </IonContent>
     </>
   );
 };
