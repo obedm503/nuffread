@@ -1,4 +1,15 @@
-import { IonButton, IonCard, IonCardContent, IonCol, IonContent, IonGrid, IonIcon, IonItem, IonLabel, IonRow } from '@ionic/react';
+import {
+  IonButton,
+  IonCard,
+  IonCardContent,
+  IonCol,
+  IonContent,
+  IonGrid,
+  IonIcon,
+  IonItem,
+  IonLabel,
+  IonRow,
+} from '@ionic/react';
 import ApolloClient from 'apollo-client';
 import { Form, Formik } from 'formik';
 import gql from 'graphql-tag';

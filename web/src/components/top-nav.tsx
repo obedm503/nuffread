@@ -1,7 +1,6 @@
-import { IonTitle, IonToolbar, IonButton } from '@ionic/react';
+import { IonButton, IonTitle, IonToolbar } from '@ionic/react';
 import * as React from 'react';
-import { NavLink } from 'react-router-dom';
-import { classes, Color } from '../util';
+import { Color } from '../util';
 
 type RenderChildren =
   | React.ReactNode
