@@ -1,5 +1,11 @@
 import { SearchbarChangeEventDetail } from '@ionic/core';
-import { IonButton, IonIcon, IonSearchbar, IonToolbar } from '@ionic/react';
+import {
+  IonButton,
+  IonButtons,
+  IonIcon,
+  IonSearchbar,
+  IonToolbar,
+} from '@ionic/react';
 import { debounce } from 'lodash';
 import * as React from 'react';
 
@@ -25,9 +31,12 @@ export class SearchBar extends React.PureComponent<SearchBarProps> {
           value={searchValue}
           onIonChange={this.onChange}
         />
-        <IonButton slot="end" color="light">
-          <IonIcon slot="icon-only" name="qr-scanner" />
-        </IonButton>
+
+        <IonButtons slot="end">
+          <IonButton color="light">
+            <IonIcon slot="icon-only" name="qr-scanner" />
+          </IonButton>
+        </IonButtons>
       </IonToolbar>
     );
   }

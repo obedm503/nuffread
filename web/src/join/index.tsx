@@ -1,13 +1,7 @@
-import {
-  IonButton,
-  IonButtons,
-  IonContent,
-  IonTitle,
-  IonToolbar,
-} from '@ionic/react';
+import { IonButton, IonButtons, IonContent } from '@ionic/react';
 import * as React from 'react';
 import { RouteComponentProps, RouteProps } from 'react-router';
-import { Routes } from '../components';
+import { Routes, TopNav } from '../components';
 import { Confirm } from './confirm';
 import { Home } from './home';
 import { Pricing } from './pricing';
@@ -25,9 +19,7 @@ export const Join: React.SFC<RouteComponentProps<{}>> = ({
   location,
 }) => (
   <>
-    <IonToolbar>
-      <IonTitle>nuffread</IonTitle>
-
+    <TopNav>
       <IonButtons slot="end">
         <IonButton href="/">Search</IonButton>
         <IonButton href="/join/pricing">Pricing</IonButton>
@@ -35,7 +27,7 @@ export const Join: React.SFC<RouteComponentProps<{}>> = ({
           <IonButton href="/join/signup">Signup</IonButton>
         )}
       </IonButtons>
-    </IonToolbar>
+    </TopNav>
 
     <IonContent>
       <Routes base={match.url} routes={routes} />

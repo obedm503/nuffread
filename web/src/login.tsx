@@ -1,17 +1,4 @@
-import {
-  IonButton,
-  IonCard,
-  IonCardContent,
-  IonCol,
-  IonContent,
-  IonGrid,
-  IonIcon,
-  IonItem,
-  IonLabel,
-  IonRow,
-  IonTitle,
-  IonToolbar,
-} from '@ionic/react';
+import { IonButton, IonCard, IonCardContent, IonCol, IonContent, IonGrid, IonIcon, IonItem, IonLabel, IonRow } from '@ionic/react';
 import ApolloClient from 'apollo-client';
 import { Form, Formik } from 'formik';
 import gql from 'graphql-tag';
@@ -21,6 +8,7 @@ import { Mutation, MutationFn } from 'react-apollo';
 import { RouteComponentProps } from 'react-router';
 import { Link } from 'react-router-dom';
 import * as yup from 'yup';
+import { TopNav } from './components';
 import { Email, Password } from './controls';
 import { IMutation, UserType } from './schema.gql';
 
@@ -176,9 +164,7 @@ export const Login: React.SFC<
 > = ({ history, admin = false }) => {
   return (
     <>
-      <IonToolbar>
-        <IonTitle>nuffread</IonTitle>
-      </IonToolbar>
+      <TopNav />
 
       <IonContent>
         <IonGrid>

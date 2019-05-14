@@ -113,6 +113,7 @@ class App extends React.Component<RouteComponentProps<{}>> {
                     content="The book marketplace for students"
                   />
                 </Helmet>
+
                 <Routes routes={routes} key={match.url} />
 
                 <Footer />

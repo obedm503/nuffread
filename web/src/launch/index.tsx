@@ -1,11 +1,10 @@
-import { IonContent, IonTitle, IonToolbar } from '@ionic/react';
+import { IonContent } from '@ionic/react';
 import * as React from 'react';
+import { TopNav } from '../components';
 
 export const Launch = () => (
   <>
-    <IonToolbar>
-      <IonTitle>nuffread</IonTitle>
-    </IonToolbar>
+    <TopNav />
 
     <IonContent color="light">
       <div style={{ display: 'flex', minHeight: '100%', alignItems: 'center' }}>

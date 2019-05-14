@@ -1,16 +1,14 @@
 import {
-  IonContent,
-  IonToolbar,
-  IonTitle,
-  IonButtons,
   IonButton,
+  IonButtons,
+  IonContent,
   IonIcon,
-  IonPopover,
   IonItemDivider,
+  IonPopover,
 } from '@ionic/react';
 import * as React from 'react';
 import { RouteComponentProps, RouteProps } from 'react-router';
-import { NavbarLink, Routes, TopNav } from '../components';
+import { Routes, TopNav } from '../components';
 import { Logout } from '../logout';
 import { Home } from './home';
 import { Listings } from './listings';
@@ -26,9 +24,7 @@ const routes: RouteProps[] = [
 
 export const Sell: React.SFC<RouteComponentProps<{}>> = ({ match }) => (
   <>
-    <IonToolbar>
-      <IonTitle>nuffread</IonTitle>
-
+    <TopNav>
       <IonButtons slot="end">
         <IonButton>
           <IonIcon name="ellipsis" />
@@ -44,7 +40,7 @@ export const Sell: React.SFC<RouteComponentProps<{}>> = ({ match }) => (
           </IonPopover>
         </IonButton>
       </IonButtons>
-    </IonToolbar>
+    </TopNav>
 
     <IonContent>
       <Routes base={match.url} routes={routes} />
