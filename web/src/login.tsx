@@ -180,7 +180,7 @@ export const Login: React.SFC<
       <IonContent>
         <IonGrid>
           <IonRow>
-            <IonCol sizeMd="4" offsetMd="4">
+            <IonCol sizeMd="6" offsetMd="3">
               <IonCard>
                 <IonCardContent>
                   <LoginForm

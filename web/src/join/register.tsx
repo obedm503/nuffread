@@ -129,7 +129,7 @@ class RegisterForm extends React.Component<RouteComponentProps<never>> {
 export const Register = props => (
   <IonGrid>
     <IonRow>
-      <IonCol sizeMd="4" offsetMd="4">
+      <IonCol sizeMd="6" offsetMd="3">
         <IonCard>
           <IonCardContent>
             <RegisterForm {...props} />
