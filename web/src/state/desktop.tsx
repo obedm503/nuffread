@@ -15,7 +15,7 @@ export class IsDesktopProvider extends React.Component<
     this.setState({ isDesktop: e.matches });
   };
   componentDidMount() {
-    this.match = matchMedia('(min-width: 769px)');
+    this.match = matchMedia('(min-width: 992px)');
 
     this.setState({ isDesktop: this.match.matches });
 
