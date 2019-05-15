@@ -8,9 +8,9 @@ import { Error } from '../components';
 import { SearchBar } from '../components/search-bar';
 import { BASIC_LISTING, GET_LISTING, SEARCH } from '../queries';
 import { IQuery } from '../schema.gql';
-import { IsDesktop } from '../state/desktop';
 import { ListingDetails } from './components/listing-details';
 import { ListingsMain } from './components/listings';
+import { Nav } from './components/nav';
 import { SellerDetails } from './components/seller-details';
 
 const Listing: React.SFC<{
@@ -43,13 +43,11 @@ const Listing: React.SFC<{
 );
 
 type ListingsProps = {
-  isDesktop: boolean;
   listingId?: string;
   onClick;
   base: string;
 };
 const SearchListings = ({
-  isDesktop,
   listingId,
   onClick,
   searchValue,
@@ -64,7 +62,6 @@ const SearchListings = ({
 
         return (
           <ListingsMain
-            isDesktop={isDesktop}
             id={listingId}
             onClick={onClick}
             base={base}
@@ -92,12 +89,7 @@ const TOP_LISTINGS = gql`
   }
 `;
 
-const TopListings = ({
-  isDesktop,
-  listingId,
-  onClick,
-  base,
-}: ListingsProps) => (
+const TopListings = ({ listingId, onClick, base }: ListingsProps) => (
   <Query<IQuery> query={TOP_LISTINGS}>
     {({ error, data }) => {
       if (error || !data || !data.top) {
@@ -105,7 +97,6 @@ const TopListings = ({
       }
       return (
         <ListingsMain
-          isDesktop={isDesktop}
           id={listingId}
           onClick={onClick}
           base={base}
@@ -162,31 +153,27 @@ export class Home extends React.Component<
 
     return (
       <>
-        <SearchBar
-          onSearch={this.onSearch}
-          searchValue={this.state.searchValue}
-        />
+        <Nav>
+          <SearchBar
+            onSearch={this.onSearch}
+            searchValue={this.state.searchValue}
+          />
+        </Nav>
 
-        <IsDesktop>
-          {({ isDesktop }) =>
-            this.state.search.has('query') ? (
-              <SearchListings
-                onClick={this.onListingClick}
-                isDesktop={isDesktop}
-                listingId={params.listingId}
-                searchValue={this.state.searchValue}
-                base={url}
-              />
-            ) : (
-              <TopListings
-                onClick={this.onListingClick}
-                isDesktop={isDesktop}
-                listingId={params.listingId}
-                base={url}
-              />
-            )
-          }
-        </IsDesktop>
+        {this.state.search.has('query') ? (
+          <SearchListings
+            onClick={this.onListingClick}
+            listingId={params.listingId}
+            searchValue={this.state.searchValue}
+            base={url}
+          />
+        ) : (
+          <TopListings
+            onClick={this.onListingClick}
+            listingId={params.listingId}
+            base={url}
+          />
+        )}
       </>
     );
   }

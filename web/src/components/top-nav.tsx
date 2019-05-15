@@ -1,40 +1,28 @@
-import { IonButton, IonTitle, IonToolbar } from '@ionic/react';
+import { IonButton, IonTitle, IonToolbar, IonHeader } from '@ionic/react';
 import * as React from 'react';
 import { Color } from '../util';
 
-type RenderChildren =
-  | React.ReactNode
-  | ((props: {
-      onClick: React.MouseEventHandler;
-      isActive: boolean;
-    }) => React.ReactNode);
-
 type Props = {
   color?: Color;
-  children?: RenderChildren;
+  toolbar?: React.ReactNode;
 };
-export class TopNav extends React.PureComponent<Props, { isActive: boolean }> {
-  state = { isActive: false };
-  onClick: React.MouseEventHandler = () =>
-    this.setState(({ isActive }) => ({ isActive: !isActive }));
-
+export class TopNav extends React.PureComponent<Props> {
   render() {
-    const { children, color } = this.props;
+    const { children, color, toolbar = null } = this.props;
     return (
-      <IonToolbar color={color}>
-        <IonTitle>
-          <IonButton href="/" color="light" fill="clear">
-            nuffread
-          </IonButton>
-        </IonTitle>
+      <IonHeader>
+        <IonToolbar color={color}>
+          <IonTitle>
+            <IonButton href="/" color="light" fill="clear">
+              nuffread
+            </IonButton>
+          </IonTitle>
 
-        {typeof children === 'function'
-          ? (children as Function)({
-              isActive: this.state.isActive,
-              onClick: this.onClick,
-            })
-          : children}
-      </IonToolbar>
+          {children}
+        </IonToolbar>
+
+        {toolbar}
+      </IonHeader>
     );
   }
 }

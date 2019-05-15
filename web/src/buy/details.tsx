@@ -7,6 +7,7 @@ import { Error } from '../components';
 import { Listing } from '../components/listing';
 import { SEARCH } from '../queries';
 import { IQuery } from '../schema.gql';
+import { Nav } from './components/nav';
 import { SellerDetails } from './components/seller-details';
 
 export const Details: React.SFC<RouteComponentProps<{ listingId: string }>> = ({
@@ -14,44 +15,48 @@ export const Details: React.SFC<RouteComponentProps<{ listingId: string }>> = ({
     params: { listingId },
   },
 }) => (
-  <Query<IQuery> query={SEARCH}>
-    {({ error, data, loading }) => {
-      if (error) {
-        return <Error value={error} />;
-      }
-      if (loading || !data || !data.search) {
-        return <section>Loading</section>;
-      }
+  <>
+    <Nav />
 
-      const listing = data.search.find(b => b.id === listingId);
+    <IonContent>
+      <Query<IQuery> query={SEARCH}>
+        {({ error, data, loading }) => {
+          if (error) {
+            return <Error value={error} />;
+          }
+          if (loading || !data || !data.search) {
+            return <section>Loading</section>;
+          }
 
-      if (!listing) {
-        return <section>Loading</section>;
-      }
+          const listing = data.search.find(b => b.id === listingId);
 
-      return (
-        <IonContent>
-          <IonGrid>
-            <IonRow>
-              <IonCol>
-                <Listing listing={listing} priceColor="success" />
-              </IonCol>
+          if (!listing) {
+            return <section>Loading</section>;
+          }
 
-              <IonCol>
-                <SellerDetails listingId={listingId} />
-              </IonCol>
-            </IonRow>
-
-            <IonRow>
-              {range(12).map(i => (
-                <IonCol key={i}>
-                  <IonImg src="/img/128x128.png" />
+          return (
+            <IonGrid>
+              <IonRow>
+                <IonCol>
+                  <Listing listing={listing} priceColor="success" />
                 </IonCol>
-              ))}
-            </IonRow>
-          </IonGrid>
-        </IonContent>
-      );
-    }}
-  </Query>
+
+                <IonCol>
+                  <SellerDetails listingId={listingId} />
+                </IonCol>
+              </IonRow>
+
+              <IonRow>
+                {range(12).map(i => (
+                  <IonCol key={i}>
+                    <IonImg src="/img/128x128.png" />
+                  </IonCol>
+                ))}
+              </IonRow>
+            </IonGrid>
+          );
+        }}
+      </Query>
+    </IonContent>
+  </>
 );

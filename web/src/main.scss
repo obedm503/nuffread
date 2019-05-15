@@ -37,3 +37,20 @@ $secondary: rgb(252, 170, 88);
     page-break-inside: avoid;
   }
 }
+
+#results-container {
+  width: 100%;
+  height: calc(100vh - 11rem);
+  display: flex;
+  position: fixed;
+  overflow-y: auto;
+
+  > :first-child {
+    overflow-y: auto;
+    width: 100%;
+  }
+
+  > .half {
+    width: 50%;
+  }
+}

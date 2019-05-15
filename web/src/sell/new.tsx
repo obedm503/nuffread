@@ -64,13 +64,11 @@ const SEARCH_GOOGLE = gql`
 `;
 
 const SearchListings = ({
-  isDesktop,
   googleId,
   onClick,
   searchValue,
   base,
 }: {
-  isDesktop: boolean;
   googleId?: string;
   onClick;
   base: string;
@@ -90,7 +88,6 @@ const SearchListings = ({
 
         return (
           <ListingsMain
-            isDesktop={isDesktop}
             id={googleId}
             onClick={onClick}
             base={base}
@@ -128,21 +125,16 @@ export class New extends React.Component<
           onSearch={this.onSearch}
           searchValue={this.state.searchValue}
         />
-        <IsDesktop>
-          {({ isDesktop }) =>
-            this.state.searchValue ? (
-              <SearchListings
-                onClick={this.onListingClick}
-                isDesktop={isDesktop}
-                googleId={this.state.googleId}
-                searchValue={this.state.searchValue}
-                base={url}
-              />
-            ) : (
-              <div>Please scan a book</div>
-            )
-          }
-        </IsDesktop>
+        {this.state.searchValue ? (
+          <SearchListings
+            onClick={this.onListingClick}
+            googleId={this.state.googleId}
+            searchValue={this.state.searchValue}
+            base={url}
+          />
+        ) : (
+          <div>Please scan a book</div>
+        )}
       </>
     );
   }
