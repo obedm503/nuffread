@@ -9,8 +9,6 @@ import { HelmetProvider } from 'react-helmet-async';
 import { BrowserRouter } from 'react-router-dom';
 import { App, createCache } from './app';
 import * as serviceWorker from './serviceWorker';
-import { HostProvider } from './state/host';
-import { UAProvider } from './state/ua';
 
 const httpLink = createHttpLink({
   uri: process.env.REACT_APP_API,
@@ -31,19 +29,19 @@ const client = new ApolloClient({
 });
 
 const main = (
-  <UAProvider value={navigator.userAgent}>
-    <HostProvider value={location.origin}>
-      <HelmetProvider>
-        <ApolloProvider client={client}>
-          <BrowserRouter>
-            <IonApp>
-              <App />
-            </IonApp>
-          </BrowserRouter>
-        </ApolloProvider>
-      </HelmetProvider>
-    </HostProvider>
-  </UAProvider>
+  // <UAProvider value={navigator.userAgent}>
+  // <HostProvider value={location.origin}>
+  <HelmetProvider>
+    <ApolloProvider client={client}>
+      <BrowserRouter>
+        <IonApp>
+          <App />
+        </IonApp>
+      </BrowserRouter>
+    </ApolloProvider>
+  </HelmetProvider>
+  // </HostProvider>
+  // </UAProvider>
 );
 
 ReactDOM.render(main, document.getElementById('root'));
