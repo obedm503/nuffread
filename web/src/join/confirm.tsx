@@ -17,7 +17,6 @@ import { Error, IonButtonLink } from '../components';
 import { Email } from '../controls';
 import { IMutation } from '../schema.gql';
 import { UserConsumer } from '../state/user';
-import { Color } from '../util';
 
 const RESEND_EMAIL = gql`
   mutation ResendEmail($binId: String, $email: String) {
@@ -38,11 +37,7 @@ class ResendEmail extends React.PureComponent<{ binId: string }> {
           }
 
           return (
-            <IonButton
-              onClick={() => mutate()}
-              color={'primary' as Color}
-              // loading={loading}
-            >
+            <IonButton onClick={() => mutate()} color="primary">
               Click here to resend email.
             </IonButton>
           );

@@ -1,12 +1,11 @@
 import { IonBadge, IonImg, IonItem, IonLabel } from '@ionic/react';
 import * as React from 'react';
 import { IBook, IListing } from '../schema.gql';
-import { Color } from '../util';
 
 export const Listing: React.SFC<{
   listing: IListing | IBook;
   onClick?;
-  priceColor?: Color;
+  priceColor?: string;
 }> = ({ listing, onClick, children, priceColor = 'light' }) => (
   <IonItem onClick={onClick}>
     <IonImg slot="start" src={listing.thumbnail || '/img/128x128.png'} />

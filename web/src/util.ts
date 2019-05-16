@@ -43,19 +43,6 @@ export const classes = (
     })
     .join(' ');
 
-export type Color =
-  | 'primary'
-  | 'secondary'
-  | 'link'
-  | 'info'
-  | 'success'
-  | 'warning'
-  | 'danger'
-  | 'black'
-  | 'dark'
-  | 'light'
-  | 'white';
-
 export const passwordSchema = yup
   .string()
   .required('Passphrase is required')
