@@ -25,7 +25,7 @@ export class SearchBar extends React.PureComponent<SearchBarProps> {
   render() {
     const { searchValue } = this.props;
     return (
-      <IonToolbar>
+      <IonToolbar color="primary">
         <IonSearchbar
           color="light"
           value={searchValue}
