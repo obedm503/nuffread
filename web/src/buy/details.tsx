@@ -3,7 +3,7 @@ import { range } from 'lodash';
 import * as React from 'react';
 import { Query } from 'react-apollo';
 import { RouteComponentProps } from 'react-router';
-import { Error } from '../components';
+import { Error, Footer } from '../components';
 import { Listing } from '../components/listing';
 import { SEARCH } from '../queries';
 import { IQuery } from '../schema.gql';
@@ -58,5 +58,7 @@ export const Details: React.SFC<RouteComponentProps<{ listingId: string }>> = ({
         }}
       </Query>
     </IonContent>
+
+    <Footer />
   </>
 );

@@ -19,7 +19,7 @@ import { Mutation, MutationFn } from 'react-apollo';
 import { RouteComponentProps } from 'react-router';
 import { Link } from 'react-router-dom';
 import * as yup from 'yup';
-import { TopNav } from './components';
+import { Footer, TopNav } from './components';
 import { Email, Password } from './controls';
 import { IMutation, UserType } from './schema.gql';
 
@@ -195,6 +195,8 @@ export const Login: React.SFC<
           </IonRow>
         </IonGrid>
       </IonContent>
+
+      <Footer />
     </>
   );
 };

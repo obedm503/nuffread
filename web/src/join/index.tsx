@@ -1,7 +1,7 @@
 import { IonButton, IonButtons, IonContent } from '@ionic/react';
 import * as React from 'react';
 import { RouteComponentProps, RouteProps } from 'react-router';
-import { Routes, TopNav } from '../components';
+import { Footer, Routes, TopNav } from '../components';
 import { Confirm } from './confirm';
 import { Home } from './home';
 import { Pricing } from './pricing';
@@ -32,5 +32,7 @@ export const Join: React.SFC<RouteComponentProps<{}>> = ({
     <IonContent>
       <Routes base={match.url} routes={routes} />
     </IonContent>
+
+    <Footer />
   </>
 );

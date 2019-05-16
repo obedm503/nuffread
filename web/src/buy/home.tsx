@@ -1,10 +1,10 @@
-import { IonList } from '@ionic/react';
+import { IonContent, IonList } from '@ionic/react';
 import gql from 'graphql-tag';
 import { resolve } from 'path';
 import * as React from 'react';
 import { Query } from 'react-apollo';
 import { RouteComponentProps } from 'react-router';
-import { Error } from '../components';
+import { Error, Footer } from '../components';
 import { SearchBar } from '../components/search-bar';
 import { BASIC_LISTING, GET_LISTING, SEARCH } from '../queries';
 import { IQuery } from '../schema.gql';
@@ -160,20 +160,24 @@ export class Home extends React.Component<
           />
         </Nav>
 
-        {this.state.search.has('query') ? (
-          <SearchListings
-            onClick={this.onListingClick}
-            listingId={params.listingId}
-            searchValue={this.state.searchValue}
-            base={url}
-          />
-        ) : (
-          <TopListings
-            onClick={this.onListingClick}
-            listingId={params.listingId}
-            base={url}
-          />
-        )}
+        <IonContent>
+          {this.state.search.has('query') ? (
+            <SearchListings
+              onClick={this.onListingClick}
+              listingId={params.listingId}
+              searchValue={this.state.searchValue}
+              base={url}
+            />
+          ) : (
+            <TopListings
+              onClick={this.onListingClick}
+              listingId={params.listingId}
+              base={url}
+            />
+          )}
+        </IonContent>
+
+        <Footer />
       </>
     );
   }

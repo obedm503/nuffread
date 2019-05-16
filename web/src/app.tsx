@@ -17,7 +17,7 @@ import {
   withRouter,
 } from 'react-router';
 import { Buy } from './buy';
-import { Error, Footer, Routes } from './components';
+import { Error, IonRoutes } from './components';
 import { Join } from './join';
 import { Launch } from './launch';
 import { Admin, Login } from './login';
@@ -89,6 +89,7 @@ class App extends React.Component<RouteComponentProps<{}>> {
       return routes;
     },
   );
+
   render() {
     const { match } = this.props;
     return (
@@ -114,9 +115,7 @@ class App extends React.Component<RouteComponentProps<{}>> {
                   />
                 </Helmet>
 
-                <Routes routes={routes} key={match.url} />
-
-                <Footer />
+                <IonRoutes routes={routes} key={match.url} />
               </UserProvider>
             </IsDesktopProvider>
           );
