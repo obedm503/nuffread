@@ -1,4 +1,4 @@
-import { IonItem, IonLabel } from '@ionic/react';
+import { IonIcon, IonItem, IonLabel } from '@ionic/react';
 import gql from 'graphql-tag';
 import * as React from 'react';
 import { Mutation } from 'react-apollo';
@@ -21,7 +21,8 @@ export class Logout extends React.PureComponent {
       <Mutation<IMutation> mutation={LOGOUT} onCompleted={this.onCompleted}>
         {mutate => {
           return (
-            <IonItem href="#" onClick={() => mutate()}>
+            <IonItem button onClick={() => mutate()}>
+              <IonIcon slot="start" name="log-out" />
               <IonLabel>Logout</IonLabel>
             </IonItem>
           );
