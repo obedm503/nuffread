@@ -1,7 +1,7 @@
-import { IonBadge, IonButton, IonButtons, IonIcon } from '@ionic/react';
+import { IonBadge, IonButtons, IonIcon } from '@ionic/react';
 import { resolve } from 'path';
 import * as React from 'react';
-import { Link } from 'react-router-dom';
+import { IonButtonLink } from '../../components';
 import { Listing } from '../../components/listing';
 import { IListing } from '../../schema.gql';
 
@@ -11,15 +11,13 @@ export const ListingDetails: React.SFC<{
 }> = ({ listing, base }) => (
   <Listing priceColor="success" listing={listing}>
     <IonButtons>
-      <IonButton>
-        <Link to={resolve(base, 'details')}>
-          <IonBadge color="info">More Details</IonBadge>
-        </Link>
-      </IonButton>
+      <IonButtonLink href={resolve(base, 'details')}>
+        <IonBadge color="info">More Details</IonBadge>
+      </IonButtonLink>
 
-      <IonButton href="#">
+      <IonButtonLink href="#">
         <IonIcon slot="icon-only" name="barcode" />
-      </IonButton>
+      </IonButtonLink>
     </IonButtons>
   </Listing>
 );

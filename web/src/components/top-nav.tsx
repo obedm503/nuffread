@@ -1,21 +1,20 @@
-import { IonButton, IonTitle, IonToolbar, IonHeader } from '@ionic/react';
+import { IonHeader, IonTitle, IonToolbar } from '@ionic/react';
 import * as React from 'react';
-import { Color } from '../util';
+import { IonButtonLink } from './ionic';
 
 type Props = {
-  color?: Color;
   toolbar?: React.ReactNode;
 };
 export class TopNav extends React.PureComponent<Props> {
   render() {
-    const { children, color, toolbar = null } = this.props;
+    const { children, toolbar = null } = this.props;
     return (
       <IonHeader>
-        <IonToolbar color={color}>
+        <IonToolbar color="primary">
           <IonTitle>
-            <IonButton href="/" color="light" fill="clear">
+            <IonButtonLink href="/" fill="clear" color="light">
               nuffread
-            </IonButton>
+            </IonButtonLink>
           </IonTitle>
 
           {children}

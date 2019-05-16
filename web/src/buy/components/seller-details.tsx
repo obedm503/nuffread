@@ -1,12 +1,6 @@
-import {
-  IonButton,
-  IonButtons,
-  IonIcon,
-  IonImg,
-  IonItem,
-  IonLabel,
-} from '@ionic/react';
+import { IonButtons, IonIcon, IonImg, IonItem, IonLabel } from '@ionic/react';
 import * as React from 'react';
+import { IonButtonLink } from '../../components';
 
 export const SellerDetails: React.SFC<{
   listingId: string;
@@ -30,15 +24,15 @@ export const SellerDetails: React.SFC<{
       </p>
 
       <IonButtons>
-        <IonButton href="#">
+        <IonButtonLink href="#">
           <IonIcon slot="icon-only" size="small" name="call" />
-        </IonButton>
-        <IonButton href="#">
+        </IonButtonLink>
+        <IonButtonLink href="#">
           <IonIcon slot="icon-only" size="small" name="logo-facebook" />
-        </IonButton>
-        <IonButton href="#">
+        </IonButtonLink>
+        <IonButtonLink href="#">
           <IonIcon slot="icon-only" size="small" name="mail" />
-        </IonButton>
+        </IonButtonLink>
       </IonButtons>
     </IonLabel>
   </IonItem>

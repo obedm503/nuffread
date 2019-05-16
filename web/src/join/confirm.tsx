@@ -13,7 +13,7 @@ import * as React from 'react';
 import { Mutation } from 'react-apollo';
 import { Redirect, RouteComponentProps } from 'react-router';
 import * as yup from 'yup';
-import { Error } from '../components';
+import { Error, IonButtonLink } from '../components';
 import { Email } from '../controls';
 import { IMutation } from '../schema.gql';
 import { UserConsumer } from '../state/user';
@@ -102,10 +102,10 @@ class ConfirmEmail extends React.Component<{
                               <div className="field" key={err.message}>
                                 <p className="help is-danger">
                                   Email is not registered.
-                                  <IonButton href="/join/signup">
+                                  <IonButtonLink href="/join/signup">
                                     <IonIcon slot="start" name="add" />
                                     <IonLabel>Join Instead</IonLabel>
-                                  </IonButton>
+                                  </IonButtonLink>
                                 </p>
                               </div>
                             );

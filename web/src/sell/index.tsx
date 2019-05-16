@@ -3,12 +3,12 @@ import {
   IonButtons,
   IonContent,
   IonIcon,
-  IonItemDivider,
+  IonLabel,
   IonPopover,
 } from '@ionic/react';
 import * as React from 'react';
 import { RouteComponentProps, RouteProps } from 'react-router';
-import { Footer, Routes, TopNav } from '../components';
+import { Footer, IonItemLink, Routes, TopNav } from '../components';
 import { Logout } from '../logout';
 import { Home } from './home';
 import { Listings } from './listings';
@@ -21,24 +21,43 @@ const routes: RouteProps[] = [
   { path: '/new', exact: true, component: New },
   { path: '/', component: Home },
 ];
+const Link = ({ href, icon, children }) => (
+  <IonItemLink href={href}>
+    <IonIcon slot="start" name={icon} />
+    <IonLabel>{children}</IonLabel>
+  </IonItemLink>
+);
+
+class Ellipsis extends React.Component {
+  state = { open: false };
+  open = () => this.setState({ open: !this.state.open });
+  close = () => this.setState({ open: false });
+  render() {
+    return (
+      <IonButton onClick={this.open}>
+        <IonIcon name="more" />
+        <IonPopover isOpen={this.state.open} onDidDismiss={this.close}>
+          <Link href="/profile" icon="person">
+            My Profile
+          </Link>
+          <Link href="/new" icon="add">
+            New Listing
+          </Link>
+          <Link href="/listings" icon="book">
+            My Listings
+          </Link>
+          <Logout />
+        </IonPopover>
+      </IonButton>
+    );
+  }
+}
 
 export const Sell: React.SFC<RouteComponentProps<{}>> = ({ match }) => (
   <>
     <TopNav>
       <IonButtons slot="end">
-        <IonButton>
-          <IonIcon name="ellipsis" />
-          <IonPopover isOpen={true} onDidDismiss={() => {}}>
-            <IonButtons>
-              <IonButton href="/profile">My Profile</IonButton>
-              <IonButton href="/new">New Listing</IonButton>
-              <IonButton href="/listings">My Listings</IonButton>
-              <IonItemDivider />
-              <Logout />
-            </IonButtons>
-            <p>This is popover content</p>
-          </IonPopover>
-        </IonButton>
+        <Ellipsis />
       </IonButtons>
     </TopNav>
 

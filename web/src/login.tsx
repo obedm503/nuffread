@@ -19,7 +19,7 @@ import { Mutation, MutationFn } from 'react-apollo';
 import { RouteComponentProps } from 'react-router';
 import { Link } from 'react-router-dom';
 import * as yup from 'yup';
-import { Footer, TopNav } from './components';
+import { IonButtonLink, Footer, TopNav } from './components';
 import { Email, Password } from './controls';
 import { IMutation, UserType } from './schema.gql';
 
@@ -120,10 +120,10 @@ class LoginForm extends React.Component<{
                       <IonRow>
                         {admin ? null : (
                           <IonCol>
-                            <IonButton expand="block" href="/join/signup">
+                            <IonButtonLink expand="block" href="/join/signup">
                               <IonIcon slot="start" name="add" />
                               <IonLabel>Join</IonLabel>
-                            </IonButton>
+                            </IonButtonLink>
                           </IonCol>
                         )}
 

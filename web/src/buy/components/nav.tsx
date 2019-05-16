@@ -1,14 +1,14 @@
-import { IonButton, IonButtons } from '@ionic/react';
+import { IonButtons } from '@ionic/react';
 import * as React from 'react';
-import { TopNav } from '../../components';
+import { IonButtonLink, TopNav } from '../../components';
 
 export const Nav: React.SFC = ({ children }) => (
   <TopNav toolbar={children}>
     <IonButtons slot="secondary">
-      <IonButton href="/join">
+      <IonButtonLink href="/join">
         <b>Join</b>
-      </IonButton>
-      <IonButton href="/login">Login</IonButton>
+      </IonButtonLink>
+      <IonButtonLink href="/login">Login</IonButtonLink>
     </IonButtons>
   </TopNav>
 );

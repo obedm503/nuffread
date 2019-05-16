@@ -2,6 +2,7 @@ export * from './breadcrumbs';
 export * from './error';
 export * from './flex';
 export * from './footer';
+export * from './ionic';
 export * from './loading';
 export * from './modal';
 export * from './print-page';
