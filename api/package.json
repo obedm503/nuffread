@@ -1,6 +1,7 @@
 {
   "private": true,
   "scripts": {
+    "migrate": "ts-node ./node_modules/typeorm/cli.js migration:run",
     "dev": "nodemon --watch src --ext ts --exec 'ts-node --project tsconfig.json --pretty --files src/main'",
     "build": "NODE_ENV=production tsc --project tsconfig.json",
     "start": "node --optimize_for_size --max_old_space_size=512 --gc_interval=100 dist/main.js"

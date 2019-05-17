@@ -86,4 +86,8 @@ export class Listing extends BaseEntity {
   // give recommendations based on books bought by other people who also bought this one
   @Column({ default: '' })
   className: string;
+
+  // for full-text search
+  @Column('tsvector', { select: false, default: '' })
+  private document_with_weights: any;
 }
