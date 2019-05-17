@@ -1,4 +1,4 @@
-import { IonCol, IonGrid, IonRow } from '@ionic/react';
+import { IonCol, IonContent, IonGrid, IonRow } from '@ionic/react';
 import gql from 'graphql-tag';
 import * as React from 'react';
 import { Query } from 'react-apollo';
@@ -23,30 +23,32 @@ const MY_LISTINGS = gql`
 `;
 
 export const Listings: React.SFC = () => (
-  <IonGrid>
-    <IonRow>
-      <Query<IQuery> query={MY_LISTINGS}>
-        {({ loading, error, data }) => {
-          if (loading) {
-            return null;
-          }
-          if (error || !data || !data.me || data.me.__typename !== 'Seller') {
-            return <Error value={error} />;
-          }
+  <IonContent>
+    <IonGrid>
+      <IonRow>
+        <Query<IQuery> query={MY_LISTINGS}>
+          {({ loading, error, data }) => {
+            if (loading) {
+              return null;
+            }
+            if (error || !data || !data.me || data.me.__typename !== 'Seller') {
+              return <Error value={error} />;
+            }
 
-          if (!data.me.listings.length) {
-            return <IonCol size="12">No listings posted</IonCol>;
-          }
+            if (!data.me.listings.length) {
+              return <IonCol size="12">No listings posted</IonCol>;
+            }
 
-          return data.me.listings.map(listing => {
-            return (
-              <IonCol size="12" key={listing.id}>
-                <Listing listing={listing} />
-              </IonCol>
-            );
-          });
-        }}
-      </Query>
-    </IonRow>
-  </IonGrid>
+            return data.me.listings.map(listing => {
+              return (
+                <IonCol size="12" key={listing.id}>
+                  <Listing listing={listing} />
+                </IonCol>
+              );
+            });
+          }}
+        </Query>
+      </IonRow>
+    </IonGrid>
+  </IonContent>
 );

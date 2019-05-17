@@ -5,22 +5,18 @@ import {
   IonIcon,
   IonLabel,
   IonPopover,
+  IonRouterOutlet,
+  IonTabBar,
+  IonTabButton,
+  IonTabs,
 } from '@ionic/react';
 import * as React from 'react';
-import { RouteComponentProps, RouteProps } from 'react-router';
-import { Footer, IonItemLink, Routes, TopNav } from '../components';
+import { Redirect, Route, RouteComponentProps } from 'react-router';
+import { IonItemLink, TopNav } from '../components';
 import { Logout } from '../logout';
-import { Home } from './home';
 import { Listings } from './listings';
-import { New } from './new';
 import { Profile } from './profile';
 
-const routes: RouteProps[] = [
-  { path: '/profile', exact: true, component: Profile },
-  { path: '/listings', exact: true, component: Listings },
-  { path: '/new', exact: true, component: New },
-  { path: '/', component: Home },
-];
 const Link = ({ href, icon, children }) => (
   <IonItemLink href={href}>
     <IonIcon slot="start" name={icon} />
@@ -37,14 +33,8 @@ class Ellipsis extends React.Component {
       <IonButton onClick={this.open}>
         <IonIcon name="more" />
         <IonPopover isOpen={this.state.open} onDidDismiss={this.close}>
-          <Link href="/profile" icon="person">
-            My Profile
-          </Link>
           <Link href="/new" icon="add">
             New Listing
-          </Link>
-          <Link href="/listings" icon="book">
-            My Listings
           </Link>
           <Logout />
         </IonPopover>
@@ -53,8 +43,10 @@ class Ellipsis extends React.Component {
   }
 }
 
-export const Sell: React.SFC<RouteComponentProps<{}>> = ({ match }) => (
+export const Sell: React.SFC<RouteComponentProps<{}>> = () => (
   <>
+    <Route exact path="/" render={() => <Redirect to="/listings" />} />
+
     <TopNav>
       <IonButtons slot="end">
         <Ellipsis />
@@ -62,9 +54,24 @@ export const Sell: React.SFC<RouteComponentProps<{}>> = ({ match }) => (
     </TopNav>
 
     <IonContent>
-      <Routes base={match.url} routes={routes} />
-    </IonContent>
+      <IonTabs>
+        <IonRouterOutlet>
+          <Route path="/:tab(listings)" exact component={Listings} />
+          <Route path="/:tab(profile)" exact component={Profile} />
+        </IonRouterOutlet>
 
-    <Footer />
+        <IonTabBar slot="bottom">
+          <IonTabButton tab="listings" href="/listings">
+            <IonIcon name="book" />
+            <IonLabel>Listings</IonLabel>
+          </IonTabButton>
+
+          <IonTabButton tab="profile" href="/profile">
+            <IonIcon name="person" />
+            <IonLabel>Profile</IonLabel>
+          </IonTabButton>
+        </IonTabBar>
+      </IonTabs>
+    </IonContent>
   </>
 );
