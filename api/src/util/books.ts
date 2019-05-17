@@ -1,3 +1,5 @@
+import { IBook } from "../schema.gql";
+
 type GoogleBook = {
   kind: string;
   id: string;
@@ -66,7 +68,7 @@ type GoogleBook = {
   };
 };
 
-const formatBook = (book: GoogleBook): GQL.IBook | undefined => {
+const formatBook = (book: GoogleBook): IBook | undefined => {
   if (!book.volumeInfo.industryIdentifiers || !book.volumeInfo.authors) {
     return;
   }
@@ -102,7 +104,7 @@ const formatBook = (book: GoogleBook): GQL.IBook | undefined => {
 
 export const getBook = async (
   googleId: string,
-): Promise<GQL.IBook | undefined> => {
+): Promise<IBook | undefined> => {
   const res = await fetch(
     `https://www.googleapis.com/books/v1/volumes/${googleId}`,
   );
@@ -110,7 +112,7 @@ export const getBook = async (
   return formatBook(json);
 };
 
-export const searchBooks = async (query: string): Promise<Array<GQL.IBook>> => {
+export const searchBooks = async (query: string): Promise<Array<IBook>> => {
   const res = await fetch(
     `https://www.googleapis.com/books/v1/volumes?q=${query}`,
   );

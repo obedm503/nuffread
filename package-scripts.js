@@ -7,20 +7,17 @@ require('dotenv-safe').config({
 
 const { execSync } = require('child_process');
 const { EOL } = require('os');
-const { concurrent, series, crossEnv, rimraf } = require('nps-utils');
+const { concurrent, series, crossEnv, rimraf, copy } = require('nps-utils');
 
-const parcelConfig = [
-  'web/src/client/index.html',
-  '--out-dir web/dist/public',
-  '--public-url /',
-].join(' ');
-
-const buildTypes = [
-  'gql2ts',
-  'api/types.gql',
-  '--output-file types.d.ts',
-  `--external-options ${resolve('./gql2tsrc.js')}`,
-].join(' ');
+const buildTypes = series(
+  [
+    'gql2ts',
+    'api/schema.gql',
+    '--output-file api/src/schema.gql.ts',
+    `--external-options ${resolve('./gql2tsrc.js')}`,
+  ].join(' '),
+  copy('"api/src/schema.gql.ts" web/src/'),
+);
 
 // based on https://stackoverflow.com/a/40178818/4371892
 const push = name =>
@@ -44,52 +41,37 @@ module.exports.scripts = {
   dev: {
     default: series(
       'nps clean',
-      concurrent.nps('dev.types', 'dev.server', 'dev.client', 'dev.api'),
+      concurrent.nps('dev.types', 'dev.web', 'dev.api'),
     ),
-    types: `nodemon --watch "api/types.gql" --exec "${buildTypes}"`,
-    server: [
-      'nodemon',
-      '--watch "web/src/app"',
-      '--watch "web/src/server"',
-      '--ext ts,tsx',
-      '--exec "ts-node --project web/src/server/tsconfig.json --pretty --files web/src/server/main"',
-    ].join(' '),
-    client: `parcel watch ${parcelConfig}`,
-    api: [
-      'nodemon',
-      '--watch api/src',
-      '--ext ts',
-      '--exec "ts-node --project api/tsconfig.json --pretty --files api/src/main"',
-    ].join(' '),
+    types: `nodemon --watch "api/schema.gql" --exec "${buildTypes}"`,
+    web: series('cd web', 'npm run dev'),
+    api: series('cd api', 'npm run dev'),
   },
   build: {
     default: series(
       'nps clean',
       buildTypes,
-      concurrent.nps('build.client', 'build.server', 'build.api'),
+      concurrent.nps('build.web', 'build.api'),
     ),
-    client: crossEnv(
-      [
-        'NODE_ENV=production',
-        execSync('heroku config --shell --app nuffread-web-staging')
-          .toString()
-          .split(EOL)
-          .join(' '),
-        `parcel build ${parcelConfig} --no-cache`,
-      ].join(' '),
+    web: series(
+      'cd web',
+      crossEnv(
+        [
+          'NODE_ENV=production',
+          execSync('heroku config --shell --app nuffread-web-staging')
+            .toString()
+            .split(EOL)
+            .join(' '),
+          'npm run build',
+        ].join(' '),
+      ),
     ),
-    server: crossEnv(
-      'NODE_ENV=production tsc --project web/src/server/tsconfig.json --outDir web/dist',
-    ),
-    api: crossEnv(
-      'NODE_ENV=production tsc --project api/tsconfig.json --outDir api/dist',
-    ),
+    api: series('cd api', 'npm run build'),
   },
   deploy,
-  clean: rimraf('web/dist .cache api/dist'),
+  clean: rimraf('.cache web/dist api/dist'),
   start: {
-    server: 'cd web && npm run start',
-    api: 'cd api && npm run start',
+    api: series('cd api', 'npm run start'),
   },
   db: {
     info: [

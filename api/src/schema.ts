@@ -12,12 +12,13 @@ import { ListingResolver } from './listing/listing.resolver';
 import { MutationResolver } from './mutation/mutation.resolver';
 import { QueryResolver } from './query/query.resolver';
 import { DateResolver } from './scalars/date';
+import { User, UserType } from './schema.gql';
 import { School } from './school/school.entity';
 import { Seller } from './seller/seller.entity';
 import { SellerResolver } from './seller/seller.resolver';
 import { IContext, IResolver, IResolvers } from './util/types';
 
-const UserResolver: IResolver<GQL.User, Admin | Seller> = {
+const UserResolver: IResolver<User, Admin | Seller> = {
   __resolveType(user) {
     if (user instanceof Seller) {
       return 'Seller';
@@ -38,7 +39,7 @@ const makeLoader = <T extends BaseEntity>(Ent: typeof BaseEntity) => {
 
 function createSchema(): GraphQLSchema {
   const typeDefs = fs.readFileSync(
-    resolve(__dirname, '../types.gql'),
+    resolve(__dirname, '../schema.gql'),
     'utf-8',
   );
   const resolvers: IResolvers = {
@@ -57,7 +58,7 @@ function createSchema(): GraphQLSchema {
 
 async function getUser(
   id: string,
-  type: GQL.UserType,
+  type: UserType,
 ): Promise<Seller | Admin | undefined> {
   if (type === 'SELLER') {
     return Seller.findOne(id);

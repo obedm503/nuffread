@@ -1,8 +1,15 @@
 {
   "private": true,
+  "scripts": {
+    "dev": "nps dev",
+    "build": "nps build"
+  },
   "browserslist": [
     "last 2 versions"
   ],
+  "engines": {
+    "node": "10.10.0"
+  },
   "dependencies": {
     "dotenv-safe": "^6.1.0",
     "nps": "^5.9.3",
@@ -15,10 +22,6 @@
     "node-sass": "^4.7.2",
     "nodemon": "^1.18.10",
     "parcel-bundler": "^1.9.2",
-    "typeorm": "^0.2.15",
-    "typescript": "^3.3.1"
-  },
-  "engines": {
-    "node": "10.10.0"
+    "typeorm": "^0.2.15"
   }
 }

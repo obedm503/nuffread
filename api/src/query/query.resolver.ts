@@ -1,5 +1,14 @@
 import { getConnection } from 'typeorm';
 import { Listing } from '../listing/listing.entity';
+import {
+  IGoogleBookOnQueryArguments,
+  IListing,
+  IListingOnQueryArguments,
+  IQuery,
+  ISearchGoogleOnQueryArguments,
+  ISearchOnQueryArguments,
+  User,
+} from '../schema.gql';
 import { Seller } from '../seller/seller.entity';
 import { isAdmin } from '../util/auth';
 import { getBook, searchBooks } from '../util/books';
@@ -15,8 +24,8 @@ import { IResolver } from '../util/types';
 
 const getTopListings = () => Listing.find();
 
-export const QueryResolver: IResolver<GQL.IQuery> = {
-  async search(_, { query, maxPrice, minPrice }: GQL.ISearchOnQueryArguments) {
+export const QueryResolver: IResolver<IQuery> = {
+  async search(_, { query, maxPrice, minPrice }: ISearchOnQueryArguments) {
     if (!query) {
       return (await getTopListings()) as any;
     }
@@ -92,11 +101,11 @@ export const QueryResolver: IResolver<GQL.IQuery> = {
     if (!user) {
       return null;
     }
-    return (user as any) as GQL.User;
+    return (user as any) as User;
   },
 
-  listing(_, { id }: GQL.IListingOnQueryArguments, { user, listingLoader }) {
-    return (listingLoader.load(id) as any) as GQL.IListing;
+  listing(_, { id }: IListingOnQueryArguments, { user, listingLoader }) {
+    return (listingLoader.load(id) as any) as IListing;
   },
 
   async sellers(_, args, { user }) {
@@ -107,10 +116,10 @@ export const QueryResolver: IResolver<GQL.IQuery> = {
     return Seller.find() as any;
   },
 
-  async searchGoogle(_, { query }: GQL.ISearchGoogleOnQueryArguments) {
+  async searchGoogle(_, { query }: ISearchGoogleOnQueryArguments) {
     return await searchBooks(query);
   },
-  async googleBook(_, { id }: GQL.IGoogleBookOnQueryArguments) {
+  async googleBook(_, { id }: IGoogleBookOnQueryArguments) {
     const book = await getBook(id);
     if (!book) {
       throw new Error(`Book ${id} not found`);

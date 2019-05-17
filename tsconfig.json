@@ -6,7 +6,6 @@
     "checkJs": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "jsx": "react",
     "lib": ["dom", "esnext"],
     "module": "esnext",
     "moduleResolution": "node",
@@ -18,7 +17,5 @@
     "strictPropertyInitialization": false,
     "target": "es5"
   },
-  "files": ["./types.d.ts"],
-  "include": ["api", "web"],
   "exclude": ["**/node_modules/**/*", "**/dist/**/*"]
 }

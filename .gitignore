@@ -1,7 +1,7 @@
 # Specifies intentionally untracked files to ignore when using Git
 # http://git-scm.com/docs/gitignore
 
-types.d.ts
+schema.gql.ts
 *~
 *.sw[mnpcod]
 *.log
@@ -35,3 +35,4 @@ $RECYCLE.BIN/
 Thumbs.db
 UserInterfaceState.xcuserstate
 dist
+build
