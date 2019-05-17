@@ -1,9 +1,7 @@
-import { IonButton, IonItem } from '@ionic/react';
+import { IonButton, IonItem, IonTabButton } from '@ionic/react';
 import { Omit } from 'lodash';
 import * as React from 'react';
-import { RouteComponentProps, withRouter } from 'react-router';
-
-type AllowedComponent = typeof IonItem & typeof IonButton;
+import { withRouter } from 'react-router';
 
 type Props<T extends React.ElementType> = Omit<
   React.ComponentPropsWithRef<T> & {
@@ -13,9 +11,10 @@ type Props<T extends React.ElementType> = Omit<
   'onClick'
 >;
 
-const addRouter = (
-  Comp: AllowedComponent,
-): React.ComponentType<Props<typeof Comp>> => {
+function addRouter<T extends React.ComponentType>(
+  Comp: T,
+): React.ComponentType<Props<T>> {
+  const Component = Comp as Function;
   const comp = ({
     history,
     location,
@@ -23,9 +22,9 @@ const addRouter = (
     staticContext,
     replace = false,
     ...props
-  }: RouteComponentProps & Props<typeof Comp>) => {
+  }) => {
     return (
-      <Comp
+      <Component
         {...props}
         onClick={e => {
           e.preventDefault();
@@ -38,8 +37,8 @@ const addRouter = (
       />
     );
   };
-  return withRouter(comp);
-};
+  return withRouter(comp as any);
+}
 
 export const IonButtonLink = addRouter(IonButton);
 export const IonItemLink = addRouter(IonItem);
