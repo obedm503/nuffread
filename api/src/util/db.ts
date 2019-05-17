@@ -29,7 +29,7 @@ export async function connect(
       type: 'postgres',
       url: process.env.DATABASE_URL,
       entities,
-      // migrations: ['./migration/**/*.ts'],
+      migrations: ['./migrations/*.ts'],
       // subscribers: ['./subscriber/**/*.ts'],
       logging: 'all',
       maxQueryExecutionTime: 300,
@@ -40,10 +40,6 @@ export async function connect(
       namingStrategy: new SnakeNamingStrategy(),
     };
     connection = await createConnection(connectionOptions);
-
-    if (process.env.DB_SYNC === 'true') {
-      await connection.synchronize();
-    }
   }
 
   return connection;
