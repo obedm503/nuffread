@@ -98,5 +98,6 @@ module.exports.scripts = {
       process.env.DATABASE_URL,
     ].join(' '),
     cli: `psql ${process.env.DATABASE_URL}`,
+    migrate: series('cd api', 'npm run migrate'),
   },
 };
