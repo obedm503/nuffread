@@ -88,6 +88,6 @@ export class Listing extends BaseEntity {
   className: string;
 
   // for full-text search
-  @Column('tsvector', { select: false })
+  @Column('tsvector', { select: false, default: '' })
   private document_with_weights: any;
 }

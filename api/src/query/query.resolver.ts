@@ -21,14 +21,30 @@ export const QueryResolver: IResolver<GQL.IQuery> = {
       return (await getTopListings()) as any;
     }
 
+    // how to partial search
+    // https://dba.stackexchange.com/questions/157951/get-partial-match-from-gin-indexed-tsvector-column/157982
+    // full-text search in postgres
+    // http://rachbelaid.com/postgres-full-text-search-is-good-enough/
+    // postgres manual on full-text search
+    // https://www.postgresql.org/docs/11/textsearch-controls.html
     const builder = getConnection()
       .createQueryBuilder(Listing, 'listing')
       .select()
-      .where('document_with_weights @@ plainto_tsquery(:query)', {
-        query: query.trim().toLowerCase(),
-      })
+      .where(
+        "document_with_weights @@ to_tsquery('english'::regconfig, :query)",
+        {
+          query: query
+            .toLowerCase()
+            .trim()
+            .split(' ')
+            .map(s => s.trim())
+            .filter(Boolean) // eliminate spaces
+            .map(s => s + ':*') // allow partial search
+            .join(' & '), // multiple keywords
+        },
+      )
       .orderBy(
-        'ts_rank(document_with_weights, plainto_tsquery(:query))',
+        "ts_rank(document_with_weights, to_tsquery('english'::regconfig, :query))",
         'DESC',
       );
 
