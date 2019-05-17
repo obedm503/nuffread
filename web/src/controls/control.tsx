@@ -22,25 +22,29 @@ export const Control: React.SFC<ControlProps> = ({
   const showError = isTouched && errors[name];
   const errorMessage = error || (errors[name] ? errors[name] : '');
   return (
-    <IonItem
-      style={{
-        // handle highlight color myself because ionic react doesn't yet
-        '--highlight-background': showError
-          ? 'var(--ion-color-danger)'
-          : isTouched
-          ? 'var(--ion-color-success)'
-          : '',
-      }}
-    >
-      <IonLabel>{label}</IonLabel>
+    <>
+      <IonItem
+        style={{
+          // handle highlight color myself because ionic react doesn't yet
+          '--highlight-background': showError
+            ? 'var(--ion-color-danger)'
+            : isTouched
+            ? 'var(--ion-color-success)'
+            : '',
+        }}
+      >
+        <IonLabel>{label}</IonLabel>
 
-      {children}
+        {children}
+      </IonItem>
 
       {showError ? (
-        <IonLabel slot="end">
-          <IonText color="danger">{errorMessage}</IonText>
-        </IonLabel>
+        <IonItem>
+          <IonLabel>
+            <IonText color="danger">{errorMessage}</IonText>
+          </IonLabel>
+        </IonItem>
       ) : null}
-    </IonItem>
+    </>
   );
 };
