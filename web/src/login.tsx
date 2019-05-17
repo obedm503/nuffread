@@ -128,6 +128,17 @@ class LoginForm extends React.Component<{
                         )}
 
                         <IonCol>
+                          <input
+                            type="submit"
+                            style={{
+                              position: 'absolute',
+                              left: '-9999px',
+                              width: '1px',
+                              height: '1px',
+                            }}
+                            tabIndex={-1}
+                          />
+
                           <IonButton
                             expand="block"
                             color="primary"

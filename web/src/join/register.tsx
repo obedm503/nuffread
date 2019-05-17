@@ -104,6 +104,17 @@ class RegisterForm extends React.Component<RouteComponentProps<never>> {
 
                       <IonRow>
                         <IonCol>
+                          <input
+                            type="submit"
+                            style={{
+                              position: 'absolute',
+                              left: '-9999px',
+                              width: '1px',
+                              height: '1px',
+                            }}
+                            tabIndex={-1}
+                          />
+
                           <IonButton
                             color="primary"
                             expand="block"
