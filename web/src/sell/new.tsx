@@ -1,14 +1,13 @@
-import { IonButton } from '@ionic/react';
+import { IonButton, IonContent } from '@ionic/react';
 import gql from 'graphql-tag';
 import * as React from 'react';
 import { Query } from 'react-apollo';
 import { RouteComponentProps } from 'react-router';
 import { ListingsMain } from '../buy/components/listings';
-import { Error } from '../components';
+import { Error, TopNav } from '../components';
 import { Listing } from '../components/listing';
 import { SearchBar } from '../components/search-bar';
 import { IQuery } from '../schema.gql';
-import { IsDesktop } from '../state/desktop';
 
 const GET_GOOGLE_BOOK = gql`
   query GetGoogleBook($id: ID!) {
@@ -121,20 +120,27 @@ export class New extends React.Component<
 
     return (
       <>
-        <SearchBar
-          onSearch={this.onSearch}
-          searchValue={this.state.searchValue}
+        <TopNav
+          toolbar={
+            <SearchBar
+              onSearch={this.onSearch}
+              searchValue={this.state.searchValue}
+            />
+          }
         />
-        {this.state.searchValue ? (
-          <SearchListings
-            onClick={this.onListingClick}
-            googleId={this.state.googleId}
-            searchValue={this.state.searchValue}
-            base={url}
-          />
-        ) : (
-          <div>Please scan a book</div>
-        )}
+
+        <IonContent>
+          {this.state.searchValue ? (
+            <SearchListings
+              onClick={this.onListingClick}
+              googleId={this.state.googleId}
+              searchValue={this.state.searchValue}
+              base={url}
+            />
+          ) : (
+            <div>Please scan a book</div>
+          )}
+        </IonContent>
       </>
     );
   }
