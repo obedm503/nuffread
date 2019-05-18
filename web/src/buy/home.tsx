@@ -56,7 +56,7 @@ const SearchListings = ({
   return (
     <Query<IQuery> query={SEARCH} variables={{ query: searchValue }}>
       {({ error, data }) => {
-        if (error || !data || !data.search) {
+        if (error || !data || !Array.isArray(data.search)) {
           return <Error value={error} />;
         }
 
@@ -136,8 +136,8 @@ export class Home extends React.Component<
     });
   };
 
-  static getDerivedStateFromProps({ location }: SearchProps) {
-    const search = new URLSearchParams(location.search);
+  static getDerivedStateFromProps({ history }: SearchProps) {
+    const search = new URLSearchParams(history.location.search);
     return {
       searchValue: search.get('query') || '',
       search,
