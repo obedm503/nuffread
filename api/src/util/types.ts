@@ -11,7 +11,7 @@ import { Seller } from '../seller/seller.entity';
 export type IContext = {
   req: Request;
   res: Response;
-  user: Seller | Admin | undefined;
+  me: Seller | Admin | undefined;
   stripe: Stripe;
   sellerLoader: DataLoader<string, Seller | null>;
   adminLoader: DataLoader<string, Admin | null>;

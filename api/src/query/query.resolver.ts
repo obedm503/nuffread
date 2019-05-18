@@ -7,7 +7,7 @@ import {
   IQuery,
   ISearchGoogleOnQueryArguments,
   ISearchOnQueryArguments,
-  User,
+  SystemUser,
 } from '../schema.gql';
 import { Seller } from '../seller/seller.entity';
 import { isAdmin } from '../util/auth';
@@ -97,19 +97,19 @@ export const QueryResolver: IResolver<IQuery> = {
     return (await Listing.find({ take: 10 })) as any[];
   },
 
-  async me(_, args, { user }) {
-    if (!user) {
+  async me(_, args, { me }) {
+    if (!me) {
       return null;
     }
-    return (user as any) as User;
+    return (me as any) as SystemUser;
   },
 
-  listing(_, { id }: IListingOnQueryArguments, { user, listingLoader }) {
+  listing(_, { id }: IListingOnQueryArguments, { listingLoader }) {
     return (listingLoader.load(id) as any) as IListing;
   },
 
-  async sellers(_, args, { user }) {
-    if (!isAdmin(user)) {
+  async sellers(_, args, { me }) {
+    if (!isAdmin(me)) {
       return;
     }
 

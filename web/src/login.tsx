@@ -21,16 +21,16 @@ import { Link } from 'react-router-dom';
 import * as yup from 'yup';
 import { IonButtonLink, Footer, TopNav } from './components';
 import { Email, Password } from './controls';
-import { IMutation, UserType } from './schema.gql';
+import { IMutation, SystemUserType } from './schema.gql';
 
 const LOGIN = gql`
-  mutation Login($email: String!, $password: String!, $type: UserType!) {
+  mutation Login($email: String!, $password: String!, $type: SystemUserType!) {
     login(email: $email, password: $password, type: $type)
   }
 `;
 
 class LoginForm extends React.Component<{
-  type: keyof typeof UserType;
+  type: keyof typeof SystemUserType;
   history: History;
   schema;
   admin?: boolean;

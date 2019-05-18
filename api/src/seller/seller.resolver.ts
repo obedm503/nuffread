@@ -8,8 +8,8 @@ export const SellerResolver: IResolver<ISeller, Seller> = {
   name(seller) {
     return seller.name || seller.email;
   },
-  async listings(seller, args, { user }) {
-    if (!isSeller(user)) {
+  async listings(seller, args, { me }) {
+    if (!isSeller(me)) {
       return [];
     }
 

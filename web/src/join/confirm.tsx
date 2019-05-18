@@ -133,8 +133,8 @@ export class Confirm extends React.PureComponent<
         <IonRow>
           <IonCol sizeSm="4" offsetSm="4">
             <UserConsumer>
-              {({ user }) => {
-                if (user) {
+              {({ me }) => {
+                if (me) {
                   return <Redirect to="/" />;
                 }
 

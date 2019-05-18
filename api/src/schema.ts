@@ -12,18 +12,18 @@ import { ListingResolver } from './listing/listing.resolver';
 import { MutationResolver } from './mutation/mutation.resolver';
 import { QueryResolver } from './query/query.resolver';
 import { DateResolver } from './scalars/date';
-import { User, UserType } from './schema.gql';
+import { SystemUser, SystemUserType } from './schema.gql';
 import { School } from './school/school.entity';
 import { Seller } from './seller/seller.entity';
 import { SellerResolver } from './seller/seller.resolver';
 import { IContext, IResolver, IResolvers } from './util/types';
 
-const UserResolver: IResolver<User, Admin | Seller> = {
-  __resolveType(user) {
-    if (user instanceof Seller) {
+const SystemUserResolver: IResolver<SystemUser, Admin | Seller> = {
+  __resolveType(me) {
+    if (me instanceof Seller) {
       return 'Seller';
     }
-    if (user instanceof Admin) {
+    if (me instanceof Admin) {
       return 'Admin';
     }
     return null;
@@ -44,7 +44,7 @@ function createSchema(): GraphQLSchema {
   );
   const resolvers: IResolvers = {
     Date: DateResolver,
-    User: UserResolver,
+    SystemUser: SystemUserResolver,
     Query: QueryResolver,
     Listing: ListingResolver,
     Mutation: MutationResolver,
@@ -58,7 +58,7 @@ function createSchema(): GraphQLSchema {
 
 async function getUser(
   id: string,
-  type: UserType,
+  type: SystemUserType,
 ): Promise<Seller | Admin | undefined> {
   if (type === 'SELLER') {
     return Seller.findOne(id);
@@ -91,11 +91,11 @@ export async function getContext({
   req: Request;
   res: Response;
 }): Promise<IContext> {
-  const user = req.session
+  const me = req.session
     ? await getUser(req.session.userId, req.session.userType)
     : undefined;
   return {
-    user,
+    me,
     req,
     res,
     stripe: getStripe(),

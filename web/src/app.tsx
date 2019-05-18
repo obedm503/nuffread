@@ -22,7 +22,7 @@ import { Join } from './join';
 import { Launch } from './launch';
 import { Admin, Login } from './login';
 import './main.scss';
-import { IQuery, User } from './schema.gql';
+import { IQuery, SystemUser } from './schema.gql';
 import { Sell } from './sell';
 import { IsDesktopProvider } from './state/desktop';
 import { UserProvider } from './state/user';
@@ -36,7 +36,7 @@ export const createCache = () =>
           types: [
             {
               kind: Kind.UNION_TYPE_DEFINITION,
-              name: 'User',
+              name: 'SystemUser',
               possibleTypes: [{ name: 'Admin' }, { name: 'Seller' }],
             },
           ],
@@ -68,7 +68,7 @@ function ToHome() {
 
 class App extends React.Component<RouteComponentProps<{}>> {
   makeRoutes = memoize(
-    (user?: User): RouteProps[] => {
+    (user?: SystemUser): RouteProps[] => {
       if (process.env.REACT_APP_MODE !== 'ready') {
         return [{ component: Launch }];
       }
@@ -106,7 +106,7 @@ class App extends React.Component<RouteComponentProps<{}>> {
           const routes = this.makeRoutes(me);
           return (
             <IsDesktopProvider>
-              <UserProvider value={{ user: me }}>
+              <UserProvider value={{ me }}>
                 <Helmet>
                   <title>nuffread</title>
                   <meta

@@ -55,22 +55,22 @@ export const MutationResolver: IResolver<IMutation> = {
       throw new AuthenticationError('INVALID_TYPE');
     }
 
-    const user = await Ent.findOne({ where: { email } });
+    const me = await Ent.findOne({ where: { email } });
 
-    if (!user) {
+    if (!me) {
       throw new AuthenticationError('WRONG_CREDENTIALS');
     }
 
-    if (user instanceof Seller && !user.confirmedAt) {
+    if (me instanceof Seller && !me.confirmedAt) {
       throw new AuthenticationError('NOT_CONFIRMED');
     }
 
-    if (!(await compare(password, user.passwordHash))) {
+    if (!(await compare(password, me.passwordHash))) {
       throw new AuthenticationError('WRONG_CREDENTIALS');
     }
 
     if (req.session) {
-      req.session.userId = user.id;
+      req.session.userId = me.id;
       req.session.userType = type;
     }
 
@@ -100,11 +100,11 @@ export const MutationResolver: IResolver<IMutation> = {
   async resendEmail(
     _,
     { binId, email }: IResendEmailOnMutationArguments,
-    { user, req },
+    { me, req },
   ) {
-    if (user) {
+    if (me) {
       // is already logged in, no need to resend
-      return btoa(user.id);
+      return btoa(me.id);
     }
 
     const origin = req.get('origin');

@@ -1,6 +1,6 @@
 scalar Date
 
-enum UserType {
+enum SystemUserType {
   ADMIN
   SELLER
 }
@@ -9,7 +9,7 @@ type Query {
   search(query: String, maxPrice: Int, minPrice: Int): [Listing!]!
   top: [Listing!]!
 
-  me: User
+  me: SystemUser
 
   listing(id: ID!): Listing
   sellers: [Seller!]!
@@ -26,7 +26,7 @@ type Mutation {
   deleteSchool(id: ID!): Boolean!
 
   register(email: String!, password: String!): String!
-  login(email: String!, password: String!, type: UserType!): Boolean!
+  login(email: String!, password: String!, type: SystemUserType!): Boolean!
   logout: Boolean!
   confirm(id: String!): Boolean!
   resendEmail(binId: String, email: String): String!
@@ -63,7 +63,7 @@ type Admin {
   email: String!
 }
 
-union User = Admin | Seller
+union SystemUser = Admin | Seller
 
 type Listing {
   id: ID!
