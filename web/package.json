@@ -5,17 +5,12 @@
     "build": "react-scripts build",
     "test": "react-scripts test"
   },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not ie <= 11",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 5 chrome version"
-    ]
-  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ],
   "dependencies": {
     "@ionic/react": "^0.0.5",
     "apollo-cache-inmemory": "^1.5.1",
