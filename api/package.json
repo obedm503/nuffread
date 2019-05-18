@@ -1,6 +1,7 @@
 {
   "private": true,
   "scripts": {
+    "sync": "ts-node ./node_modules/typeorm/cli.js sync",
     "migrate": "ts-node ./node_modules/typeorm/cli.js migration:run",
     "dev": "nodemon --watch src --ext ts --exec 'ts-node --project tsconfig.json --pretty --files src/main'",
     "build": "NODE_ENV=production tsc --project tsconfig.json",
