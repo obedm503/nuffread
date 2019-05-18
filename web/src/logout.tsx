@@ -12,8 +12,13 @@ const LOGOUT = gql`
 
 export class Logout extends React.PureComponent {
   onCompleted = (data: IMutation) => {
-    if (data && data.logout && typeof location !== 'undefined') {
-      location.href = '/';
+    if (
+      data &&
+      data.logout &&
+      typeof window !== 'undefined' &&
+      window.location
+    ) {
+      window.location.href = '/';
     }
   };
   render() {

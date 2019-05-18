@@ -1,4 +1,4 @@
-import { IonRouterOutlet, IonPage } from '@ionic/react';
+import { IonRouterOutlet } from '@ionic/react';
 import { isNil } from 'lodash';
 import * as React from 'react';
 import { Route, RouteProps, Switch } from 'react-router';

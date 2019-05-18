@@ -19,7 +19,7 @@ const errorLink = onError(({ networkError }) => {
   // logout on unauthorized error
   if (networkError && (networkError as any)['statusCode'] === 401) {
     localStorage.removeItem('token');
-    location.replace('/');
+    window.location.replace('/');
   }
 });
 

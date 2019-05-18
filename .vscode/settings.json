@@ -1,6 +1,10 @@
 {
-  "typescript.tsdk": "node_modules/typescript/lib",
+  "eslint.validate": [
+    { "autoFix": true, "language": "typescript" },
+    { "autoFix": true, "language": "typescriptreact" }
+  ],
   "files.exclude": {
     "**/node_modules": true
-  }
+  },
+  "typescript.tsdk": "node_modules/typescript/lib"
 }

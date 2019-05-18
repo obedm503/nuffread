@@ -31,16 +31,16 @@ export const classes = (
   ...names: Array<undefined | string | { [key: string]: any }>
 ) =>
   names
-    .filter(Boolean)
     .map(name => {
       if (!name) {
-        return;
+        return '';
       }
       if (typeof name === 'string') {
         return name;
       }
       return filterKeys(name).join(' ');
     })
+    .filter(Boolean)
     .join(' ');
 
 export const passwordSchema = yup
