@@ -4,6 +4,7 @@ require('dotenv-safe').config({
   path: resolve('.env'),
   sample: resolve('.env.example'),
 });
+const { SnakeNamingStrategy } = require('./dist/util/snake-case.js');
 
 module.exports = {
   type: 'postgres',
@@ -17,4 +18,5 @@ module.exports = {
     subscribersDir: 'src/subscribers',
     migrationsDir: 'src/migrations',
   },
+  namingStrategy: new SnakeNamingStrategy(),
 };
