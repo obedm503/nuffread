@@ -6,14 +6,14 @@ import Stripe from 'stripe';
 import { Admin } from '../admin/admin.entity';
 import { Listing } from '../listing/listing.entity';
 import { School } from '../school/school.entity';
-import { Seller } from '../seller/seller.entity';
+import { User } from '../user/user.entity';
 
 export type IContext = {
   req: Request;
   res: Response;
-  me: Seller | Admin | undefined;
+  me: User | Admin | undefined;
   stripe: Stripe;
-  sellerLoader: DataLoader<string, Seller | null>;
+  userLoader: DataLoader<string, User | null>;
   adminLoader: DataLoader<string, Admin | null>;
   schoolLoader: DataLoader<string, School | null>;
   listingLoader: DataLoader<string, Listing | null>;

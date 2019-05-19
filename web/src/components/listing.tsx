@@ -25,11 +25,11 @@ export const Listing: React.SFC<{
           {listing.isbn.join(', ')}
         </small>
 
-        {'seller' in listing ? (
+        {'user' in listing ? (
           <>
             <br />
             <small>
-              <b>Sold By: </b> {listing.seller.name}
+              <b>Sold By: </b> {listing.user.name}
             </small>
           </>
         ) : null}

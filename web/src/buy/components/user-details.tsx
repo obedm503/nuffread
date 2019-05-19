@@ -2,7 +2,7 @@ import { IonButtons, IonIcon, IonImg, IonItem, IonLabel } from '@ionic/react';
 import * as React from 'react';
 import { IonButtonLink } from '../../components';
 
-export const SellerDetails: React.SFC<{
+export const UserDetails: React.SFC<{
   listingId: string;
 }> = () => (
   <IonItem>

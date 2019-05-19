@@ -37,7 +37,7 @@ export const createCache = () =>
             {
               kind: Kind.UNION_TYPE_DEFINITION,
               name: 'SystemUser',
-              possibleTypes: [{ name: 'Admin' }, { name: 'Seller' }],
+              possibleTypes: [{ name: 'Admin' }, { name: 'User' }],
             },
           ],
         },
@@ -48,7 +48,7 @@ export const createCache = () =>
 const ME = gql`
   query GetMe {
     me {
-      ... on Seller {
+      ... on User {
         id
         email
         name
@@ -81,7 +81,7 @@ class App extends React.Component<RouteComponentProps<{}>> {
 
       if (!user) {
         routes.push({ path: '/', component: Buy });
-      } else if (user.__typename === 'Seller') {
+      } else if (user.__typename === 'User') {
         routes.push({ path: '/', component: Sell });
       } else if (user.__typename === 'Admin') {
         routes.push({ path: '/', component: () => <div>Admin page</div> });

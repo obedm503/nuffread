@@ -43,7 +43,7 @@ function IsEdu(validationOptions?: ValidationOptions) {
 
 @Entity()
 @Unique(['email'])
-export class Seller extends BaseEntity {
+export class User extends BaseEntity {
   @PrimaryKey()
   readonly id: string;
 
@@ -76,6 +76,6 @@ export class Seller extends BaseEntity {
   @IsString()
   photo?: string;
 
-  @OneToMany(() => Listing, listing => listing.seller)
+  @OneToMany(() => Listing, listing => listing.user)
   listings: Listing[];
 }

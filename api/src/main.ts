@@ -19,7 +19,7 @@ import { Admin } from './admin/admin.entity';
 import { Listing } from './listing/listing.entity';
 import { getContext, getSchema } from './schema';
 import { School } from './school/school.entity';
-import { Seller } from './seller/seller.entity';
+import { User } from './user/user.entity';
 import * as db from './util/db';
 
 const Store = pgSession(session);
@@ -93,7 +93,7 @@ apollo.applyMiddleware({
 });
 
 (async () => {
-  await db.connect([Seller, School, Admin, Listing]);
+  await db.connect([User, School, Admin, Listing]);
 
   const server = app.listen(port, () => {
     console.info(`Listening on port ${port}`);

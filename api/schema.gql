@@ -2,7 +2,7 @@ scalar Date
 
 enum SystemUserType {
   ADMIN
-  SELLER
+  USER
 }
 
 type Query {
@@ -12,15 +12,15 @@ type Query {
   me: SystemUser
 
   listing(id: ID!): Listing
-  sellers: [Seller!]!
+  users: [User!]!
 
   searchGoogle(query: String!): [Book!]
   googleBook(id: ID!): Book!
 }
 
 type Mutation {
-  createSeller(seller: SellerInput!): Seller!
-  deleteSeller(id: ID!): Boolean!
+  createUser(user: UserInput!): User!
+  deleteUser(id: ID!): Boolean!
 
   createSchool(school: SchoolInput!): School!
   deleteSchool(id: ID!): Boolean!
@@ -32,7 +32,7 @@ type Mutation {
   resendEmail(binId: String, email: String): String!
 }
 
-type Seller {
+type User {
   id: ID!
 
   email: String!
@@ -42,7 +42,7 @@ type Seller {
   listings: [Listing!]!
 }
 
-input SellerInput {
+input UserInput {
   schoolId: ID!
   name: String!
 }
@@ -63,7 +63,7 @@ type Admin {
   email: String!
 }
 
-union SystemUser = Admin | Seller
+union SystemUser = Admin | User
 
 type Listing {
   id: ID!
@@ -79,8 +79,8 @@ type Listing {
 
   schoolId: String!
   school: School!
-  sellerId: String!
-  seller: Seller!
+  userId: String!
+  user: User!
 }
 
 type Book {

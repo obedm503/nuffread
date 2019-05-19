@@ -20,7 +20,7 @@ const MY_LISTINGS = gql`
 
   query GetMyListings {
     me {
-      ... on Seller {
+      ... on User {
         id
         listings {
           ...BasicListing
@@ -51,12 +51,7 @@ export const Listings: React.SFC = () => (
               if (loading) {
                 return null;
               }
-              if (
-                error ||
-                !data ||
-                !data.me ||
-                data.me.__typename !== 'Seller'
-              ) {
+              if (error || !data || !data.me || data.me.__typename !== 'User') {
                 return <Error value={error} />;
               }
 

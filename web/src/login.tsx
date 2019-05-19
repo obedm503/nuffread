@@ -168,7 +168,7 @@ const adminSchema = yup.object().shape({
     .email(),
   password: yup.string().required(),
 });
-const sellerSchema = yup.object().shape({
+const userSchema = yup.object().shape({
   email: yup
     .string()
     .required()
@@ -196,8 +196,8 @@ export const Login: React.SFC<
                 <IonCardContent>
                   <LoginForm
                     history={history}
-                    type={admin ? 'ADMIN' : 'SELLER'}
-                    schema={admin ? adminSchema : sellerSchema}
+                    type={admin ? 'ADMIN' : 'USER'}
+                    schema={admin ? adminSchema : userSchema}
                     admin={admin}
                   />
                 </IonCardContent>

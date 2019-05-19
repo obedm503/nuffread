@@ -21,7 +21,7 @@ export const SEARCH = gql`
     search(query: $query) {
       ...BasicListing
 
-      seller {
+      user {
         id
         name
       }
@@ -36,7 +36,7 @@ export const GET_LISTING = gql`
     listing(id: $id) {
       ...BasicListing
 
-      seller {
+      user {
         id
         name
       }

@@ -10,9 +10,9 @@ import {
   IRegisterOnMutationArguments,
   IResendEmailOnMutationArguments,
 } from '../schema.gql';
-import { Seller, sendConfirmationEmail } from '../seller/seller.entity';
+import { User, sendConfirmationEmail } from '../user/user.entity';
 import { validate } from '../util';
-import { AuthenticationError, isSeller } from '../util/auth';
+import { AuthenticationError, isUser } from '../util/auth';
 import { IResolver } from '../util/types';
 
 export const MutationResolver: IResolver<IMutation> = {
@@ -25,20 +25,20 @@ export const MutationResolver: IResolver<IMutation> = {
     if (!origin) {
       throw new ApolloError('BAD_REQUEST');
     }
-    if (await Seller.findOne({ where: { email } })) {
+    if (await User.findOne({ where: { email } })) {
       throw new AuthenticationError('DUPLICATE_USER');
     }
 
     const passwordHash = await hash(password, 12);
 
-    const seller = Seller.create({ email, passwordHash });
-    await validate(seller);
-    await Seller.save(seller);
+    const user = User.create({ email, passwordHash });
+    await validate(user);
+    await User.save(user);
 
-    await sendConfirmationEmail(origin, seller.id, seller.email);
+    await sendConfirmationEmail(origin, user.id, user.email);
 
     // return id in binary
-    return btoa(seller.id);
+    return btoa(user.id);
   },
 
   async login(
@@ -46,9 +46,9 @@ export const MutationResolver: IResolver<IMutation> = {
     { email, password, type }: ILoginOnMutationArguments,
     { req },
   ) {
-    let Ent: typeof Admin | typeof Seller;
-    if (type === 'SELLER') {
-      Ent = Seller;
+    let Ent: typeof Admin | typeof User;
+    if (type === 'USER') {
+      Ent = User;
     } else if (type === 'ADMIN') {
       Ent = Admin;
     } else {
@@ -61,7 +61,7 @@ export const MutationResolver: IResolver<IMutation> = {
       throw new AuthenticationError('WRONG_CREDENTIALS');
     }
 
-    if (me instanceof Seller && !me.confirmedAt) {
+    if (me instanceof User && !me.confirmedAt) {
       throw new AuthenticationError('NOT_CONFIRMED');
     }
 
@@ -86,14 +86,14 @@ export const MutationResolver: IResolver<IMutation> = {
   },
   async confirm(_, { id: binId }: IConfirmOnMutationArguments) {
     const id = atob(binId);
-    const seller = await Seller.findOne({ where: { id } });
+    const user = await User.findOne({ where: { id } });
 
-    if (!seller) {
+    if (!user) {
       throw new AuthenticationError('WRONG_CREDENTIALS');
     }
 
-    seller.confirmedAt = new Date();
-    await Seller.save(seller);
+    user.confirmedAt = new Date();
+    await User.save(user);
 
     return true;
   },
@@ -116,20 +116,20 @@ export const MutationResolver: IResolver<IMutation> = {
       throw new ApolloError('BAD_REQUEST');
     }
 
-    const seller = email
-      ? await Seller.findOne({ where: { email } })
-      : await Seller.findOne({ where: { id: atob(binId) } });
+    const user = email
+      ? await User.findOne({ where: { email } })
+      : await User.findOne({ where: { id: atob(binId) } });
 
-    if (!isSeller(seller)) {
+    if (!isUser(user)) {
       return '';
     }
 
-    if (seller.confirmedAt) {
-      return btoa(seller.id);
+    if (user.confirmedAt) {
+      return btoa(user.id);
     }
 
-    await sendConfirmationEmail(origin, seller.id, seller.email);
+    await sendConfirmationEmail(origin, user.id, user.email);
 
-    return btoa(seller.id);
+    return btoa(user.id);
   },
 };

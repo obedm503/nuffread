@@ -8,7 +8,7 @@ import { Listing } from '../components/listing';
 import { SEARCH } from '../queries';
 import { IQuery } from '../schema.gql';
 import { Nav } from './components/nav';
-import { SellerDetails } from './components/seller-details';
+import { UserDetails } from './components/user-details';
 
 export const Details: React.SFC<RouteComponentProps<{ listingId: string }>> = ({
   match: {
@@ -42,7 +42,7 @@ export const Details: React.SFC<RouteComponentProps<{ listingId: string }>> = ({
                 </IonCol>
 
                 <IonCol>
-                  <SellerDetails listingId={listingId} />
+                  <UserDetails listingId={listingId} />
                 </IonCol>
               </IonRow>
 

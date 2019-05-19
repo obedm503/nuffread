@@ -14,14 +14,14 @@ import { QueryResolver } from './query/query.resolver';
 import { DateResolver } from './scalars/date';
 import { SystemUser, SystemUserType } from './schema.gql';
 import { School } from './school/school.entity';
-import { Seller } from './seller/seller.entity';
-import { SellerResolver } from './seller/seller.resolver';
+import { User } from './user/user.entity';
+import { UserResolver } from './user/user.resolver';
 import { IContext, IResolver, IResolvers } from './util/types';
 
-const SystemUserResolver: IResolver<SystemUser, Admin | Seller> = {
+const SystemUserResolver: IResolver<SystemUser, Admin | User> = {
   __resolveType(me) {
-    if (me instanceof Seller) {
-      return 'Seller';
+    if (me instanceof User) {
+      return 'User';
     }
     if (me instanceof Admin) {
       return 'Admin';
@@ -48,7 +48,7 @@ function createSchema(): GraphQLSchema {
     Query: QueryResolver,
     Listing: ListingResolver,
     Mutation: MutationResolver,
-    Seller: SellerResolver,
+    User: UserResolver,
   };
   return makeExecutableSchema<IContext>({
     typeDefs,
@@ -59,9 +59,9 @@ function createSchema(): GraphQLSchema {
 async function getUser(
   id: string,
   type: SystemUserType,
-): Promise<Seller | Admin | undefined> {
-  if (type === 'SELLER') {
-    return Seller.findOne(id);
+): Promise<User | Admin | undefined> {
+  if (type === 'USER') {
+    return User.findOne(id);
   }
   if (type === 'ADMIN') {
     return Admin.findOne(id);
@@ -99,7 +99,7 @@ export async function getContext({
     req,
     res,
     stripe: getStripe(),
-    sellerLoader: makeLoader(Seller),
+    userLoader: makeLoader(User),
     adminLoader: makeLoader(Admin),
     schoolLoader: makeLoader(School),
     listingLoader: makeLoader(Listing),

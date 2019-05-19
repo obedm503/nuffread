@@ -9,7 +9,7 @@ import {
   ISearchOnQueryArguments,
   SystemUser,
 } from '../schema.gql';
-import { Seller } from '../seller/seller.entity';
+import { User } from '../user/user.entity';
 import { isAdmin } from '../util/auth';
 import { getBook, searchBooks } from '../util/books';
 import { IResolver } from '../util/types';
@@ -22,12 +22,14 @@ import { IResolver } from '../util/types';
 //   return a.includes(b) || b.includes(a);
 // };
 
-const getTopListings = () => Listing.find();
+const getTopListings = async () => {
+  return (await Listing.find({ take: 10 })) as any[];
+};
 
 export const QueryResolver: IResolver<IQuery> = {
   async search(_, { query, maxPrice, minPrice }: ISearchOnQueryArguments) {
     if (!query) {
-      return (await getTopListings()) as any;
+      return await getTopListings();
     }
 
     // how to partial search
@@ -94,7 +96,7 @@ export const QueryResolver: IResolver<IQuery> = {
 
   async top() {
     // TODO: implement real top listings, whatever that means
-    return (await Listing.find({ take: 10 })) as any[];
+    return getTopListings();
   },
 
   async me(_, args, { me }) {
@@ -108,12 +110,12 @@ export const QueryResolver: IResolver<IQuery> = {
     return (listingLoader.load(id) as any) as IListing;
   },
 
-  async sellers(_, args, { me }) {
+  async users(_, args, { me }) {
     if (!isAdmin(me)) {
       return;
     }
 
-    return Seller.find() as any;
+    return User.find() as any;
   },
 
   async searchGoogle(_, { query }: ISearchGoogleOnQueryArguments) {

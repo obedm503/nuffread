@@ -6,9 +6,16 @@ import {
   IsString,
   IsUrl,
 } from 'class-validator';
-import { BaseEntity, Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
+import {
+  BaseEntity,
+  Column,
+  Entity,
+  Index,
+  JoinColumn,
+  ManyToOne,
+} from 'typeorm';
 import { School } from '../school/school.entity';
-import { Seller } from '../seller/seller.entity';
+import { User } from '../user/user.entity';
 import { Created, PrimaryKey, Updated } from '../util/db';
 
 @Entity()
@@ -74,13 +81,13 @@ export class Listing extends BaseEntity {
   school: School;
 
   @Column()
-  sellerId: string;
+  userId: string;
 
-  @ManyToOne(() => Seller, seller => seller.listings)
-  @JoinColumn({ name: 'seller_id' })
+  @ManyToOne(() => User, user => user.listings)
+  @JoinColumn({ name: 'user_id' })
   @IsNotEmpty()
-  @IsInstance(Seller)
-  seller: Seller;
+  @IsInstance(User)
+  user: User;
 
   // give recommendations based on books used for the same class
   // give recommendations based on books bought by other people who also bought this one
@@ -89,5 +96,6 @@ export class Listing extends BaseEntity {
 
   // for full-text search
   @Column('tsvector', { select: false, default: '' })
+  @Index('document_weights_idx')
   private document_with_weights: any;
 }

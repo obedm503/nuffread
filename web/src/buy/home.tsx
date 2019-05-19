@@ -11,7 +11,7 @@ import { IQuery } from '../schema.gql';
 import { ListingDetails } from './components/listing-details';
 import { ListingsMain } from './components/listings';
 import { Nav } from './components/nav';
-import { SellerDetails } from './components/seller-details';
+import { UserDetails } from './components/user-details';
 
 const Listing: React.SFC<{
   id: string;
@@ -35,7 +35,7 @@ const Listing: React.SFC<{
       return (
         <IonList>
           <ListingDetails listing={listing} base={base} />
-          <SellerDetails listingId={listing.id} />
+          <UserDetails listingId={listing.id} />
         </IonList>
       );
     }}
@@ -47,12 +47,12 @@ type ListingsProps = {
   onClick;
   base: string;
 };
-const SearchListings = ({
+const SearchListings: React.SFC<ListingsProps & { searchValue: string }> = ({
   listingId,
   onClick,
   searchValue,
   base,
-}: ListingsProps & { searchValue: string }) => {
+}) => {
   return (
     <Query<IQuery> query={SEARCH} variables={{ query: searchValue }}>
       {({ error, data }) => {
@@ -81,7 +81,7 @@ const TOP_LISTINGS = gql`
     top {
       ...BasicListing
 
-      seller {
+      user {
         id
         name
       }
@@ -89,7 +89,11 @@ const TOP_LISTINGS = gql`
   }
 `;
 
-const TopListings = ({ listingId, onClick, base }: ListingsProps) => (
+const TopListings: React.SFC<ListingsProps> = ({
+  listingId,
+  onClick,
+  base,
+}) => (
   <Query<IQuery> query={TOP_LISTINGS}>
     {({ error, data }) => {
       if (error || !data || !data.top) {
