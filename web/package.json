@@ -21,6 +21,7 @@
     "graphql": "^14.3.0",
     "graphql-tag": "^2.10.1",
     "lodash": "^4.17.11",
+    "quagga": "^0.12.1",
     "react": "^16.8.6",
     "react-apollo": "^2.5.5",
     "react-dom": "^16.8.6",
