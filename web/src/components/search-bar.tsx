@@ -1,42 +1,35 @@
 import { SearchbarChangeEventDetail } from '@ionic/core';
-import {
-  IonButton,
-  IonButtons,
-  IonIcon,
-  IonSearchbar,
-  IonToolbar,
-} from '@ionic/react';
+import { IonSearchbar, IonToolbar } from '@ionic/react';
 import { debounce } from 'lodash';
 import * as React from 'react';
+import { Scanner } from './scanner';
 
 type SearchBarProps = {
   onSearch: (search: string) => void;
   searchValue: string;
 };
 export class SearchBar extends React.PureComponent<SearchBarProps> {
-  onSearch: any;
+  onSearch = debounce((code: string) => {
+    this.props.onSearch(code);
+  }, 500);
+
   onChange = (e: CustomEvent<SearchbarChangeEventDetail>) => {
-    if (!this.onSearch) {
-      this.onSearch = debounce(this.props.onSearch, 500);
+    if (!e.detail.value || !this.onSearch) {
+      return;
     }
-    this.onSearch && this.onSearch(e.detail.value);
+    this.onSearch(e.detail.value);
   };
 
   render() {
-    const { searchValue } = this.props;
     return (
       <IonToolbar color="primary">
         <IonSearchbar
           color="light"
-          value={searchValue}
+          value={this.props.searchValue}
           onIonChange={this.onChange}
         />
 
-        <IonButtons slot="end">
-          <IonButton color="light">
-            <IonIcon slot="icon-only" name="qr-scanner" />
-          </IonButton>
-        </IonButtons>
+        <Scanner onScanned={this.onSearch} />
       </IonToolbar>
     );
   }
