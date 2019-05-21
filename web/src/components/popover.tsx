@@ -5,12 +5,14 @@ export class Popover extends React.Component {
   state = { open: false };
   open = () => this.setState({ open: !this.state.open });
   close = () => this.setState({ open: false });
+
   render() {
     return (
       <IonButton onClick={this.open}>
-        <IonIcon name="more" />
+        <IonIcon slot="icon-only" name="more" />
+
         <IonPopover isOpen={this.state.open} onDidDismiss={this.close}>
-          {this.props.children}
+          {this.state.open ? this.props.children : null}
         </IonPopover>
       </IonButton>
     );
