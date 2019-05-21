@@ -105,11 +105,13 @@ export class Scanner extends React.PureComponent<{
           <IonIcon slot="icon-only" name="qr-scanner" />
 
           <IonPopover isOpen={this.state.open} onDidDismiss={this.close}>
-            <div className="scanner">
-              <QuaggaScanner onScanned={this.onScanned} />
+            {this.state.open ? (
+              <div className="scanner">
+                <QuaggaScanner onScanned={this.onScanned} />
 
-              <IonIcon name="qr-scanner" />
-            </div>
+                <IonIcon name="qr-scanner" />
+              </div>
+            ) : null}
           </IonPopover>
         </IonButton>
       </IonButtons>
