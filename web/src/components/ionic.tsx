@@ -6,6 +6,7 @@ import { RouteComponentProps, withRouter } from 'react-router';
 type RequiredProps = {
   href: string;
   replace?: boolean;
+  activeColor?: string;
 };
 type Props<T extends React.ElementType> = Omit<
   RouteComponentProps & React.ComponentPropsWithRef<T> & RequiredProps,
@@ -20,11 +21,15 @@ function addRouter<T extends React.ComponentType>(Comp: T) {
     match,
     staticContext,
     replace = false,
+    activeColor,
     ...props
   }) => {
+    const isActive = location.pathname === props.href;
+
     return (
       <Component
         {...props}
+        color={isActive ? activeColor : (props as any).color}
         onClick={e => {
           e.preventDefault();
 

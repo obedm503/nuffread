@@ -21,11 +21,15 @@ export const Join: React.SFC<RouteComponentProps<{}>> = ({
   <>
     <TopNav>
       <IonButtons slot="end">
-        <IonButtonLink href="/">Search</IonButtonLink>
-        <IonButtonLink href="/join/pricing">Pricing</IonButtonLink>
-        {location.pathname.endsWith('/join/signup') ? null : (
-          <IonButtonLink href="/join/signup">Signup</IonButtonLink>
-        )}
+        <IonButtonLink activeColor="dark" href="/join">
+          Join
+        </IonButtonLink>
+        <IonButtonLink activeColor="dark" href="/join/pricing">
+          Pricing
+        </IonButtonLink>
+        <IonButtonLink activeColor="dark" href="/join/signup">
+          Signup
+        </IonButtonLink>
       </IonButtons>
     </TopNav>
 
