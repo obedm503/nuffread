@@ -7,15 +7,10 @@
   "dependencies": {
     "dotenv-safe": "^6.1.0",
     "nps": "^5.9.3",
-    "nps-utils": "^1.5.0",
-    "ts-node": "^8.0.2"
+    "nps-utils": "^1.5.0"
   },
   "devDependencies": {
-    "@types/node": "^10.12.21",
     "gql2ts": "^1.7.1",
-    "node-sass": "^4.7.2",
-    "nodemon": "^1.18.10",
-    "parcel-bundler": "^1.9.2",
-    "typeorm": "^0.2.15"
+    "nodemon": "^1.18.10"
   }
 }
