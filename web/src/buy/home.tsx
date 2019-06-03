@@ -47,7 +47,7 @@ type ListingsProps = {
   onClick;
   base: string;
 };
-const SearchListings: React.SFC<ListingsProps & { searchValue: string }> = ({
+const SearchResults: React.SFC<ListingsProps & { searchValue: string }> = ({
   listingId,
   onClick,
   searchValue,
@@ -166,7 +166,7 @@ export class Home extends React.Component<
 
         <IonContent>
           {this.state.search.has('query') ? (
-            <SearchListings
+            <SearchResults
               onClick={this.onListingClick}
               listingId={params.listingId}
               searchValue={this.state.searchValue}
