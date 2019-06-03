@@ -9,7 +9,7 @@ import {
 } from '@ionic/react';
 import * as React from 'react';
 import { Redirect, Route, RouteComponentProps } from 'react-router';
-import { Listings } from './listings';
+import { MyListings } from './listings';
 import { Profile } from './profile';
 
 export const Home: React.SFC<RouteComponentProps<{}>> = () => (
@@ -19,7 +19,7 @@ export const Home: React.SFC<RouteComponentProps<{}>> = () => (
     <IonContent>
       <IonTabs>
         <IonRouterOutlet>
-          <Route path="/:tab(listings)" exact component={Listings} />
+          <Route path="/:tab(listings)" exact component={MyListings} />
           <Route path="/:tab(profile)" exact component={Profile} />
         </IonRouterOutlet>
 
