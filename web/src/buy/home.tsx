@@ -9,7 +9,7 @@ import { SearchBar } from '../components/search-bar';
 import { BASIC_LISTING, GET_LISTING, SEARCH } from '../queries';
 import { IQuery } from '../schema.gql';
 import { ListingDetails } from './components/listing-details';
-import { ListingsMain } from './components/listings';
+import { Listings } from './components/listings';
 import { Nav } from './components/nav';
 import { UserDetails } from './components/user-details';
 
@@ -61,7 +61,7 @@ const SearchListings: React.SFC<ListingsProps & { searchValue: string }> = ({
         }
 
         return (
-          <ListingsMain
+          <Listings
             id={listingId}
             onClick={onClick}
             base={base}
@@ -100,7 +100,7 @@ const TopListings: React.SFC<ListingsProps> = ({
         return <Error value={error} />;
       }
       return (
-        <ListingsMain
+        <Listings
           id={listingId}
           onClick={onClick}
           base={base}

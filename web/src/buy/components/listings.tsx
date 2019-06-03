@@ -4,7 +4,7 @@ import { Listing } from '../../components/listing';
 import { IBook, IListing } from '../../schema.gql';
 import { IsDesktop } from '../../state/desktop';
 
-export class ListingsMain extends React.PureComponent<{
+export class Listings extends React.PureComponent<{
   id?: string;
   onClick: any;
   listings: Array<IListing | IBook>;

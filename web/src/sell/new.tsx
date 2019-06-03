@@ -3,7 +3,7 @@ import gql from 'graphql-tag';
 import * as React from 'react';
 import { Query } from 'react-apollo';
 import { RouteComponentProps } from 'react-router';
-import { ListingsMain } from '../buy/components/listings';
+import { Listings } from '../buy/components/listings';
 import { Error, TopNav } from '../components';
 import { Listing } from '../components/listing';
 import { SearchBar } from '../components/search-bar';
@@ -62,7 +62,7 @@ const SEARCH_GOOGLE = gql`
   }
 `;
 
-const SearchListings = ({
+const SearchResults = ({
   googleId,
   onClick,
   searchValue,
@@ -86,7 +86,7 @@ const SearchListings = ({
         }
 
         return (
-          <ListingsMain
+          <Listings
             id={googleId}
             onClick={onClick}
             base={base}
@@ -131,7 +131,7 @@ export class New extends React.Component<
 
         <IonContent>
           {this.state.searchValue ? (
-            <SearchListings
+            <SearchResults
               onClick={this.onListingClick}
               googleId={this.state.googleId}
               searchValue={this.state.searchValue}
