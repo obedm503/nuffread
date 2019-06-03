@@ -58,10 +58,12 @@ module.exports.scripts = {
       crossEnv(
         [
           'NODE_ENV=production',
-          execSync('heroku config --shell --app nuffread-web-staging')
-            .toString()
-            .split(EOL)
-            .join(' '),
+          process.argv.join(' ').includes('build') // only get heroku vars on build
+            ? execSync('heroku config --shell --app nuffread-web-staging')
+                .toString()
+                .split(EOL)
+                .join(' ')
+            : '',
           'npm run build',
         ].join(' '),
       ),
