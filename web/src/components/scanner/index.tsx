@@ -2,6 +2,7 @@ import { IonButton, IonButtons, IonIcon, IonPopover } from '@ionic/react';
 import { get } from 'lodash';
 import Quagga from 'quagga';
 import * as React from 'react';
+import './scanner.scss'
 
 function hasGetUserMedia() {
   return !!(
