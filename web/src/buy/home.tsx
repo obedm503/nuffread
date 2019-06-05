@@ -1,16 +1,14 @@
-import { IonContent, IonList } from '@ionic/react';
+import { IonList } from '@ionic/react';
 import gql from 'graphql-tag';
 import { resolve } from 'path';
 import * as React from 'react';
 import { Query } from 'react-apollo';
 import { RouteComponentProps } from 'react-router';
-import { Error, Footer } from '../components';
-import { SearchBar } from '../components/search-bar';
+import { Error } from '../components';
 import { BASIC_LISTING, GET_LISTING, SEARCH } from '../queries';
 import { IQuery } from '../schema.gql';
 import { ListingDetails } from './components/listing-details';
 import { Listings } from './components/listings';
-import { Nav } from './components/nav';
 import { UserDetails } from './components/user-details';
 
 const Listing: React.SFC<{
@@ -66,7 +64,7 @@ const SearchResults: React.SFC<ListingsProps & { searchValue: string }> = ({
             onClick={onClick}
             base={base}
             listings={data.search}
-            children={Listing}
+            component={Listing}
           />
         );
       }}
@@ -105,7 +103,7 @@ const TopListings: React.SFC<ListingsProps> = ({
           onClick={onClick}
           base={base}
           listings={data.top}
-          children={Listing}
+          component={Listing}
         />
       );
     }}
@@ -155,34 +153,19 @@ export class Home extends React.Component<
       match: { params, url },
     } = this.props;
 
-    return (
-      <>
-        <Nav>
-          <SearchBar
-            onSearch={this.onSearch}
-            searchValue={this.state.searchValue}
-          />
-        </Nav>
-
-        <IonContent>
-          {this.state.search.has('query') ? (
-            <SearchResults
-              onClick={this.onListingClick}
-              listingId={params.listingId}
-              searchValue={this.state.searchValue}
-              base={url}
-            />
-          ) : (
-            <TopListings
-              onClick={this.onListingClick}
-              listingId={params.listingId}
-              base={url}
-            />
-          )}
-        </IonContent>
-
-        <Footer />
-      </>
+    return this.state.search.has('query') ? (
+      <SearchResults
+        onClick={this.onListingClick}
+        listingId={params.listingId}
+        searchValue={this.state.searchValue}
+        base={url}
+      />
+    ) : (
+      <TopListings
+        onClick={this.onListingClick}
+        listingId={params.listingId}
+        base={url}
+      />
     );
   }
 }

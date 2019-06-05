@@ -7,15 +7,10 @@ import { normalizeUrl } from '../util';
 type Props = {
   routes: RouteProps[];
   base?: string;
-  [key: string]: any;
+  props?: { [key: string]: any };
 };
 
-export const routes = ({
-  routes,
-  base,
-  children: routesChildren,
-  ...rest
-}: Props) =>
+export const routes = ({ routes, base, props: rest = {} }: Props) =>
   routes.map(({ path, component, children, render, ...route }, i) => {
     let fullPath: string | undefined = (base
       ? normalizeUrl([base].concat(path!))

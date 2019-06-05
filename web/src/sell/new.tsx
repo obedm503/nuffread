@@ -91,7 +91,7 @@ const SearchResults = ({
             onClick={onClick}
             base={base}
             listings={data.searchGoogle}
-            children={GoogleBook}
+            component={GoogleBook}
           />
         );
       }}

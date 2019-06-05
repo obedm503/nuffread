@@ -17,7 +17,7 @@ import {
   withRouter,
 } from 'react-router';
 import { Buy } from './buy';
-import { Error, IonRoutes } from './components';
+import { Error, Routes } from './components';
 import { Join } from './join';
 import { Launch } from './launch';
 import { Admin, Login } from './login';
@@ -115,7 +115,7 @@ class App extends React.Component<RouteComponentProps<{}>> {
                   />
                 </Helmet>
 
-                <IonRoutes routes={routes} key={match.url} />
+                <Routes routes={routes} key={match.url} />
               </UserProvider>
             </IsDesktopProvider>
           );

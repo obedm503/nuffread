@@ -4,7 +4,7 @@ import { IonButtonLink, TopNav } from '../../components';
 
 export const Nav: React.SFC = ({ children }) => (
   <TopNav toolbar={children}>
-    <IonButtons slot="secondary">
+    <IonButtons slot="end">
       <IonButtonLink href="/join">
         <b>Join</b>
       </IonButtonLink>
