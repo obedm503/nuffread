@@ -1,4 +1,4 @@
-import { IonButton, IonItem } from '@ionic/react';
+import { IonBackButtonInner, IonButton, IonItem } from '@ionic/react';
 import { Omit } from 'lodash';
 import * as React from 'react';
 import { RouteComponentProps, withRouter } from 'react-router';
@@ -46,3 +46,14 @@ function addRouter<T extends React.ComponentType>(Comp: T) {
 
 export const IonButtonLink = addRouter(IonButton);
 export const IonItemLink = addRouter(IonItem);
+
+export const IonBackButton = withRouter<
+  RouteComponentProps & { defaultHref: string }
+>(({ history, match: { url }, defaultHref }) => {
+  if (url === defaultHref) {
+    return null;
+  }
+  return (
+    <IonBackButtonInner onClick={history.goBack} defaultHref={defaultHref} />
+  );
+});
