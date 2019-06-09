@@ -30,3 +30,25 @@ export class IsDesktopProvider extends React.Component<
     return <Provider value={this.state}>{this.props.children}</Provider>;
   }
 }
+
+type OnlyProps = { children: () => React.ReactNode };
+export const OnlyDesktop: React.SFC<OnlyProps> = ({ children }) => (
+  <Consumer>
+    {({ isDesktop }) => {
+      if (!isDesktop) {
+        return null;
+      }
+      return children();
+    }}
+  </Consumer>
+);
+export const OnlyMobile: React.SFC<OnlyProps> = ({ children }) => (
+  <Consumer>
+    {({ isDesktop }) => {
+      if (isDesktop) {
+        return null;
+      }
+      return children();
+    }}
+  </Consumer>
+);
