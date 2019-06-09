@@ -2,7 +2,7 @@ import { IonContent, IonList } from '@ionic/react';
 import { Omit } from 'lodash';
 import * as React from 'react';
 import { RouteComponentProps, RouteProps } from 'react-router';
-import { Footer, IonRoutes } from '../../components';
+import { Footer, Routes } from '../../components';
 import { Listing } from '../../components/listing';
 import { SearchBar } from '../../components/search-bar';
 import { IBook, IListing } from '../../schema.gql';
@@ -16,9 +16,13 @@ type Props = {
   onClick;
   base: string;
   component: (props: { id: string; base: string }) => React.ReactNode;
+  onSearch;
+  searchValue?: string;
 };
 
-class List extends React.PureComponent<Omit<Props, 'component'>> {
+class List extends React.PureComponent<
+  Omit<Props, 'component' | 'onSearch' | 'searchValue'>
+> {
   onClick = id => () => this.props.onClick(id);
   render() {
     return (
@@ -41,11 +45,22 @@ class List extends React.PureComponent<Omit<Props, 'component'>> {
   }
 }
 
-const Desktop: React.SFC<Props> = ({ component, id, base, ...props }) => {
+const Desktop: React.SFC<Props> = ({
+  component,
+  id,
+  base,
+  onSearch,
+  searchValue = '',
+  ...props
+}) => {
+  const listing = props.listings.find(item => item.id === id);
+  if (!listing) {
+    return null;
+  }
   return (
     <>
-      <Nav>
-        <SearchBar onSearch={() => {}} searchValue={''} />
+      <Nav title={listing.title}>
+        <SearchBar onSearch={onSearch} searchValue={searchValue} />
       </Nav>
 
       <IonContent>
@@ -67,13 +82,18 @@ const MobileDetail: React.SFC<RouteComponentProps & Props> = ({
   component,
   id,
   base,
+  listings,
 }) => {
   if (!id) {
     return null;
   }
+  const listing = listings.find(item => item.id === id);
+  if (!listing) {
+    return null;
+  }
   return (
     <>
-      <Nav />
+      <Nav title={listing.title} />
 
       <IonContent>{component({ id, base })}</IonContent>
     </>
@@ -85,11 +105,13 @@ const MobileList: React.SFC<RouteComponentProps & Props> = ({
   id,
   listings,
   onClick,
+  onSearch,
+  searchValue = '',
 }) => {
   return (
     <>
       <Nav>
-        <SearchBar onSearch={() => {}} searchValue={''} />
+        <SearchBar onSearch={onSearch} searchValue={searchValue} />
       </Nav>
 
       <IonContent>
@@ -120,7 +142,7 @@ export class Listings extends React.PureComponent<Props> {
           if (isDesktop) {
             return <Desktop {...this.props} />;
           }
-          return <IonRoutes routes={routes} props={this.props} />;
+          return <Routes routes={routes} props={this.props} />;
         }}
       </IsDesktop>
     );

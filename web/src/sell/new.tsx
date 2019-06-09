@@ -66,12 +66,14 @@ const SearchResults = ({
   googleId,
   onClick,
   searchValue,
+  onSearch,
   base,
 }: {
   googleId?: string;
   onClick;
   base: string;
   searchValue: string;
+  onSearch;
 }) => {
   return (
     <Query<IQuery> query={SEARCH_GOOGLE} variables={{ query: searchValue }}>
@@ -92,6 +94,8 @@ const SearchResults = ({
             base={base}
             listings={data.searchGoogle}
             component={GoogleBook}
+            searchValue={searchValue}
+            onSearch={onSearch}
           />
         );
       }}
@@ -135,6 +139,7 @@ export class New extends React.Component<
               onClick={this.onListingClick}
               googleId={this.state.googleId}
               searchValue={this.state.searchValue}
+              onSearch={this.onSearch}
               base={url}
             />
           ) : (

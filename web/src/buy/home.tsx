@@ -44,11 +44,13 @@ type ListingsProps = {
   listingId?: string;
   onClick;
   base: string;
+  onSearch: (searchValue: string) => void;
 };
 const SearchResults: React.SFC<ListingsProps & { searchValue: string }> = ({
   listingId,
   onClick,
   searchValue,
+  onSearch,
   base,
 }) => {
   return (
@@ -65,6 +67,8 @@ const SearchResults: React.SFC<ListingsProps & { searchValue: string }> = ({
             base={base}
             listings={data.search}
             component={Listing}
+            onSearch={onSearch}
+            searchValue={searchValue}
           />
         );
       }}
@@ -91,6 +95,7 @@ const TopListings: React.SFC<ListingsProps> = ({
   listingId,
   onClick,
   base,
+  onSearch,
 }) => (
   <Query<IQuery> query={TOP_LISTINGS}>
     {({ error, data }) => {
@@ -104,6 +109,7 @@ const TopListings: React.SFC<ListingsProps> = ({
           base={base}
           listings={data.top}
           component={Listing}
+          onSearch={onSearch}
         />
       );
     }}
@@ -121,20 +127,22 @@ export class Home extends React.Component<
   SearchProps,
   { searchValue: string; search: URLSearchParams }
 > {
-  navigate = ({ base, search }) => {
+  navigate = ({ base, searchValue }) => {
     this.props.history.push({
       pathname: base,
-      search: search ? setParam(this.props.location.search, search) : undefined,
+      search: searchValue
+        ? setParam(this.props.location.search, searchValue)
+        : undefined,
     });
   };
-  onSearch = search => {
-    this.navigate({ base: this.props.match.url, search });
+  onSearch = searchValue => {
+    this.navigate({ base: this.props.match.url, searchValue });
   };
 
   onListingClick = listingId => {
     this.navigate({
       base: resolve(this.props.match.url, '..', listingId),
-      search: this.state.searchValue,
+      searchValue: this.state.searchValue,
     });
   };
 
@@ -158,6 +166,7 @@ export class Home extends React.Component<
         onClick={this.onListingClick}
         listingId={params.listingId}
         searchValue={this.state.searchValue}
+        onSearch={this.onSearch}
         base={url}
       />
     ) : (
@@ -165,6 +174,7 @@ export class Home extends React.Component<
         onClick={this.onListingClick}
         listingId={params.listingId}
         base={url}
+        onSearch={this.onSearch}
       />
     );
   }

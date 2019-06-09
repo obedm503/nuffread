@@ -14,7 +14,7 @@ export class SearchBar extends React.PureComponent<SearchBarProps> {
   }, 500);
 
   onChange = (e: CustomEvent<SearchbarChangeEventDetail>) => {
-    if (!e.detail.value || !this.onSearch) {
+    if (typeof e.detail.value !== 'string' || !this.onSearch) {
       return;
     }
     this.onSearch(e.detail.value);
