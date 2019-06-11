@@ -1,5 +1,9 @@
 {
   "private": true,
+  "workspaces": [
+    "api",
+    "web"
+  ],
   "scripts": {
     "dev": "nps dev",
     "build": "nps build"

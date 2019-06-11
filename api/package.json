@@ -1,4 +1,6 @@
 {
+  "name": "api",
+  "version": "0.1.0",
   "private": true,
   "scripts": {
     "sync": "ts-node ./node_modules/typeorm/cli.js schema:sync",

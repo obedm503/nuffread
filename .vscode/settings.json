@@ -4,7 +4,7 @@
     { "autoFix": true, "language": "typescriptreact" }
   ],
   "files.exclude": {
-    "**/node_modules": true
+    // "**/node_modules": true
   },
   "typescript.tsdk": "node_modules/typescript/lib"
 }
