@@ -1,6 +1,6 @@
 import { IonList } from '@ionic/react';
 import gql from 'graphql-tag';
-import { resolve } from 'path';
+import { join } from 'path';
 import * as React from 'react';
 import { Query } from 'react-apollo';
 import { RouteComponentProps } from 'react-router';
@@ -141,7 +141,7 @@ export class Home extends React.Component<
 
   onListingClick = listingId => {
     this.navigate({
-      base: resolve(this.props.match.url, '..', listingId),
+      base: join('/listings', listingId),
       searchValue: this.state.searchValue,
     });
   };
