@@ -1,4 +1,4 @@
-import { IonContent, IonList } from '@ionic/react';
+import { IonContent, IonItem, IonLabel, IonList } from '@ionic/react';
 import { Omit } from 'lodash';
 import * as React from 'react';
 import { RouteComponentProps, RouteProps } from 'react-router';
@@ -25,8 +25,17 @@ class List extends React.PureComponent<
 > {
   onClick = id => () => this.props.onClick(id);
   render() {
+    if (!this.props.listings.length) {
+      return (
+        <IonList lines="none">
+          <IonItem>
+            <IonLabel>Found nothing...</IonLabel>
+          </IonItem>
+        </IonList>
+      );
+    }
     return (
-      <IonList>
+      <IonList lines="none">
         {this.props.listings.map((listing, i) => {
           if (!listing) {
             return null;

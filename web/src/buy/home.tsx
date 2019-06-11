@@ -31,7 +31,7 @@ const Listing: React.SFC<{
       }
 
       return (
-        <IonList>
+        <IonList lines="none">
           <ListingDetails listing={listing} base={base} />
           <UserDetails listingId={listing.id} />
         </IonList>
