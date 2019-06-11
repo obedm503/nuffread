@@ -53,13 +53,9 @@ const Desktop: React.SFC<Props> = ({
   searchValue = '',
   ...props
 }) => {
-  const listing = props.listings.find(item => item.id === id);
-  if (!listing) {
-    return null;
-  }
   return (
     <>
-      <Nav title={listing.title}>
+      <Nav>
         <SearchBar onSearch={onSearch} searchValue={searchValue} />
       </Nav>
 
