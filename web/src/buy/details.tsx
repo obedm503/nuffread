@@ -16,7 +16,7 @@ export const Details: React.SFC<RouteComponentProps<{ listingId: string }>> = ({
   },
 }) => (
   <>
-    <Nav />
+    <Nav alwaysBack />
 
     <IonContent>
       <Query<IQuery> query={SEARCH}>
