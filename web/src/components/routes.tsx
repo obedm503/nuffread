@@ -57,11 +57,9 @@ export class Routes extends React.Component<Props> {
 //       } = this.props;
 //       const matched = routes.find(r => !!matchPath(pathname, r));
 //       if (!matched) {
-//         console.log('no match');
 //         return null;
 //       }
-//       console.log('found matched', matched);
-//       // return null;
+
 //       const comp = route({ base, props })(matched);
 //       return <IonRouterOutlet>{comp}</IonRouterOutlet>;
 //     }
