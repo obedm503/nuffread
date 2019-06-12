@@ -147,7 +147,7 @@ export class Listings extends React.PureComponent<Props> {
           if (isDesktop) {
             return <Desktop {...this.props} />;
           }
-          return <Routes routes={routes} props={this.props} />;
+          return <Routes base="/listings" routes={routes} props={this.props} />;
         }}
       </IsDesktop>
     );
