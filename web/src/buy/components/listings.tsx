@@ -28,7 +28,7 @@ class List extends React.PureComponent<
     if (!this.props.listings.length) {
       return (
         <IonList lines="none">
-          <IonItem>
+          <IonItem color="white">
             <IonLabel>Found nothing...</IonLabel>
           </IonItem>
         </IonList>

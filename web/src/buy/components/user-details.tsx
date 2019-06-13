@@ -5,7 +5,7 @@ import { IonButtonLink } from '../../components';
 export const UserDetails: React.SFC<{
   listingId: string;
 }> = () => (
-  <IonItem>
+  <IonItem color="white">
     <IonImg slot="start" src="/img/128x128.png" />
 
     <IonLabel text-wrap>

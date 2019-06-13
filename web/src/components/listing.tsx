@@ -14,7 +14,7 @@ export const Listing: React.SFC<{
   onClick?;
   priceColor?: string;
 }> = ({ listing, onClick, children, priceColor = 'light' }) => (
-  <IonItem onClick={onClick}>
+  <IonItem onClick={onClick} color="white">
     <img
       slot="start"
       src={listing.thumbnail || '/img/128x128.png'}
