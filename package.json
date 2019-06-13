@@ -15,6 +15,6 @@
   },
   "devDependencies": {
     "gql2ts": "^1.7.1",
-    "nodemon": "^1.18.10"
+    "nodemon": "^1.19.1"
   }
 }
