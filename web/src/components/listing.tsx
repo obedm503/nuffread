@@ -1,25 +1,19 @@
 import { IonBadge, IonItem, IonLabel } from '@ionic/react';
 import * as React from 'react';
 import { IBook, IListing } from '../schema.gql';
-
-const onError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
-  if (!e.target) {
-    return;
-  }
-  (e.target as HTMLIonImgElement).src = '/img/128x128.png';
-};
+import { SafeImg } from './safe-img';
 
 export const Listing: React.SFC<{
   listing: IListing | IBook;
   onClick?;
   priceColor?: string;
 }> = ({ listing, onClick, children, priceColor = 'light' }) => (
-  <IonItem onClick={onClick} color="white">
-    <img
+  <IonItem onClick={onClick} color="white" style={{ paddingBottom: '2rem' }}>
+    <SafeImg
+      placeholder="/img/128x128.png"
       slot="start"
-      src={listing.thumbnail || '/img/128x128.png'}
+      src={listing.thumbnail || undefined}
       alt={[listing.title, listing.subTitle].join(' ')}
-      onError={onError}
     />
 
     <IonLabel text-wrap>
