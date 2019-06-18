@@ -1,17 +1,27 @@
-import { IonList } from '@ionic/react';
+import {
+  IonButtons,
+  IonCol,
+  IonGrid,
+  IonIcon,
+  IonList,
+  IonRow,
+  IonSlides,
+  IonSlide,
+} from '@ionic/react';
 import gql from 'graphql-tag';
 import { join } from 'path';
 import * as React from 'react';
 import { Query } from 'react-apollo';
 import { RouteComponentProps } from 'react-router';
-import { Error } from '../components';
+import { Error, IonButtonLink } from '../components';
+import { Listing } from '../components/listing';
 import { BASIC_LISTING, GET_LISTING, SEARCH } from '../queries';
 import { IQuery } from '../schema.gql';
-import { ListingDetails } from './components/listing-details';
 import { Listings } from './components/listings';
 import { UserDetails } from './components/user-details';
+import { range } from 'lodash';
 
-const Listing: React.SFC<{
+const ListingComp: React.SFC<{
   id: string;
   base: string;
 }> = ({ id, base }) => (
@@ -31,10 +41,43 @@ const Listing: React.SFC<{
       }
 
       return (
-        <IonList lines="none">
-          <ListingDetails listing={listing} base={base} />
-          <UserDetails listingId={listing.id} />
-        </IonList>
+        <>
+          <IonGrid>
+            <IonRow>
+              <IonCol>
+                <IonList lines="none">
+                  <Listing priceColor="success" listing={listing}>
+                    <IonButtons>
+                      <IonButtonLink href="#">
+                        <IonIcon slot="icon-only" name="barcode" />
+                      </IonButtonLink>
+                    </IonButtons>
+                  </Listing>
+
+                  <UserDetails listingId={listing.id} />
+                </IonList>
+              </IonCol>
+            </IonRow>
+
+            <IonRow>
+              <IonCol>
+                <div style={{ width: '40%' }}>
+                  <IonSlides pager>
+                    {range(12).map(i => (
+                      <IonSlide key={i}>
+                        <img
+                          style={{ width: '50%', height: 'auto' }}
+                          src="/img/128x128.png"
+                          alt=""
+                        />
+                      </IonSlide>
+                    ))}
+                  </IonSlides>
+                </div>
+              </IonCol>
+            </IonRow>
+          </IonGrid>
+        </>
       );
     }}
   </Query>
@@ -66,7 +109,7 @@ const SearchResults: React.SFC<ListingsProps & { searchValue: string }> = ({
             onClick={onClick}
             base={base}
             listings={data.search}
-            component={Listing}
+            component={ListingComp}
             onSearch={onSearch}
             searchValue={searchValue}
           />
@@ -108,7 +151,7 @@ const TopListings: React.SFC<ListingsProps> = ({
           onClick={onClick}
           base={base}
           listings={data.top}
-          component={Listing}
+          component={ListingComp}
           onSearch={onSearch}
         />
       );
@@ -123,7 +166,7 @@ const setParam = (params: string, searchQuery: string) => {
 };
 
 type SearchProps = RouteComponentProps<{ listingId?: string }>;
-export class Home extends React.Component<
+export class Buy extends React.Component<
   SearchProps,
   { searchValue: string; search: URLSearchParams }
 > {
