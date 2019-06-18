@@ -64,7 +64,7 @@ class List extends React.PureComponent<RouteComponentProps & Props> {
 
         <IonContent>
           <IonList lines="none">
-            {this.props.listings.length ? (
+            {!this.props.listings.length ? (
               <IonItem color="white">
                 <IonLabel>Found nothing...</IonLabel>
               </IonItem>
