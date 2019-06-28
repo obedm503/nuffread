@@ -1,5 +1,5 @@
 import { Listing } from '../listing/listing.entity';
-import { IListing, IUser } from '../schema.gql';
+import { IUser } from '../schema.gql';
 import { isUser } from '../util/auth';
 import { IResolver } from '../util/types';
 import { User } from './user.entity';
@@ -16,6 +16,6 @@ export const UserResolver: IResolver<IUser, User> = {
       where: { userId: user.id },
       order: { createdAt: 'DESC' },
     });
-    return (listings as any) as IListing[];
+    return listings as any;
   },
 };

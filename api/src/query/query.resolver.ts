@@ -2,12 +2,10 @@ import { getConnection } from 'typeorm';
 import { Listing } from '../listing/listing.entity';
 import {
   IGoogleBookOnQueryArguments,
-  IListing,
   IListingOnQueryArguments,
   IQuery,
   ISearchGoogleOnQueryArguments,
   ISearchOnQueryArguments,
-  SystemUser,
 } from '../schema.gql';
 import { User } from '../user/user.entity';
 import { isAdmin } from '../util/auth';
@@ -100,14 +98,11 @@ export const QueryResolver: IResolver<IQuery> = {
   },
 
   async me(_, args, { me }) {
-    if (!me) {
-      return null;
-    }
-    return (me as any) as SystemUser;
+    return me;
   },
 
-  listing(_, { id }: IListingOnQueryArguments, { listingLoader }) {
-    return (listingLoader.load(id) as any) as IListing;
+  async listing(_, { id }: IListingOnQueryArguments, { listingLoader }) {
+    return listingLoader.load(id) as any;
   },
 
   async users(_, args, { me }) {

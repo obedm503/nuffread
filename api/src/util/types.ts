@@ -13,13 +13,16 @@ export type IContext = {
   res: Response;
   me: User | Admin | undefined;
   stripe: Stripe;
-  userLoader: DataLoader<string, User | null>;
-  adminLoader: DataLoader<string, Admin | null>;
-  schoolLoader: DataLoader<string, School | null>;
-  listingLoader: DataLoader<string, Listing | null>;
+  userLoader: DataLoader<string, User | undefined>;
+  adminLoader: DataLoader<string, Admin | undefined>;
+  schoolLoader: DataLoader<string, School | undefined>;
+  listingLoader: DataLoader<string, Listing | undefined>;
 };
 
 // these types are based on graphql-tools types
+
+type NilOr<T, R> = T extends null | undefined ? undefined : R;
+type NoTypename<T> = NilOr<T, Omit<T, '__typename'>>;
 
 type IFieldResolver<TSource, TReturn> = (
   source: TSource,
@@ -28,7 +31,7 @@ type IFieldResolver<TSource, TReturn> = (
   info: GraphQLResolveInfo & {
     mergeInfo: MergeInfo;
   },
-) => TReturn | Promise<TReturn>;
+) => NoTypename<TReturn> | Promise<NoTypename<TReturn>>;
 
 type IBaseResolver = {
   __resolveType: string | null;

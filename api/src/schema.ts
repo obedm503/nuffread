@@ -26,14 +26,13 @@ const SystemUserResolver: IResolver<SystemUser, Admin | User> = {
     if (me instanceof Admin) {
       return 'Admin';
     }
-    return null;
   },
 };
 
 const makeLoader = <T extends BaseEntity>(Ent: typeof BaseEntity) => {
   return new DataLoader(async (ids: string[]) => {
     const items = await Ent.findByIds<T>(ids);
-    return ids.map(id => items.find(item => (item as any).id === id) || null);
+    return ids.map(id => items.find(item => (item as any).id === id));
   });
 };
 
