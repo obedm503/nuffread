@@ -39,3 +39,8 @@ export const getUrl = (req: Request) => {
     return `${req.protocol}://${req.hostname}`;
   }
 };
+
+export const sleep = (timeout: number): Promise<void> =>
+  new Promise(res => {
+    setTimeout(res, timeout);
+  });
