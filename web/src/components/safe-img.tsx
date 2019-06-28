@@ -5,6 +5,7 @@ export class SafeImg extends React.PureComponent<{
   alt: string;
   slot?: string;
   placeholder: string;
+  style?: React.CSSProperties;
 }> {
   state = { hasError: false, loaded: false };
   onError = () => {
@@ -23,14 +24,14 @@ export class SafeImg extends React.PureComponent<{
     img.onerror = this.onError;
   }
   render() {
-    const { placeholder, slot, alt } = this.props;
+    const { placeholder, slot, alt, style } = this.props;
     const { hasError, loaded } = this.state;
     const src = (hasError ? placeholder : this.props.src) || placeholder;
     return (
       <img
         slot={slot}
         src={loaded ? src : placeholder}
-        style={{ width: 'auto', height: '100%' }}
+        style={style}
         alt={alt}
       />
     );

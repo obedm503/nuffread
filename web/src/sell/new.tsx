@@ -67,32 +67,24 @@ const SearchResults = ({
   onClick,
   searchValue,
   onSearch,
-  base,
 }: {
   googleId?: string;
   onClick;
-  base: string;
   searchValue: string;
   onSearch;
 }) => {
   return (
     <Query<IQuery> query={SEARCH_GOOGLE} variables={{ query: searchValue }}>
       {({ error, data, loading }) => {
-        if (loading) {
-          return null;
-        }
-
-        if (error || !data || !data.searchGoogle) {
-          console.log({ error, data });
+        if (error) {
           return <Error value={error} />;
         }
 
         return (
           <Listings
-            id={googleId}
+            loading={loading}
             onClick={onClick}
-            base={base}
-            listings={data.searchGoogle}
+            listings={(data && data.searchGoogle) || undefined}
             component={GoogleBook}
             searchValue={searchValue}
             onSearch={onSearch}
@@ -118,10 +110,6 @@ export class New extends React.Component<
   state = { searchValue: '', googleId: '' };
 
   render() {
-    const {
-      match: { url },
-    } = this.props;
-
     return (
       <>
         <TopNav
@@ -140,7 +128,6 @@ export class New extends React.Component<
               googleId={this.state.googleId}
               searchValue={this.state.searchValue}
               onSearch={this.onSearch}
-              base={url}
             />
           ) : (
             <div>Please scan a book</div>
