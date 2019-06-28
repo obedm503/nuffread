@@ -38,7 +38,7 @@
     "@types/react": "^16.8.17",
     "@types/react-dom": "^16.8.4",
     "@types/react-helmet": "^5.0.8",
-    "@types/react-router": "^5.0.0",
+    "@types/react-router": "^5.0.2",
     "@types/react-router-dom": "^4.3.3",
     "@types/yup": "^0.26.16",
     "node-sass": "^4.12.0",
