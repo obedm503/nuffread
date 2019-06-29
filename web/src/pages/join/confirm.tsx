@@ -13,10 +13,9 @@ import * as React from 'react';
 import { Mutation } from 'react-apollo';
 import { Redirect, RouteComponentProps } from 'react-router';
 import * as yup from 'yup';
-import { Error, IonButtonLink } from '../components';
-import { Email } from '../controls';
-import { IMutation } from '../schema.gql';
-import { UserConsumer } from '../state/user';
+import { Email, Error, IonButtonLink } from '../../components';
+import { IMutation } from '../../schema.gql';
+import { UserConsumer } from '../../state';
 
 const RESEND_EMAIL = gql`
   mutation ResendEmail($binId: String, $email: String) {

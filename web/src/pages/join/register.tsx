@@ -16,9 +16,9 @@ import { Mutation, MutationFn } from 'react-apollo';
 import { Redirect, RouteComponentProps } from 'react-router';
 import { Link } from 'react-router-dom';
 import * as yup from 'yup';
-import { Email, Password } from '../controls';
-import { IMutation } from '../schema.gql';
-import { passwordSchema } from '../util';
+import { Email, Password } from '../../components';
+import { IMutation } from '../../schema.gql';
+import { passwordSchema } from '../../util';
 
 const REGISTER = gql`
   mutation Register($email: String!, $password: String!) {

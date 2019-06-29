@@ -14,10 +14,10 @@ import { join } from 'path';
 import * as React from 'react';
 import { Query } from 'react-apollo';
 import { Redirect, RouteComponentProps } from 'react-router';
-import { Error, IonButtonLink } from '../components';
-import { Listing, LoadingListing } from '../components/listing';
-import { BASIC_LISTING, GET_LISTING, SEARCH } from '../queries';
-import { IQuery } from '../schema.gql';
+import { Error, IonButtonLink } from '../../components';
+import { Listing, LoadingListing } from '../../components/listing';
+import { BASIC_LISTING, GET_LISTING, SEARCH } from '../../queries';
+import { IQuery } from '../../schema.gql';
 import { Listings } from './components/listings';
 import { UserDetails } from './components/user-details';
 

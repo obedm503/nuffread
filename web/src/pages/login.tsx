@@ -19,9 +19,8 @@ import { Mutation, MutationFn } from 'react-apollo';
 import { RouteComponentProps } from 'react-router';
 import { Link } from 'react-router-dom';
 import * as yup from 'yup';
-import { IonButtonLink, Footer, TopNav } from './components';
-import { Email, Password } from './controls';
-import { IMutation, SystemUserType } from './schema.gql';
+import { Email, Footer, IonButtonLink, Password, TopNav } from '../components';
+import { IMutation, SystemUserType } from '../schema.gql';
 
 const LOGIN = gql`
   mutation Login($email: String!, $password: String!, $type: SystemUserType!) {

@@ -53,7 +53,7 @@ export const LoadingListing = () => (
 
 export const Listing: React.SFC<{
   listing: IListing | IBook;
-  onClick?;
+  onClick?: () => void;
   priceColor?: string;
 }> = ({ listing, onClick, children, priceColor = 'medium' }) => (
   <IonCard

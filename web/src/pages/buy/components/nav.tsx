@@ -1,7 +1,7 @@
 import { IonButtons } from '@ionic/react';
 import * as React from 'react';
-import { IonBackButton, IonButtonLink, TopNav } from '../../components';
-import { OnlyMobile } from '../../state/desktop';
+import { IonBackButton, IonButtonLink, TopNav } from '../../../components';
+import { OnlyMobile } from '../../../state';
 
 const GoBack = () => (
   <IonButtons slot="start">

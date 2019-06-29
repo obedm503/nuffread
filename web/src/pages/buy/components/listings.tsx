@@ -8,10 +8,10 @@ import {
 import { range } from 'lodash';
 import * as React from 'react';
 import { Redirect, RouteComponentProps, RouteProps } from 'react-router';
-import { Footer, IonBackButton, IonRoutes, TopNav } from '../../components';
-import { Listing, LoadingListing } from '../../components/listing';
-import { SearchBar } from '../../components/search-bar';
-import { IBook, IListing } from '../../schema.gql';
+import { Footer, IonBackButton, IonRoutes, TopNav } from '../../../components';
+import { Listing, LoadingListing } from '../../../components/listing';
+import { SearchBar } from '../../../components/search-bar';
+import { IBook, IListing } from '../../../schema.gql';
 import { Nav } from './nav';
 
 type IListings = Array<IListing | IBook>;

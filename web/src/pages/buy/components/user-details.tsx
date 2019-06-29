@@ -7,7 +7,7 @@ import {
   IonButton,
 } from '@ionic/react';
 import * as React from 'react';
-import { IonButtonLink } from '../../components';
+import { IonButtonLink } from '../../../components';
 
 export class UserDetails extends React.PureComponent<
   {

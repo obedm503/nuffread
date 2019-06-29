@@ -9,11 +9,11 @@ import {
 import gql from 'graphql-tag';
 import * as React from 'react';
 import { Query } from 'react-apollo';
-import { Error, IonItemLink, TopNav } from '../components';
-import { Listing } from '../components/listing';
-import { Popover } from '../components/popover';
-import { BASIC_LISTING } from '../queries';
-import { IQuery } from '../schema.gql';
+import { Error, IonItemLink, TopNav } from '../../components';
+import { Listing } from '../../components/listing';
+import { Popover } from '../../components/popover';
+import { BASIC_LISTING } from '../../queries';
+import { IQuery } from '../../schema.gql';
 
 const MY_LISTINGS = gql`
   ${BASIC_LISTING}

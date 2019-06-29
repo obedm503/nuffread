@@ -1,6 +1,6 @@
 import { IonContent } from '@ionic/react';
 import * as React from 'react';
-import { TopNav } from '../components';
+import { TopNav } from '../../components';
 
 export const Launch = () => (
   <>

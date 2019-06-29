@@ -16,17 +16,15 @@ import {
   RouteProps,
   withRouter,
 } from 'react-router';
-import { Buy } from './buy';
+import './app.scss';
 import { Error, Routes } from './components';
-import { Join } from './join';
-import { Launch } from './launch';
-import { Admin, Login } from './login';
-import './main.scss';
+import { Buy } from './pages/buy';
+import { Join } from './pages/join';
+import { Launch } from './pages/launch';
+import { Admin, Login } from './pages/login';
+import { Sell } from './pages/sell';
 import { IQuery, SystemUser } from './schema.gql';
-import { Sell } from './sell';
-import { IsDesktopProvider } from './state/desktop';
-import { UserProvider } from './state/user';
-import './theme.css';
+import { IsDesktopProvider, UserProvider } from './state';
 
 export const createCache = () =>
   new InMemoryCache({

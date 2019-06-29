@@ -4,10 +4,10 @@ import * as React from 'react';
 import { Query } from 'react-apollo';
 import { RouteComponentProps } from 'react-router';
 import { Listings } from '../buy/components/listings';
-import { Error, TopNav } from '../components';
-import { Listing } from '../components/listing';
-import { SearchBar } from '../components/search-bar';
-import { IQuery } from '../schema.gql';
+import { Error, TopNav } from '../../components';
+import { Listing } from '../../components/listing';
+import { SearchBar } from '../../components/search-bar';
+import { IQuery } from '../../schema.gql';
 
 const GET_GOOGLE_BOOK = gql`
   query GetGoogleBook($id: ID!) {
