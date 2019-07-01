@@ -1,18 +1,67 @@
-import { IonContent } from '@ionic/react';
+import {
+  IonButton,
+  IonCard,
+  IonCardContent,
+  IonCardHeader,
+  IonCardTitle,
+  IonCol,
+  IonContent,
+  IonGrid,
+  IonHeader,
+  IonInput,
+  IonItem,
+  IonLabel,
+  IonList,
+  IonRow,
+  IonTitle,
+  IonToolbar,
+} from '@ionic/react';
 import * as React from 'react';
-import { TopNav } from '../../components';
 
 export const Launch = () => (
   <>
-    <TopNav />
+    <IonHeader>
+      <IonToolbar color="white">
+        <IonTitle color="primary">
+          <b>nuffread</b>
+        </IonTitle>
+      </IonToolbar>
+    </IonHeader>
 
-    <IonContent color="light">
-      <div style={{ display: 'flex', minHeight: '100%', alignItems: 'center' }}>
-        <p style={{ margin: '5rem' }}>
-          <h1 style={{ fontSize: '4rem' }}>Welcome,</h1>
-          <h2 style={{ fontSize: '3rem' }}>nuffread is Coming Soon</h2>
-        </p>
-      </div>
+    <IonContent>
+      <IonGrid>
+        <IonRow>
+          <IonCol sizeMd="4" offsetMd="4" sizeSm="8" offsetSm="1">
+            <IonCard>
+              <IonCardHeader>
+                <IonCardTitle>Request early access</IonCardTitle>
+              </IonCardHeader>
+
+              <IonCardContent>
+                <form name="early" method="POST" data-netlify="true">
+                  <IonList lines="full">
+                    <IonItem>
+                      <IonLabel position="floating">Your Name</IonLabel>
+                      <IonInput name="name" required />
+                    </IonItem>
+
+                    <IonItem>
+                      <IonLabel position="floating">Your Email</IonLabel>
+                      <IonInput name="email" required type="email" />
+                    </IonItem>
+
+                    <div className="ion-padding">
+                      <IonButton expand="block" type="submit">
+                        Submit
+                      </IonButton>
+                    </div>
+                  </IonList>
+                </form>
+              </IonCardContent>
+            </IonCard>
+          </IonCol>
+        </IonRow>
+      </IonGrid>
     </IonContent>
   </>
 );
