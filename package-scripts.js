@@ -7,7 +7,7 @@ require('dotenv-safe').config({
 
 const { execSync } = require('child_process');
 const { EOL } = require('os');
-const { concurrent, series, crossEnv, rimraf, copy } = require('nps-utils');
+const { concurrent, series, rimraf, copy } = require('nps-utils');
 
 const buildTypes = series(
   [
@@ -55,18 +55,17 @@ module.exports.scripts = {
     ),
     web: series(
       'cd web',
-      crossEnv(
-        [
-          'NODE_ENV=production',
-          process.argv.join(' ').includes('build') // only get heroku vars on build
-            ? execSync('heroku config --shell --app nuffread-web-staging')
-                .toString()
-                .split(EOL)
-                .join(' ')
-            : '',
-          'npm run build',
-        ].join(' '),
-      ),
+      [
+        'node ../node_modules/cross-env/dist/bin/cross-env.js',
+        'NODE_ENV=production',
+        process.argv.join(' ').includes('build') // only get heroku vars on build
+          ? execSync('heroku config --shell --app nuffread-web-staging')
+              .toString()
+              .split(EOL)
+              .join(' ')
+          : '',
+        'npm run build',
+      ].join(' '),
     ),
     api: series('cd api', 'npm run build'),
   },

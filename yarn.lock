@@ -1634,9 +1634,9 @@
   integrity sha512-l42BggppR6zLmpfU6fq9HEa2oGPEI8yrSPL3GITjfRInppYFahObbIQOQK3UGxEnyQpltZLaPe75046NOZQikw==
 
 "@types/stripe@^6.30.0":
-  version "6.30.4"
-  resolved "https://registry.yarnpkg.com/@types/stripe/-/stripe-6.30.4.tgz#d297a25efcd8fba6335bc37cfff280131f7b4870"
-  integrity sha512-CgSs5SqmopGMS7KjexQN0SRb2kbmgzqwkQXjwfsSNlT46qODT6sa93reQeIbxfn7gFU0QspHZtKPn7qyDEy2xQ==
+  version "6.30.5"
+  resolved "https://registry.yarnpkg.com/@types/stripe/-/stripe-6.30.5.tgz#89c274a51c443a1698a4cacc363f88313102f101"
+  integrity sha512-1PMVuZMCvOj7mI+ZpsqU5XpwSL3nXy90S2cs4GlMn8CCkvy8HlpG1B1VY2A1QWqaXqj4nVpvrquqv37p1nsMyw==
   dependencies:
     "@types/node" "*"
 
@@ -4325,7 +4325,7 @@ dotenv-expand@4.2.0:
   resolved "https://registry.yarnpkg.com/dotenv-expand/-/dotenv-expand-4.2.0.tgz#def1f1ca5d6059d24a766e587942c21106ce1275"
   integrity sha1-3vHxyl1gWdJKdm5YeULCEQbOEnU=
 
-dotenv-safe@^6.0.0, dotenv-safe@^6.1.0:
+dotenv-safe@^6.1.0:
   version "6.1.0"
   resolved "https://registry.yarnpkg.com/dotenv-safe/-/dotenv-safe-6.1.0.tgz#df6e72ced7d5bcfd9d870c9f656962a02197337b"
   integrity sha512-O02OUTS+XmoRNZR4kRjJ9jlUGvQoXpMeTVVEBc8hUtgvPTgVZpsZH7TOocq4RVDpPrs2xGPwj6gIWjqRX+ErHA==
@@ -5579,9 +5579,9 @@ graphql-upload@^8.0.2:
     iterall "^1.2.1"
 
 graphql@^14.3.0:
-  version "14.4.0"
-  resolved "https://registry.yarnpkg.com/graphql/-/graphql-14.4.0.tgz#e97086acfc0338e4fdc8f7dba519c6b8a6badfd9"
-  integrity sha512-E55z1oK6e4cGxCqlSsRWytYDPcIUxky3XkbuQUf6TIjCmn6C7CuBJpmkMF1066q95yPAGOZVPTVT7jABKbRFSA==
+  version "14.4.1"
+  resolved "https://registry.yarnpkg.com/graphql/-/graphql-14.4.1.tgz#7a7818d3f63f66b9528ba5416b6c88460db62280"
+  integrity sha512-g4HUH26CohlMjaHneXMAtvG3QtO6peJIUTFxrPW4g5LNnXkUuFoBI6Bk1c14Q5kW8+FyjM/tTbePTgpiVB/2hQ==
   dependencies:
     iterall "^1.2.2"
 
@@ -8182,7 +8182,7 @@ npm-run-path@^2.0.0:
     gauge "~2.7.3"
     set-blocking "~2.0.0"
 
-nps-utils@^1.5.0, nps-utils@^1.7.0:
+nps-utils@^1.5.0:
   version "1.7.0"
   resolved "https://registry.yarnpkg.com/nps-utils/-/nps-utils-1.7.0.tgz#88ef27925ee7cd916f15a25f1b1a6648e9b21a7d"
   integrity sha512-wq/gUxTR3sgLYTLHlUKwMG2paUV3QdfwMj5aifWpQ60Vv9RQzA6pXDkwrAlMA8SNqoz8FwaGPc1X/7I+qjuYwg==
@@ -11739,7 +11739,7 @@ typeorm@^0.2.17:
     yargonaut "^1.1.2"
     yargs "^13.2.1"
 
-typescript@^3.5.1:
+typescript@^3.5.1, typescript@^3.5.2:
   version "3.5.2"
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-3.5.2.tgz#a09e1dc69bc9551cadf17dba10ee42cf55e5d56c"
   integrity sha512-7KxJovlYhTX5RaRbUdkAXN1KUZ8PwWlTzQdHV6xNqvuFOs7+WBo10TQUqT19Q/Jz2hk5v9TQDIhyLhhJY4p5AA==

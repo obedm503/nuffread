@@ -42,7 +42,6 @@
     "@types/react-router-dom": "^4.3.3",
     "@types/yup": "^0.26.16",
     "node-sass": "^4.12.0",
-    "nps-utils": "^1.7.0",
     "react-scripts": "^3.0.1",
     "typescript": "^3.5.1"
   }
