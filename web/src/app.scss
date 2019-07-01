@@ -169,3 +169,44 @@
     width: 50%;
   }
 }
+
+// using this until https://github.com/ionic-team/ionic/issues/18558 is fixed
+ion-fab.fab-vertical-bottom.fab-horizontal-end {
+  bottom: 20px;
+  right: calc(20px + var(--ion-safe-area-right, 0px));
+
+  > ion-fab-button {
+    width: 70px;
+    height: 70px;
+    font-size: 25px;
+  }
+}
+
+ion-card.listing-card {
+  overflow: visible;
+  margin-top: 44px;
+
+  > ion-fab > ion-fab-button {
+    font-size: 20px;
+  }
+
+  &.large {
+    margin-top: 51px;
+
+    > ion-fab {
+      &.fab-vertical-top {
+        top: -35px;
+      }
+
+      > ion-fab-button {
+        width: 70px;
+        height: 70px;
+        font-size: 25px;
+      }
+    }
+
+    > ion-card-header {
+      padding-top: 35px;
+    }
+  }
+}

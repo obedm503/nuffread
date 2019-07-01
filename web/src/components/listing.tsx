@@ -12,62 +12,93 @@ import {
   IonSkeletonText,
 } from '@ionic/react';
 import * as React from 'react';
-import { IBook, IListing } from '../schema.gql';
+import { IListing } from '../schema.gql';
+import { classes } from '../util';
 import { SafeImg } from './safe-img';
 
 export const LoadingListing = () => (
-  <IonItem>
-    <IonSkeletonText
-      animated
-      slot="start"
-      style={{ width: '120px', height: '150px' }}
-    />
+  <IonCard class="listing-card" color="white">
+    <IonFab edge vertical="top" horizontal="end">
+      <IonFabButton color="light" style={{ width: '70px', height: '70px' }}>
+        <IonSkeletonText animated style={{ height: '100%' }} />
+      </IonFabButton>
+    </IonFab>
 
-    <IonLabel>
-      <h3>
-        <IonSkeletonText animated style={{ maxWidth: '80%' }} />
-      </h3>
+    <IonCardHeader>
+      <IonCardTitle>
+        <IonSkeletonText animated style={{ maxWidth: '80%', height: '33px' }} />
+      </IonCardTitle>
+    </IonCardHeader>
 
-      <p>
-        <IonSkeletonText animated style={{ maxWidth: '50%' }} />
-      </p>
+    <IonRow>
+      <IonCol size="6" sizeSm="4" sizeMd="3" sizeLg="2" sizeXl="1">
+        <IonSkeletonText animated style={{ height: '200px' }} />
+      </IonCol>
 
-      <p>
-        <IonSkeletonText animated style={{ maxWidth: '40%' }} />
-      </p>
+      <IonCol>
+        <IonLabel>
+          <h3>
+            <IonSkeletonText
+              animated
+              style={{ maxWidth: '80%', height: '18px', marginBottom: '1px' }}
+            />
+          </h3>
 
-      <p>
-        <IonSkeletonText animated style={{ maxWidth: '40%' }} />
-      </p>
+          <p>
+            <IonSkeletonText
+              animated
+              style={{ maxWidth: '50%', height: '18px', marginBottom: '1px' }}
+            />
+          </p>
 
-      <p>
-        <IonSkeletonText animated style={{ maxWidth: '40%' }} />
-      </p>
+          <p>
+            <IonSkeletonText
+              animated
+              style={{ maxWidth: '40%', height: '18px', marginBottom: '1px' }}
+            />
+          </p>
 
-      <p>
-        <IonSkeletonText animated style={{ maxWidth: '40%' }} />
-      </p>
-    </IonLabel>
-  </IonItem>
+          <p>
+            <IonSkeletonText
+              animated
+              style={{ maxWidth: '40%', height: '18px', marginBottom: '1px' }}
+            />
+          </p>
+
+          <p>
+            <IonSkeletonText
+              animated
+              style={{ maxWidth: '40%', height: '18px', marginBottom: '1px' }}
+            />
+          </p>
+
+          <p>
+            <IonSkeletonText
+              animated
+              style={{ maxWidth: '40%', height: '18px', marginBottom: '1px' }}
+            />
+          </p>
+        </IonLabel>
+      </IonCol>
+    </IonRow>
+  </IonCard>
 );
 
 export const Listing: React.SFC<{
-  listing: IListing | IBook;
+  listing: IListing;
   onClick?: () => void;
   priceColor?: string;
 }> = ({ listing, onClick, children, priceColor = 'medium' }) => (
   <IonCard
+    class={classes('listing-card', { large: priceColor === 'success' })}
     onClick={onClick}
     color="white"
-    style={{ marginTop: '44px', overflow: 'visible' }}
   >
-    {'price' in listing ? (
-      <IonFab edge vertical="top" horizontal="end" slot="fixed">
-        <IonFabButton color={priceColor}>
-          <b>${listing.price / 100}</b>
-        </IonFabButton>
-      </IonFab>
-    ) : null}
+    <IonFab edge vertical="top" horizontal="end">
+      <IonFabButton color="success">
+        <b>${listing.price / 100}</b>
+      </IonFabButton>
+    </IonFab>
 
     <IonCardHeader>
       <IonCardTitle>{listing.title}</IonCardTitle>
@@ -78,14 +109,14 @@ export const Listing: React.SFC<{
     </IonCardHeader>
 
     <IonRow>
-      <IonCol>
+      <IonCol size="6" sizeSm="4" sizeMd="3" sizeLg="2" sizeXl="1">
         <SafeImg
           placeholder="/img/128x128.png"
           src={listing.thumbnail || undefined}
           alt={[listing.title, listing.subTitle].join(' ')}
-          style={{ width: '100%', height: 'auto' }}
         />
       </IonCol>
+
       <IonCol>
         <IonLabel>
           <p>

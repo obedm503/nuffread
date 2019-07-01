@@ -1,6 +1,9 @@
 import {
   IonButtons,
   IonCol,
+  IonContent,
+  IonFab,
+  IonFabButton,
   IonGrid,
   IonIcon,
   IonList,
@@ -10,57 +13,77 @@ import {
 } from '@ionic/react';
 import { range } from 'lodash';
 import * as React from 'react';
-import { IonButtonLink } from '../../../components';
+import { IonBackButton, IonButtonLink, TopNav } from '../../../components';
 import { Listing, LoadingListing } from '../../../components/listing';
+import { SafeImg } from '../../../components/safe-img';
 import { withListing } from '../../../containers/listing';
 import { UserDetails } from './user-details';
 
 export const ListingPage = withListing(({ data: listing, loading }) => {
   return (
-    <IonGrid>
-      {loading || !listing ? (
-        <IonRow>
-          <IonCol>
-            <IonList lines="none">
-              <LoadingListing />
-            </IonList>
-          </IonCol>
-        </IonRow>
-      ) : (
-        <>
-          <IonRow>
-            <IonCol>
-              <IonList lines="none">
-                <Listing priceColor="success" listing={listing}>
-                  <IonButtons>
-                    <IonButtonLink href="#">
-                      <IonIcon slot="icon-only" name="barcode" />
-                    </IonButtonLink>
-                  </IonButtons>
-                </Listing>
+    <>
+      <TopNav title={listing ? listing.title : ''}>
+        <IonButtons slot="start">
+          <IonBackButton defaultHref="/listings" />
+        </IonButtons>
+      </TopNav>
 
-                <UserDetails listingId={listing.id} />
-              </IonList>
-            </IonCol>
-          </IonRow>
+      <IonContent>
+        {listing ? (
+          <IonFab vertical="bottom" horizontal="end" slot="fixed">
+            <IonFabButton>
+              <b>Buy</b>
+            </IonFabButton>
+          </IonFab>
+        ) : null}
 
-          <IonRow>
-            <IonCol>
-              <IonSlides pager>
-                {range(12).map(i => (
-                  <IonSlide key={i}>
-                    <img
-                      style={{ width: '100%', height: 'auto' }}
-                      src="/img/128x128.png"
-                      alt=""
-                    />
-                  </IonSlide>
-                ))}
-              </IonSlides>
-            </IonCol>
-          </IonRow>
-        </>
-      )}
-    </IonGrid>
+        <IonGrid>
+          {loading || !listing ? (
+            <IonRow>
+              <IonCol>
+                <IonList lines="none">
+                  <LoadingListing />
+                </IonList>
+              </IonCol>
+            </IonRow>
+          ) : (
+            <>
+              <IonRow>
+                <IonCol>
+                  <IonList lines="none">
+                    <Listing priceColor="success" listing={listing}>
+                      <IonButtons>
+                        <IonButtonLink href="#">
+                          <IonIcon slot="icon-only" name="barcode" />
+                        </IonButtonLink>
+                      </IonButtons>
+                    </Listing>
+
+                    <UserDetails listingId={listing.id} />
+                  </IonList>
+                </IonCol>
+              </IonRow>
+
+              <IonRow>
+                <IonCol>
+                  <IonSlides pager>
+                    {range(12).map(i => (
+                      <IonSlide key={i}>
+                        <SafeImg
+                          style={{ width: '100%', height: 'auto' }}
+                          src={listing.thumbnail || undefined}
+                          placeholder="/img/128x128.png"
+                          alt=""
+                        />
+                      </IonSlide>
+                    ))}
+                  </IonSlides>
+                </IonCol>
+              </IonRow>
+            </>
+          )}
+        </IonGrid>
+      </IonContent>
+    </>
   );
 });

@@ -1,6 +1,8 @@
 import { join } from 'path';
 import * as React from 'react';
-import { Redirect, RouteComponentProps } from 'react-router';
+import { Redirect, RouteComponentProps, RouteProps } from 'react-router';
+import { IonRoutes } from '../../components';
+import { ListingPage } from './components/listing';
 import { SearchResults } from './components/search-results';
 import { TopListings } from './components/top-listings';
 
@@ -10,9 +12,20 @@ const setParam = (params: string, searchQuery: string) => {
   return query.toString();
 };
 
+const List = ({ search, onClick, searchValue, onSearch }) =>
+  search.has('query') ? (
+    <SearchResults
+      onClick={onClick}
+      searchValue={searchValue}
+      onSearch={onSearch}
+    />
+  ) : (
+    <TopListings onClick={onClick} onSearch={onSearch} />
+  );
+
 type SearchProps = RouteComponentProps;
 export class Buy extends React.Component<
-  SearchProps,
+  RouteComponentProps & SearchProps,
   { searchValue: string; search: URLSearchParams }
 > {
   navigate = ({ pathname, searchValue }) => {
@@ -46,22 +59,31 @@ export class Buy extends React.Component<
   state = { searchValue: '', search: new URLSearchParams() };
 
   render() {
-    const {
-      location: { pathname },
-    } = this.props;
-
-    if (pathname === '/') {
+    if (this.props.location.pathname === '/') {
       return <Redirect to="/listings" />;
     }
 
-    return this.state.search.has('query') ? (
-      <SearchResults
-        onClick={this.onListingClick}
-        searchValue={this.state.searchValue}
-        onSearch={this.onSearch}
-      />
-    ) : (
-      <TopListings onClick={this.onListingClick} onSearch={this.onSearch} />
-    );
+    const routes: RouteProps[] = [
+      {
+        path: '/listings/:listingId',
+        exact: true,
+        render: routeProps => (
+          <ListingPage id={routeProps.match.params.listingId} />
+        ),
+      },
+      {
+        path: '/listings',
+        exact: true,
+        render: () => (
+          <List
+            onClick={this.onListingClick}
+            onSearch={this.onSearch}
+            search={this.state.search}
+            searchValue={this.state.searchValue}
+          />
+        ),
+      },
+    ];
+    return <IonRoutes routes={routes} />;
   }
 }

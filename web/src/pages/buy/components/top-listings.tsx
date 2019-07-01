@@ -4,7 +4,6 @@ import { Query } from 'react-apollo';
 import { Error } from '../../../components';
 import { BASIC_LISTING } from '../../../queries';
 import { IQuery } from '../../../schema.gql';
-import { ListingPage } from './listing';
 import { Listings } from './listings';
 
 const TOP_LISTINGS = gql`
@@ -37,7 +36,6 @@ export const TopListings: React.SFC<{
             loading={loading}
             onClick={onClick}
             listings={data && data.top}
-            component={ListingPage}
             onSearch={onSearch}
           />
         );

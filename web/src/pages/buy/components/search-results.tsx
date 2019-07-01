@@ -3,7 +3,6 @@ import { Query } from 'react-apollo';
 import { Error } from '../../../components';
 import { SEARCH } from '../../../queries';
 import { IQuery } from '../../../schema.gql';
-import { ListingPage } from './listing';
 import { Listings } from './listings';
 
 export const SearchResults: React.SFC<{
@@ -22,7 +21,6 @@ export const SearchResults: React.SFC<{
             loading={loading}
             onClick={onClick}
             listings={data && data.search}
-            component={ListingPage}
             onSearch={onSearch}
             searchValue={searchValue}
           />
