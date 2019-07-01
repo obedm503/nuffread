@@ -26,7 +26,7 @@ export const LoadingListing = () => (
 
     <IonCardHeader>
       <IonCardTitle>
-        <IonSkeletonText animated style={{ maxWidth: '80%', height: '33px' }} />
+        <IonSkeletonText animated style={{ maxWidth: '60%', height: '33px' }} />
       </IonCardTitle>
     </IonCardHeader>
 
