@@ -2,9 +2,9 @@ import { join } from 'path';
 import * as React from 'react';
 import { Redirect, RouteComponentProps, RouteProps } from 'react-router';
 import { IonRoutes } from '../../components';
-import { ListingPage } from './components/listing';
 import { SearchResults } from './components/search-results';
 import { TopListings } from './components/top-listings';
+import { ListingPage } from './listing';
 
 const setParam = (params: string, searchQuery: string) => {
   const query = new URLSearchParams(params);

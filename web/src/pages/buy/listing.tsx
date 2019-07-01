@@ -13,11 +13,11 @@ import {
 } from '@ionic/react';
 import { range } from 'lodash';
 import * as React from 'react';
-import { IonBackButton, IonButtonLink, TopNav } from '../../../components';
-import { Listing, LoadingListing } from '../../../components/listing';
-import { SafeImg } from '../../../components/safe-img';
-import { withListing } from '../../../containers/listing';
-import { UserDetails } from './user-details';
+import { IonBackButton, IonButtonLink, TopNav } from '../../components';
+import { Listing, LoadingListing } from '../../components/listing';
+import { SafeImg } from '../../components/safe-img';
+import { withListing } from '../../containers/listing';
+import { UserDetails } from './components/user-details';
 
 export const ListingPage = withListing(({ data: listing, loading }) => {
   return (
