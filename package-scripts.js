@@ -1,10 +1,5 @@
 // @ts-check
 const { resolve } = require('path');
-require('dotenv-safe').config({
-  path: resolve('./api/.env'),
-  example: resolve('./api/.env.example'),
-});
-
 const { execSync } = require('child_process');
 const { EOL } = require('os');
 const { concurrent, series, rimraf, copy } = require('nps-utils');
