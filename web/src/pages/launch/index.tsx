@@ -38,7 +38,7 @@ export const Launch = () => (
               </IonCardHeader>
 
               <IonCardContent>
-                <form name="early" method="POST" data-netlify="true">
+                <form name="early-access" method="POST" data-netlify="true">
                   <IonList lines="full">
                     <IonItem>
                       <IonLabel position="floating">Your Name</IonLabel>
