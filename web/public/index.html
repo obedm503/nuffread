@@ -27,7 +27,14 @@
     -->
     <%if (process.env.NODE_ENV === 'production' && process.env.REACT_APP_MODE
     !== 'ready') { %>
-    <form name="early-access" netlify netlify-honeypot="bot-field" hidden>
+    <form
+      name="early-access"
+      method="POST"
+      data-netlify="true"
+      netlify-honeypot="bot-field"
+      hidden
+    >
+      <input type="hidden" name="form-name" value="early-access" />
       <input type="text" name="name" />
       <input type="email" name="email" />
     </form>
