@@ -1,7 +1,5 @@
 // @ts-check
 const { resolve } = require('path');
-const { execSync } = require('child_process');
-const { EOL } = require('os');
 const { concurrent, series, rimraf, copy } = require('nps-utils');
 
 const buildTypes = series(
@@ -49,20 +47,7 @@ module.exports.scripts = {
       concurrent.nps('build.web', 'build.api'),
     ),
     types: buildTypes,
-    web: series(
-      'cd web',
-      [
-        'node ../node_modules/cross-env/dist/bin/cross-env.js',
-        'NODE_ENV=production',
-        process.argv.join(' ').includes('build') // only get heroku vars on build
-          ? execSync('heroku config --shell --app nuffread-web-staging')
-              .toString()
-              .split(EOL)
-              .join(' ')
-          : '',
-        'npm run build',
-      ].join(' '),
-    ),
+    web: series('cd web', 'NODE_ENV=production npm run build'),
     api: series('cd api', 'npm run build'),
   },
   deploy,
