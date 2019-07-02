@@ -82,13 +82,7 @@ apollo.applyMiddleware({
   path: '/',
   cors: {
     credentials: true,
-    origin: production
-      ? [
-          'https://nuffread.com',
-          'https://nuffread-web-staging.herokuapp.com',
-          'https://nuffread-web-production.herokuapp.com',
-        ]
-      : process.env.ORIGIN,
+    origin: production ? 'https://www.nuffread.com' : process.env.ORIGIN,
   },
 });
 
