@@ -6,6 +6,8 @@
   ],
   "scripts": {
     "dev": "nps dev",
+    "build:api": "nps clean && nps build.types && nps build.api",
+    "build:web": "nps clean && nps build.types && nps build.web",
     "build": "nps build"
   },
   "dependencies": {

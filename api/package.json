@@ -10,7 +10,7 @@
     "start": "node --optimize_for_size --max_old_space_size=512 --gc_interval=100 dist/main.js"
   },
   "engines": {
-    "node": "10.10.0"
+    "node": "^10.10.0"
   },
   "dependencies": {
     "@sendgrid/client": "^6.4.0",

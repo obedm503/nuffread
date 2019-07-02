@@ -53,6 +53,7 @@ module.exports.scripts = {
       buildTypes,
       concurrent.nps('build.web', 'build.api'),
     ),
+    types: buildTypes,
     web: series(
       'cd web',
       [
@@ -70,7 +71,7 @@ module.exports.scripts = {
     api: series('cd api', 'npm run build'),
   },
   deploy,
-  clean: rimraf('.cache web/dist api/dist'),
+  clean: rimraf('.cache web/build api/dist'),
   start: {
     api: series('cd api', 'npm run start'),
   },
