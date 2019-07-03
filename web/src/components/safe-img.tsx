@@ -19,9 +19,18 @@ export class SafeImg extends React.PureComponent<{
       return;
     }
     const img = new Image();
+    this.img = img;
     img.src = this.props.src;
     img.onload = this.onLoad;
     img.onerror = this.onError;
+  }
+  img?: HTMLImageElement;
+  componentWillUnmount() {
+    if (!this.img) {
+      return;
+    }
+    this.img.onload = null;
+    this.img.onerror = null;
   }
   render() {
     const { placeholder, slot, alt, style } = this.props;
