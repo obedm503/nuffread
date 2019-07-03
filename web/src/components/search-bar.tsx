@@ -1,6 +1,5 @@
 import { SearchbarChangeEventDetail } from '@ionic/core';
 import { IonSearchbar, IonToolbar } from '@ionic/react';
-import { debounce } from 'lodash';
 import * as React from 'react';
 import { Scanner } from './scanner';
 
@@ -9,15 +8,11 @@ type SearchBarProps = {
   searchValue: string;
 };
 export class SearchBar extends React.PureComponent<SearchBarProps> {
-  onSearch = debounce((code: string) => {
-    this.props.onSearch(code);
-  }, 500);
-
   onChange = (e: CustomEvent<SearchbarChangeEventDetail>) => {
-    if (typeof e.detail.value !== 'string' || !this.onSearch) {
+    if (typeof e.detail.value !== 'string') {
       return;
     }
-    this.onSearch(e.detail.value);
+    this.props.onSearch(e.detail.value);
   };
 
   render() {
@@ -27,9 +22,10 @@ export class SearchBar extends React.PureComponent<SearchBarProps> {
           color="light"
           value={this.props.searchValue}
           onIonChange={this.onChange}
+          debounce={500}
         />
 
-        <Scanner onScanned={this.onSearch} />
+        <Scanner onScanned={this.props.onSearch} />
       </IonToolbar>
     );
   }
