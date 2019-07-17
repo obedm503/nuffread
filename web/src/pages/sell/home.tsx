@@ -11,6 +11,7 @@ import * as React from 'react';
 import { Redirect, Route, RouteComponentProps } from 'react-router';
 import { MyListings } from './listings';
 import { Profile } from './profile';
+import { Search } from './search';
 
 export const Home: React.SFC<RouteComponentProps<{}>> = () => (
   <>
@@ -19,11 +20,17 @@ export const Home: React.SFC<RouteComponentProps<{}>> = () => (
     <IonContent>
       <IonTabs>
         <IonRouterOutlet>
+          <Route path="/:tab(search)" component={Search} />
           <Route path="/:tab(listings)" exact component={MyListings} />
           <Route path="/:tab(profile)" exact component={Profile} />
         </IonRouterOutlet>
 
         <IonTabBar slot="bottom">
+          <IonTabButton tab="search" href="/search">
+            <IonIcon name="search" />
+            <IonLabel>Search</IonLabel>
+          </IonTabButton>
+
           <IonTabButton tab="listings" href="/listings">
             <IonIcon name="book" />
             <IonLabel>Listings</IonLabel>

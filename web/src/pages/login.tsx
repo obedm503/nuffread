@@ -119,7 +119,11 @@ class LoginForm extends React.Component<{
                       <IonRow>
                         {admin ? null : (
                           <IonCol>
-                            <IonButtonLink expand="block" href="/join/signup">
+                            <IonButtonLink
+                              expand="block"
+                              href="/join/signup"
+                              color="secondary"
+                            >
                               <IonIcon slot="start" name="add" />
                               <IonLabel>Join</IonLabel>
                             </IonButtonLink>

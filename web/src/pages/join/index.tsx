@@ -1,4 +1,4 @@
-import { IonButtons, IonContent } from '@ionic/react';
+import { IonButtons, IonContent, IonLabel } from '@ionic/react';
 import * as React from 'react';
 import { RouteComponentProps, RouteProps } from 'react-router';
 import { Footer, IonButtonLink, Routes, TopNav } from '../../components';
@@ -14,21 +14,21 @@ const routes: RouteProps[] = [
   { path: '/', component: Home },
 ];
 
-export const Join: React.SFC<RouteComponentProps<{}>> = ({
-  match,
-  location,
-}) => (
+export const Join: React.SFC<RouteComponentProps<{}>> = ({ match }) => (
   <>
     <TopNav>
-      <IonButtons slot="end">
+      <IonButtons slot="start">
         <IonButtonLink activeColor="dark" href="/join">
-          Join
+          <IonLabel>Join</IonLabel>
         </IonButtonLink>
+      </IonButtons>
+
+      <IonButtons slot="end">
         <IonButtonLink activeColor="dark" href="/join/pricing">
-          Pricing
+          <IonLabel>Pricing</IonLabel>
         </IonButtonLink>
         <IonButtonLink activeColor="dark" href="/join/signup">
-          Signup
+          <IonLabel>Signup</IonLabel>
         </IonButtonLink>
       </IonButtons>
     </TopNav>

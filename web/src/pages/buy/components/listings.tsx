@@ -1,11 +1,9 @@
 import { IonContent, IonItem, IonLabel, IonList } from '@ionic/react';
 import { range } from 'lodash';
 import * as React from 'react';
-import { Footer } from '../../../components';
 import { Listing, LoadingListing } from '../../../components/listing';
 import { SearchBar } from '../../../components/search-bar';
 import { IListing } from '../../../schema.gql';
-import { Nav } from './nav';
 
 type IListings = Array<IListing>;
 type Props = {
@@ -19,17 +17,10 @@ type Props = {
 const listingPlaceholders = range(10).map(n => <LoadingListing key={n} />);
 
 const listingInner = ({ onSearch, searchValue }) => children => (
-  <>
-    <Nav>
-      <SearchBar onSearch={onSearch} searchValue={searchValue || ''} />
-    </Nav>
-
-    <IonContent>
-      <IonList lines="none">{children}</IonList>
-    </IonContent>
-
-    <Footer />
-  </>
+  <IonContent>
+    <SearchBar onSearch={onSearch} searchValue={searchValue || ''} />
+    <IonList lines="none">{children}</IonList>
+  </IonContent>
 );
 
 export class Listings extends React.Component<Props> {

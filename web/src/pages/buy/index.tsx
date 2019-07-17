@@ -1,7 +1,9 @@
+import { IonContent } from '@ionic/react';
 import { join } from 'path';
 import * as React from 'react';
 import { Redirect, RouteComponentProps, RouteProps } from 'react-router';
-import { IonRoutes } from '../../components';
+import { Footer, IonRoutes } from '../../components';
+import { Nav } from './components/nav';
 import { SearchResults } from './components/search-results';
 import { TopListings } from './components/top-listings';
 import { ListingPage } from './listing';
@@ -23,9 +25,9 @@ const List = ({ search, onClick, searchValue, onSearch }) =>
     <TopListings onClick={onClick} onSearch={onSearch} />
   );
 
-type SearchProps = RouteComponentProps;
-export class Buy extends React.Component<
-  RouteComponentProps & SearchProps,
+type SearchProps = RouteComponentProps & { base: string };
+export class SearchPage extends React.Component<
+  SearchProps,
   { searchValue: string; search: URLSearchParams }
 > {
   navigate = ({ pathname, searchValue }) => {
@@ -40,14 +42,12 @@ export class Buy extends React.Component<
   onSearch = searchValue => {
     this.navigate({ pathname: this.props.location.pathname, searchValue });
   };
-
   onListingClick = id => {
     this.navigate({
-      pathname: join('/listings', id),
+      pathname: join(this.props.base, id),
       searchValue: this.state.searchValue,
     });
   };
-
   static getDerivedStateFromProps({ history }: SearchProps) {
     const search = new URLSearchParams(history.location.search);
     return {
@@ -55,24 +55,24 @@ export class Buy extends React.Component<
       search,
     };
   }
-
   state = { searchValue: '', search: new URLSearchParams() };
-
   render() {
-    if (this.props.location.pathname === '/') {
-      return <Redirect to="/listings" />;
-    }
-
     const routes: RouteProps[] = [
       {
-        path: '/listings/:listingId',
+        path: '/:listingId',
         exact: true,
-        render: routeProps => (
-          <ListingPage id={routeProps.match.params.listingId} />
-        ),
+        render: routeProps => {
+          console.log('listing: ', routeProps.match.params.listingId);
+          return (
+            <ListingPage
+              id={routeProps.match.params.listingId}
+              props={{ base: this.props.base }}
+            />
+          );
+        },
       },
       {
-        path: '/listings',
+        path: '/',
         exact: true,
         render: () => (
           <List
@@ -84,6 +84,27 @@ export class Buy extends React.Component<
         ),
       },
     ];
-    return <IonRoutes routes={routes} />;
+    return <IonRoutes base={this.props.base} routes={routes} />;
+  }
+}
+
+export class Buy extends React.Component<RouteComponentProps> {
+  render() {
+    const path = this.props.location.pathname;
+    if (path === '/') {
+      return <Redirect to="/listings" />;
+    }
+
+    return (
+      <>
+        {path === '/listings' ? <Nav base="/listings" /> : null}
+
+        <IonContent>
+          <SearchPage {...this.props} base="/listings" />
+        </IonContent>
+
+        <Footer />
+      </>
+    );
   }
 }

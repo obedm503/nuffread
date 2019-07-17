@@ -49,8 +49,8 @@ export const IonItemLink = addRouter(IonItem);
 
 export const IonBackButton = withRouter<
   RouteComponentProps & { defaultHref: string }
->(({ history, match: { url }, defaultHref }) => {
-  if (url === defaultHref) {
+>(({ history, location: { pathname }, defaultHref }) => {
+  if (pathname === defaultHref) {
     return null;
   }
   return (

@@ -3,19 +3,23 @@ import * as React from 'react';
 import { IonBackButton, IonButtonLink, TopNav } from '../../../components';
 import { OnlyMobile } from '../../../state';
 
-const GoBack = () => (
+const GoBack = ({ base }) => (
   <IonButtons slot="start">
-    <IonBackButton defaultHref="/listings" />
+    <IonBackButton defaultHref={base} />
   </IonButtons>
 );
 
-export const Nav: React.SFC<{ title?: string; alwaysBack?: boolean }> = ({
-  children,
-  title,
-  alwaysBack = false,
-}) => (
+export const Nav: React.SFC<{
+  title?: string;
+  alwaysBack?: boolean;
+  base: string;
+}> = ({ children, title, alwaysBack = false, base }) => (
   <TopNav toolbar={children} title={title}>
-    {alwaysBack ? <GoBack /> : <OnlyMobile children={GoBack} />}
+    {alwaysBack ? (
+      <GoBack base={base} />
+    ) : (
+      <OnlyMobile children={() => <GoBack base={base} />} />
+    )}
 
     <IonButtons slot="end">
       <IonButtonLink href="/join">
