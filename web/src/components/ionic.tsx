@@ -54,6 +54,12 @@ export const IonBackButton = withRouter<
     return null;
   }
   return (
-    <IonBackButtonInner onClick={history.goBack} defaultHref={defaultHref} />
+    <IonBackButtonInner
+      onClick={e => {
+        e.preventDefault();
+        history.goBack();
+      }}
+      defaultHref={defaultHref}
+    />
   );
 });
