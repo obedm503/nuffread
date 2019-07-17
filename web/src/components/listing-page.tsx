@@ -7,22 +7,55 @@ import {
   IonGrid,
   IonIcon,
   IonList,
+  IonPage,
   IonRow,
   IonSlide,
   IonSlides,
 } from '@ionic/react';
 import { range } from 'lodash';
 import * as React from 'react';
-import { IonBackButton, IonButtonLink, TopNav } from '../../components';
-import { Listing, LoadingListing } from '../../components/listing';
-import { SafeImg } from '../../components/safe-img';
-import { withListing } from '../../containers/listing';
-import { UserDetails } from './components/user-details';
+import { IonBackButton, IonButtonLink, TopNav } from '.';
+import { withListing } from '../containers/listing';
+import { UserDetails } from '../pages/public/components/user-details';
+import { Listing, LoadingListing } from './listing';
+import { SafeImg } from './safe-img';
+
+const Fab = () => (
+  <IonFab vertical="bottom" horizontal="end" slot="fixed">
+    <IonFabButton>
+      <b>Buy</b>
+    </IonFabButton>
+  </IonFab>
+);
+const None = () => (
+  <IonRow>
+    <IonCol>
+      <IonList lines="none">
+        <LoadingListing />
+      </IonList>
+    </IonCol>
+  </IonRow>
+);
+
+const Slides = ({ listing }) => (
+  <IonSlides pager>
+    {range(12).map(i => (
+      <IonSlide key={i}>
+        <SafeImg
+          style={{ width: '100%', height: 'auto' }}
+          src={listing.thumbnail || undefined}
+          placeholder="/img/128x128.png"
+          alt=""
+        />
+      </IonSlide>
+    ))}
+  </IonSlides>
+);
 
 export const ListingPage = withListing<{ base: string }>(
   ({ data: listing, loading, props: { base } }) => {
     return (
-      <>
+      <IonPage>
         <TopNav title={listing ? listing.title : ''}>
           <IonButtons slot="start">
             <IonBackButton defaultHref={base} />
@@ -30,23 +63,11 @@ export const ListingPage = withListing<{ base: string }>(
         </TopNav>
 
         <IonContent>
-          {listing ? (
-            <IonFab vertical="bottom" horizontal="end" slot="fixed">
-              <IonFabButton>
-                <b>Buy</b>
-              </IonFabButton>
-            </IonFab>
-          ) : null}
+          {listing ? <Fab /> : null}
 
           <IonGrid>
             {loading || !listing ? (
-              <IonRow>
-                <IonCol>
-                  <IonList lines="none">
-                    <LoadingListing />
-                  </IonList>
-                </IonCol>
-              </IonRow>
+              <None />
             ) : (
               <>
                 <IonRow>
@@ -67,25 +88,14 @@ export const ListingPage = withListing<{ base: string }>(
 
                 <IonRow>
                   <IonCol>
-                    <IonSlides pager>
-                      {range(12).map(i => (
-                        <IonSlide key={i}>
-                          <SafeImg
-                            style={{ width: '100%', height: 'auto' }}
-                            src={listing.thumbnail || undefined}
-                            placeholder="/img/128x128.png"
-                            alt=""
-                          />
-                        </IonSlide>
-                      ))}
-                    </IonSlides>
+                    <Slides listing={listing} />
                   </IonCol>
                 </IonRow>
               </>
             )}
           </IonGrid>
         </IonContent>
-      </>
+      </IonPage>
     );
   },
 );
