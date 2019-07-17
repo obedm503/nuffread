@@ -1,7 +1,7 @@
 import { IonButtons, IonContent } from '@ionic/react';
 import * as React from 'react';
 import { Popover, TopNav } from '../../components';
-import { Logout } from '../logout';
+import { Logout } from '../../components/logout';
 
 export const Profile = () => (
   <>

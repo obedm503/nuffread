@@ -88,7 +88,7 @@ export class SearchPage extends React.Component<
   }
 }
 
-export class Buy extends React.Component<RouteComponentProps> {
+export default class Public extends React.Component<RouteComponentProps> {
   render() {
     const path = this.props.location.pathname;
     if (path === '/') {

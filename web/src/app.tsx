@@ -18,11 +18,11 @@ import {
 } from 'react-router';
 import './app.scss';
 import { Error, Routes } from './components';
-import { Buy } from './pages/buy';
 import { Join } from './pages/join';
 import { Launch } from './pages/launch';
-import { Admin, Login } from './pages/login';
-import { Sell } from './pages/sell';
+import { AdminLogin, UserLogin } from './pages/login';
+import Private from './pages/private';
+import Public from './pages/public';
 import { IQuery, SystemUser } from './schema.gql';
 import { IsDesktopProvider, UserProvider } from './state';
 
@@ -73,14 +73,14 @@ class App extends React.Component<RouteComponentProps<{}>> {
 
       let routes: RouteProps[] = [
         { path: '/join', component: user ? ToHome : Join },
-        { path: '/login', exact: true, component: user ? ToHome : Login },
-        { path: '/admin', exact: true, component: user ? ToHome : Admin },
+        { path: '/login', exact: true, component: user ? ToHome : UserLogin },
+        { path: '/admin', exact: true, component: user ? ToHome : AdminLogin },
       ];
 
       if (!user) {
-        routes.push({ path: '/', component: Buy });
+        routes.push({ path: '/', component: Public });
       } else if (user.__typename === 'User') {
-        routes.push({ path: '/', component: Sell });
+        routes.push({ path: '/', component: Private });
       } else if (user.__typename === 'Admin') {
         routes.push({ path: '/', component: () => <div>Admin page</div> });
       }

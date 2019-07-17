@@ -12,6 +12,7 @@ import {
 } from '@ionic/react';
 import ApolloClient from 'apollo-client';
 import { Form, Formik } from 'formik';
+import { GraphQLError } from 'graphql';
 import gql from 'graphql-tag';
 import { History } from 'history';
 import * as React from 'react';
@@ -27,6 +28,40 @@ const LOGIN = gql`
     login(email: $email, password: $password, type: $type)
   }
 `;
+
+const Errors = ({ errors }: { errors: readonly GraphQLError[] }) => (
+  <>
+    {errors.map(err => {
+      let errMsg;
+      switch (err.message) {
+        case 'DUPLICATE_USER':
+          errMsg = 'Email is already registered.';
+          break;
+        case 'NOT_CONFIRMED':
+          errMsg = (
+            <>
+              Email is not yet confirmed. To confirm your email{' '}
+              <Link to="/join/confirm">click here</Link>.
+            </>
+          );
+          break;
+        case 'WRONG_CREDENTIALS':
+          errMsg = 'Wrong email or password.';
+          break;
+      }
+
+      if (!errMsg) {
+        return null;
+      }
+
+      return (
+        <IonItem key={err.message}>
+          <IonLabel color="danger">{errMsg}</IonLabel>
+        </IonItem>
+      );
+    })}
+  </>
+);
 
 class LoginForm extends React.Component<{
   type: keyof typeof SystemUserType;
@@ -80,39 +115,9 @@ class LoginForm extends React.Component<{
                             errors={errors}
                           />
 
-                          {error
-                            ? error.graphQLErrors.map(err => {
-                                let errMsg;
-                                switch (err.message) {
-                                  case 'DUPLICATE_USER':
-                                    errMsg = 'Email is already registered.';
-                                    break;
-                                  case 'NOT_CONFIRMED':
-                                    errMsg = (
-                                      <>
-                                        Email is not yet confirmed. To confirm
-                                        your email{' '}
-                                        <Link to="/join/confirm">
-                                          click here
-                                        </Link>
-                                        .
-                                      </>
-                                    );
-                                    break;
-                                  case 'WRONG_CREDENTIALS':
-                                    errMsg = 'Wrong email or password.';
-                                    break;
-                                  default:
-                                    return null;
-                                }
-
-                                return (
-                                  <IonItem key={err.message}>
-                                    <IonLabel color="danger">{errMsg}</IonLabel>
-                                  </IonItem>
-                                );
-                              })
-                            : null}
+                          {error ? (
+                            <Errors errors={error.graphQLErrors} />
+                          ) : null}
                         </IonCol>
                       </IonRow>
 
@@ -184,37 +189,42 @@ const userSchema = yup.object().shape({
   password: yup.string().required(),
 });
 
-export const Login: React.SFC<
+export class UserLogin extends React.PureComponent<
   RouteComponentProps<{}> & { admin?: boolean }
-> = ({ history, admin = false }) => {
-  return (
-    <>
-      <TopNav />
+> {
+  render() {
+    const { history, admin = false } = this.props;
+    return (
+      <>
+        <TopNav />
 
-      <IonContent>
-        <IonGrid>
-          <IonRow>
-            <IonCol sizeMd="6" offsetMd="3">
-              <IonCard>
-                <IonCardContent>
-                  <LoginForm
-                    history={history}
-                    type={admin ? 'ADMIN' : 'USER'}
-                    schema={admin ? adminSchema : userSchema}
-                    admin={admin}
-                  />
-                </IonCardContent>
-              </IonCard>
-            </IonCol>
-          </IonRow>
-        </IonGrid>
-      </IonContent>
+        <IonContent>
+          <IonGrid>
+            <IonRow>
+              <IonCol sizeMd="6" offsetMd="3">
+                <IonCard>
+                  <IonCardContent>
+                    <LoginForm
+                      history={history}
+                      type={admin ? 'ADMIN' : 'USER'}
+                      schema={admin ? adminSchema : userSchema}
+                      admin={admin}
+                    />
+                  </IonCardContent>
+                </IonCard>
+              </IonCol>
+            </IonRow>
+          </IonGrid>
+        </IonContent>
 
-      <Footer />
-    </>
-  );
-};
+        <Footer />
+      </>
+    );
+  }
+}
 
-export const Admin: React.SFC<RouteComponentProps<{}>> = props => {
-  return <Login {...props} admin />;
-};
+export class AdminLogin extends React.PureComponent<RouteComponentProps<{}>> {
+  render() {
+    return <UserLogin {...this.props} admin />;
+  }
+}

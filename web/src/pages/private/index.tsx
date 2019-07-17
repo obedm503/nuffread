@@ -9,6 +9,8 @@ const routes: RouteProps[] = [
   { component: Home },
 ];
 
-export const Sell: React.SFC<RouteComponentProps<{}>> = () => (
-  <Routes routes={routes} />
-);
+export default class Private extends React.Component<RouteComponentProps> {
+  render() {
+    return <Routes routes={routes} />;
+  }
+}
