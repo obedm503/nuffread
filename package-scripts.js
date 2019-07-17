@@ -2,6 +2,12 @@
 const { resolve } = require('path');
 const { concurrent, series, rimraf, copy } = require('nps-utils');
 
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').load({
+    path: './api/.env',
+  });
+}
+
 const buildTypes = series(
   [
     'gql2ts',
