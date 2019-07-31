@@ -993,7 +993,7 @@
     ionicons "^4.6.2"
     tslib "^1.10.0"
 
-"@ionic/react@^0.0.7":
+"@ionic/react@0.0.7":
   version "0.0.7"
   resolved "https://registry.yarnpkg.com/@ionic/react/-/react-0.0.7.tgz#3e27c63d3202c18e699fbb5baeb41bd561b82091"
   integrity sha512-QamAAMpccCQ7TxBGhSfOtXdPuuwigLmZ3t+mxFDpNkcWY0P7HrXaTAIygMd/MxpDlfg6IvLec2LTjgYHoyCO6Q==

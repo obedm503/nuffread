@@ -14,7 +14,7 @@
     "not op_mini all"
   ],
   "dependencies": {
-    "@ionic/react": "^0.0.7",
+    "@ionic/react": "0.0.7",
     "apollo-cache-inmemory": "^1.5.1",
     "apollo-client": "^2.5.1",
     "apollo-link-error": "^1.1.10",
