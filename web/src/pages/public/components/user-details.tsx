@@ -1,11 +1,12 @@
 import {
+  IonButton,
   IonButtons,
   IonIcon,
   IonImg,
   IonItem,
   IonLabel,
-  IonButton,
 } from '@ionic/react';
+import { call, logoFacebook, mail, person } from 'ionicons/icons';
 import * as React from 'react';
 import { IonButtonLink } from '../../../components';
 
@@ -23,7 +24,7 @@ export class UserDetails extends React.PureComponent<
     if (!this.state.showSeller) {
       return (
         <IonButton expand="block" onClick={this.onClick}>
-          <IonIcon name="person" />
+          <IonIcon icon={person} />
 
           <IonLabel>View Seller</IonLabel>
         </IonButton>
@@ -51,13 +52,13 @@ export class UserDetails extends React.PureComponent<
 
           <IonButtons>
             <IonButtonLink href="#">
-              <IonIcon slot="icon-only" size="small" name="call" />
+              <IonIcon slot="icon-only" size="small" icon={call} />
             </IonButtonLink>
             <IonButtonLink href="#">
-              <IonIcon slot="icon-only" size="small" name="logo-facebook" />
+              <IonIcon slot="icon-only" size="small" icon={logoFacebook} />
             </IonButtonLink>
             <IonButtonLink href="#">
-              <IonIcon slot="icon-only" size="small" name="mail" />
+              <IonIcon slot="icon-only" size="small" icon={mail} />
             </IonButtonLink>
           </IonButtons>
         </IonLabel>

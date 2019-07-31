@@ -7,6 +7,7 @@ import {
   IonRow,
 } from '@ionic/react';
 import gql from 'graphql-tag';
+import { add } from 'ionicons/icons';
 import * as React from 'react';
 import { Query } from 'react-apollo';
 import { Error, IonItemLink, TopNav } from '../../components';
@@ -36,7 +37,7 @@ export const MyListings: React.SFC = () => (
       <IonButtons slot="end">
         <Popover>
           <IonItemLink href="/new">
-            <IonIcon slot="start" name="add" />
+            <IonIcon slot="start" icon={add} />
             New Listing
           </IonItemLink>
         </Popover>

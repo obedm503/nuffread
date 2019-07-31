@@ -6,6 +6,7 @@ import {
   IonTabButton,
   IonTabs,
 } from '@ionic/react';
+import { book, person, search } from 'ionicons/icons';
 import * as React from 'react';
 import { Redirect, Route, RouteComponentProps } from 'react-router';
 import { MyListings } from './listings';
@@ -29,17 +30,17 @@ export default class Private extends React.Component<RouteComponentProps> {
 
           <IonTabBar slot="bottom">
             <IonTabButton tab="search" href="/search">
-              <IonIcon name="search" />
+              <IonIcon icon={search} />
               <IonLabel>Search</IonLabel>
             </IonTabButton>
 
             <IonTabButton tab="listings" href="/listings">
-              <IonIcon name="book" />
+              <IonIcon icon={book} />
               <IonLabel>Listings</IonLabel>
             </IonTabButton>
 
             <IonTabButton tab="profile" href="/profile">
-              <IonIcon name="person" />
+              <IonIcon icon={person} />
               <IonLabel>Profile</IonLabel>
             </IonTabButton>
           </IonTabBar>

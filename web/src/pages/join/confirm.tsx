@@ -9,6 +9,7 @@ import {
 import { Form, Formik } from 'formik';
 import gql from 'graphql-tag';
 import { History } from 'history';
+import { add, logIn } from 'ionicons/icons';
 import * as React from 'react';
 import { Mutation } from 'react-apollo';
 import { Redirect, RouteComponentProps } from 'react-router';
@@ -97,7 +98,7 @@ class ConfirmEmail extends React.Component<{
                                 <p className="help is-danger">
                                   Email is not registered.
                                   <IonButtonLink href="/join/signup">
-                                    <IonIcon slot="start" name="add" />
+                                    <IonIcon slot="start" icon={add} />
                                     <IonLabel>Join Instead</IonLabel>
                                   </IonButtonLink>
                                 </p>
@@ -109,7 +110,7 @@ class ConfirmEmail extends React.Component<{
                       : null}
 
                     <IonButton color="primary" type="submit">
-                      <IonIcon slot="start" name="log-in" />
+                      <IonIcon slot="start" icon={logIn} />
                       <span>Send Email</span>
                     </IonButton>
                   </Form>

@@ -1,4 +1,5 @@
 import {
+  IonBackButton,
   IonButtons,
   IonCol,
   IonContent,
@@ -12,9 +13,10 @@ import {
   IonSlide,
   IonSlides,
 } from '@ionic/react';
+import { barcode } from 'ionicons/icons';
 import { range } from 'lodash';
 import * as React from 'react';
-import { IonBackButton, IonButtonLink, TopNav } from '.';
+import { IonButtonLink, TopNav } from '.';
 import { withListing } from '../containers/listing';
 import { UserDetails } from '../pages/public/components/user-details';
 import { Listing, LoadingListing } from './listing';
@@ -76,7 +78,7 @@ export const ListingPage = withListing<{ base: string }>(
                       <Listing priceColor="success" listing={listing}>
                         <IonButtons>
                           <IonButtonLink href="#">
-                            <IonIcon slot="icon-only" name="barcode" />
+                            <IonIcon slot="icon-only" icon={barcode} />
                           </IonButtonLink>
                         </IonButtons>
                       </Listing>

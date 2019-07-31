@@ -14,7 +14,7 @@
     "not op_mini all"
   ],
   "dependencies": {
-    "@ionic/react": "^0.0.6-3",
+    "@ionic/react": "^0.0.7",
     "apollo-cache-inmemory": "^1.5.1",
     "apollo-client": "^2.5.1",
     "apollo-link-error": "^1.1.10",
@@ -22,6 +22,7 @@
     "formik": "^1.4.4",
     "graphql": "^14.3.0",
     "graphql-tag": "^2.10.1",
+    "ionicons": "^4.6.2",
     "lodash": "^4.17.11",
     "quagga": "^0.12.1",
     "react": "^16.8.6",

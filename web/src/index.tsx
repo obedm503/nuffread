@@ -1,4 +1,4 @@
-import { IonApp } from '@ionic/react';
+import { IonApp, IonReactRouter } from '@ionic/react';
 import { ApolloClient } from 'apollo-client';
 import { onError } from 'apollo-link-error';
 import { createHttpLink } from 'apollo-link-http';
@@ -6,7 +6,6 @@ import React from 'react';
 import { ApolloProvider } from 'react-apollo';
 import ReactDOM from 'react-dom';
 import { HelmetProvider } from 'react-helmet-async';
-import { BrowserRouter } from 'react-router-dom';
 import { App, createCache } from './app';
 import * as serviceWorker from './serviceWorker';
 
@@ -33,11 +32,11 @@ const main = (
   // <HostProvider value={location.origin}>
   <HelmetProvider>
     <ApolloProvider client={client}>
-      <BrowserRouter>
+      <IonReactRouter>
         <IonApp>
           <App />
         </IonApp>
-      </BrowserRouter>
+      </IonReactRouter>
     </ApolloProvider>
   </HelmetProvider>
   // </HostProvider>

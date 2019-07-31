@@ -15,6 +15,7 @@ import { Form, Formik } from 'formik';
 import { GraphQLError } from 'graphql';
 import gql from 'graphql-tag';
 import { History } from 'history';
+import { add, logIn } from 'ionicons/icons';
 import * as React from 'react';
 import { Mutation, MutationFn } from 'react-apollo';
 import { RouteComponentProps } from 'react-router';
@@ -129,7 +130,7 @@ class LoginForm extends React.Component<{
                               href="/join/signup"
                               color="secondary"
                             >
-                              <IonIcon slot="start" name="add" />
+                              <IonIcon slot="start" icon={add} />
                               <IonLabel>Join</IonLabel>
                             </IonButtonLink>
                           </IonCol>
@@ -152,7 +153,7 @@ class LoginForm extends React.Component<{
                             color="primary"
                             type="submit"
                           >
-                            <IonIcon slot="start" name="log-in" />
+                            <IonIcon slot="start" icon={logIn} />
                             <IonLabel>Login</IonLabel>
                           </IonButton>
                         </IonCol>

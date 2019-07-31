@@ -10,6 +10,7 @@ import {
 } from '@ionic/react';
 import { Form, Formik } from 'formik';
 import gql from 'graphql-tag';
+import { add } from 'ionicons/icons';
 import { join } from 'path';
 import * as React from 'react';
 import { Mutation, MutationFn } from 'react-apollo';
@@ -120,7 +121,7 @@ class RegisterForm extends React.Component<RouteComponentProps<never>> {
                             expand="block"
                             type="submit"
                           >
-                            <IonIcon slot="start" name="add" />
+                            <IonIcon slot="start" icon={add} />
                             <IonLabel>Join</IonLabel>
                           </IonButton>
                         </IonCol>

@@ -1,8 +1,9 @@
 import { IonButton, IonButtons, IonIcon, IonPopover } from '@ionic/react';
+import { qrScanner } from 'ionicons/icons';
 import { get } from 'lodash';
 import Quagga from 'quagga';
 import * as React from 'react';
-import './scanner.scss'
+import './scanner.scss';
 
 function hasGetUserMedia() {
   return !!(
@@ -103,14 +104,14 @@ export class Scanner extends React.PureComponent<{
     return (
       <IonButtons slot="end">
         <IonButton onClick={this.toggle}>
-          <IonIcon slot="icon-only" name="qr-scanner" />
+          <IonIcon slot="icon-only" icon={qrScanner} />
 
           <IonPopover isOpen={this.state.open} onDidDismiss={this.close}>
             {this.state.open ? (
               <div className="scanner">
                 <QuaggaScanner onScanned={this.onScanned} />
 
-                <IonIcon name="qr-scanner" />
+                <IonIcon icon={qrScanner} />
               </div>
             ) : null}
           </IonPopover>
