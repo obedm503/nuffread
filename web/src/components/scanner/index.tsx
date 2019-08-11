@@ -14,7 +14,7 @@ function hasGetUserMedia() {
   );
 }
 
-class QuaggaScanner extends React.PureComponent<{ onScanned }> {
+class QuaggaScanner extends React.PureComponent<{ onScanned; close }> {
   componentDidMount() {
     if (!this.el) {
       return;
@@ -50,8 +50,9 @@ class QuaggaScanner extends React.PureComponent<{ onScanned }> {
         debug: false,
         frequency: 1,
       },
-      function(err) {
+      err => {
         if (err) {
+          this.props.close();
           return console.error(err);
         }
         Quagga.start();
@@ -109,7 +110,7 @@ export class Scanner extends React.PureComponent<{
           <IonPopover isOpen={this.state.open} onDidDismiss={this.close}>
             {this.state.open ? (
               <div className="scanner">
-                <QuaggaScanner onScanned={this.onScanned} />
+                <QuaggaScanner onScanned={this.onScanned} close={this.close} />
 
                 <IonIcon icon={qrScanner} />
               </div>
