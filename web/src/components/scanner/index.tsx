@@ -1,4 +1,4 @@
-import { IonButton, IonButtons, IonIcon, IonPopover } from '@ionic/react';
+import { IonButton, IonIcon, IonPopover } from '@ionic/react';
 import { qrScanner } from 'ionicons/icons';
 import { get } from 'lodash';
 import Quagga from 'quagga';
@@ -103,21 +103,19 @@ export class Scanner extends React.PureComponent<{
     }
 
     return (
-      <IonButtons slot="end">
-        <IonButton onClick={this.toggle}>
-          <IonIcon slot="icon-only" icon={qrScanner} />
+      <IonButton onClick={this.toggle} color="primary">
+        <IonIcon slot="icon-only" icon={qrScanner} />
 
-          <IonPopover isOpen={this.state.open} onDidDismiss={this.close}>
-            {this.state.open ? (
-              <div className="scanner">
-                <QuaggaScanner onScanned={this.onScanned} close={this.close} />
+        <IonPopover isOpen={this.state.open} onDidDismiss={this.close}>
+          {this.state.open ? (
+            <div className="scanner">
+              <QuaggaScanner onScanned={this.onScanned} close={this.close} />
 
-                <IonIcon icon={qrScanner} />
-              </div>
-            ) : null}
-          </IonPopover>
-        </IonButton>
-      </IonButtons>
+              <IonIcon icon={qrScanner} />
+            </div>
+          ) : null}
+        </IonPopover>
+      </IonButton>
     );
   }
 }
