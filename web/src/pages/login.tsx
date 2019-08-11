@@ -21,7 +21,7 @@ import { Mutation, MutationFn } from 'react-apollo';
 import { RouteComponentProps } from 'react-router';
 import { Link } from 'react-router-dom';
 import * as yup from 'yup';
-import { Email, Footer, IonButtonLink, Password, TopNav } from '../components';
+import { Email, IonButtonLink, Password, TopNav } from '../components';
 import { IMutation, SystemUserType } from '../schema.gql';
 
 const LOGIN = gql`
@@ -217,8 +217,6 @@ export class UserLogin extends React.PureComponent<
             </IonRow>
           </IonGrid>
         </IonContent>
-
-        <Footer />
       </>
     );
   }
