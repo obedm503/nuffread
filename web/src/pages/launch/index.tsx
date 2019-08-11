@@ -7,26 +7,18 @@ import {
   IonCol,
   IonContent,
   IonGrid,
-  IonHeader,
   IonInput,
   IonItem,
   IonLabel,
   IonList,
   IonRow,
-  IonTitle,
-  IonToolbar,
 } from '@ionic/react';
 import * as React from 'react';
+import { TopNav } from '../../components';
 
 export const Launch = () => (
   <>
-    <IonHeader>
-      <IonToolbar color="white">
-        <IonTitle color="primary">
-          <b>nuffread</b>
-        </IonTitle>
-      </IonToolbar>
-    </IonHeader>
+    <TopNav />
 
     <IonContent>
       <IonGrid>

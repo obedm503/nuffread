@@ -12,8 +12,10 @@ export class TopNav extends React.PureComponent<Props> {
     const title = this.props.title || 'nuffread';
     return (
       <IonHeader>
-        <IonToolbar color="primary">
-          <IonTitle>{title}</IonTitle>
+        <IonToolbar color="white">
+          <IonTitle color="primary">
+            <b>{title}</b>
+          </IonTitle>
           <Helmet>
             <title>{title}</title>
           </Helmet>

@@ -1,5 +1,5 @@
 import { SearchbarChangeEventDetail } from '@ionic/core';
-import { IonSearchbar, IonToolbar } from '@ionic/react';
+import { IonButtons, IonSearchbar, IonToolbar } from '@ionic/react';
 import * as React from 'react';
 import { Scanner } from './scanner';
 
@@ -17,15 +17,19 @@ export class SearchBar extends React.PureComponent<SearchBarProps> {
 
   render() {
     return (
-      <IonToolbar color="primary">
+      <IonToolbar color="white">
         <IonSearchbar
           color="light"
+          // stick with ios search style because of color differences
+          mode="ios"
           value={this.props.searchValue}
           onIonChange={this.onChange}
           debounce={500}
         />
 
-        <Scanner onScanned={this.props.onSearch} />
+        <IonButtons slot="end">
+          <Scanner onScanned={this.props.onSearch} />
+        </IonButtons>
       </IonToolbar>
     );
   }
