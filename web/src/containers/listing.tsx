@@ -5,7 +5,7 @@ import { GET_LISTING } from '../queries';
 import { Error } from '../components';
 
 export function withListing<T = undefined>(
-  component: React.FunctionComponent<{
+  Component: React.FunctionComponent<{
     loading: boolean;
     data?: IListing;
     props: T;
@@ -18,11 +18,13 @@ export function withListing<T = undefined>(
           if (error) {
             return <Error value={error} />;
           }
-          return component({
-            loading,
-            data: (data && data.listing) || undefined,
-            props,
-          });
+          return (
+            <Component
+              loading={loading}
+              data={(data && data.listing) || undefined}
+              props={props}
+            />
+          );
         }}
       </Query>
     );

@@ -17,7 +17,7 @@ import { classes } from '../util';
 import { SafeImg } from './safe-img';
 
 export const LoadingListing = () => (
-  <IonCard class="listing-card" color="white">
+  <IonCard className="listing-card" color="white">
     <IonFab edge vertical="top" horizontal="end">
       <IonFabButton color="light" style={{ width: '70px', height: '70px' }}>
         <IonSkeletonText animated style={{ height: '100%' }} />
@@ -90,7 +90,7 @@ export const Listing: React.SFC<{
   priceColor?: string;
 }> = ({ listing, onClick, children, priceColor = 'medium' }) => (
   <IonCard
-    class={classes('listing-card', { large: priceColor === 'success' })}
+    className={classes('listing-card', { large: priceColor === 'success' })}
     onClick={onClick}
     color="white"
   >

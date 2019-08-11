@@ -985,21 +985,21 @@
   dependencies:
     "@hapi/hoek" "6.x.x"
 
-"@ionic/core@^4.6.0":
-  version "4.7.1"
-  resolved "https://registry.yarnpkg.com/@ionic/core/-/core-4.7.1.tgz#83e72893d1e42ebfee783252b374a83fa96a00ca"
-  integrity sha512-S7VP1Exh3kt2+GWgumY11HaPv7Wr6Z+lr13AKTcznOd8L6xsvzbxgxCMLEtJ/Kjno1q3a4usK9voojwEcbhigQ==
+"@ionic/core@4.7.4":
+  version "4.7.4"
+  resolved "https://registry.yarnpkg.com/@ionic/core/-/core-4.7.4.tgz#73f9726c2099bed2b1a7c946360e62fb0a6ea4b6"
+  integrity sha512-zvRN5zGhecZnT1jxi0ZG9Lq1kQG89RBrRaizM+pvHH984o7ywcPLQfbRme8G8hBvzK/WU1g1BEt9Hq6qIvG0ug==
   dependencies:
     ionicons "^4.6.2"
     tslib "^1.10.0"
 
-"@ionic/react@0.0.7":
-  version "0.0.7"
-  resolved "https://registry.yarnpkg.com/@ionic/react/-/react-0.0.7.tgz#3e27c63d3202c18e699fbb5baeb41bd561b82091"
-  integrity sha512-QamAAMpccCQ7TxBGhSfOtXdPuuwigLmZ3t+mxFDpNkcWY0P7HrXaTAIygMd/MxpDlfg6IvLec2LTjgYHoyCO6Q==
+"@ionic/react@0.0.10":
+  version "0.0.10"
+  resolved "https://registry.yarnpkg.com/@ionic/react/-/react-0.0.10.tgz#ee431a124f04c0f46cfccb54c2c059e8a8c259e2"
+  integrity sha512-9UlNwzXWXlE8czMREWGheGlvGaRQQh8DoUSX3n8yuk2xtMJKGzZcvUn0I4JQX2OWsctVC9V45klC2zdgD0V7vg==
   dependencies:
-    "@ionic/core" "^4.6.0"
-    tslib "^1.10.0"
+    "@ionic/core" "4.7.4"
+    tslib "*"
 
 "@jest/console@^24.7.1":
   version "24.7.1"
@@ -11731,7 +11731,7 @@ ts-pnp@1.1.2, ts-pnp@^1.0.0:
   resolved "https://registry.yarnpkg.com/ts-pnp/-/ts-pnp-1.1.2.tgz#be8e4bfce5d00f0f58e0666a82260c34a57af552"
   integrity sha512-f5Knjh7XCyRIzoC/z1Su1yLLRrPrFCgtUAh/9fCSP6NKbATwpOL1+idQVXQokK9GRFURn/jYPGPfegIctwunoA==
 
-tslib@^1.10.0, tslib@^1.8.1, tslib@^1.9.0, tslib@^1.9.3:
+tslib@*, tslib@^1.10.0, tslib@^1.8.1, tslib@^1.9.0, tslib@^1.9.3:
   version "1.10.0"
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-1.10.0.tgz#c3c19f95973fb0a62973fb09d90d961ee43e5c8a"
   integrity sha512-qOebF53frne81cf0S9B41ByenJ3/IuH8yJKngAX35CmiZySA0khhkovshKK+jGCaMnVomla7gVlIcc3EvKPbTQ==

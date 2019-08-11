@@ -1,5 +1,4 @@
 import {
-  IonBackButton,
   IonButtons,
   IonCol,
   IonContent,
@@ -19,6 +18,7 @@ import * as React from 'react';
 import { IonButtonLink, TopNav } from '.';
 import { withListing } from '../containers/listing';
 import { UserDetails } from '../pages/public/components/user-details';
+import { GoBack } from './go-back';
 import { Listing, LoadingListing } from './listing';
 import { SafeImg } from './safe-img';
 
@@ -60,7 +60,7 @@ export const ListingPage = withListing<{ base: string }>(
       <IonPage>
         <TopNav title={listing ? listing.title : ''}>
           <IonButtons slot="start">
-            <IonBackButton defaultHref={base} />
+            <GoBack base={base} />
           </IonButtons>
         </TopNav>
 

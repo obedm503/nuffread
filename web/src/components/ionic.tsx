@@ -46,20 +46,3 @@ function addRouter<T extends React.ComponentType>(Comp: T) {
 
 export const IonButtonLink = addRouter(IonButton);
 export const IonItemLink = addRouter(IonItem);
-
-// export const IonBackButton = withRouter<
-//   RouteComponentProps & { defaultHref: string }
-// >(({ history, location: { pathname }, defaultHref }) => {
-//   if (pathname === defaultHref) {
-//     return null;
-//   }
-//   return (
-//     <IonBackButtonInner
-//       onClick={e => {
-//         e.preventDefault();
-//         history.goBack();
-//       }}
-//       defaultHref={defaultHref}
-//     />
-//   );
-// });

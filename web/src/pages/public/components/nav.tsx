@@ -1,13 +1,8 @@
-import { IonBackButton, IonButtons } from '@ionic/react';
+import { IonButtons } from '@ionic/react';
 import * as React from 'react';
 import { IonButtonLink, TopNav } from '../../../components';
+import { GoBack } from '../../../components/go-back';
 import { OnlyMobile } from '../../../state';
-
-const GoBack = ({ base }) => (
-  <IonButtons slot="start">
-    <IonBackButton defaultHref={base} />
-  </IonButtons>
-);
 
 export const Nav: React.SFC<{
   title?: string;
@@ -15,11 +10,13 @@ export const Nav: React.SFC<{
   base: string;
 }> = ({ children, title, alwaysBack = false, base }) => (
   <TopNav toolbar={children} title={title}>
-    {alwaysBack ? (
-      <GoBack base={base} />
-    ) : (
-      <OnlyMobile children={() => <GoBack base={base} />} />
-    )}
+    <IonButtons slot="start">
+      {alwaysBack ? (
+        <GoBack base={base} />
+      ) : (
+        <OnlyMobile children={() => <GoBack base={base} />} />
+      )}
+    </IonButtons>
 
     <IonButtons slot="end">
       <IonButtonLink href="/join">

@@ -1,4 +1,3 @@
-import { IonRouterOutlet } from '@ionic/react';
 import * as React from 'react';
 import { Route, RouteProps, Switch } from 'react-router';
 import { normalizeUrl } from '../util';
@@ -29,8 +28,8 @@ export class Routes extends React.Component<Props> {
   }
 }
 
-export class IonRoutes extends React.Component<Props> {
-  render() {
-    return <IonRouterOutlet>{mapRoutes(this.props)}</IonRouterOutlet>;
-  }
-}
+// export class IonRoutes extends React.Component<Props> {
+//   render() {
+//     return <IonRouterOutlet>{mapRoutes(this.props)}</IonRouterOutlet>;
+//   }
+// }
