@@ -190,6 +190,10 @@ ion-card.listing-card {
     font-size: 20px;
   }
 
+  > ion-card-header {
+    padding-top: 35px;
+  }
+
   &.large {
     margin-top: 51px;
 
@@ -203,10 +207,6 @@ ion-card.listing-card {
         height: 70px;
         font-size: 25px;
       }
-    }
-
-    > ion-card-header {
-      padding-top: 35px;
     }
   }
 }

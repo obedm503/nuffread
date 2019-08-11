@@ -59,12 +59,15 @@ export class SearchPage extends React.Component<
         <Route
           path={join(this.props.base, '/:listingId')}
           exact
-          render={routeProps => (
-            <ListingPage
-              id={routeProps.match.params.listingId}
-              props={{ base: this.props.base }}
-            />
-          )}
+          render={routeProps => {
+            const params = routeProps.match.params;
+            return (
+              <ListingPage
+                id={params.listingId}
+                props={{ base: this.props.base }}
+              />
+            );
+          }}
         />
         <Route
           path={this.props.base}

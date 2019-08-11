@@ -54,7 +54,6 @@ export class Listings extends React.Component<Props> {
         return (
           <Listing
             key={listing.id}
-            priceColor={i === 0 ? 'success' : undefined}
             onClick={this.onClick(listing.id)}
             listing={listing}
           />

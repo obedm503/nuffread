@@ -10,6 +10,7 @@ import {
   IonLabel,
   IonRow,
   IonSkeletonText,
+  IonText,
 } from '@ionic/react';
 import * as React from 'react';
 import { IListing } from '../schema.gql';
@@ -87,16 +88,17 @@ export const LoadingListing = () => (
 export const Listing: React.SFC<{
   listing: IListing;
   onClick?: () => void;
-  priceColor?: string;
-}> = ({ listing, onClick, children, priceColor = 'medium' }) => (
+}> = ({ listing, onClick, children }) => (
   <IonCard
-    className={classes('listing-card', { large: priceColor === 'success' })}
+    className={classes('listing-card', { large: false })}
     onClick={onClick}
     color="white"
   >
     <IonFab edge vertical="top" horizontal="end">
-      <IonFabButton color="success">
-        <b>${listing.price / 100}</b>
+      <IonFabButton color="light">
+        <IonText color="primary">
+          <b>${listing.price / 100}</b>
+        </IonText>
       </IonFabButton>
     </IonFab>
 

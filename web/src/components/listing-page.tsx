@@ -75,7 +75,7 @@ export const ListingPage = withListing<{ base: string }>(
                 <IonRow>
                   <IonCol>
                     <IonList lines="none">
-                      <Listing priceColor="success" listing={listing}>
+                      <Listing listing={listing}>
                         <IonButtons>
                           <IonButtonLink href="#">
                             <IonIcon slot="icon-only" icon={barcode} />
