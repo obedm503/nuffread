@@ -1,9 +1,5 @@
 import {
   IonButton,
-  IonCard,
-  IonCardContent,
-  IonCardHeader,
-  IonCardTitle,
   IonCol,
   IonContent,
   IonGrid,
@@ -12,6 +8,7 @@ import {
   IonLabel,
   IonList,
   IonRow,
+  IonText,
 } from '@ionic/react';
 import * as React from 'react';
 import { TopNav } from '../../components';
@@ -23,35 +20,37 @@ export const Launch = () => (
     <IonContent>
       <IonGrid>
         <IonRow>
-          <IonCol sizeMd="4" offsetMd="4" sizeSm="8" offsetSm="1">
-            <IonCard>
-              <IonCardHeader>
-                <IonCardTitle>Request early access</IonCardTitle>
-              </IonCardHeader>
+          <IonCol size="10" offset="1" sizeMd="6">
+            <p>
+              explain what kind of <b>marketplace</b>{' '}
+              <IonText color="primary">nuffread</IonText> is
+            </p>
+            <p>explain alpha status/ closed beta</p>
+          </IonCol>
 
-              <IonCardContent>
-                <form name="early-access" method="POST" data-netlify="true">
-                  <input type="hidden" name="form-name" value="early-access" />
-                  <IonList lines="full">
-                    <IonItem>
-                      <IonLabel position="floating">Your Name</IonLabel>
-                      <IonInput name="name" required />
-                    </IonItem>
+          <IonCol size="10" offset="1" sizeMd="4" offsetMd="0">
+            <h2>Request early access</h2>
 
-                    <IonItem>
-                      <IonLabel position="floating">Your Email</IonLabel>
-                      <IonInput name="email" required type="email" />
-                    </IonItem>
+            <form name="early-access" method="POST" data-netlify="true">
+              <input type="hidden" name="form-name" value="early-access" />
+              <IonList lines="full">
+                <IonItem>
+                  <IonLabel position="floating">Your Name</IonLabel>
+                  <IonInput name="name" required />
+                </IonItem>
 
-                    <div className="ion-padding">
-                      <IonButton expand="block" type="submit">
-                        Submit
-                      </IonButton>
-                    </div>
-                  </IonList>
-                </form>
-              </IonCardContent>
-            </IonCard>
+                <IonItem>
+                  <IonLabel position="floating">Your Email</IonLabel>
+                  <IonInput name="email" required type="email" />
+                </IonItem>
+
+                <div className="ion-padding">
+                  <IonButton expand="block" type="submit">
+                    Request
+                  </IonButton>
+                </div>
+              </IonList>
+            </form>
           </IonCol>
         </IonRow>
       </IonGrid>
