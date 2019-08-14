@@ -1,3 +1,19 @@
+// Core CSS required for Ionic components to work properly
+@import '~@ionic/react/css/core.css';
+
+// Basic CSS for apps built with Ionic
+@import '~@ionic/react/css/normalize.css';
+@import '~@ionic/react/css/structure.css';
+@import '~@ionic/react/css/typography.css';
+
+// Optional CSS utils that can be commented out
+@import '~@ionic/react/css/padding.css';
+@import '~@ionic/react/css/float-elements.css';
+@import '~@ionic/react/css/text-alignment.css';
+@import '~@ionic/react/css/text-transformation.css';
+@import '~@ionic/react/css/flex-utils.css';
+@import '~@ionic/react/css/display.css';
+
 /* Ionic Variables and Theming. For more information, please see
 // https://beta.ionicframework.com/docs/theming/
 // The app direction is used to include
@@ -81,15 +97,6 @@
   --ion-color-light-shade: #d7d8da;
   --ion-color-light-tint: #f5f6f9;
 }
-
-/* Additional Ionic Colors
-// --------------------------------------------------
-// In order to add colors to be used with Ionic components,
-// the color should be added as a class with the convention `.ion-color-{COLOR}`
-// where `{COLOR}` is the color to be used on the Ionic component
-// and each variant is defined for the color. For more information, please see
-// https://beta.ionicframework.com/docs/theming/advanced
-*/
 
 /* Shared Variables
 // --------------------------------------------------
