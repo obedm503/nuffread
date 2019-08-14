@@ -17,7 +17,7 @@ import {
 import './app.scss';
 import { Error, Routes } from './components';
 import { Join } from './pages/join';
-import { Launch } from './pages/launch';
+import { Landing } from './pages/landing';
 import { AdminLogin, UserLogin } from './pages/login';
 import Private from './pages/private';
 import Public from './pages/public';
@@ -66,7 +66,7 @@ class App extends React.Component<RouteComponentProps<{}>> {
   makeRoutes = memoize(
     (user?: SystemUser): RouteProps[] => {
       if (process.env.REACT_APP_MODE !== 'ready') {
-        return [{ component: Launch }];
+        return [{ component: Landing }];
       }
 
       let routes: RouteProps[] = [
