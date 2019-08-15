@@ -72,7 +72,7 @@ export const ListingPage = withListing<{ base: string }>(
             ) : (
               <>
                 <IonRow>
-                  <IonCol>
+                  <IonCol size="12" sizeLg="10" offsetLg="1">
                     <IonList lines="none">
                       <Listing listing={listing}>
                         <IonButtons>
@@ -88,7 +88,7 @@ export const ListingPage = withListing<{ base: string }>(
                 </IonRow>
 
                 <IonRow>
-                  <IonCol>
+                  <IonCol size="12" sizeLg="10" offsetLg="1">
                     <Slides listing={listing} />
                   </IonCol>
                 </IonRow>

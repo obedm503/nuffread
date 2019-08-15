@@ -1,4 +1,12 @@
-import { IonContent, IonItem, IonLabel, IonList } from '@ionic/react';
+import {
+  IonCol,
+  IonContent,
+  IonGrid,
+  IonItem,
+  IonLabel,
+  IonList,
+  IonRow,
+} from '@ionic/react';
 import { range } from 'lodash';
 import * as React from 'react';
 import { Listing, LoadingListing } from '../../../components/listing';
@@ -18,8 +26,14 @@ const listingPlaceholders = range(10).map(n => <LoadingListing key={n} />);
 
 const listingInner = ({ onSearch, searchValue }) => children => (
   <IonContent>
-    <SearchBar onSearch={onSearch} searchValue={searchValue || ''} />
-    <IonList lines="none">{children}</IonList>
+    <IonGrid>
+      <IonRow>
+        <IonCol size="12" sizeLg="10" offsetLg="1">
+          <SearchBar onSearch={onSearch} searchValue={searchValue || ''} />
+          <IonList lines="none">{children}</IonList>
+        </IonCol>
+      </IonRow>
+    </IonGrid>
   </IonContent>
 );
 
