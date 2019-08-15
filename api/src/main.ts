@@ -82,7 +82,7 @@ apollo.applyMiddleware({
   path: '/',
   cors: {
     credentials: true,
-    origin: production ? 'https://www.nuffread.com' : process.env.ORIGIN,
+    origin: process.env.ORIGIN || 'https://www.nuffread.com',
   },
 });
 
