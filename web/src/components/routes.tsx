@@ -22,13 +22,13 @@ const mapRoutes = ({ routes, base }: Props) => {
   });
 };
 
-export class Routes extends React.Component<Props> {
+export class Routes extends React.PureComponent<Props> {
   render() {
     return <Switch>{mapRoutes(this.props)}</Switch>;
   }
 }
 
-// export class IonRoutes extends React.Component<Props> {
+// export class IonRoutes extends React.PureComponent<Props> {
 //   render() {
 //     return <IonRouterOutlet>{mapRoutes(this.props)}</IonRouterOutlet>;
 //   }

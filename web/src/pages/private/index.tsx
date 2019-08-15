@@ -8,13 +8,13 @@ import {
 } from '@ionic/react';
 import { book, person, search } from 'ionicons/icons';
 import * as React from 'react';
-import { Redirect, Route, RouteComponentProps } from 'react-router';
+import { Redirect, Route } from 'react-router';
 import { MyListings } from './listings';
 import { New } from './new';
 import { Profile } from './profile';
 import { Search } from './search';
 
-export default class Private extends React.Component<RouteComponentProps> {
+export default class Private extends React.PureComponent {
   render() {
     return (
       <>

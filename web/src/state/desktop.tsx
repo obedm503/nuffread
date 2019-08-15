@@ -5,7 +5,7 @@ const { Provider, Consumer } = React.createContext<{ isDesktop: boolean }>({
 });
 export { Consumer as IsDesktop };
 
-export class IsDesktopProvider extends React.Component<
+export class IsDesktopProvider extends React.PureComponent<
   any,
   { isDesktop: boolean }
 > {

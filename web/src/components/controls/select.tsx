@@ -7,7 +7,7 @@ type Props = ControlProps & {
   children: React.ReactNode;
 };
 
-class MulitpleSelect extends React.Component<FieldProps<any>> {
+class MulitpleSelect extends React.PureComponent<FieldProps<any>> {
   onChange = e => {
     const value = Array.from(e.target.options as any[])
       .map(op => (op.selected ? op.value : ''))

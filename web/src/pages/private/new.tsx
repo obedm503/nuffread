@@ -93,7 +93,7 @@ import { SearchBar } from '../../components/search-bar';
 //   );
 // };
 
-export class New extends React.Component<
+export class New extends React.PureComponent<
   RouteComponentProps<{ listingId?: string }>,
   { searchValue: string; googleId: string }
 > {

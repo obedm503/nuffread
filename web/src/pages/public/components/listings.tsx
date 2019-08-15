@@ -23,7 +23,7 @@ const listingInner = ({ onSearch, searchValue }) => children => (
   </IonContent>
 );
 
-export class Listings extends React.Component<Props> {
+export class Listings extends React.PureComponent<Props> {
   onClick = id => () => {
     this.props.onClick(id);
   };

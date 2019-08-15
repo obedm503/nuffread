@@ -41,7 +41,7 @@ const schema = yup.object<FormSchema>().shape({
   password: passwordSchema,
 });
 
-class RegisterForm extends React.Component<RouteComponentProps<never>> {
+class RegisterForm extends React.PureComponent<RouteComponentProps<never>> {
   onSubmit = (mutate: MutationFn<IMutation>) => ({ email, password }) =>
     mutate({
       variables: { email, password },

@@ -64,7 +64,7 @@ const Errors = ({ errors }: { errors: readonly GraphQLError[] }) => (
   </>
 );
 
-class LoginForm extends React.Component<{
+class LoginForm extends React.PureComponent<{
   type: keyof typeof SystemUserType;
   history: History;
   schema;

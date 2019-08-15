@@ -62,7 +62,7 @@ function ToHome() {
   return <Redirect to="/" />;
 }
 
-class App extends React.Component<RouteComponentProps<{}>> {
+class App extends React.PureComponent<RouteComponentProps<{}>> {
   makeRoutes = memoize(
     (user?: SystemUser): RouteProps[] => {
       if (process.env.REACT_APP_MODE !== 'ready') {

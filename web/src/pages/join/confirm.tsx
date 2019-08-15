@@ -59,7 +59,7 @@ const emailSchema = yup.object().shape({
     ),
 });
 
-class ConfirmEmail extends React.Component<{
+class ConfirmEmail extends React.PureComponent<{
   history: History;
 }> {
   render() {
