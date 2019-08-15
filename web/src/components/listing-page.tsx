@@ -55,7 +55,7 @@ const Slides = ({ listing }) => (
 );
 
 export const ListingPage = withListing<{ base: string }>(
-  ({ data: listing, loading, props: { base } }) => {
+  ({ data: listing, loading, base }) => {
     return (
       <IonPage>
         <TopNav title={listing ? listing.title : ''}>
