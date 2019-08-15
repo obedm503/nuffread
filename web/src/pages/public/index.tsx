@@ -1,21 +1,17 @@
 import { IonContent } from '@ionic/react';
-import * as React from 'react';
-import { RouteComponentProps } from 'react-router';
+import React, { memo } from 'react';
+import { Route, RouteComponentProps } from 'react-router';
 import { SearchPage } from '../../components/search';
 import { Nav } from './components/nav';
 
-export default class Public extends React.Component<RouteComponentProps> {
-  render() {
-    const path = this.props.location.pathname;
+export default memo<RouteComponentProps>(props => {
+  return (
+    <>
+      <Route path="/" exact render={() => <Nav base="/" />} />
 
-    return (
-      <>
-        {path === '/' ? <Nav base="/" /> : null}
-
-        <IonContent>
-          <SearchPage {...this.props} base="/" />
-        </IonContent>
-      </>
-    );
-  }
-}
+      <IonContent>
+        <SearchPage {...props} />
+      </IonContent>
+    </>
+  );
+});

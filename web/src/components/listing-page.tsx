@@ -7,7 +7,6 @@ import {
   IonGrid,
   IonIcon,
   IonList,
-  IonPage,
   IonRow,
   IonSlide,
   IonSlides,
@@ -57,7 +56,7 @@ const Slides = ({ listing }) => (
 export const ListingPage = withListing<{ base: string }>(
   ({ data: listing, loading, base }) => {
     return (
-      <IonPage>
+      <>
         <TopNav title={listing ? listing.title : ''}>
           <IonButtons slot="start">
             <GoBack base={base} />
@@ -97,7 +96,7 @@ export const ListingPage = withListing<{ base: string }>(
             )}
           </IonGrid>
         </IonContent>
-      </IonPage>
+      </>
     );
   },
 );

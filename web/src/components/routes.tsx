@@ -1,3 +1,4 @@
+import { IonRouterOutlet } from '@ionic/react';
 import * as React from 'react';
 import { Route, RouteProps, Switch } from 'react-router';
 import { normalizeUrl } from '../util';
@@ -8,17 +9,19 @@ type Props = {
 };
 
 const mapRoutes = ({ routes, base }: Props) => {
-  return routes.map(({ path, ...route }: RouteProps, i?: number) => {
-    let fullPath: string | undefined = (base
-      ? normalizeUrl([base].concat(path!))
-      : path) as any;
+  return routes.map(({ path, ...route }: RouteProps, i) => {
+    let fullPath = path;
+    if (base) {
+      fullPath = normalizeUrl([base].concat(path!));
+    }
 
-    // IonRouterOutlet freaks out with undefiend path prop, it shouldn't
-    // if (fullPath === '/' || fullPath === '.') {
-    //   fullPath = undefined;
-    // }
+    if (fullPath === '/' || fullPath === '.') {
+      fullPath = undefined;
+    }
 
-    return <Route key={fullPath || i} path={fullPath} {...route} />;
+    return (
+      <Route key={(fullPath || i).toString()} path={fullPath} {...route} />
+    );
   });
 };
 
@@ -28,8 +31,8 @@ export class Routes extends React.PureComponent<Props> {
   }
 }
 
-// export class IonRoutes extends React.PureComponent<Props> {
-//   render() {
-//     return <IonRouterOutlet>{mapRoutes(this.props)}</IonRouterOutlet>;
-//   }
-// }
+export class IonRoutes extends React.PureComponent<Props> {
+  render() {
+    return <IonRouterOutlet>{mapRoutes(this.props)}</IonRouterOutlet>;
+  }
+}

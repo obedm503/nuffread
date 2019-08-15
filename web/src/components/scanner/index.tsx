@@ -67,7 +67,6 @@ class QuaggaScanner extends React.PureComponent<{ onScanned; close }> {
   }
 
   onDetected = result => {
-    console.log({ result });
     const code: string = get(result, 'codeResult.code');
     if (!code) {
       return;

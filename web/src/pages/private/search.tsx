@@ -1,7 +1,7 @@
-import * as React from 'react';
+import React, { memo } from 'react';
 import { RouteComponentProps } from 'react-router';
 import { SearchPage } from '../../components/search';
 
-export const Search: React.FunctionComponent<RouteComponentProps> = props => {
-  return <SearchPage {...props} base="/search" />;
-};
+export const Search = memo<RouteComponentProps>(props => {
+  return <SearchPage {...props} />;
+});

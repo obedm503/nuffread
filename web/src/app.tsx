@@ -8,12 +8,7 @@ import { memoize } from 'lodash';
 import * as React from 'react';
 import { Query } from 'react-apollo';
 import { Helmet } from 'react-helmet-async';
-import {
-  Redirect,
-  RouteComponentProps,
-  RouteProps,
-  withRouter,
-} from 'react-router';
+import { Redirect, RouteProps } from 'react-router';
 import './app.scss';
 import { Error, Routes } from './components';
 import { Join } from './pages/join';
@@ -62,7 +57,7 @@ function ToHome() {
   return <Redirect to="/" />;
 }
 
-class App extends React.PureComponent<RouteComponentProps<{}>> {
+export class App extends React.PureComponent {
   makeRoutes = memoize(
     (user?: SystemUser): RouteProps[] => {
       if (process.env.REACT_APP_MODE !== 'ready') {
@@ -87,7 +82,6 @@ class App extends React.PureComponent<RouteComponentProps<{}>> {
   );
 
   render() {
-    const { match } = this.props;
     return (
       <Query<IQuery> query={ME}>
         {({ loading, data, error }) => {
@@ -111,7 +105,7 @@ class App extends React.PureComponent<RouteComponentProps<{}>> {
                   />
                 </Helmet>
 
-                <Routes routes={routes} key={match.url} />
+                <Routes routes={routes} />
               </UserProvider>
             </IsDesktopProvider>
           );
@@ -120,5 +114,3 @@ class App extends React.PureComponent<RouteComponentProps<{}>> {
     );
   }
 }
-const AppWithRouter = withRouter(App);
-export { AppWithRouter as App };
