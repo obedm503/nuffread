@@ -33,11 +33,11 @@ const main = (
   // <HostProvider value={location.origin}>
   <HelmetProvider>
     <ApolloProvider client={client}>
-      <IonReactRouter>
-        <IonApp>
+      <IonApp>
+        <IonReactRouter>
           <App />
-        </IonApp>
-      </IonReactRouter>
+        </IonReactRouter>
+      </IonApp>
     </ApolloProvider>
   </HelmetProvider>
   // </HostProvider>
