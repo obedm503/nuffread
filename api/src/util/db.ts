@@ -1,3 +1,4 @@
+import { resolve } from 'path';
 import {
   BaseEntity,
   Connection,
@@ -40,6 +41,9 @@ export async function connect(
       namingStrategy: new SnakeNamingStrategy(),
     };
     connection = await createConnection(connectionOptions);
+
+    // run pending migrations
+    await connection.runMigrations({ transaction: true });
   }
 
   return connection;
