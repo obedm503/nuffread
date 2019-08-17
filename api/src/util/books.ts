@@ -1,4 +1,4 @@
-import { IBook } from "../schema.gql";
+import { IBook } from '../schema.gql';
 
 type GoogleBook = {
   kind: string;
@@ -84,6 +84,7 @@ const formatBook = (book: GoogleBook): IBook | undefined => {
     return {
       __typename: 'Book',
       id: book.id,
+      googleId: book.id,
       etag: book.etag,
       title: book.volumeInfo.title,
       subTitle: book.volumeInfo.subtitle,
@@ -91,20 +92,18 @@ const formatBook = (book: GoogleBook): IBook | undefined => {
       isbn,
       publishedAt: book.volumeInfo.publishedDate
         ? new Date(book.volumeInfo.publishedDate)
-        : null,
-      publisher: book.volumeInfo.publisher,
+        : undefined,
+      // publisher: book.volumeInfo.publisher,
       thumbnail: book.volumeInfo.imageLinks
         ? book.volumeInfo.imageLinks.thumbnail
-        : null,
+        : undefined,
     };
   } catch (e) {
     console.error(e);
   }
 };
 
-export const getBook = async (
-  googleId: string,
-): Promise<IBook | undefined> => {
+export const getBook = async (googleId: string): Promise<IBook | undefined> => {
   const res = await fetch(
     `https://www.googleapis.com/books/v1/volumes/${googleId}`,
   );

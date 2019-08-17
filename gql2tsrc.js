@@ -1,9 +1,11 @@
+// @ts-check
 const {
   DEFAULT_INTERFACE_BUILDER,
   DEFAULT_TYPE_BUILDER,
   DEFAULT_EXPORT_FUNCTION,
 } = require('@gql2ts/language-typescript');
 
+/** @type {import('@gql2ts/types').IFromQueryOptions} */
 module.exports = {
   typeMap: {
     Date: 'Date',
@@ -12,11 +14,11 @@ module.exports = {
     _,
     interfaces,
   ) => `// AUTOMATICALLY GENERATED FILE - DO NOT EDIT
-  
+
 // tslint:disable
-  
+
 ${interfaces}
-  
+
 // tslint:enable
   `,
   interfaceBuilder: (name, body) =>
@@ -27,4 +29,6 @@ ${interfaces}
     const enumType = `enum ${name} ${values}`;
     return DEFAULT_EXPORT_FUNCTION(enumType);
   },
+  // undefined instead of null for nullable types
+  printType: (type, isRequired) => (isRequired ? type : `${type} | undefined`),
 };
