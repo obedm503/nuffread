@@ -57,7 +57,7 @@ export const ListingPage = withListing<{ base: string }>(
   ({ data: listing, loading, base }) => {
     return (
       <>
-        <TopNav title={listing ? listing.title : ''}>
+        <TopNav title={listing ? listing.book.title : ''}>
           <IonButtons slot="start">
             <GoBack base={base} />
           </IonButtons>

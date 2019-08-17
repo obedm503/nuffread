@@ -103,10 +103,10 @@ export const Listing: React.SFC<{
     </IonFab>
 
     <IonCardHeader>
-      <IonCardTitle>{listing.title}</IonCardTitle>
+      <IonCardTitle>{listing.book.title}</IonCardTitle>
 
-      {listing.subTitle ? (
-        <IonCardSubtitle>{listing.subTitle}</IonCardSubtitle>
+      {listing.book.subTitle ? (
+        <IonCardSubtitle>{listing.book.subTitle}</IonCardSubtitle>
       ) : null}
     </IonCardHeader>
 
@@ -114,18 +114,18 @@ export const Listing: React.SFC<{
       <IonCol size="6" sizeSm="4" sizeMd="3" sizeLg="2" sizeXl="1">
         <SafeImg
           placeholder="/img/128x128.png"
-          src={listing.thumbnail || undefined}
-          alt={[listing.title, listing.subTitle].join(' ')}
+          src={listing.book.thumbnail || undefined}
+          alt={[listing.book.title, listing.book.subTitle].join(' ')}
         />
       </IonCol>
 
       <IonCol>
         <IonLabel>
           <p>
-            <small>{listing.authors.join(' & ')}</small>
+            <small>{listing.book.authors.join(' & ')}</small>
           </p>
 
-          {listing.isbn.map(isbn => (
+          {listing.book.isbn.map(isbn => (
             <p key={isbn}>
               <small>
                 <b>ISBN: </b>
@@ -134,11 +134,11 @@ export const Listing: React.SFC<{
             </p>
           ))}
 
-          {listing.publishedAt ? (
+          {listing.book.publishedAt ? (
             <p>
               <small>
                 <b>Published on: </b>
-                {new Date(listing.publishedAt).toLocaleDateString()}
+                {new Date(listing.book.publishedAt).toLocaleDateString()}
               </small>
             </p>
           ) : null}

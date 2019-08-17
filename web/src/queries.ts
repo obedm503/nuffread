@@ -4,13 +4,15 @@ export const BASIC_LISTING = gql`
   fragment BasicListing on Listing {
     id
     createdAt
-    isbn
-    thumbnail
-    title
-    subTitle
-    publishedAt
-    authors
     price
+    book {
+      isbn
+      thumbnail
+      title
+      subTitle
+      publishedAt
+      authors
+    }
   }
 `;
 
