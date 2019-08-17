@@ -30,7 +30,7 @@ const Fab = () => (
 );
 const None = () => (
   <IonRow>
-    <IonCol>
+    <IonCol size="12" sizeLg="10" offsetLg="1">
       <IonList lines="none">
         <LoadingListing />
       </IonList>
