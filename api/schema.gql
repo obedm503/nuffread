@@ -68,15 +68,10 @@ union SystemUser = Admin | User
 type Listing {
   id: ID!
   createdAt: Date!
-
-  isbn: [String!]!
-  thumbnail: String
-  title: String!
-  subTitle: String
-  authors: [String!]!
-  publishedAt: Date
   price: Int!
 
+  bookId: String!
+  book: Book!
   schoolId: String!
   school: School!
   userId: String!
@@ -85,11 +80,11 @@ type Listing {
 
 type Book {
   id: String!
-  etag: String!
+  etag: String
+  googleId: String
   authors: [String!]!
   isbn: [String!]!
   publishedAt: Date
-  publisher: String
   title: String!
   subTitle: String
   thumbnail: String

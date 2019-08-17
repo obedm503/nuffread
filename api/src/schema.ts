@@ -7,6 +7,8 @@ import { resolve } from 'path';
 import * as Stripe from 'stripe';
 import { BaseEntity } from 'typeorm';
 import { Admin } from './admin/admin.entity';
+import { Book } from './book/book.entity';
+import { BookResolver } from './book/book.resolver';
 import { Listing } from './listing/listing.entity';
 import { ListingResolver } from './listing/listing.resolver';
 import { MutationResolver } from './mutation/mutation.resolver';
@@ -46,6 +48,7 @@ function createSchema(): GraphQLSchema {
     SystemUser: SystemUserResolver,
     Query: QueryResolver,
     Listing: ListingResolver,
+    Book: BookResolver,
     Mutation: MutationResolver,
     User: UserResolver,
   };
@@ -102,5 +105,6 @@ export async function getContext({
     adminLoader: makeLoader(Admin),
     schoolLoader: makeLoader(School),
     listingLoader: makeLoader(Listing),
+    bookLoader: makeLoader(Book),
   };
 }

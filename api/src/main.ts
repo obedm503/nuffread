@@ -16,6 +16,7 @@ import * as pgSession from 'connect-pg-simple';
 import * as express from 'express';
 import * as session from 'express-session';
 import { Admin } from './admin/admin.entity';
+import { Book } from './book/book.entity';
 import { Listing } from './listing/listing.entity';
 import { getContext, getSchema } from './schema';
 import { School } from './school/school.entity';
@@ -87,7 +88,7 @@ apollo.applyMiddleware({
 });
 
 (async () => {
-  await db.connect([User, School, Admin, Listing]);
+  await db.connect([User, School, Admin, Listing, Book]);
 
   const server = app.listen(port, () => {
     console.info(`Listening on port ${port}`);

@@ -11,23 +11,24 @@ import { User } from '../user/user.entity';
 import { isAdmin } from '../util/auth';
 import { getBook, searchBooks } from '../util/books';
 import { IResolver } from '../util/types';
-// import { books } from '../listing/books';
-
-// const search = (a: string, b: string) => {
-//   a = a.trim().toLowerCase();
-//   b = b.trim().toLowerCase();
-
-//   return a.includes(b) || b.includes(a);
-// };
 
 const getTopListings = async () => {
-  return (await Listing.find({ take: 10 })) as any[];
+  return (await Listing.find({ take: 10, relations: ['book'] })) as any[];
 };
 
 export const QueryResolver: IResolver<IQuery> = {
   async search(_, { query, maxPrice, minPrice }: ISearchOnQueryArguments) {
-    if (!query) {
-      return await getTopListings();
+    const segments =
+      query &&
+      query
+        .toLowerCase()
+        .trim()
+        .split(' ')
+        .map(s => s.trim())
+        .filter(Boolean); // eliminate spaces
+
+    if (!segments || !segments.length) {
+      return [];
     }
 
     // how to partial search
@@ -36,60 +37,36 @@ export const QueryResolver: IResolver<IQuery> = {
     // http://rachbelaid.com/postgres-full-text-search-is-good-enough/
     // postgres manual on full-text search
     // https://www.postgresql.org/docs/11/textsearch-controls.html
+    // mastering full text search
+    // https://compose.com/articles/mastering-postgresql-tools-full-text-search-and-phrase-search/
+
     const builder = getConnection()
       .createQueryBuilder(Listing, 'listing')
-      .select()
-      .where(
-        "document_with_weights @@ to_tsquery('english'::regconfig, :query)",
-        {
-          query: query
-            .toLowerCase()
-            .trim()
-            .split(' ')
-            .map(s => s.trim())
-            .filter(Boolean) // eliminate spaces
-            .map(s => s + ':*') // allow partial search
-            .join(' & '), // multiple keywords
-        },
-      )
-      .orderBy(
-        "ts_rank(document_with_weights, to_tsquery('english'::regconfig, :query))",
-        'DESC',
-      );
+      .innerJoinAndSelect('listing.book', 'book')
+      .select();
 
-    return (await builder.getMany()) as any;
+    for (let i = 0; i < segments.length; i++) {
+      const segment = segments[i];
+      builder.setParameter(`segment_${i}`, segment);
 
-    // const books: any[] = await Listing.find();
+      if (i === 0) {
+        builder.where(`book.search_text ~* :segment_${i}`);
+      } else {
+        builder.orWhere(`book.search_text ~* :segment_${i}`);
+      }
+    }
 
-    // let filtered = books.filter(b => {
-    //   if (b.isbn.find(code => search(code, query))) {
-    //     return true;
-    //   }
-    //   if (search(b.title, query)) {
-    //     return true;
-    //   }
-    //   if (b.subTitle && search(b.subTitle, query)) {
-    //     return true;
-    //   }
-    //   if (b.authors.find(a => search(a, query))) {
-    //     return true;
-    //   }
-    // });
+    builder.orderBy(
+      `GREATEST(${segments
+        .map((_, i) => {
+          return `SIMILARITY(book.search_text, :segment_${i})`;
+        })
+        .join(', ')})`,
+      'DESC',
+    );
 
-    // if (minPrice || maxPrice) {
-    //   filtered = filtered.filter(b => {
-    //     if (minPrice && !maxPrice) {
-    //       return b.price >= minPrice;
-    //     }
-    //     if (!minPrice && maxPrice) {
-    //       return b.price <= maxPrice;
-    //     }
-    //     if (minPrice && maxPrice) {
-    //       return minPrice <= b.price && b.price <= maxPrice;
-    //     }
-    //   });
-    // }
-    // return filtered;
+    const listings = await builder.getMany();
+    return listings as any;
   },
 
   async top() {

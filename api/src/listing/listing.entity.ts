@@ -1,11 +1,4 @@
-import {
-  IsInstance,
-  IsISBN,
-  IsNotEmpty,
-  IsNumber,
-  IsString,
-  IsUrl,
-} from 'class-validator';
+import { IsInstance, IsNotEmpty, IsNumber } from 'class-validator';
 import {
   BaseEntity,
   Column,
@@ -14,11 +7,13 @@ import {
   JoinColumn,
   ManyToOne,
 } from 'typeorm';
+import { Book } from '../book/book.entity';
 import { School } from '../school/school.entity';
 import { User } from '../user/user.entity';
 import { Created, PrimaryKey, Updated } from '../util/db';
 
 @Entity()
+@Index('listing_search_text_idx', { synchronize: false }) // handled by migration
 export class Listing extends BaseEntity {
   @PrimaryKey()
   readonly id: string;
@@ -30,42 +25,13 @@ export class Listing extends BaseEntity {
   readonly updatedAt: Date;
 
   @Column()
+  bookId: string;
+
+  @ManyToOne(() => Book, book => book.listings)
+  @JoinColumn({ name: 'book_id' })
   @IsNotEmpty()
-  @IsString()
-  googleId: string;
-
-  @Column()
-  @IsNotEmpty()
-  @IsString()
-  etag: string;
-
-  @Column({ type: 'simple-array' })
-  @IsISBN(undefined, { each: true })
-  @IsNotEmpty()
-  isbn: string[];
-
-  @Column({ nullable: true })
-  @IsNotEmpty()
-  @IsUrl()
-  thumbnail?: string;
-
-  @Column()
-  @IsNotEmpty()
-  @IsString()
-  title: string;
-
-  @Column({ nullable: true })
-  @IsString()
-  subTitle?: string;
-
-  @Column({ type: 'simple-array' })
-  @IsNotEmpty()
-  @IsString({ each: true })
-  authors: string[];
-
-  @Column({ nullable: true })
-  @IsInstance(Date)
-  publishedAt?: Date;
+  @IsInstance(Book)
+  book: Book;
 
   @Column()
   @IsNumber()
@@ -92,10 +58,12 @@ export class Listing extends BaseEntity {
   // give recommendations based on books used for the same class
   // give recommendations based on books bought by other people who also bought this one
   @Column({ default: '' })
-  className: string;
+  description: string;
+
+  @Column()
+  isPublic: boolean = false;
 
   // for full-text search
-  @Column('tsvector', { select: false, default: '' })
-  @Index('document_weights_idx')
-  private document_with_weights: any;
+  @Column({ type: 'text', select: false, default: '' })
+  private search_text: string;
 }
