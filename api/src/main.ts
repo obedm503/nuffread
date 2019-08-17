@@ -66,16 +66,20 @@ app.use((req, res, next) => {
   next();
 });
 
-// if (!production) {
-//   app.use((req, res, next) => {
-//     console.info('\n\nRequest for ', req.url);
-//     next();
-//   });
-// }
-
 const apollo = new ApolloServer({
-  context: ({ req, res }) => getContext({ req, res }),
+  context: ({ req, res }) => {
+    if (!production) {
+      const { operationName, variables } = req.body;
+      console.info('\nIncoming Request');
+      console.table({
+        operationName,
+        variables: JSON.stringify(variables),
+      });
+    }
+    return getContext({ req, res });
+  },
   schema: getSchema(),
+  debug: !production,
 });
 
 apollo.applyMiddleware({
