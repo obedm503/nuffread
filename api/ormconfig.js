@@ -1,5 +1,5 @@
 // @ts-check
-const { resolve } = require('path');
+const { resolve, join } = require('path');
 require('dotenv-safe').config({
   path: resolve('.env'),
   sample: resolve('.env.example'),
@@ -8,15 +8,15 @@ const { SnakeNamingStrategy } = require('./dist/util/snake-case.js');
 
 module.exports = {
   type: 'postgres',
-  entities: ['src/**/*.entity.ts'],
-  migrations: ['src/migrations/*.ts'],
+  entities: [join(__dirname, 'src/**/*.entity.ts')],
+  migrations: [join(__dirname, 'src/migrations/*.ts')],
   url: process.env.DATABASE_URL,
   extra: {
     ssl: true,
   },
   cli: {
-    subscribersDir: 'src/subscribers',
-    migrationsDir: 'src/migrations',
+    subscribersDir: join(__dirname, 'src/subscribers'),
+    migrationsDir: join(__dirname, 'src/migrations'),
   },
   namingStrategy: new SnakeNamingStrategy(),
 };

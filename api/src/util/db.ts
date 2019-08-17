@@ -29,7 +29,7 @@ export async function connect(
       type: 'postgres',
       url: process.env.DATABASE_URL,
       entities,
-      migrations: ['./migrations/*.ts'],
+      migrations: [resolve(__dirname, '../migrations/*.ts')],
       // subscribers: ['./subscriber/**/*.ts'],
       logging: 'all',
       maxQueryExecutionTime: 300,
