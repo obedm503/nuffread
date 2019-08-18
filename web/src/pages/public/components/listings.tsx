@@ -71,7 +71,9 @@ const Listing: React.FC<{ onClick; listing: IListing }> = ({
         </>
       ) : null}
 
-      <IonBadge color="primary">${listing.price / 100}</IonBadge>
+      <small>{listing.book.authors.join(', ')}</small>
+      <br />
+      <IonBadge color="secondary">${listing.price / 100}</IonBadge>
     </Label>
   </IonItem>
 );
