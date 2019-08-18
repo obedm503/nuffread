@@ -45,7 +45,7 @@ const Slides = ({ listing }) => (
         <SafeImg
           style={{ width: '100%', height: 'auto' }}
           src={listing.thumbnail || undefined}
-          placeholder="/img/128x128.png"
+          placeholder="/img/book.png"
           alt=""
         />
       </IonSlide>

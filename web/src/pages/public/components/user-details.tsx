@@ -33,7 +33,7 @@ export class UserDetails extends React.PureComponent<
 
     return (
       <IonItem color="white">
-        <IonImg slot="start" src="/img/128x128.png" />
+        <IonImg slot="start" src="/img/book.png" />
 
         <IonLabel text-wrap>
           <p>

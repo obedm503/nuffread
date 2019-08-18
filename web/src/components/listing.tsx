@@ -113,7 +113,7 @@ export const Listing: React.SFC<{
     <IonRow>
       <IonCol size="6" sizeSm="4" sizeMd="3" sizeLg="2" sizeXl="1">
         <SafeImg
-          placeholder="/img/128x128.png"
+          placeholder="/img/book.png"
           src={listing.book.thumbnail || undefined}
           alt={[listing.book.title, listing.book.subTitle].join(' ')}
         />
