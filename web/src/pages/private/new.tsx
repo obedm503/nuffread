@@ -1,4 +1,4 @@
-import { IonContent } from '@ionic/react';
+import { IonContent, IonPage, IonGrid, IonRow, IonCol } from '@ionic/react';
 import * as React from 'react';
 // import { Query } from 'react-apollo';
 import { RouteComponentProps } from 'react-router';
@@ -109,29 +109,33 @@ export class New extends React.PureComponent<
 
   render() {
     return (
-      <>
-        <TopNav
-          toolbar={
-            <SearchBar
-              onSearch={this.onSearch}
-              searchValue={this.state.searchValue}
-            />
-          }
-        />
+      <IonPage>
+        <TopNav />
 
         <IonContent>
-          {/* {this.state.searchValue ? (
-            <SearchResults
-              onClick={this.onListingClick}
-              googleId={this.state.googleId}
-              searchValue={this.state.searchValue}
-              onSearch={this.onSearch}
-            />
-          ) : (
-            <div>Please scan a book</div>
-          )} */}
+          <IonGrid>
+            <IonRow>
+              <IonCol size="12" sizeLg="10" offsetLg="1">
+                <SearchBar
+                  onSearch={this.onSearch}
+                  searchValue={this.state.searchValue}
+                />
+
+                {/* {this.state.searchValue ? (
+                  <SearchResults
+                    onClick={this.onListingClick}
+                    googleId={this.state.googleId}
+                    searchValue={this.state.searchValue}
+                    onSearch={this.onSearch}
+                  />
+                ) : (
+                  <div>Please scan a book</div>
+                )} */}
+              </IonCol>
+            </IonRow>
+          </IonGrid>
         </IonContent>
-      </>
+      </IonPage>
     );
   }
 }
