@@ -1,7 +1,13 @@
-import { IonCol, IonContent, IonGrid, IonPage, IonRow } from '@ionic/react';
+import {
+  IonCol,
+  IonContent,
+  IonGrid,
+  IonPage,
+  IonRouterOutlet,
+  IonRow,
+} from '@ionic/react';
 import React, { memo } from 'react';
-import { RouteComponentProps, RouteProps } from 'react-router';
-import { IonRoutes } from '../../components';
+import { Route, RouteComponentProps } from 'react-router';
 import { ListingPage } from '../../components/listing-page';
 import { SearchBar } from '../../components/search-bar';
 import { useSearch } from '../../state/search';
@@ -13,13 +19,14 @@ const Master = () => {
   const { onClick, onSearch, searchValue } = useSearch();
   return (
     <IonPage>
-      <Nav base="/">
-        <SearchBar onSearch={onSearch} searchValue={searchValue} />
-      </Nav>
+      <Nav base="/" />
+
       <IonContent>
         <IonGrid>
           <IonRow>
             <IonCol size="12" sizeLg="10" offsetLg="1">
+              <SearchBar onSearch={onSearch} searchValue={searchValue} />
+
               {searchValue ? (
                 <SearchListings onClick={onClick} searchValue={searchValue} />
               ) : (
@@ -37,14 +44,11 @@ const Detail = (routeProps: RouteComponentProps<{ listingId: string }>) => {
   return <ListingPage id={routeProps.match.params.listingId} base="/" />;
 };
 
-export default memo<RouteComponentProps>(props => {
-  const routes: RouteProps[] = [
-    {
-      path: '/',
-      exact: true,
-      component: Master,
-    },
-    { path: '/:listingId', exact: true, component: Detail },
-  ];
-  return <IonRoutes routes={routes} />;
+export default memo<RouteComponentProps>(() => {
+  return (
+    <IonRouterOutlet>
+      <Route path="/" exact component={Master} />
+      <Route path="/:listingId" component={Detail} />
+    </IonRouterOutlet>
+  );
 });

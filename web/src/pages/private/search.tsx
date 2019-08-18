@@ -12,13 +12,14 @@ export const Search = memo<RouteComponentProps>(props => {
   const { onClick, onSearch, searchValue } = useSearch();
   return (
     <IonPage>
-      <TopNav
-        toolbar={<SearchBar onSearch={onSearch} searchValue={searchValue} />}
-      />
+      <TopNav />
+
       <IonContent>
         <IonGrid>
           <IonRow>
             <IonCol size="12" sizeLg="10" offsetLg="1">
+              <SearchBar onSearch={onSearch} searchValue={searchValue} />
+
               {searchValue ? (
                 <SearchListings onClick={onClick} searchValue={searchValue} />
               ) : (
