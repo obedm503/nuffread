@@ -95,8 +95,8 @@ export const Listing: React.FC<{
     color="white"
   >
     <IonFab edge vertical="top" horizontal="end">
-      <IonFabButton color="light">
-        <IonText color="primary">
+      <IonFabButton>
+        <IonText>
           <b>${listing.price / 100}</b>
         </IonText>
       </IonFabButton>
@@ -155,6 +155,6 @@ export const Listing: React.FC<{
       </IonCol>
     </IonRow>
 
-    {children ? <IonItem>{children}</IonItem> : null}
+    {children ? <IonItem lines="none">{children}</IonItem> : null}
   </IonCard>
 );
