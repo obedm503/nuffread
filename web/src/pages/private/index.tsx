@@ -13,7 +13,7 @@ import { Redirect, Route } from 'react-router';
 import { MyListings } from './listings';
 import { New } from './new';
 import { Profile } from './profile';
-import { Search } from './search';
+import { Detail, Search } from './search';
 
 export default class Private extends React.PureComponent {
   render() {
@@ -26,7 +26,8 @@ export default class Private extends React.PureComponent {
               <Route path="/:tab(listings)" exact component={MyListings} />
               <Route path="/:tab(profile)" exact component={Profile} />
               <Route path="/:tab(new)" exact component={New} />
-              <Route path="/:tab(search)" component={Search} />
+              <Route path="/:tab(search)" exact component={Search} />
+              <Route path="/:tab(search)/:listingId" component={Detail} />
             </IonRouterOutlet>
 
             <IonTabBar slot="bottom">
