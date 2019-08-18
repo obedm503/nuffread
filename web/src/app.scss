@@ -191,7 +191,10 @@ ion-fab.fab-vertical-bottom.fab-horizontal-end {
 
 ion-card.listing-card {
   overflow: visible;
-  margin-top: 44px;
+
+  &:not(:first-of-type) {
+    margin-top: 44px;
+  }
 
   > ion-fab > ion-fab-button {
     font-size: 20px;

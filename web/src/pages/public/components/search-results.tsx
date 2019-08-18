@@ -5,11 +5,13 @@ import { SEARCH } from '../../../queries';
 import { IQuery } from '../../../schema.gql';
 import { Listings } from './listings';
 
-export const SearchResults: React.SFC<{
+export const SearchListings: React.SFC<{
   onClick;
-  onSearch: (searchValue: string) => void;
-  searchValue: string;
-}> = ({ onClick, searchValue, onSearch }) => {
+  searchValue?: string;
+}> = ({ onClick, searchValue }) => {
+  if (!searchValue) {
+    return null;
+  }
   return (
     <Query<IQuery> query={SEARCH} variables={{ query: searchValue }}>
       {({ error, data, loading }) => {
@@ -21,8 +23,7 @@ export const SearchResults: React.SFC<{
             loading={loading}
             onClick={onClick}
             listings={data && data.search}
-            onSearch={onSearch}
-            searchValue={searchValue}
+            title={'Results for: ' + searchValue}
           />
         );
       }}

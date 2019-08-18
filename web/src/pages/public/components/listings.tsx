@@ -1,16 +1,7 @@
-import {
-  IonCol,
-  IonContent,
-  IonGrid,
-  IonItem,
-  IonLabel,
-  IonList,
-  IonRow,
-} from '@ionic/react';
+import { IonItem, IonLabel, IonList, IonListHeader } from '@ionic/react';
 import { range } from 'lodash';
 import * as React from 'react';
 import { Listing, LoadingListing } from '../../../components/listing';
-import { SearchBar } from '../../../components/search-bar';
 import { IListing } from '../../../schema.gql';
 
 type IListings = Array<IListing>;
@@ -18,23 +9,21 @@ type Props = {
   listings?: IListings;
   loading: boolean;
   onClick;
-  onSearch;
-  searchValue?: string;
+  title?: string;
 };
 
 const listingPlaceholders = range(10).map(n => <LoadingListing key={n} />);
 
-const listingInner = ({ onSearch, searchValue }) => children => (
-  <IonContent>
-    <IonGrid>
-      <IonRow>
-        <IonCol size="12" sizeLg="10" offsetLg="1">
-          <SearchBar onSearch={onSearch} searchValue={searchValue || ''} />
-          <IonList lines="none">{children}</IonList>
-        </IonCol>
-      </IonRow>
-    </IonGrid>
-  </IonContent>
+const wrapper = (title, children) => (
+  <IonList lines="none">
+    {title ? (
+      <IonListHeader>
+        <IonLabel>{title}</IonLabel>
+      </IonListHeader>
+    ) : null}
+
+    {children}
+  </IonList>
 );
 
 export class Listings extends React.PureComponent<Props> {
@@ -42,25 +31,23 @@ export class Listings extends React.PureComponent<Props> {
     this.props.onClick(id);
   };
   render() {
-    const inner = listingInner({
-      onSearch: this.props.onSearch,
-      searchValue: this.props.searchValue,
-    });
-    const { listings, loading } = this.props;
+    const { listings, loading, title } = this.props;
 
     if (loading || !Array.isArray(listings)) {
-      return inner(listingPlaceholders);
+      return wrapper(title, listingPlaceholders);
     }
 
     if (!listings.length) {
-      return inner(
+      return wrapper(
+        title,
         <IonItem color="white">
           <IonLabel>Found nothing...</IonLabel>
         </IonItem>,
       );
     }
 
-    return inner(
+    return wrapper(
+      title,
       listings.map((listing, i) => {
         if (!listing) {
           return null;

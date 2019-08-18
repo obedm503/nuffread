@@ -23,8 +23,7 @@ const TOP_LISTINGS = gql`
 
 export const TopListings: React.SFC<{
   onClick;
-  onSearch: (searchValue: string) => void;
-}> = ({ onClick, onSearch }) => {
+}> = ({ onClick }) => {
   return (
     <Query<IQuery> query={TOP_LISTINGS}>
       {({ error, data, loading }) => {
@@ -36,7 +35,7 @@ export const TopListings: React.SFC<{
             loading={loading}
             onClick={onClick}
             listings={data && data.top}
-            onSearch={onSearch}
+            title="Top Listings"
           />
         );
       }}
