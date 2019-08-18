@@ -122,7 +122,7 @@ export const Listing: React.FC<{
       <IonCol>
         <IonLabel>
           <p>
-            <small>{listing.book.authors.join(' & ')}</small>
+            <small>{listing.book.authors.join(', ')}</small>
           </p>
 
           {listing.book.isbn.map(isbn => (
