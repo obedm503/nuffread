@@ -1,14 +1,7 @@
-import {
-  IonBadge,
-  IonItem,
-  IonLabel,
-  IonList,
-  IonListHeader,
-  IonSkeletonText,
-} from '@ionic/react';
+import { IonItem, IonLabel, IonList, IonListHeader } from '@ionic/react';
 import { range } from 'lodash';
 import * as React from 'react';
-import { SafeImg } from '../../../components/safe-img';
+import { BasicListing, BasicListingLoading } from '../../../components/listing';
 import { IListing } from '../../../schema.gql';
 
 type IListings = Array<IListing>;
@@ -19,23 +12,7 @@ type Props = {
   title?: string;
 };
 
-// @ts-ignore
-const Label = ({ children }) => <ion-label text-wrap>{children}</ion-label>;
-
-const listingPlaceholders = range(10).map(n => (
-  <IonItem key={n}>
-    <IonSkeletonText
-      slot="start"
-      animated
-      style={{ width: '128px', height: '180px' }} // 9:6 aspect ratio
-    />
-    <Label>
-      <IonSkeletonText animated style={{ width: '90%' }} />
-      <IonSkeletonText animated style={{ width: '60%' }} />
-      <IonSkeletonText animated style={{ width: '50%' }} />
-    </Label>
-  </IonItem>
-));
+const listingPlaceholders = range(10).map(n => <BasicListingLoading key={n} />);
 
 const wrapper = (title, children) => (
   <IonList>
@@ -47,35 +24,6 @@ const wrapper = (title, children) => (
 
     {children}
   </IonList>
-);
-
-const Listing: React.FC<{ onClick; listing: IListing }> = ({
-  onClick,
-  listing,
-}) => (
-  <IonItem button onClick={onClick}>
-    <SafeImg
-      src={listing.book.thumbnail}
-      alt={listing.book.title}
-      placeholder="/img/book.png"
-      slot="start"
-    />
-    <Label text-wrap>
-      {listing.book.title}
-      <br />
-
-      {listing.book.subTitle ? (
-        <>
-          <small>{listing.book.subTitle}</small>
-          <br />
-        </>
-      ) : null}
-
-      <small>{listing.book.authors.join(', ')}</small>
-      <br />
-      <IonBadge color="secondary">${listing.price / 100}</IonBadge>
-    </Label>
-  </IonItem>
 );
 
 export class Listings extends React.PureComponent<Props> {
@@ -105,7 +53,7 @@ export class Listings extends React.PureComponent<Props> {
           return null;
         }
         return (
-          <Listing
+          <BasicListing
             key={listing.id}
             onClick={this.onClick(listing.id)}
             listing={listing}

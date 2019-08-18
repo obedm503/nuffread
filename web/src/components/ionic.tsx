@@ -46,3 +46,8 @@ function addRouter<T extends React.ComponentType>(Comp: T) {
 
 export const IonButtonLink = addRouter(IonButton);
 export const IonItemLink = addRouter(IonItem);
+
+export const WrapLabel = ({ children }) => (
+  // @ts-ignore
+  <ion-label text-wrap>{children}</ion-label>
+);

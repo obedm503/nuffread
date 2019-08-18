@@ -1,4 +1,5 @@
 import {
+  IonBadge,
   IonCard,
   IonCardHeader,
   IonCardSubtitle,
@@ -15,6 +16,7 @@ import {
 import * as React from 'react';
 import { IListing } from '../schema.gql';
 import { classes } from '../util';
+import { WrapLabel } from './ionic';
 import { SafeImg } from './safe-img';
 
 export const LoadingListing = () => (
@@ -157,4 +159,47 @@ export const Listing: React.FC<{
 
     {children ? <IonItem lines="none">{children}</IonItem> : null}
   </IonCard>
+);
+
+export const BasicListing: React.FC<{ onClick?; listing: IListing }> = ({
+  onClick,
+  listing,
+}) => (
+  <IonItem button={!!onClick} onClick={onClick}>
+    <SafeImg
+      src={listing.book.thumbnail}
+      alt={listing.book.title}
+      placeholder="/img/book.png"
+      slot="start"
+    />
+    <WrapLabel text-wrap>
+      {listing.book.title}
+      <br />
+
+      {listing.book.subTitle ? (
+        <>
+          <small>{listing.book.subTitle}</small>
+          <br />
+        </>
+      ) : null}
+
+      <small>{listing.book.authors.join(', ')}</small>
+      <br />
+      <IonBadge color="secondary">${listing.price / 100}</IonBadge>
+    </WrapLabel>
+  </IonItem>
+);
+export const BasicListingLoading = () => (
+  <IonItem>
+    <IonSkeletonText
+      slot="start"
+      animated
+      style={{ width: '128px', height: '180px' }} // 9:6 aspect ratio
+    />
+    <WrapLabel>
+      <IonSkeletonText animated style={{ width: '90%' }} />
+      <IonSkeletonText animated style={{ width: '60%' }} />
+      <IonSkeletonText animated style={{ width: '50%' }} />
+    </WrapLabel>
+  </IonItem>
 );
