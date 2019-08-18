@@ -6,7 +6,7 @@ import { Kind } from 'graphql';
 import gql from 'graphql-tag';
 import { memoize } from 'lodash';
 import * as React from 'react';
-import { Query } from 'react-apollo';
+import { useQuery } from 'react-apollo';
 import { Helmet } from 'react-helmet-async';
 import { Redirect, RouteProps } from 'react-router';
 import './app.scss';
@@ -57,60 +57,54 @@ function ToHome() {
   return <Redirect to="/" />;
 }
 
-export class App extends React.PureComponent {
-  makeRoutes = memoize(
-    (user?: SystemUser): RouteProps[] => {
-      if (process.env.REACT_APP_MODE !== 'ready') {
-        return [{ component: Landing }];
-      }
+const makeRoutes = memoize(
+  (user?: SystemUser): RouteProps[] => {
+    if (process.env.REACT_APP_MODE !== 'ready') {
+      return [{ component: Landing }];
+    }
 
-      let routes: RouteProps[] = [
-        { path: '/join', component: user ? ToHome : Join },
-        { path: '/login', exact: true, component: user ? ToHome : UserLogin },
-        { path: '/admin', exact: true, component: user ? ToHome : AdminLogin },
-      ];
+    let routes: RouteProps[] = [
+      { path: '/join', component: user ? ToHome : Join },
+      { path: '/login', exact: true, component: user ? ToHome : UserLogin },
+      { path: '/admin', exact: true, component: user ? ToHome : AdminLogin },
+    ];
 
-      if (!user) {
-        routes.push({ path: '/', component: Public });
-      } else if (user.__typename === 'User') {
-        routes.push({ path: '/', component: Private });
-      } else if (user.__typename === 'Admin') {
-        routes.push({ path: '/', component: () => <div>Admin page</div> });
-      }
-      return routes;
-    },
-  );
+    if (!user) {
+      routes.push({ path: '/', component: Public });
+    } else if (user.__typename === 'User') {
+      routes.push({ path: '/', component: Private });
+    } else if (user.__typename === 'Admin') {
+      routes.push({ path: '/', component: () => <div>Admin page</div> });
+    }
+    return routes;
+  },
+);
 
-  render() {
-    return (
-      <Query<IQuery> query={ME}>
-        {({ loading, data, error }) => {
-          if (loading || !data) {
-            return null;
-          }
-          if (error) {
-            return <Error value={error} />;
-          }
+export const App = () => {
+  const { loading, data, error } = useQuery<IQuery>(ME);
 
-          const me = data.me || undefined;
-          const routes = this.makeRoutes(me);
-          return (
-            <IsDesktopProvider>
-              <UserProvider value={{ me }}>
-                <Helmet>
-                  <title>nuffread</title>
-                  <meta
-                    name="description"
-                    content="The book marketplace for students"
-                  />
-                </Helmet>
-
-                <Routes routes={routes} />
-              </UserProvider>
-            </IsDesktopProvider>
-          );
-        }}
-      </Query>
-    );
+  if (loading) {
+    return null;
   }
-}
+  if (error) {
+    return <Error value={error} />;
+  }
+
+  const me = data && data.me;
+  const routes = makeRoutes(me);
+  return (
+    <IsDesktopProvider>
+      <UserProvider value={me}>
+        <Helmet>
+          <title>nuffread</title>
+          <meta
+            name="description"
+            content="The book marketplace for students"
+          />
+        </Helmet>
+
+        <Routes routes={routes} />
+      </UserProvider>
+    </IsDesktopProvider>
+  );
+};

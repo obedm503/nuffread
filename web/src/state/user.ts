@@ -1,12 +1,10 @@
-import * as React from 'react';
+import { useContext, createContext } from 'react';
 import { SystemUser } from '../schema.gql';
 
-export type UserState = {
-  me?: SystemUser;
-};
+export type UserState = SystemUser | undefined;
 
-const { Provider: UserProvider, Consumer: UserConsumer } = React.createContext<
-  UserState
->({ me: undefined });
-
-export { UserProvider, UserConsumer };
+const UserContext = createContext<UserState>(undefined);
+export const UserProvider = UserContext.Provider;
+export function useUser() {
+  return useContext(UserContext);
+}
