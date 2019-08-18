@@ -1,4 +1,4 @@
-import { IonCol, IonContent, IonGrid, IonRow } from '@ionic/react';
+import { IonCol, IonContent, IonGrid, IonPage, IonRow } from '@ionic/react';
 import React, { memo } from 'react';
 import { RouteComponentProps, RouteProps } from 'react-router';
 import { IonRoutes } from '../../components';
@@ -12,7 +12,7 @@ import { TopListings } from './components/top-listings';
 const Master = () => {
   const { onClick, onSearch, searchValue } = useSearch();
   return (
-    <>
+    <IonPage>
       <Nav base="/">
         <SearchBar onSearch={onSearch} searchValue={searchValue} />
       </Nav>
@@ -29,7 +29,7 @@ const Master = () => {
           </IonRow>
         </IonGrid>
       </IonContent>
-    </>
+    </IonPage>
   );
 };
 
@@ -39,16 +39,12 @@ const Detail = (routeProps: RouteComponentProps<{ listingId: string }>) => {
 
 export default memo<RouteComponentProps>(props => {
   const routes: RouteProps[] = [
-    { path: '/:listingId', component: Detail },
     {
       path: '/',
       exact: true,
       component: Master,
     },
+    { path: '/:listingId', exact: true, component: Detail },
   ];
-  return (
-    <IonContent>
-      <IonRoutes routes={routes} />
-    </IonContent>
-  );
+  return <IonRoutes routes={routes} />;
 });

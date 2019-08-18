@@ -10,6 +10,7 @@ import {
   IonRow,
   IonSlide,
   IonSlides,
+  IonPage,
 } from '@ionic/react';
 import { barcode } from 'ionicons/icons';
 import { range } from 'lodash';
@@ -56,7 +57,7 @@ const Slides = ({ listing }) => (
 export const ListingPage = withListing<{ base: string }>(
   ({ data: listing, loading, base }) => {
     return (
-      <>
+      <IonPage>
         <TopNav title={listing ? listing.book.title : ''}>
           <IonButtons slot="start">
             <GoBack base={base} />
@@ -96,7 +97,7 @@ export const ListingPage = withListing<{ base: string }>(
             )}
           </IonGrid>
         </IonContent>
-      </>
+      </IonPage>
     );
   },
 );
