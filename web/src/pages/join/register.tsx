@@ -13,7 +13,7 @@ import gql from 'graphql-tag';
 import { add } from 'ionicons/icons';
 import { join } from 'path';
 import * as React from 'react';
-import { Mutation, MutationFn } from 'react-apollo';
+import { Mutation, MutationFunction } from 'react-apollo';
 import { Redirect, RouteComponentProps } from 'react-router';
 import { Link } from 'react-router-dom';
 import * as yup from 'yup';
@@ -42,7 +42,7 @@ const schema = yup.object<FormSchema>().shape({
 });
 
 class RegisterForm extends React.PureComponent<RouteComponentProps<never>> {
-  onSubmit = (mutate: MutationFn<IMutation>) => ({ email, password }) =>
+  onSubmit = (mutate: MutationFunction<IMutation>) => ({ email, password }) =>
     mutate({
       variables: { email, password },
     });

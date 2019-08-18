@@ -17,7 +17,7 @@ import gql from 'graphql-tag';
 import { History } from 'history';
 import { add, logIn } from 'ionicons/icons';
 import * as React from 'react';
-import { Mutation, MutationFn } from 'react-apollo';
+import { Mutation, MutationFunction } from 'react-apollo';
 import { RouteComponentProps } from 'react-router';
 import { Link } from 'react-router-dom';
 import * as yup from 'yup';
@@ -71,13 +71,13 @@ class LoginForm extends React.PureComponent<{
   admin?: boolean;
 }> {
   onSubmit = (
-    mutate: MutationFn<IMutation>,
-    client: ApolloClient<Object>,
+    mutate: MutationFunction<IMutation>,
+    client?: ApolloClient<Object>,
   ) => async ({ email, password }) => {
     const res = await mutate({
       variables: { email, password, type: this.props.type },
     });
-    if (res && res.data && res.data.login) {
+    if (client && res && res.data && res.data.login) {
       await client.resetStore();
       this.props.history.push('/');
     }

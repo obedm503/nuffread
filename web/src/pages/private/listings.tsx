@@ -64,12 +64,18 @@ export const MyListings: React.FC = () => (
                 }
 
                 if (!data.me.listings.length) {
-                  return 'No listings posted';
+                  return <span>No listings posted</span>;
                 }
 
-                return data.me.listings.map(listing => {
-                  return <BasicListing listing={listing} key={listing.id} />;
-                });
+                return (
+                  <>
+                    {data.me.listings.map(listing => {
+                      return (
+                        <BasicListing listing={listing} key={listing.id} />
+                      );
+                    })}
+                  </>
+                );
               }}
             </Query>
           </IonCol>
