@@ -71,10 +71,16 @@ const apollo = new ApolloServer({
     if (!production) {
       const { operationName, variables } = req.body;
       console.info('\nIncoming Request');
-      console.table({
-        operationName,
-        variables: JSON.stringify(variables),
-      });
+      console.info(
+        JSON.stringify(
+          {
+            operationName,
+            variables,
+          },
+          null,
+          2,
+        ),
+      );
     }
     return getContext({ req, res });
   },
