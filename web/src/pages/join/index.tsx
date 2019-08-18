@@ -14,7 +14,7 @@ const routes: RouteProps[] = [
   { path: '/', component: Home },
 ];
 
-export const Join: React.SFC<RouteComponentProps<{}>> = ({ match }) => (
+export const Join: React.FC<RouteComponentProps<{}>> = ({ match }) => (
   <>
     <TopNav>
       <IonButtons slot="start">

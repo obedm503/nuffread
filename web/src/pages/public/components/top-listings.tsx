@@ -21,7 +21,7 @@ const TOP_LISTINGS = gql`
   }
 `;
 
-export const TopListings: React.SFC<{
+export const TopListings: React.FC<{
   onClick;
 }> = ({ onClick }) => {
   return (

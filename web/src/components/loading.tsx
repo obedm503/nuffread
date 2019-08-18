@@ -1,3 +1,3 @@
 import * as React from 'react';
 
-export const Loading: React.SFC = () => <div>Loading...</div>;
+export const Loading: React.FC = () => <div>Loading...</div>;

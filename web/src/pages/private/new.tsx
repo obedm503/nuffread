@@ -22,7 +22,7 @@ import { SearchBar } from '../../components/search-bar';
 //   }
 // `;
 
-// const GoogleBook: React.SFC<{ id: string }> = ({ id }) => (
+// const GoogleBook: React.FC<{ id: string }> = ({ id }) => (
 //   <Query<IQuery> query={GET_GOOGLE_BOOK} variables={{ id }}>
 //     {({ loading, error, data }) => {
 //       if (loading) {

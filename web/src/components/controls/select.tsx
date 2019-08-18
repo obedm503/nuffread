@@ -33,7 +33,7 @@ class MulitpleSelect extends React.PureComponent<FieldProps<any>> {
   }
 }
 
-export const Select: React.SFC<Props> = ({
+export const Select: React.FC<Props> = ({
   children,
   multiple = false,
   ...props

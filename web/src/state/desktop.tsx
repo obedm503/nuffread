@@ -32,7 +32,7 @@ export class IsDesktopProvider extends React.PureComponent<
 }
 
 type OnlyProps = { children: () => React.ReactNode };
-export const OnlyDesktop: React.SFC<OnlyProps> = ({ children }) => (
+export const OnlyDesktop: React.FC<OnlyProps> = ({ children }) => (
   <Consumer>
     {({ isDesktop }) => {
       if (!isDesktop) {
@@ -42,7 +42,7 @@ export const OnlyDesktop: React.SFC<OnlyProps> = ({ children }) => (
     }}
   </Consumer>
 );
-export const OnlyMobile: React.SFC<OnlyProps> = ({ children }) => (
+export const OnlyMobile: React.FC<OnlyProps> = ({ children }) => (
   <Consumer>
     {({ isDesktop }) => {
       if (isDesktop) {

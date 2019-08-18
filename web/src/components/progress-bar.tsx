@@ -3,7 +3,7 @@ import * as React from 'react';
 
 type Props = { color: string };
 
-export const ProgressBar: React.SFC<Props & { value: number }> = ({
+export const ProgressBar: React.FC<Props & { value: number }> = ({
   color,
   value,
 }) => {

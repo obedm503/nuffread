@@ -30,7 +30,7 @@ type OptionProps = {
   name: string;
   value: any;
 };
-export const RadioOption: React.SFC<OptionProps> = ({
+export const RadioOption: React.FC<OptionProps> = ({
   name,
   value,
   children,
@@ -42,7 +42,7 @@ export const RadioOption: React.SFC<OptionProps> = ({
 );
 
 type RadioProps = ControlProps & { children: React.ReactNode };
-export const Radio: React.SFC<RadioProps> = ({ children, ...props }) => (
+export const Radio: React.FC<RadioProps> = ({ children, ...props }) => (
   <Control {...props}>
     <div className="radio-group">{children}</div>
   </Control>

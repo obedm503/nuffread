@@ -5,7 +5,7 @@ import { SEARCH } from '../../../queries';
 import { IQuery } from '../../../schema.gql';
 import { Listings } from './listings';
 
-export const SearchListings: React.SFC<{
+export const SearchListings: React.FC<{
   onClick;
   searchValue?: string;
 }> = ({ onClick, searchValue }) => {

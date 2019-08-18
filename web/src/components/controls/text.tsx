@@ -6,7 +6,7 @@ import { Control, ControlProps } from './control';
 
 type Props = ControlProps & Partial<Components.IonInput>;
 
-export const Text: React.SFC<Props> = ({
+export const Text: React.FC<Props> = ({
   children,
   type = 'text',
   error,

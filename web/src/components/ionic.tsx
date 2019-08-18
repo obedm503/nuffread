@@ -15,7 +15,7 @@ type Props<T extends React.ElementType> = Omit<
 
 function addRouter<T extends React.ComponentType>(Comp: T) {
   const Component = Comp as Function;
-  const comp: React.SFC<Props<T>> = ({
+  const comp: React.FC<Props<T>> = ({
     history,
     location,
     match,

@@ -10,7 +10,7 @@ export type ControlProps = {
   values?;
 };
 
-export const Control: React.SFC<ControlProps> = ({
+export const Control: React.FC<ControlProps> = ({
   label,
   error,
   name,

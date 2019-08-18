@@ -31,7 +31,7 @@ const MY_LISTINGS = gql`
   }
 `;
 
-export const MyListings: React.SFC = () => (
+export const MyListings: React.FC = () => (
   <>
     <TopNav>
       <IonButtons slot="end">

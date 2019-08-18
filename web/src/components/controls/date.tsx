@@ -12,7 +12,7 @@ type PickerProps = {
   style?: any;
   name: string;
 };
-const Picker: React.SFC<
+const Picker: React.FC<
   PickerProps & {
     options: number[];
     label: any;
@@ -37,7 +37,7 @@ const Picker: React.SFC<
   </label>
 );
 
-const YearPicker: React.SFC<PickerProps> = props => (
+const YearPicker: React.FC<PickerProps> = props => (
   <Picker
     {...props}
     label="Year"
@@ -49,7 +49,7 @@ const YearPicker: React.SFC<PickerProps> = props => (
   />
 );
 
-const MonthPicker: React.SFC<PickerProps> = props => (
+const MonthPicker: React.FC<PickerProps> = props => (
   <Picker
     {...props}
     label="Month"
@@ -71,7 +71,7 @@ const getNumberOfDays = (realMonth: number) => {
   date.setDate(0); // date is 1-indexed, so this will set to the last date of the previous month
   return date.getDate(); // returns the last date of the month
 };
-const DayPicker: React.SFC<PickerProps & { month: number }> = ({
+const DayPicker: React.FC<PickerProps & { month: number }> = ({
   month,
   ...props
 }) => (
@@ -171,7 +171,7 @@ class DatePicker extends React.PureComponent<DatePickerProps, DatePickerState> {
   }
 }
 
-const DateControl: React.SFC<ControlProps> = props => (
+const DateControl: React.FC<ControlProps> = props => (
   <Control {...props}>
     {color => <Field color={color} component={DatePicker} name={props.name} />}
   </Control>

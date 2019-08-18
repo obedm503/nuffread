@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-export const Flex: React.SFC<{ style? }> = ({ style, children }) => (
+export const Flex: React.FC<{ style? }> = ({ style, children }) => (
   <div
     style={{
       alignItems: 'center',

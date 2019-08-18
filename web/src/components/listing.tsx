@@ -85,7 +85,7 @@ export const LoadingListing = () => (
   </IonCard>
 );
 
-export const Listing: React.SFC<{
+export const Listing: React.FC<{
   listing: IListing;
   onClick?: () => void;
 }> = ({ listing, onClick, children }) => (
