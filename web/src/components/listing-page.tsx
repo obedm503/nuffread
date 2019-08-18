@@ -1,5 +1,6 @@
 import {
   IonButtons,
+  IonCard,
   IonCol,
   IonContent,
   IonFab,
@@ -7,10 +8,10 @@ import {
   IonGrid,
   IonIcon,
   IonList,
+  IonPage,
   IonRow,
   IonSlide,
   IonSlides,
-  IonPage,
 } from '@ionic/react';
 import { barcode } from 'ionicons/icons';
 import { range } from 'lodash';
@@ -18,6 +19,7 @@ import * as React from 'react';
 import { IonButtonLink, TopNav } from '.';
 import { withListing } from '../containers/listing';
 import { UserDetails } from '../pages/public/components/user-details';
+import { IListing } from '../schema.gql';
 import { GoBack } from './go-back';
 import { Listing, LoadingListing } from './listing';
 import { SafeImg } from './safe-img';
@@ -39,15 +41,15 @@ const None = () => (
   </IonRow>
 );
 
-const Slides = ({ listing }) => (
+const Slides: React.FC<{ listing: IListing }> = ({ listing }) => (
   <IonSlides pager>
     {range(12).map(i => (
       <IonSlide key={i}>
         <SafeImg
           style={{ width: '100%', height: 'auto' }}
-          src={listing.thumbnail || undefined}
+          src={listing.book.thumbnail || undefined}
           placeholder="/img/book.png"
-          alt=""
+          alt={`Slide number ${i + 1}`}
         />
       </IonSlide>
     ))}
@@ -74,23 +76,27 @@ export const ListingPage = withListing<{ base: string }>(
               <>
                 <IonRow>
                   <IonCol size="12" sizeLg="10" offsetLg="1">
-                    <IonList lines="none">
-                      <Listing listing={listing}>
-                        <IonButtons>
-                          <IonButtonLink href="#">
-                            <IonIcon slot="icon-only" icon={barcode} />
-                          </IonButtonLink>
-                        </IonButtons>
-                      </Listing>
-
-                      <UserDetails listingId={listing.id} />
-                    </IonList>
+                    <Listing listing={listing}>
+                      <IonButtons>
+                        <IonButtonLink href="#">
+                          <IonIcon slot="icon-only" icon={barcode} />
+                        </IonButtonLink>
+                      </IonButtons>
+                    </Listing>
                   </IonCol>
                 </IonRow>
 
                 <IonRow>
                   <IonCol size="12" sizeLg="10" offsetLg="1">
-                    <Slides listing={listing} />
+                    <UserDetails listingId={listing.id} />
+                  </IonCol>
+                </IonRow>
+
+                <IonRow>
+                  <IonCol size="12" sizeLg="10" offsetLg="1">
+                    <IonCard>
+                      <Slides listing={listing} />
+                    </IonCard>
                   </IonCol>
                 </IonRow>
               </>
