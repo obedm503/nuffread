@@ -5,6 +5,7 @@ import {
   IonImg,
   IonItem,
   IonLabel,
+  IonCard,
 } from '@ionic/react';
 import { call, logoFacebook, mail, person } from 'ionicons/icons';
 import * as React from 'react';
@@ -32,37 +33,39 @@ export class UserDetails extends React.PureComponent<
     }
 
     return (
-      <IonItem color="white">
-        <IonImg slot="start" src="/img/book.png" />
+      <IonCard color="white">
+        <IonItem lines="none" color="white">
+          <IonImg slot="start" src="/img/book.png" />
 
-        <IonLabel text-wrap>
-          <p>
-            <strong>John Doe</strong>
-            <br />
-            <small>Dordt University</small>
-            <br />
-            <small>
-              <a href="mailto: john.doe@mail.com">john.doe@mail.com</a>
-            </small>
-            <br />
-            <small>
-              <a href="tel: +123456789">+123456789</a>
-            </small>
-          </p>
+          <IonLabel>
+            <p>
+              <strong>John Doe</strong>
+              <br />
+              <small>Dordt University</small>
+              <br />
+              <small>
+                <a href="mailto: john.doe@mail.com">john.doe@mail.com</a>
+              </small>
+              <br />
+              <small>
+                <a href="tel: +123456789">+123456789</a>
+              </small>
+            </p>
 
-          <IonButtons>
-            <IonButtonLink href="#">
-              <IonIcon slot="icon-only" size="small" icon={call} />
-            </IonButtonLink>
-            <IonButtonLink href="#">
-              <IonIcon slot="icon-only" size="small" icon={logoFacebook} />
-            </IonButtonLink>
-            <IonButtonLink href="#">
-              <IonIcon slot="icon-only" size="small" icon={mail} />
-            </IonButtonLink>
-          </IonButtons>
-        </IonLabel>
-      </IonItem>
+            <IonButtons>
+              <IonButtonLink href="#">
+                <IonIcon slot="icon-only" size="small" icon={call} />
+              </IonButtonLink>
+              <IonButtonLink href="#">
+                <IonIcon slot="icon-only" size="small" icon={logoFacebook} />
+              </IonButtonLink>
+              <IonButtonLink href="#">
+                <IonIcon slot="icon-only" size="small" icon={mail} />
+              </IonButtonLink>
+            </IonButtons>
+          </IonLabel>
+        </IonItem>
+      </IonCard>
     );
   }
 }
