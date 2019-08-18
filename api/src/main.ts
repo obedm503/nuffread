@@ -85,7 +85,6 @@ const apollo = new ApolloServer({
     return getContext({ req, res });
   },
   schema: getSchema(),
-  debug: !production,
 });
 
 apollo.applyMiddleware({
@@ -93,7 +92,9 @@ apollo.applyMiddleware({
   path: '/',
   cors: {
     credentials: true,
-    origin: process.env.ORIGIN || 'https://www.nuffread.com',
+    origin: production
+      ? process.env.ORIGIN || 'https://www.nuffread.com'
+      : true,
   },
 });
 
