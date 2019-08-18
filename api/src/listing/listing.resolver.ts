@@ -6,10 +6,10 @@ export const ListingResolver: IResolver<IListing, Listing> = {
   async school({ schoolId }, args, { schoolLoader }) {
     return (await schoolLoader.load(schoolId))!;
   },
-  async user({ userId }, args, { userLoader }) {
-    return (await userLoader.load(userId)) as any;
+  async user({ userId, user }, args, { userLoader }) {
+    return user || (await userLoader.load(userId));
   },
-  async book({ bookId, book }, args, { bookLoader }): Promise<any> {
+  async book({ bookId, book }, args, { bookLoader }) {
     return book || (await bookLoader.load(bookId));
   },
 };

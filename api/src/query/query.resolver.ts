@@ -12,10 +12,6 @@ import { isAdmin } from '../util/auth';
 import { getBook, searchBooks } from '../util/books';
 import { IResolver } from '../util/types';
 
-const getTopListings = async () => {
-  return (await Listing.find({ take: 10, relations: ['book'] })) as any[];
-};
-
 export const QueryResolver: IResolver<IQuery> = {
   async search(_, { query, maxPrice, minPrice }: ISearchOnQueryArguments) {
     const segments =
@@ -66,12 +62,12 @@ export const QueryResolver: IResolver<IQuery> = {
     );
 
     const listings = await builder.getMany();
-    return listings as any;
+    return listings;
   },
 
   async top() {
     // TODO: implement real top listings, whatever that means
-    return getTopListings();
+    return await Listing.find({ take: 10, relations: ['book'] });
   },
 
   async me(_, args, { me }) {
@@ -79,15 +75,15 @@ export const QueryResolver: IResolver<IQuery> = {
   },
 
   async listing(_, { id }: IListingOnQueryArguments, { listingLoader }) {
-    return listingLoader.load(id) as any;
+    return listingLoader.load(id);
   },
 
   async users(_, args, { me }) {
     if (!isAdmin(me)) {
-      return;
+      return [];
     }
 
-    return User.find() as any;
+    return User.find();
   },
 
   async searchGoogle(_, { query }: ISearchGoogleOnQueryArguments) {

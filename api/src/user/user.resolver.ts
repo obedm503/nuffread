@@ -15,7 +15,8 @@ export const UserResolver: IResolver<IUser, User> = {
     const listings = await Listing.find({
       where: { userId: user.id },
       order: { createdAt: 'DESC' },
+      relations: ['book'],
     });
-    return listings as any;
+    return listings;
   },
 };

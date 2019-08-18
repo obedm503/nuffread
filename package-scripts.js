@@ -12,10 +12,16 @@ const buildTypes = series(
   [
     'gql2ts',
     'api/schema.gql',
+    '--ignore-type-name-declaration',
     '--output-file api/src/schema.gql.ts',
     `--external-options ${resolve('./gql2tsrc.js')}`,
   ].join(' '),
-  copy('"api/src/schema.gql.ts" web/src/'),
+  [
+    'gql2ts',
+    'api/schema.gql',
+    '--output-file web/src/schema.gql.ts',
+    `--external-options ${resolve('./gql2tsrc.js')}`,
+  ].join(' '),
 );
 
 // based on https://stackoverflow.com/a/40178818/4371892

@@ -12,7 +12,7 @@ import { User } from '../user/user.entity';
 export type IContext = {
   req: Request;
   res: Response;
-  me: User | Admin | undefined;
+  me?: User | Admin;
   stripe: Stripe;
   userLoader: DataLoader<string, User | undefined>;
   adminLoader: DataLoader<string, Admin | undefined>;
@@ -23,7 +23,33 @@ export type IContext = {
 
 // these types are based on graphql-tools types
 
-type NoTypename<T> = T extends object ? Omit<T, '__typename'> : T;
+// from https://stackoverflow.com/questions/54713272/how-can-i-make-a-partialt-but-only-for-nullable-fields
+type NullableKeys<T> = {
+  [K in keyof T]: undefined extends T[K] ? K : never
+}[keyof T];
+// type NullablePartial<T> = Partial<T> & Omit<T, NullableKeys<T>>;
+
+// use "any" until recursive types land https://github.com/Microsoft/TypeScript/issues/6230
+// only checks 2 levels deep and stops
+type IfObject<T, ST> = T extends object ? ST : T;
+
+// level 2
+type SubObject<T> = T extends any[] ? any[] : IfObject<T, any>;
+// level 1
+type FixObject<T> = T extends Array<infer ST>
+  ? SubObject<ST>[]
+  : T extends object
+  ? { [K in keyof T]?: IfObject<T[K], SubObject<T[K]>> } &
+      {
+        [K in Exclude<keyof T, NullableKeys<T>>]: IfObject<
+          T[K],
+          SubObject<T[K]>
+        >
+      }
+  : T;
+type FixPartials<T> = T extends Array<infer ST>
+  ? FixObject<ST>[]
+  : FixObject<T>;
 
 type IFieldResolver<TSource, TReturn> = (
   source: TSource,
@@ -32,15 +58,15 @@ type IFieldResolver<TSource, TReturn> = (
   info: GraphQLResolveInfo & {
     mergeInfo: MergeInfo;
   },
-) => NoTypename<TReturn> | Promise<NoTypename<TReturn>>;
+) => FixPartials<TReturn> | Promise<FixPartials<TReturn>>;
 
-type IBaseResolver = {
+type BaseResolver<T> = T & {
   __resolveType?: string;
 };
 
 export type IResolver<TQuery = any, TRoot = never> = {
-  [key in keyof (TQuery & IBaseResolver)]?:
-    | IFieldResolver<TRoot, (TQuery & IBaseResolver)[key]>
+  [key in keyof BaseResolver<TQuery>]?:
+    | IFieldResolver<TRoot, BaseResolver<TQuery>[key]>
     | IResolverOptions<TRoot, IContext>
     | IResolver<TQuery, TRoot>
 };

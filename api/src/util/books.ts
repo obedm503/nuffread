@@ -82,7 +82,6 @@ const formatBook = (book: GoogleBook): IBook | undefined => {
     }
 
     return {
-      __typename: 'Book',
       id: book.id,
       googleId: book.id,
       etag: book.etag,
