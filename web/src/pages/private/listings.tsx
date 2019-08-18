@@ -4,6 +4,7 @@ import {
   IonContent,
   IonGrid,
   IonIcon,
+  IonPage,
   IonRow,
 } from '@ionic/react';
 import gql from 'graphql-tag';
@@ -32,7 +33,7 @@ const MY_LISTINGS = gql`
 `;
 
 export const MyListings: React.FC = () => (
-  <>
+  <IonPage>
     <TopNav>
       <IonButtons slot="end">
         <Popover>
@@ -75,5 +76,5 @@ export const MyListings: React.FC = () => (
         </IonRow>
       </IonGrid>
     </IonContent>
-  </>
+  </IonPage>
 );
