@@ -10,14 +10,13 @@ import {
   IonLabel,
   IonRow,
 } from '@ionic/react';
-import ApolloClient from 'apollo-client';
 import { Form, Formik } from 'formik';
 import { GraphQLError } from 'graphql';
 import gql from 'graphql-tag';
 import { History } from 'history';
 import { add, logIn } from 'ionicons/icons';
 import * as React from 'react';
-import { Mutation, MutationFunction } from 'react-apollo';
+import { useApolloClient, useMutation } from 'react-apollo';
 import { RouteComponentProps } from 'react-router';
 import { Link } from 'react-router-dom';
 import * as yup from 'yup';
@@ -64,111 +63,96 @@ const Errors = ({ errors }: { errors: readonly GraphQLError[] }) => (
   </>
 );
 
-class LoginForm extends React.PureComponent<{
+const LoginForm = React.memo<{
   type: keyof typeof SystemUserType;
   history: History;
   schema;
   admin?: boolean;
-}> {
-  onSubmit = (
-    mutate: MutationFunction<IMutation>,
-    client?: ApolloClient<Object>,
-  ) => async ({ email, password }) => {
+}>(({ schema, admin, type, history }) => {
+  const [mutate, { loading, error }] = useMutation<IMutation>(LOGIN);
+  const client = useApolloClient();
+  const onSubmit = async ({ email, password }) => {
     const res = await mutate({
-      variables: { email, password, type: this.props.type },
+      variables: { email, password, type },
     });
-    if (client && res && res.data && res.data.login) {
+    if (res && res.data && res.data.login) {
       await client.resetStore();
-      this.props.history.push('/');
+      history.push('/');
     }
   };
-  render() {
-    const { schema, admin } = this.props;
-    return (
-      <Mutation<IMutation> mutation={LOGIN}>
-        {(mutate, { loading, client, error }) => {
-          return (
-            <Formik<{ email: string; password: string }>
-              onSubmit={this.onSubmit(mutate, client)}
-              validationSchema={schema}
-              initialValues={{ email: '', password: '' }}
-            >
-              {({ touched, errors }) => {
-                if (loading) {
-                  return <div>Loading...</div>;
-                }
 
-                return (
-                  <Form>
-                    <IonGrid>
-                      <IonRow>
-                        <IonCol>
-                          <Email
-                            name="email"
-                            label="Email"
-                            touched={touched}
-                            errors={errors}
-                          />
-                          <Password
-                            name="password"
-                            label="Password"
-                            touched={touched}
-                            errors={errors}
-                          />
+  return (
+    <Formik<{ email: string; password: string }>
+      onSubmit={onSubmit}
+      validationSchema={schema}
+      initialValues={{ email: '', password: '' }}
+    >
+      {({ touched, errors }) => {
+        if (loading) {
+          return <div>Loading...</div>;
+        }
 
-                          {error ? (
-                            <Errors errors={error.graphQLErrors} />
-                          ) : null}
-                        </IonCol>
-                      </IonRow>
+        return (
+          <Form>
+            <IonGrid>
+              <IonRow>
+                <IonCol>
+                  <Email
+                    name="email"
+                    label="Email"
+                    touched={touched}
+                    errors={errors}
+                  />
+                  <Password
+                    name="password"
+                    label="Password"
+                    touched={touched}
+                    errors={errors}
+                  />
 
-                      <IonRow>
-                        {admin ? null : (
-                          <IonCol>
-                            <IonButtonLink
-                              expand="block"
-                              href="/join/signup"
-                              color="secondary"
-                            >
-                              <IonIcon slot="start" icon={add} />
-                              <IonLabel>Join</IonLabel>
-                            </IonButtonLink>
-                          </IonCol>
-                        )}
+                  {error ? <Errors errors={error.graphQLErrors} /> : null}
+                </IonCol>
+              </IonRow>
 
-                        <IonCol>
-                          <input
-                            type="submit"
-                            style={{
-                              position: 'absolute',
-                              left: '-9999px',
-                              width: '1px',
-                              height: '1px',
-                            }}
-                            tabIndex={-1}
-                          />
+              <IonRow>
+                {admin ? null : (
+                  <IonCol>
+                    <IonButtonLink
+                      expand="block"
+                      href="/join/signup"
+                      color="secondary"
+                    >
+                      <IonIcon slot="start" icon={add} />
+                      <IonLabel>Join</IonLabel>
+                    </IonButtonLink>
+                  </IonCol>
+                )}
 
-                          <IonButton
-                            expand="block"
-                            color="primary"
-                            type="submit"
-                          >
-                            <IonIcon slot="start" icon={logIn} />
-                            <IonLabel>Login</IonLabel>
-                          </IonButton>
-                        </IonCol>
-                      </IonRow>
-                    </IonGrid>
-                  </Form>
-                );
-              }}
-            </Formik>
-          );
-        }}
-      </Mutation>
-    );
-  }
-}
+                <IonCol>
+                  <input
+                    type="submit"
+                    style={{
+                      position: 'absolute',
+                      left: '-9999px',
+                      width: '1px',
+                      height: '1px',
+                    }}
+                    tabIndex={-1}
+                  />
+
+                  <IonButton expand="block" color="primary" type="submit">
+                    <IonIcon slot="start" icon={logIn} />
+                    <IonLabel>Login</IonLabel>
+                  </IonButton>
+                </IonCol>
+              </IonRow>
+            </IonGrid>
+          </Form>
+        );
+      }}
+    </Formik>
+  );
+});
 
 const adminSchema = yup.object().shape({
   email: yup
