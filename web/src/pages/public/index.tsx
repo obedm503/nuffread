@@ -6,6 +6,7 @@ import {
   IonRouterOutlet,
   IonRow,
 } from '@ionic/react';
+import { ViewManager } from '@ionic/react-router';
 import React, { memo } from 'react';
 import { Route, RouteComponentProps } from 'react-router';
 import { ListingPage } from '../../components/listing-page';
@@ -46,9 +47,11 @@ const Detail = (routeProps: RouteComponentProps<{ listingId: string }>) => {
 
 export default memo<RouteComponentProps>(() => {
   return (
-    <IonRouterOutlet>
-      <Route path="/" exact component={Master} />
-      <Route path="/:listingId" component={Detail} />
-    </IonRouterOutlet>
+    <ViewManager>
+      <IonRouterOutlet>
+        <Route path="/" exact component={Master} />
+        <Route path="/:listingId" component={Detail} />
+      </IonRouterOutlet>
+    </ViewManager>
   );
 });
