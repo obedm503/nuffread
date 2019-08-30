@@ -64,7 +64,7 @@ class RegisterForm extends React.PureComponent<RouteComponentProps<never>> {
                 password: '',
               }}
             >
-              {({ touched, errors }) => {
+              {() => {
                 if (data && data.register) {
                   return (
                     <Redirect
@@ -82,18 +82,8 @@ class RegisterForm extends React.PureComponent<RouteComponentProps<never>> {
                     <IonGrid>
                       <IonRow>
                         <IonCol>
-                          <Email
-                            name="email"
-                            label="Email"
-                            touched={touched}
-                            errors={errors}
-                          />
-                          <Password
-                            name="password"
-                            label="Passphrase"
-                            touched={touched}
-                            errors={errors}
-                          />
+                          <Email name="email" label="Email" />
+                          <Password name="password" label="Passphrase" />
                         </IonCol>
                       </IonRow>
 

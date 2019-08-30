@@ -1,6 +1,6 @@
 import { Components } from '@ionic/core';
 import { IonInput } from '@ionic/react';
-import { Field } from 'formik';
+import { Field, FieldProps } from 'formik';
 import * as React from 'react';
 import { Control, ControlProps } from './control';
 
@@ -10,25 +10,22 @@ export const Text: React.FC<Props> = ({
   children,
   type = 'text',
   error,
-  errors,
   label,
   name,
-  touched,
   ...inputProps
 }) => {
-  const controlProps: ControlProps = {
-    error,
-    errors,
-    label,
-    name,
-    touched,
-  };
+  const controlProps: ControlProps = { error, label, name };
   return (
-    <Control {...controlProps}>
-      <Field
-        name={name}
-        render={({ field }) => {
-          return (
+    <Field
+      name={name}
+      render={({ field, form: { touched, errors, values } }: FieldProps) => {
+        return (
+          <Control
+            {...controlProps}
+            touched={touched}
+            errors={errors}
+            values={values}
+          >
             <IonInput
               {...inputProps}
               type={type}
@@ -37,9 +34,9 @@ export const Text: React.FC<Props> = ({
               onIonBlur={field.onBlur}
               onIonChange={field.onChange}
             />
-          );
-        }}
-      />
-    </Control>
+          </Control>
+        );
+      }}
+    />
   );
 };

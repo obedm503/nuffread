@@ -171,7 +171,7 @@ class DatePicker extends React.PureComponent<DatePickerProps, DatePickerState> {
   }
 }
 
-const DateControl: React.FC<ControlProps> = props => (
+const DateControl: React.FC<ControlProps & { errors }> = props => (
   <Control {...props}>
     {color => <Field color={color} component={DatePicker} name={props.name} />}
   </Control>

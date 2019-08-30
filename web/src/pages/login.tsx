@@ -87,7 +87,7 @@ const LoginForm = React.memo<{
       validationSchema={schema}
       initialValues={{ email: '', password: '' }}
     >
-      {({ touched, errors }) => {
+      {() => {
         if (loading) {
           return <div>Loading...</div>;
         }
@@ -97,18 +97,8 @@ const LoginForm = React.memo<{
             <IonGrid>
               <IonRow>
                 <IonCol>
-                  <Email
-                    name="email"
-                    label="Email"
-                    touched={touched}
-                    errors={errors}
-                  />
-                  <Password
-                    name="password"
-                    label="Password"
-                    touched={touched}
-                    errors={errors}
-                  />
+                  <Email name="email" label="Email" />
+                  <Password name="password" label="Password" />
 
                   {error ? <Errors errors={error.graphQLErrors} /> : null}
                 </IonCol>

@@ -64,19 +64,14 @@ const ConfirmEmail = React.memo<{
       validationSchema={emailSchema}
       initialValues={{ email: '' }}
     >
-      {({ touched, errors }) => {
+      {() => {
         if (loading) {
           return <div>Loading...</div>;
         }
 
         return (
           <Form>
-            <Email
-              name="email"
-              label="Email"
-              touched={touched}
-              errors={errors}
-            />
+            <Email name="email" label="Email" />
 
             {error
               ? error.graphQLErrors.map(err => {

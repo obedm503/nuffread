@@ -5,19 +5,15 @@ export type ControlProps = {
   label: React.ReactNode;
   error?: React.ReactNode;
   name: string;
-  touched?;
-  errors;
-  values?;
 };
 
-export const Control: React.FC<ControlProps> = ({
-  label,
-  error,
-  name,
-  touched,
-  errors,
-  children,
-}) => {
+export const Control: React.FC<
+  ControlProps & {
+    touched?;
+    errors;
+    values?;
+  }
+> = ({ label, error, name, touched, errors, children }) => {
   const isTouched = !!(touched && touched[name]);
   const showError = isTouched && errors[name];
   const errorMessage = error || (errors[name] ? errors[name] : '');

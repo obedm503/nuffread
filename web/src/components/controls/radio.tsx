@@ -41,7 +41,7 @@ export const RadioOption: React.FC<OptionProps> = ({
   </label>
 );
 
-type RadioProps = ControlProps & { children: React.ReactNode };
+type RadioProps = ControlProps & { children: React.ReactNode; errors };
 export const Radio: React.FC<RadioProps> = ({ children, ...props }) => (
   <Control {...props}>
     <div className="radio-group">{children}</div>

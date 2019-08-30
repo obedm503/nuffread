@@ -5,6 +5,7 @@ import { Control, ControlProps } from './control';
 type Props = ControlProps & {
   multiple?: boolean;
   children: React.ReactNode;
+  errors;
 };
 
 class MulitpleSelect extends React.PureComponent<FieldProps<any>> {
