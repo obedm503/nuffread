@@ -5,9 +5,8 @@ import { ListWrapper } from '../../../components/list-wrapper';
 import { BasicListing, BasicListingLoading } from '../../../components/listing';
 import { IListing } from '../../../schema.gql';
 
-type IListings = Array<IListing>;
 type Props = {
-  listings?: IListings;
+  listings?: IListing[];
   loading: boolean;
   onClick;
   title?: string;
