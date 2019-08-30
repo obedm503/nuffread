@@ -69,10 +69,11 @@ type GoogleBook = {
 };
 
 const formatBook = (book: GoogleBook): IBook | undefined => {
-  if (!book.volumeInfo.industryIdentifiers || !book.volumeInfo.authors) {
-    return;
-  }
   try {
+    if (!book.volumeInfo.industryIdentifiers || !book.volumeInfo.authors) {
+      return;
+    }
+
     const isbn = book.volumeInfo.industryIdentifiers
       .filter(iid => iid.type === 'ISBN_10' || iid.type === 'ISBN_13')
       .map(iid => iid.identifier);
@@ -106,11 +107,11 @@ export const getBook = async (googleId: string): Promise<IBook | undefined> => {
   const res = await fetch(
     `https://www.googleapis.com/books/v1/volumes/${googleId}`,
   );
-  const json = await res.json();
-  return formatBook(json);
+  const book: GoogleBook = await res.json();
+  return formatBook(book);
 };
 
-export const searchBooks = async (query: string): Promise<Array<IBook>> => {
+export const searchBooks = async (query: string): Promise<IBook[]> => {
   const res = await fetch(
     `https://www.googleapis.com/books/v1/volumes?q=${query}`,
   );

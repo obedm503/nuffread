@@ -19,7 +19,7 @@ export const BASIC_LISTING = gql`
 export const SEARCH = gql`
   ${BASIC_LISTING}
 
-  query Search($query: String) {
+  query Search($query: String!) {
     search(query: $query) {
       ...BasicListing
 
@@ -27,6 +27,20 @@ export const SEARCH = gql`
         id
         name
       }
+    }
+  }
+`;
+
+export const SEARCH_GOOGLE = gql`
+  query SearchGoogle($query: String!) {
+    searchGoogle(query: $query) {
+      id
+      isbn
+      thumbnail
+      title
+      subTitle
+      publishedAt
+      authors
     }
   }
 `;

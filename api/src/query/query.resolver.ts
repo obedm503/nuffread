@@ -87,6 +87,9 @@ export const QueryResolver: IResolver<IQuery> = {
   },
 
   async searchGoogle(_, { query }: ISearchGoogleOnQueryArguments) {
+    if (!query) {
+      return;
+    }
     return await searchBooks(query);
   },
   async googleBook(_, { id }: IGoogleBookOnQueryArguments) {

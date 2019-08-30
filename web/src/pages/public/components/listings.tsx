@@ -1,6 +1,7 @@
-import { IonItem, IonLabel, IonList, IonListHeader } from '@ionic/react';
+import { IonItem, IonLabel } from '@ionic/react';
 import { range } from 'lodash';
 import * as React from 'react';
+import { ListWrapper } from '../../../components/list-wrapper';
 import { BasicListing, BasicListingLoading } from '../../../components/listing';
 import { IListing } from '../../../schema.gql';
 
@@ -14,18 +15,6 @@ type Props = {
 
 const listingPlaceholders = range(10).map(n => <BasicListingLoading key={n} />);
 
-const wrapper = (title, children) => (
-  <IonList>
-    {title ? (
-      <IonListHeader>
-        <IonLabel>{title}</IonLabel>
-      </IonListHeader>
-    ) : null}
-
-    {children}
-  </IonList>
-);
-
 export class Listings extends React.PureComponent<Props> {
   onClick = id => () => {
     this.props.onClick(id);
@@ -34,32 +23,34 @@ export class Listings extends React.PureComponent<Props> {
     const { listings, loading, title } = this.props;
 
     if (loading || !Array.isArray(listings)) {
-      return wrapper(title, listingPlaceholders);
+      return <ListWrapper title={title}>{listingPlaceholders}</ListWrapper>;
     }
 
     if (!listings.length) {
-      return wrapper(
-        title,
-        <IonItem color="white">
-          <IonLabel>Found nothing...</IonLabel>
-        </IonItem>,
+      return (
+        <ListWrapper title={title}>
+          <IonItem color="white">
+            <IonLabel>Found nothing...</IonLabel>
+          </IonItem>
+        </ListWrapper>
       );
     }
 
-    return wrapper(
-      title,
-      listings.map((listing, i) => {
-        if (!listing) {
-          return null;
-        }
-        return (
-          <BasicListing
-            key={listing.id}
-            onClick={this.onClick(listing.id)}
-            listing={listing}
-          />
-        );
-      }),
+    return (
+      <ListWrapper title={title}>
+        {listings.map((listing, i) => {
+          if (!listing) {
+            return null;
+          }
+          return (
+            <BasicListing
+              key={listing.id}
+              onClick={this.onClick(listing.id)}
+              listing={listing}
+            />
+          );
+        })}
+      </ListWrapper>
     );
   }
 }
