@@ -172,7 +172,7 @@ export const BasicListing: React.FC<{ onClick?; listing: IListing }> = ({
       placeholder="/img/book.png"
       slot="start"
     />
-    <WrapLabel text-wrap>
+    <WrapLabel>
       {listing.book.title}
       <br />
 
