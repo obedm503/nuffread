@@ -10,7 +10,7 @@ export const useSearch = () => {
     let search: string | undefined;
     if (searchValue) {
       const query = new URLSearchParams(location.search);
-      query.set('query', searchValue);
+      query.set('q', searchValue);
       search = query.toString();
     }
     history.push({
@@ -27,7 +27,7 @@ export const useSearch = () => {
   };
 
   return {
-    searchValue: searchParams.get('query') || undefined,
+    searchValue: searchParams.get('q') || undefined,
     onSearch,
     onClick,
   };
