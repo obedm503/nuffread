@@ -14,8 +14,8 @@ type Query {
   listing(id: ID!): Listing
   users: [User!]!
 
-  searchGoogle(query: String!): [Book!]
-  googleBook(id: ID!): Book!
+  searchGoogle(query: String!): [GoogleBook!]
+  googleBook(id: ID!): GoogleBook!
 }
 
 type Mutation {
@@ -30,6 +30,8 @@ type Mutation {
   logout: Boolean!
   confirm(id: String!): Boolean!
   resendEmail(binId: String, email: String): String!
+
+  createListing(listing: ListingInput!): Listing!
 }
 
 type User {
@@ -43,7 +45,6 @@ type User {
 }
 
 input UserInput {
-  schoolId: ID!
   name: String!
 }
 
@@ -78,10 +79,28 @@ type Listing {
   user: User!
 }
 
+input ListingInput {
+  googleId: String!
+  price: Int!
+  schoolId: ID!
+}
+
 type Book {
   id: String!
   etag: String
   googleId: String
+  authors: [String!]!
+  isbn: [String!]!
+  publishedAt: Date
+  title: String!
+  subTitle: String
+  thumbnail: String
+}
+
+# book but without id
+type GoogleBook {
+  etag: String
+  googleId: String!
   authors: [String!]!
   isbn: [String!]!
   publishedAt: Date

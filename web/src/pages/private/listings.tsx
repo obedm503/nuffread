@@ -1,9 +1,11 @@
 import {
+  IonButton,
   IonButtons,
   IonCol,
   IonContent,
   IonGrid,
   IonIcon,
+  IonModal,
   IonPage,
   IonRow,
 } from '@ionic/react';
@@ -11,10 +13,11 @@ import gql from 'graphql-tag';
 import { add } from 'ionicons/icons';
 import * as React from 'react';
 import { useQuery } from 'react-apollo';
-import { Error, IonButtonLink, TopNav } from '../../components';
+import { Error, TopNav } from '../../components';
 import { BasicListing, BasicListingLoading } from '../../components/listing';
 import { BASIC_LISTING } from '../../queries';
 import { IQuery } from '../../schema.gql';
+import { New } from './new';
 
 const MY_LISTINGS = gql`
   ${BASIC_LISTING}
@@ -53,24 +56,38 @@ const Listings: React.FC = () => {
   );
 };
 
-export const MyListings: React.FC = () => (
-  <IonPage>
-    <TopNav>
-      <IonButtons slot="end">
-        <IonButtonLink href="/new">
-          <IonIcon slot="icon-only" icon={add} />
-        </IonButtonLink>
-      </IonButtons>
-    </TopNav>
-
-    <IonContent>
-      <IonGrid>
-        <IonRow>
-          <IonCol size="12" sizeLg="10" offsetLg="1">
-            <Listings />
-          </IonCol>
-        </IonRow>
-      </IonGrid>
-    </IonContent>
-  </IonPage>
+const CreateListing = ({ show, onCancel }) => (
+  <IonModal isOpen={show}>
+    <New onCancel={onCancel} />
+  </IonModal>
 );
+
+export const MyListings: React.FC = () => {
+  const [showModal, setShowModal] = React.useState(false);
+  return (
+    <IonPage>
+      <TopNav>
+        <IonButtons slot="end">
+          <IonButton onClick={() => setShowModal(true)}>
+            <IonIcon slot="icon-only" icon={add} />
+          </IonButton>
+        </IonButtons>
+      </TopNav>
+
+      <IonContent>
+        <CreateListing
+          show={showModal}
+          onCancel={() => setShowModal(false)}
+        ></CreateListing>
+
+        <IonGrid>
+          <IonRow>
+            <IonCol size="12" sizeLg="10" offsetLg="1">
+              <Listings />
+            </IonCol>
+          </IonRow>
+        </IonGrid>
+      </IonContent>
+    </IonPage>
+  );
+};

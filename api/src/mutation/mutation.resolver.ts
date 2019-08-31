@@ -2,17 +2,22 @@ const atob = require('atob');
 const btoa = require('btoa');
 import { ApolloError } from 'apollo-server-core';
 import { compare, hash } from 'bcryptjs';
+import { getConnection } from 'typeorm';
 import { Admin } from '../admin/admin.entity';
+import { Book } from '../book/book.entity';
+import { Listing } from '../listing/listing.entity';
 import {
   IConfirmOnMutationArguments,
+  ICreateListingOnMutationArguments,
   ILoginOnMutationArguments,
   IMutation,
   IRegisterOnMutationArguments,
   IResendEmailOnMutationArguments,
 } from '../schema.gql';
-import { User, sendConfirmationEmail } from '../user/user.entity';
+import { sendConfirmationEmail, User } from '../user/user.entity';
 import { validate } from '../util';
 import { AuthenticationError, isUser } from '../util/auth';
+import { getBook } from '../util/books';
 import { IResolver } from '../util/types';
 
 export const MutationResolver: IResolver<IMutation> = {
@@ -131,5 +136,34 @@ export const MutationResolver: IResolver<IMutation> = {
     await sendConfirmationEmail(origin, user.id, user.email);
 
     return btoa(user.id);
+  },
+  async createListing(
+    _,
+    {
+      listing: { googleId, price, schoolId },
+    }: ICreateListingOnMutationArguments,
+    { me },
+  ) {
+    isUser(me);
+
+    return await getConnection().transaction(async manager => {
+      let book = await manager.findOne(Book, { where: { googleId } });
+      if (!book) {
+        const gBook = await getBook(googleId);
+        if (!gBook) {
+          throw new ApolloError('Google Book not found');
+        }
+        book = await manager.save(Book.create(gBook));
+      }
+      const listing = await manager.save(
+        Listing.create({
+          book,
+          price,
+          user: me,
+          schoolId,
+        }),
+      );
+      return listing;
+    });
   },
 };

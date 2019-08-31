@@ -6,6 +6,8 @@ export const BASIC_LISTING = gql`
     createdAt
     price
     book {
+      id
+      googleId
       isbn
       thumbnail
       title
@@ -34,7 +36,7 @@ export const SEARCH = gql`
 export const SEARCH_GOOGLE = gql`
   query SearchGoogle($query: String!) {
     searchGoogle(query: $query) {
-      id
+      googleId
       isbn
       thumbnail
       title
@@ -56,6 +58,18 @@ export const GET_LISTING = gql`
         id
         name
       }
+    }
+  }
+`;
+
+export const CREATE_LISTING = gql`
+  ${BASIC_LISTING}
+
+  mutation CreateListing($googleId: String!, $price: Int!, $schoolId: ID!) {
+    createListing(
+      listing: { googleId: $googleId, price: $price, schoolId: $schoolId }
+    ) {
+      ...BasicListing
     }
   }
 `;

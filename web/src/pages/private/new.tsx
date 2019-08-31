@@ -1,81 +1,52 @@
 import {
+  IonButton,
+  IonButtons,
+  IonCard,
+  IonCardContent,
+  IonCardHeader,
+  IonCardTitle,
   IonCol,
   IonContent,
   IonGrid,
+  IonIcon,
+  IonInput,
   IonItem,
   IonLabel,
-  IonList,
   IonPage,
   IonRow,
+  IonTextarea,
+  IonThumbnail,
 } from '@ionic/react';
+import { close, logoUsd } from 'ionicons/icons';
 import { range } from 'lodash';
 import * as React from 'react';
-import { useQuery } from 'react-apollo';
-import { RouteComponentProps } from 'react-router';
-import { Error, TopNav, WrapLabel } from '../../components';
+import { useMutation, useQuery } from 'react-apollo';
+import { Error, Loading, TopNav, WrapLabel } from '../../components';
 import { ListWrapper } from '../../components/list-wrapper';
-import { BasicListingLoading } from '../../components/listing';
+import { BasicListingLoading, Listing } from '../../components/listing';
 import { SafeImg } from '../../components/safe-img';
 import { SearchBar } from '../../components/search-bar';
-import { SEARCH_GOOGLE } from '../../queries';
-import { IBook, IQuery } from '../../schema.gql';
-
-// const GET_GOOGLE_BOOK = gql`
-//   query GetGoogleBook($id: ID!) {
-//     googleBook(id: $id) {
-//       id
-//       isbn
-//       thumbnail
-//       title
-//       subTitle
-//       publishedAt
-//       authors
-//     }
-//   }
-// `;
-
-// const GoogleBook: React.FC<{ id: string }> = ({ id }) => (
-//   <Query<IQuery> query={GET_GOOGLE_BOOK} variables={{ id }}>
-//     {({ loading, error, data }) => {
-//       if (loading) {
-//         return null;
-//       }
-
-//       if (error || !data) {
-//         return <Error value={error} />;
-//       }
-
-//       const googleBook = data.googleBook;
-//       if (!googleBook) {
-//         return null;
-//       }
-
-//       return (
-//         <Listing priceColor="success" listing={googleBook}>
-//           <IonButton color="primary">Select</IonButton>
-//         </Listing>
-//       );
-//     }}
-//   </Query>
-// );
+import { CREATE_LISTING, SEARCH_GOOGLE } from '../../queries';
+import { IGoogleBook, IMutation, IQuery } from '../../schema.gql';
 
 type Props = {
-  books?: IBook[];
+  books?: IGoogleBook[];
   loading: boolean;
-  onClick;
+  onClick: (book: IGoogleBook) => void;
   title?: string;
 };
 
 const placeholders = range(10).map(n => <BasicListingLoading key={n} />);
 
-const Book: React.FC<{ onClick?; book: IBook }> = ({ onClick, book }) => (
+const Book: React.FC<{ onClick?; book: IGoogleBook }> = ({ onClick, book }) => (
   <IonItem button={!!onClick} onClick={onClick}>
-    <SafeImg
-      src={book.thumbnail}
-      alt={book.title}
-      placeholder="/img/book.png"
-      slot="start"
-    />
+    <IonThumbnail slot="start" style={{ '--size': '100%' }}>
+      <SafeImg
+        src={book.thumbnail}
+        alt={book.title}
+        placeholder="/img/book.png"
+      />
+    </IonThumbnail>
     <WrapLabel>
       {book.title}
       <br />
@@ -88,6 +59,8 @@ const Book: React.FC<{ onClick?; book: IBook }> = ({ onClick, book }) => (
       ) : null}
 
       <small>{book.authors.join(', ')}</small>
+      <br></br>
+      <small>{book.isbn.join(', ')}</small>
     </WrapLabel>
   </IonItem>
 );
@@ -120,7 +93,11 @@ class Books extends React.PureComponent<Props> {
             return null;
           }
           return (
-            <Book key={book.id} onClick={this.onClick(book.id)} book={book} />
+            <Book
+              key={book.googleId}
+              onClick={this.onClick(book)}
+              book={book}
+            />
           );
         })}
       </ListWrapper>
@@ -129,7 +106,7 @@ class Books extends React.PureComponent<Props> {
 }
 
 const SearchResults: React.FC<{
-  onClick;
+  onClick: (book: IGoogleBook) => void;
   searchValue: string;
 }> = ({ onClick, searchValue }) => {
   const { error, data, loading } = useQuery<IQuery>(SEARCH_GOOGLE, {
@@ -151,47 +128,162 @@ const SearchResults: React.FC<{
   );
 };
 
+const PickBook: React.FC<{ onClick: (book: IGoogleBook) => void }> = ({
+  onClick,
+}) => {
+  const [searchValue, setSearchValue] = React.useState('');
+  return (
+    <>
+      <SearchBar onSearch={setSearchValue} searchValue={searchValue} />
+
+      {searchValue ? (
+        <SearchResults onClick={onClick} searchValue={searchValue} />
+      ) : null}
+    </>
+  );
+};
+
+const CreateListing = ({ googleId, price, description, book }) => {
+  const [create, { loading, data, error }] = useMutation<IMutation>(
+    CREATE_LISTING,
+    {
+      variables: {
+        googleId,
+        price,
+        description,
+        schoolId: 'f3560244-0fee-4b63-bb79-966a8c04a950',
+      },
+    },
+  );
+  if (error) {
+    return <Error value={error}></Error>;
+  }
+  if (loading) {
+    return <Loading></Loading>;
+  }
+
+  return (
+    <>
+      <Listing
+        listing={Object.assign({ book, price }, data && data.createListing)}
+      ></Listing>
+      {data ? null : <IonButton onClick={() => create()}>Create</IonButton>}
+    </>
+  );
+};
+
 export class New extends React.PureComponent<
-  RouteComponentProps<{ listingId?: string }>,
-  { searchValue: string; googleId: string }
+  { onCancel },
+  {
+    searchValue: string;
+    googleId: string;
+    price?: number;
+    description: string;
+    book?: IGoogleBook;
+  }
 > {
-  onSearch = searchValue => {
-    this.setState({ searchValue });
+  state = {
+    searchValue: '',
+    googleId: '',
+    description: '',
+    book: undefined,
+    price: undefined,
   };
-
-  onClick = id => {
-    this.setState({ googleId: id });
-  };
-
-  state = { searchValue: '', googleId: '' };
 
   render() {
+    console.log(this.state);
+    const price =
+      typeof this.state.price === 'number'
+        ? (this.state.price! / 100).toFixed(2)
+        : '';
     return (
       <IonPage>
-        <TopNav />
+        <TopNav>
+          <IonButtons>
+            <IonButton onClick={this.props.onCancel}>
+              <IonIcon slot="icon-only" icon={close}></IonIcon>
+            </IonButton>
+          </IonButtons>
+        </TopNav>
 
         <IonContent>
           <IonGrid>
             <IonRow>
               <IonCol size="12" sizeLg="10" offsetLg="1">
-                <SearchBar
-                  onSearch={this.onSearch}
-                  searchValue={this.state.searchValue}
-                />
+                <IonCard>
+                  <IonCardHeader>
+                    <IonCardTitle>Pick a book</IonCardTitle>
+                  </IonCardHeader>
 
-                {this.state.searchValue ? (
-                  <SearchResults
-                    onClick={this.onClick}
-                    searchValue={this.state.searchValue}
-                  />
-                ) : (
-                  <IonList>
-                    <IonItem></IonItem>
-                    <IonItem lines="none">
-                      <IonLabel>Search for a book</IonLabel>
+                  <IonCardContent>
+                    <PickBook
+                      onClick={book =>
+                        this.setState({ googleId: book.googleId, book })
+                      }
+                    />
+                  </IonCardContent>
+                </IonCard>
+
+                <IonCard>
+                  <IonCardHeader>
+                    <IonCardTitle>Details</IonCardTitle>
+                  </IonCardHeader>
+
+                  <IonCardContent>
+                    <IonItem>
+                      <IonLabel position="stacked">Price</IonLabel>
+                      <IonIcon icon={logoUsd} slot="start"></IonIcon>
+                      <IonInput
+                        type="number"
+                        value={price}
+                        debounce={500}
+                        onIonChange={({ detail }) => {
+                          if (detail.value) {
+                            this.setState({
+                              price: parseFloat(detail.value) * 100,
+                            });
+                          }
+                        }}
+                      ></IonInput>
                     </IonItem>
-                  </IonList>
-                )}
+
+                    <IonItem>
+                      <IonLabel position="floating">Description</IonLabel>
+                      <IonTextarea
+                        value={this.state.description}
+                        debounce={500}
+                        onIonChange={({ detail }) => {
+                          if (detail.value) {
+                            this.setState({ description: detail.value });
+                          }
+                        }}
+                      ></IonTextarea>
+                    </IonItem>
+                  </IonCardContent>
+                </IonCard>
+
+                <IonCard>
+                  <IonCardHeader>
+                    <IonCardTitle>Upload pictures</IonCardTitle>
+                  </IonCardHeader>
+
+                  <IonCardContent>upload pictures</IonCardContent>
+                </IonCard>
+
+                <IonCard>
+                  <IonCardHeader>
+                    <IonCardTitle>Confirm</IonCardTitle>
+                  </IonCardHeader>
+
+                  <IonCardContent>
+                    {this.state.book ? (
+                      <CreateListing
+                        {...this.state}
+                        price={this.state.price || ''}
+                      ></CreateListing>
+                    ) : null}
+                  </IonCardContent>
+                </IonCard>
               </IonCol>
             </IonRow>
           </IonGrid>
