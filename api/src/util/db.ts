@@ -42,8 +42,10 @@ export async function connect(
     };
     connection = await createConnection(connectionOptions);
 
+    // await connection.undoLastMigration();
     // run pending migrations
     await connection.runMigrations({ transaction: true });
+    // await connection.synchronize();
   }
 
   return connection;
