@@ -9,9 +9,9 @@ export class SetupSearch1566005589047 implements MigrationInterface {
       -- books
       ALTER TABLE "book" ADD "search_text" text NOT NULL DEFAULT '';
       UPDATE book SET search_text =
-        unaccent(coalesce(isbn, '')) ||
-        unaccent(coalesce(title, '')) ||
-        unaccent(coalesce(sub_title, '')) ||
+        unaccent(coalesce(isbn, '')) || ' ' ||
+        unaccent(coalesce(title, '')) || ' ' ||
+        unaccent(coalesce(sub_title, '')) || ' ' ||
         unaccent(coalesce(authors, ''));
 
       CREATE INDEX book_search_text_idx
@@ -21,10 +21,10 @@ export class SetupSearch1566005589047 implements MigrationInterface {
       CREATE OR REPLACE FUNCTION book_search_text_function() RETURNS trigger AS $$
         begin
           new.search_text :=
-            unaccent(coalesce(isbn, '')) ||
-            unaccent(coalesce(title, '')) ||
-            unaccent(coalesce(sub_title, '')) ||
-            unaccent(coalesce(authors, ''));
+            unaccent(coalesce(new.isbn, '')) || ' ' ||
+            unaccent(coalesce(new.title, '')) || ' ' ||
+            unaccent(coalesce(new.sub_title, '')) || ' ' ||
+            unaccent(coalesce(new.authors, ''));
           return new;
         end
       $$ LANGUAGE plpgsql;
@@ -42,7 +42,7 @@ export class SetupSearch1566005589047 implements MigrationInterface {
 
       CREATE OR REPLACE FUNCTION listing_search_text_function() RETURNS trigger AS $$
         begin
-          new.search_text := unaccent(coalesce(description, ''));
+          new.search_text := unaccent(coalesce(new.description, ''));
           return new;
         end
       $$ LANGUAGE plpgsql;
