@@ -13,7 +13,7 @@ import gql from 'graphql-tag';
 import { add } from 'ionicons/icons';
 import { join } from 'path';
 import * as React from 'react';
-import { Mutation, MutationFunction } from 'react-apollo';
+import { useMutation } from 'react-apollo';
 import { Redirect, RouteComponentProps } from 'react-router';
 import { Link } from 'react-router-dom';
 import * as yup from 'yup';
@@ -41,92 +41,69 @@ const schema = yup.object<FormSchema>().shape({
   password: passwordSchema,
 });
 
-class RegisterForm extends React.PureComponent<RouteComponentProps<never>> {
-  onSubmit = (mutate: MutationFunction<IMutation>) => ({ email, password }) =>
-    mutate({
-      variables: { email, password },
-    });
+const RegisterForm = React.memo<RouteComponentProps>(({ match }) => {
+  const [mutate, { error, data }] = useMutation<IMutation>(REGISTER);
+  const duplicateUserError =
+    error && error.graphQLErrors.find(err => err.message === 'DUPLICATE_USER');
 
-  render() {
-    return (
-      <Mutation<IMutation> mutation={REGISTER}>
-        {(mutate, { loading, error, data }) => {
-          const duplicateUserError =
-            error &&
-            error.graphQLErrors.find(err => err.message === 'DUPLICATE_USER');
-
-          return (
-            <Formik<FormSchema>
-              onSubmit={this.onSubmit(mutate)}
-              validationSchema={schema}
-              initialValues={{
-                email: '',
-                password: '',
-              }}
-            >
-              {() => {
-                if (data && data.register) {
-                  return (
-                    <Redirect
-                      to={join(
-                        this.props.match.url,
-                        '../confirm',
-                        data.register,
-                      )}
-                    />
-                  );
-                }
-
-                return (
-                  <Form>
-                    <IonGrid>
-                      <IonRow>
-                        <IonCol>
-                          <Email name="email" label="Email" />
-                          <Password name="password" label="Passphrase" />
-                        </IonCol>
-                      </IonRow>
-
-                      {duplicateUserError ? (
-                        <p className="help is-danger">
-                          User already exists. <Link to="/login">Login?</Link>
-                        </p>
-                      ) : null}
-
-                      <IonRow>
-                        <IonCol>
-                          <input
-                            type="submit"
-                            style={{
-                              position: 'absolute',
-                              left: '-9999px',
-                              width: '1px',
-                              height: '1px',
-                            }}
-                            tabIndex={-1}
-                          />
-
-                          <IonButton
-                            color="primary"
-                            expand="block"
-                            type="submit"
-                          >
-                            <IonIcon slot="start" icon={add} />
-                            <IonLabel>Join</IonLabel>
-                          </IonButton>
-                        </IonCol>
-                      </IonRow>
-                    </IonGrid>
-                  </Form>
-                );
-              }}
-            </Formik>
-          );
-        }}
-      </Mutation>
-    );
+  if (data && data.register) {
+    return <Redirect to={join(match.url, '../confirm', data.register)} />;
   }
-}
+
+  const onSubmit = ({ email, password }) =>
+    mutate({ variables: { email, password } });
+  return (
+    <Formik<FormSchema>
+      onSubmit={onSubmit}
+      validationSchema={schema}
+      initialValues={{
+        email: '',
+        password: '',
+      }}
+    >
+      {() => {
+        return (
+          <Form>
+            <IonGrid>
+              <IonRow>
+                <IonCol>
+                  <Email name="email" label="Email" />
+                  <Password name="password" label="Passphrase" />
+                </IonCol>
+              </IonRow>
+
+              {duplicateUserError ? (
+                <p className="help is-danger">
+                  User already exists. <Link to="/login">Login?</Link>
+                </p>
+              ) : null}
+
+              <IonRow>
+                <IonCol>
+                  <input
+                    type="submit"
+                    style={{
+                      position: 'absolute',
+                      left: '-9999px',
+                      width: '1px',
+                      height: '1px',
+                    }}
+                    tabIndex={-1}
+                  />
+
+                  <IonButton color="primary" expand="block" type="submit">
+                    <IonIcon slot="start" icon={add} />
+                    <IonLabel>Join</IonLabel>
+                  </IonButton>
+                </IonCol>
+              </IonRow>
+            </IonGrid>
+          </Form>
+        );
+      }}
+    </Formik>
+  );
+});
 
 export const Register = props => (
   <IonGrid>
