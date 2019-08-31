@@ -1,3 +1,4 @@
+import { RefresherEventDetail } from '@ionic/core';
 import {
   IonButton,
   IonButtons,
@@ -7,12 +8,14 @@ import {
   IonIcon,
   IonModal,
   IonPage,
+  IonRefresher,
+  IonRefresherContent,
   IonRow,
 } from '@ionic/react';
 import gql from 'graphql-tag';
 import { add } from 'ionicons/icons';
 import * as React from 'react';
-import { useQuery } from 'react-apollo';
+import { QueryResult, useQuery } from 'react-apollo';
 import { Error, TopNav } from '../../components';
 import { BasicListing, BasicListingLoading } from '../../components/listing';
 import { BASIC_LISTING } from '../../queries';
@@ -34,10 +37,11 @@ const MY_LISTINGS = gql`
   }
 `;
 
-const Listings: React.FC = () => {
-  const { loading, error, data } = useQuery<IQuery>(MY_LISTINGS);
+const Listings: React.FC<
+  Pick<QueryResult<IQuery>, 'data' | 'error' | 'loading'>
+> = ({ loading, error, data }) => {
   if (loading) {
-    return <BasicListingLoading />;
+    return <>{BasicListingLoading.list}</>;
   }
   if (error || !data || !data.me || data.me.__typename !== 'User') {
     return <Error value={error} />;
@@ -64,6 +68,13 @@ const CreateListing = ({ show, onCancel }) => (
 
 export const MyListings: React.FC = () => {
   const [showModal, setShowModal] = React.useState(false);
+  const { loading, error, data, refetch } = useQuery<IQuery>(MY_LISTINGS);
+
+  const onRefresh = async (event: CustomEvent<RefresherEventDetail>) => {
+    await refetch();
+    event.detail.complete();
+  };
+
   return (
     <IonPage>
       <TopNav>
@@ -75,6 +86,10 @@ export const MyListings: React.FC = () => {
       </TopNav>
 
       <IonContent>
+        <IonRefresher slot="fixed" onIonRefresh={onRefresh}>
+          <IonRefresherContent></IonRefresherContent>
+        </IonRefresher>
+
         <CreateListing
           show={showModal}
           onCancel={() => setShowModal(false)}
@@ -83,7 +98,7 @@ export const MyListings: React.FC = () => {
         <IonGrid>
           <IonRow>
             <IonCol size="12" sizeLg="10" offsetLg="1">
-              <Listings />
+              <Listings loading={loading} error={error} data={data} />
             </IonCol>
           </IonRow>
         </IonGrid>

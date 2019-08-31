@@ -13,6 +13,7 @@ import {
   IonSkeletonText,
   IonText,
 } from '@ionic/react';
+import { range } from 'lodash';
 import * as React from 'react';
 import { IListing } from '../schema.gql';
 import { classes } from '../util';
@@ -203,3 +204,5 @@ export const BasicListingLoading = () => (
     </WrapLabel>
   </IonItem>
 );
+
+BasicListingLoading.list = range(10).map(n => <BasicListingLoading key={n} />);

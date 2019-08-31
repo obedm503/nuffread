@@ -18,7 +18,6 @@ import {
   IonThumbnail,
 } from '@ionic/react';
 import { close, logoUsd } from 'ionicons/icons';
-import { range } from 'lodash';
 import * as React from 'react';
 import { useMutation, useQuery } from 'react-apollo';
 import { Error, Loading, TopNav, WrapLabel } from '../../components';
@@ -35,8 +34,6 @@ type Props = {
   onClick: (book: IGoogleBook) => void;
   title?: string;
 };
-
-const placeholders = range(10).map(n => <BasicListingLoading key={n} />);
 
 const Book: React.FC<{ onClick?; book: IGoogleBook }> = ({ onClick, book }) => (
   <IonItem button={!!onClick} onClick={onClick}>
@@ -73,7 +70,9 @@ class Books extends React.PureComponent<Props> {
     const { books, loading, title } = this.props;
 
     if (loading || !Array.isArray(books)) {
-      return <ListWrapper title={title}>{placeholders}</ListWrapper>;
+      return (
+        <ListWrapper title={title}>{BasicListingLoading.list}</ListWrapper>
+      );
     }
 
     if (!books.length) {
