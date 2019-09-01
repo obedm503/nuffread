@@ -20,5 +20,8 @@
     "@gql2ts/types": "^1.9.0",
     "gql2ts": "^1.7.1",
     "nodemon": "^1.19.1"
+  },
+  "resolutions": {
+    "graphql": "14.5.4"
   }
 }
