@@ -28,21 +28,19 @@ export const Landing = () => {
       <IonContent>
         <IonGrid>
           <IonRow>
-            <IonCol size="10" offset="1" sizeMd="6">
+            <IonCol size="10" offset="1" sizeMd="4">
               <h1>
                 <IonText color="primary">nuffread</IonText> is
               </h1>
-              <ul>
-                <li>open book marketplace</li>
-                <li>free</li>
-                <li>convenient</li>
-                <li>transparent</li>
-                <li>experiment</li>
-                <li>closed alpha</li>
-              </ul>
+
+              <IonList lines="inset">
+                <IonItem>Open book markerplace</IonItem>
+                <IonItem>Transparent</IonItem>
+                <IonItem>Closed alpha stage</IonItem>
+              </IonList>
             </IonCol>
 
-            <IonCol size="10" offset="1" sizeMd="4" offsetMd="0">
+            <IonCol size="10" offset="1" sizeMd="4" offsetMd="2">
               <h1>Request early access</h1>
 
               <form name="early-access" method="POST" data-netlify="true">
