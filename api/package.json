@@ -45,6 +45,6 @@
     "dotenv-safe": "^6.1.0",
     "nodemon": "^1.19.0",
     "ts-node": "^8.1.0",
-    "typescript": "^3.5.2"
+    "typescript": "3.5.3"
   }
 }
