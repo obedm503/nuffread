@@ -198,7 +198,7 @@ export class New extends React.PureComponent<
     return (
       <IonPage>
         <TopNav>
-          <IonButtons>
+          <IonButtons slot="secondary">
             <IonButton onClick={this.props.onCancel}>
               <IonIcon slot="icon-only" icon={close}></IonIcon>
             </IonButton>
