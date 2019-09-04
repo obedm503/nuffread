@@ -18,7 +18,7 @@ export default class Private extends React.PureComponent {
     return (
       <IonTabs>
         <IonRouterOutlet>
-          <Redirect from="/" exact to="/listings" />
+          <Redirect from="/" exact to="/search" />
           <Route path="/:tab(listings)" exact component={MyListings} />
           <Route path="/:tab(profile)" exact component={Profile} />
           <Route path="/:tab(search)" exact component={Search} />
