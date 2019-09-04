@@ -14,7 +14,7 @@ const routes: RouteProps[] = [
   { path: '/', component: Home },
 ];
 
-export const Join: React.FC<RouteComponentProps<{}>> = ({ match }) => (
+export default ({ match }: RouteComponentProps<{}>) => (
   <>
     <TopNav>
       <IonButtons slot="start">

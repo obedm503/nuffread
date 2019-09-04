@@ -9,13 +9,14 @@ import {
   IonList,
   IonRow,
   IonText,
+  IonButtons,
 } from '@ionic/react';
 import * as React from 'react';
 import { Redirect } from 'react-router';
-import { TopNav } from '../../components';
+import { TopNav, IonButtonLink } from '../../components';
 import { useRouter } from '../../state/router';
 
-export const Landing = () => {
+export default () => {
   const { location } = useRouter();
   if (location.pathname !== '/') {
     return <Redirect to="/" />;
@@ -23,7 +24,11 @@ export const Landing = () => {
 
   return (
     <>
-      <TopNav />
+      <TopNav>
+        <IonButtons slot="end">
+          <IonButtonLink href="/login">Login</IonButtonLink>
+        </IonButtons>
+      </TopNav>
 
       <IonContent>
         <IonGrid>
