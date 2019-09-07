@@ -39,7 +39,7 @@ export default () => {
               </h1>
 
               <IonList lines="inset">
-                <IonItem>Open book markerplace</IonItem>
+                <IonItem>Open book marketplace</IonItem>
                 <IonItem>Transparent</IonItem>
                 <IonItem>Closed alpha stage</IonItem>
               </IonList>
