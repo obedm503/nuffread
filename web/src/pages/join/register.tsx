@@ -11,10 +11,8 @@ import {
 import { Form, Formik } from 'formik';
 import gql from 'graphql-tag';
 import { add } from 'ionicons/icons';
-import { join } from 'path';
 import * as React from 'react';
 import { useMutation } from 'react-apollo';
-import { Redirect, RouteComponentProps } from 'react-router';
 import { Link } from 'react-router-dom';
 import * as yup from 'yup';
 import { Email, Password } from '../../components';
@@ -41,13 +39,19 @@ const schema = yup.object<FormSchema>().shape({
   password: passwordSchema,
 });
 
-const RegisterForm = React.memo<RouteComponentProps>(({ match }) => {
+const RegisterSuccess = () => <>Click the confirmation link in your email.</>;
+
+const RegisterForm: React.FC = () => {
   const [mutate, { error, data }] = useMutation<IMutation>(REGISTER);
+
+  const noIntiveError =
+    error && error.graphQLErrors.find(err => err.message === 'NO_INVITE');
+
   const duplicateUserError =
     error && error.graphQLErrors.find(err => err.message === 'DUPLICATE_USER');
 
   if (data && data.register) {
-    return <Redirect to={join(match.url, '../confirm', data.register)} />;
+    return <RegisterSuccess />;
   }
 
   const onSubmit = ({ email, password }) =>
@@ -72,9 +76,16 @@ const RegisterForm = React.memo<RouteComponentProps>(({ match }) => {
                 </IonCol>
               </IonRow>
 
+              {noIntiveError ? (
+                <p className="help is-danger">
+                  You need an invite first. <Link to="/">Request invite?</Link>
+                </p>
+              ) : null}
+
               {duplicateUserError ? (
                 <p className="help is-danger">
-                  User already exists. <Link to="/login">Login?</Link>
+                  This email is already registered.{' '}
+                  <Link to="/login">Login?</Link>
                 </p>
               ) : null}
 
@@ -103,7 +114,7 @@ const RegisterForm = React.memo<RouteComponentProps>(({ match }) => {
       }}
     </Formik>
   );
-});
+};
 
 export const Register = props => (
   <IonGrid>

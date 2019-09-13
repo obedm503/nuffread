@@ -17,6 +17,7 @@ import * as express from 'express';
 import * as session from 'express-session';
 import { Admin } from './admin/admin.entity';
 import { Book } from './book/book.entity';
+import { Invite } from './invite/invite.entity';
 import { Listing } from './listing/listing.entity';
 import { getContext, getSchema } from './schema';
 import { School } from './school/school.entity';
@@ -99,7 +100,12 @@ apollo.applyMiddleware({
 });
 
 (async () => {
-  await db.connect([User, School, Admin, Listing, Book]);
+  const con = await db.connect([User, School, Admin, Listing, Book, Invite]);
+
+  // await con.undoLastMigration();
+  // run pending migrations
+  await con.runMigrations({ transaction: true });
+  // await con.synchronize();
 
   const server = app.listen(port, () => {
     console.info(`Listening on port ${port}`);

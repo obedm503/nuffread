@@ -17,24 +17,30 @@ export class AuthenticationError extends AuthError {
   }
 }
 
-export function isUser(user?: Admin | User): user is User {
-  if (!user) {
+export function isUser(me?: Admin | User): me is User {
+  if (!me) {
     throw new AuthenticationError();
   }
-  if (!(user instanceof User)) {
+  if (!(me instanceof User)) {
     throw new AuthorizationError();
   }
 
-  return user instanceof User;
+  return me instanceof User;
 }
 
-export function isAdmin(user?: Admin | User): user is Admin {
-  if (!user) {
+export function isAdmin(me?: Admin | User): me is Admin {
+  if (!me) {
     throw new AuthenticationError();
   }
-  if (!(user instanceof Admin)) {
+  if (!(me instanceof Admin)) {
     throw new AuthorizationError();
   }
 
-  return user instanceof Admin;
+  return me instanceof Admin;
+}
+export function isPublic(me?: Admin | User): me is undefined {
+  if (me) {
+    throw new AuthenticationError();
+  }
+  return !me;
 }

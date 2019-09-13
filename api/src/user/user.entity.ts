@@ -1,23 +1,22 @@
+import { IsDate, IsEmail, IsNotEmpty, IsString } from 'class-validator';
 import {
-  IsDate,
-  IsEmail,
-  IsNotEmpty,
-  IsString,
-  registerDecorator,
-  ValidationOptions,
-} from 'class-validator';
-import { BaseEntity, Column, Entity, OneToMany, Unique } from 'typeorm';
+  Column,
+  Entity,
+  JoinColumn,
+  OneToMany,
+  OneToOne,
+  Unique,
+} from 'typeorm';
+import { Invite } from '../invite/invite.entity';
 import { Listing } from '../listing/listing.entity';
-import { Created, PrimaryKey, Updated } from '../util/db';
+import { Base, Created, IsEdu, PrimaryKey, Updated } from '../util/db';
 import { send } from '../util/email';
-const btoa = require('btoa');
 
 export const sendConfirmationEmail = async (
   base: string,
-  id: string,
-  email: string,
+  { email, confirmCode }: { email: string; confirmCode: string },
 ) => {
-  const link = `${base}/confirm/${btoa(id)}`;
+  const link = `${base}/confirm/${confirmCode}`;
   await send({
     email,
     subject: 'Click to confirm email',
@@ -25,25 +24,9 @@ export const sendConfirmationEmail = async (
   });
 };
 
-function IsEdu(validationOptions?: ValidationOptions) {
-  return function(object: Object, propertyName: string) {
-    registerDecorator({
-      name: 'isEdu',
-      target: object.constructor,
-      propertyName: propertyName,
-      options: validationOptions,
-      validator: {
-        validate(value: any) {
-          return typeof value === 'string' && value.endsWith('.edu');
-        },
-      },
-    });
-  };
-}
-
 @Entity()
 @Unique(['email'])
-export class User extends BaseEntity {
+export class User extends Base {
   @PrimaryKey()
   readonly id: string;
 
@@ -78,4 +61,8 @@ export class User extends BaseEntity {
 
   @OneToMany(() => Listing, listing => listing.user)
   listings: Listing[];
+
+  @OneToOne(() => Invite, invite => invite.user)
+  @JoinColumn({ name: 'email', referencedColumnName: 'email' })
+  invite: Invite;
 }

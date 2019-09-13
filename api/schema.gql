@@ -12,7 +12,8 @@ type Query {
   me: SystemUser
 
   listing(id: ID!): Listing
-  users: [User!]!
+
+  invites: [Invite!]!
 
   searchGoogle(query: String!): [GoogleBook!]
   googleBook(id: ID!): GoogleBook!
@@ -25,13 +26,23 @@ type Mutation {
   createSchool(school: SchoolInput!): School!
   deleteSchool(id: ID!): Boolean!
 
-  register(email: String!, password: String!): String!
+  requestInvite(email: String!, name: String!): Boolean!
+  sendInvite(email: String!): Invite!
+
+  register(email: String!, password: String!): Boolean!
   login(email: String!, password: String!, type: SystemUserType!): Boolean!
   logout: Boolean!
-  confirm(id: String!): Boolean!
-  resendEmail(binId: String, email: String): String!
+  confirm(code: String!): Boolean!
+  resendEmail(email: String!): Boolean!
 
   createListing(listing: ListingInput!): Listing!
+}
+
+type Invite {
+  email: String!
+  name: String!
+  user: User
+  invitedAt: Date
 }
 
 type User {
@@ -42,6 +53,9 @@ type User {
   photo: String
 
   listings: [Listing!]!
+  invite: Invite!
+
+  confirmedAt: Date
 }
 
 input UserInput {

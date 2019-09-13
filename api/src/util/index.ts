@@ -1,26 +1,9 @@
-import { UserInputError } from 'apollo-server-express';
-import { validate as validator } from 'class-validator';
 import { Request } from 'express';
-import { BaseEntity, FindOneOptions } from 'typeorm';
+import { FindOneOptions } from 'typeorm';
+import { Base } from './db';
 
-export async function validate<T>(input: T) {
-  const errors = await validator(input, {
-    skipMissingProperties: true,
-    forbidUnknownValues: true,
-  });
-  if (errors.length > 0) {
-    const msg = errors
-      .map(err => {
-        const constraints = Object.values(err.constraints).join(', ');
-        return `${err.property}: ${constraints} got '${input[err.property]}'`;
-      })
-      .join(';\n');
-    throw new UserInputError(msg);
-  }
-}
-
-export async function findOne<T extends BaseEntity>(
-  Ent: typeof BaseEntity,
+export async function findOne<T extends Base>(
+  Ent: typeof Base,
   id: string,
   config?: FindOneOptions<T>,
 ) {

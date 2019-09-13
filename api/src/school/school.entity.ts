@@ -1,11 +1,11 @@
 import { IsNotEmpty } from 'class-validator';
-import { BaseEntity, Column, Entity, OneToMany, Unique } from 'typeorm';
+import { Column, Entity, OneToMany, Unique } from 'typeorm';
 import { Listing } from '../listing/listing.entity';
-import { Created, PrimaryKey, Updated } from '../util/db';
+import { Base, Created, PrimaryKey, Updated } from '../util/db';
 
 @Entity()
 @Unique(['name'])
-export class School extends BaseEntity {
+export class School extends Base {
   @PrimaryKey()
   readonly id: string;
 

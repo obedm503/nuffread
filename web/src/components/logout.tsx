@@ -1,8 +1,8 @@
-import { IonIcon, IonItem, IonLabel } from '@ionic/react';
+import { IonIcon, IonItem, IonLabel, IonButton } from '@ionic/react';
 import gql from 'graphql-tag';
 import { logOut } from 'ionicons/icons';
 import * as React from 'react';
-import { Mutation } from 'react-apollo';
+import { useMutation } from 'react-apollo';
 import { IMutation } from '../schema.gql';
 
 const LOGOUT = gql`
@@ -11,29 +11,32 @@ const LOGOUT = gql`
   }
 `;
 
-export class Logout extends React.PureComponent {
-  onCompleted = (data: IMutation) => {
-    if (
-      data &&
-      data.logout &&
-      typeof window !== 'undefined' &&
-      window.location
-    ) {
-      window.location.href = '/';
-    }
-  };
-  render() {
-    return (
-      <Mutation<IMutation> mutation={LOGOUT} onCompleted={this.onCompleted}>
-        {mutate => {
-          return (
-            <IonItem button onClick={() => mutate()}>
-              <IonIcon slot="start" icon={logOut} />
-              <IonLabel>Logout</IonLabel>
-            </IonItem>
-          );
-        }}
-      </Mutation>
-    );
+const onCompleted = (data: IMutation) => {
+  if (data && data.logout && typeof window !== 'undefined' && window.location) {
+    window.location.href = '/';
   }
-}
+};
+const useLogout = () => {
+  const [mutate] = useMutation(LOGOUT, { onCompleted });
+  return () => mutate();
+};
+
+export const LogoutItem = () => {
+  const onClick = useLogout();
+  return (
+    <IonItem button onClick={onClick}>
+      <IonIcon slot="start" icon={logOut} />
+      <IonLabel>Logout</IonLabel>
+    </IonItem>
+  );
+};
+
+export const LogoutButton = () => {
+  const onClick = useLogout();
+  return (
+    <IonButton onClick={onClick}>
+      <IonIcon slot="start" icon={logOut} />
+      <IonLabel>Logout</IonLabel>
+    </IonButton>
+  );
+};

@@ -5,13 +5,13 @@ import {
   IsString,
   IsUrl,
 } from 'class-validator';
-import { BaseEntity, Column, Entity, Index, OneToMany } from 'typeorm';
+import { Column, Entity, Index, OneToMany } from 'typeorm';
 import { Listing } from '../listing/listing.entity';
-import { Created, PrimaryKey, Updated } from '../util/db';
+import { Base, Created, PrimaryKey, Updated } from '../util/db';
 
 @Entity()
 @Index('book_search_text_idx', { synchronize: false }) // handled by migration
-export class Book extends BaseEntity {
+export class Book extends Base {
   @PrimaryKey()
   readonly id: string;
 

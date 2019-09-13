@@ -1,10 +1,9 @@
-const atob = require('atob');
-const btoa = require('btoa');
 import { ApolloError } from 'apollo-server-core';
 import { compare, hash } from 'bcryptjs';
 import { getConnection } from 'typeorm';
 import { Admin } from '../admin/admin.entity';
 import { Book } from '../book/book.entity';
+import { Invite } from '../invite/invite.entity';
 import { Listing } from '../listing/listing.entity';
 import {
   IConfirmOnMutationArguments,
@@ -12,38 +11,50 @@ import {
   ILoginOnMutationArguments,
   IMutation,
   IRegisterOnMutationArguments,
+  IRequestInviteOnMutationArguments,
   IResendEmailOnMutationArguments,
 } from '../schema.gql';
 import { sendConfirmationEmail, User } from '../user/user.entity';
-import { validate } from '../util';
-import { AuthenticationError, isUser } from '../util/auth';
+import { AuthenticationError, isUser, isAdmin, isPublic } from '../util/auth';
 import { getBook } from '../util/books';
 import { IResolver } from '../util/types';
+import { send } from '../util/email';
 
 export const MutationResolver: IResolver<IMutation> = {
   async register(
     _,
     { email, password }: IRegisterOnMutationArguments,
-    { req },
+    { req, me },
   ) {
+    isPublic(me);
+
     const origin = req.get('origin');
     if (!origin) {
       throw new ApolloError('BAD_REQUEST');
     }
+
+    // email already exists
     if (await User.findOne({ where: { email } })) {
       throw new AuthenticationError('DUPLICATE_USER');
+    }
+
+    const invite = await Invite.findOne({ where: { email } });
+    // only invited users can register
+    if (!invite) {
+      throw new AuthenticationError('NO_INVITE');
     }
 
     const passwordHash = await hash(password, 12);
 
     const user = User.create({ email, passwordHash });
-    await validate(user);
     await User.save(user);
 
-    await sendConfirmationEmail(origin, user.id, user.email);
+    await sendConfirmationEmail(origin, {
+      email: user.email,
+      confirmCode: invite.code,
+    });
 
-    // return id in binary
-    return btoa(user.id);
+    return true;
   },
 
   async login(
@@ -89,27 +100,39 @@ export const MutationResolver: IResolver<IMutation> = {
 
     return true;
   },
-  async confirm(_, { id: binId }: IConfirmOnMutationArguments) {
-    const id = atob(binId);
-    const user = await User.findOne({ where: { id } });
+  async confirm(_, { code }: IConfirmOnMutationArguments, { me }) {
+    isPublic(me);
 
-    if (!user) {
-      throw new AuthenticationError('WRONG_CREDENTIALS');
-    }
+    return await getConnection().transaction(async manager => {
+      const invite = await manager.findOne(Invite, {
+        where: { code },
+      });
+      if (!invite) {
+        throw new AuthenticationError('NO_INVITE');
+      }
 
-    user.confirmedAt = new Date();
-    await User.save(user);
+      const user = await manager.findOne(User, {
+        where: { email: invite.email },
+      });
+      if (!user) {
+        throw new AuthenticationError('WRONG_CREDENTIALS');
+      }
 
-    return true;
+      user.confirmedAt = new Date();
+      await manager.save(user);
+
+      return true;
+    });
   },
   async resendEmail(
     _,
-    { binId, email }: IResendEmailOnMutationArguments,
+    { email }: IResendEmailOnMutationArguments,
     { me, req },
   ) {
+    isPublic(me);
     if (me) {
       // is already logged in, no need to resend
-      return btoa(me.id);
+      throw new AuthenticationError('BAD_REQUEST');
     }
 
     const origin = req.get('origin');
@@ -117,25 +140,16 @@ export const MutationResolver: IResolver<IMutation> = {
       throw new ApolloError('BAD_REQUEST');
     }
 
-    if (!email && !binId) {
-      throw new ApolloError('BAD_REQUEST');
+    const invite = await Invite.findOne({
+      where: { email },
+    });
+    if (!invite) {
+      throw new AuthenticationError('NO_INVITE');
     }
 
-    const user = email
-      ? await User.findOne({ where: { email } })
-      : await User.findOne({ where: { id: atob(binId) } });
+    await sendConfirmationEmail(origin, { email, confirmCode: invite.code });
 
-    if (!isUser(user)) {
-      return '';
-    }
-
-    if (user.confirmedAt) {
-      return btoa(user.id);
-    }
-
-    await sendConfirmationEmail(origin, user.id, user.email);
-
-    return btoa(user.id);
+    return true;
   },
   async createListing(
     _,
@@ -165,5 +179,37 @@ export const MutationResolver: IResolver<IMutation> = {
       );
       return listing;
     });
+  },
+  async requestInvite(
+    _,
+    { email, name }: IRequestInviteOnMutationArguments,
+    { me },
+  ) {
+    isPublic(me);
+
+    if (await Invite.findOne({ where: { email } })) {
+      throw new ApolloError('DUPLICATE_INVITE');
+    }
+
+    const invite = Invite.create({ email, name });
+    await invite.save();
+    return true;
+  },
+  async sendInvite(_, { email }, { me }) {
+    isAdmin(me);
+
+    const invite = await Invite.findOne({ where: { email } });
+    if (!invite) {
+      throw new ApolloError('Invite not found', 'INVALID_CREDENTIALS');
+    }
+    invite.invitedAt = new Date();
+    const sentEmail = send({
+      email,
+      subject: 'Welcome to Nuffread',
+      html: `Your request has been approved. Go to <a href="https://www.nuffread.com/join">nuffread.com/join</a> and go through the standard signup process.
+    `,
+    });
+    const [savedInvite] = await Promise.all([invite.save(), sentEmail]);
+    return savedInvite;
   },
 };

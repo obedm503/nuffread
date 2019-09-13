@@ -1,20 +1,13 @@
 import { IsInstance, IsNotEmpty, IsNumber } from 'class-validator';
-import {
-  BaseEntity,
-  Column,
-  Entity,
-  Index,
-  JoinColumn,
-  ManyToOne,
-} from 'typeorm';
+import { Column, Entity, Index, JoinColumn, ManyToOne } from 'typeorm';
 import { Book } from '../book/book.entity';
 import { School } from '../school/school.entity';
 import { User } from '../user/user.entity';
-import { Created, PrimaryKey, Updated } from '../util/db';
+import { Base, Created, PrimaryKey, Updated } from '../util/db';
 
 @Entity()
 @Index('listing_search_text_idx', { synchronize: false }) // handled by migration
-export class Listing extends BaseEntity {
+export class Listing extends Base {
   @PrimaryKey()
   readonly id: string;
 

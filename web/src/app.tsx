@@ -69,10 +69,11 @@ const Landing = makeLazy(() => import('./pages/landing'));
 const Join = makeLazy(() => import('./pages/join'));
 const Public = makeLazy(() => import('./pages/public'));
 const Private = makeLazy(() => import('./pages/private'));
+const Admin = makeLazy(() => import('./pages/admin'));
 
 const userHome = (user: SystemUser) => {
   if (user.__typename === 'Admin') {
-    return () => <div>Admin page</div>;
+    return Admin;
   }
   return Private;
 };
@@ -83,14 +84,6 @@ const makeRoutes = memoize((user?: SystemUser): RouteProps[] => {
     { path: '/login', exact: true, component: user ? ToHome : UserLogin },
   ];
 
-  if (user) {
-    routes.push({ path: '/', component: userHome(user) });
-  } else if (isReady) {
-    routes.push({ path: '/', component: Public });
-  } else {
-    routes.push({ component: Landing });
-  }
-
   if (isReady) {
     routes.push({ path: '/join', component: user ? ToHome : Join });
   }
@@ -100,6 +93,14 @@ const makeRoutes = memoize((user?: SystemUser): RouteProps[] => {
     exact: true,
     component: user ? ToHome : AdminLogin,
   });
+
+  if (user) {
+    routes.push({ path: '/', component: userHome(user) });
+  } else if (isReady) {
+    routes.push({ path: '/', component: Public });
+  } else {
+    routes.push({ component: Landing });
+  }
 
   return routes;
 });

@@ -5,10 +5,10 @@ import { GraphQLSchema } from 'graphql';
 import { makeExecutableSchema } from 'graphql-tools';
 import { resolve } from 'path';
 import * as Stripe from 'stripe';
-import { BaseEntity } from 'typeorm';
 import { Admin } from './admin/admin.entity';
 import { Book } from './book/book.entity';
 import { BookResolver } from './book/book.resolver';
+import { InviteResolver } from './invite/invite.resolver';
 import { Listing } from './listing/listing.entity';
 import { ListingResolver } from './listing/listing.resolver';
 import { MutationResolver } from './mutation/mutation.resolver';
@@ -18,6 +18,7 @@ import { SystemUser, SystemUserType } from './schema.gql';
 import { School } from './school/school.entity';
 import { User } from './user/user.entity';
 import { UserResolver } from './user/user.resolver';
+import { Base } from './util/db';
 import { IContext, IResolver, IResolvers } from './util/types';
 
 const SystemUserResolver: IResolver<SystemUser, Admin | User> = {
@@ -31,7 +32,7 @@ const SystemUserResolver: IResolver<SystemUser, Admin | User> = {
   },
 };
 
-const makeLoader = <T extends BaseEntity>(Ent: typeof BaseEntity) => {
+const makeLoader = <T extends Base>(Ent: typeof Base) => {
   return new DataLoader(async (ids: string[]) => {
     const items = await Ent.findByIds<T>(ids);
     return ids.map(id => items.find(item => item['id'] === id));
@@ -51,6 +52,7 @@ function createSchema(): GraphQLSchema {
     Book: BookResolver,
     Mutation: MutationResolver,
     User: UserResolver,
+    Invite: InviteResolver,
   };
   return makeExecutableSchema<IContext>({
     typeDefs,

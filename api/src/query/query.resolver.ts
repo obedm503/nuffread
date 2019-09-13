@@ -1,4 +1,5 @@
 import { getConnection } from 'typeorm';
+import { Invite } from '../invite/invite.entity';
 import { Listing } from '../listing/listing.entity';
 import {
   IGoogleBookOnQueryArguments,
@@ -7,13 +8,18 @@ import {
   ISearchGoogleOnQueryArguments,
   ISearchOnQueryArguments,
 } from '../schema.gql';
-import { User } from '../user/user.entity';
-import { isAdmin } from '../util/auth';
+import { isAdmin, isUser } from '../util/auth';
 import { getBook, searchBooks } from '../util/books';
 import { IResolver } from '../util/types';
 
 export const QueryResolver: IResolver<IQuery> = {
-  async search(_, { query, maxPrice, minPrice }: ISearchOnQueryArguments) {
+  async search(
+    _,
+    { query, maxPrice, minPrice }: ISearchOnQueryArguments,
+    { me },
+  ) {
+    isUser(me);
+
     const segments =
       query &&
       query
@@ -65,7 +71,9 @@ export const QueryResolver: IResolver<IQuery> = {
     return listings;
   },
 
-  async top() {
+  async top(_, args, { me }) {
+    isUser(me);
+
     // TODO: implement real top listings, whatever that means
     return await Listing.find({ take: 10, relations: ['book'] });
   },
@@ -74,29 +82,33 @@ export const QueryResolver: IResolver<IQuery> = {
     return me;
   },
 
-  async listing(_, { id }: IListingOnQueryArguments, { listingLoader }) {
+  async listing(_, { id }: IListingOnQueryArguments, { listingLoader, me }) {
+    isUser(me);
+
     return listingLoader.load(id);
   },
 
-  async users(_, args, { me }) {
-    if (!isAdmin(me)) {
-      return [];
-    }
+  async searchGoogle(_, { query }: ISearchGoogleOnQueryArguments, { me }) {
+    isUser(me);
 
-    return User.find();
-  },
-
-  async searchGoogle(_, { query }: ISearchGoogleOnQueryArguments) {
     if (!query) {
       return;
     }
     return await searchBooks(query);
   },
-  async googleBook(_, { id }: IGoogleBookOnQueryArguments) {
+  async googleBook(_, { id }: IGoogleBookOnQueryArguments, { me }) {
+    isUser(me);
+
     const book = await getBook(id);
     if (!book) {
       throw new Error(`Book ${id} not found`);
     }
     return book;
+  },
+
+  async invites(_, args, { me }) {
+    isAdmin(me);
+
+    return Invite.find();
   },
 };

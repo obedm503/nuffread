@@ -9,6 +9,7 @@ export * from './flex';
 export * from './footer';
 export * from './ionic';
 export * from './loading';
+export * from './logout';
 export * from './popover';
 export * from './progress-bar';
 export * from './routes';
