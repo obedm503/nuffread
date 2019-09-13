@@ -24,11 +24,6 @@ export const SEARCH = gql`
   query Search($query: String!) {
     search(query: $query) {
       ...BasicListing
-
-      user {
-        id
-        name
-      }
     }
   }
 `;
@@ -53,11 +48,6 @@ export const GET_LISTING = gql`
   query GetListing($id: ID!) {
     listing(id: $id) {
       ...BasicListing
-
-      user {
-        id
-        name
-      }
     }
   }
 `;

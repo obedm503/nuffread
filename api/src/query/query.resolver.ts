@@ -18,8 +18,6 @@ export const QueryResolver: IResolver<IQuery> = {
     { query, maxPrice, minPrice }: ISearchOnQueryArguments,
     { me },
   ) {
-    isUser(me);
-
     const segments =
       query &&
       query
@@ -72,8 +70,6 @@ export const QueryResolver: IResolver<IQuery> = {
   },
 
   async top(_, args, { me }) {
-    isUser(me);
-
     // TODO: implement real top listings, whatever that means
     return await Listing.find({ take: 10, relations: ['book'] });
   },
@@ -83,8 +79,6 @@ export const QueryResolver: IResolver<IQuery> = {
   },
 
   async listing(_, { id }: IListingOnQueryArguments, { listingLoader, me }) {
-    isUser(me);
-
     return listingLoader.load(id);
   },
 
