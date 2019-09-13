@@ -1,48 +1,52 @@
 import * as React from 'react';
+import { IonIcon } from '@ionic/react';
 
-export class SafeImg extends React.PureComponent<{
-  src?: string;
-  alt: string;
-  slot?: string;
-  placeholder: string;
-  style?: React.CSSProperties;
-}> {
-  state = { hasError: false, loaded: false };
-  onError = () => {
-    this.setState({ hasError: true });
-  };
-  onLoad = () => {
-    this.setState({ loaded: true });
-  };
-  componentDidMount() {
-    if (!this.props.src) {
+const useImage = (src?: string) => {
+  const [error, setError] = React.useState<string | Event | undefined>(
+    undefined,
+  );
+  const [loading, setLoading] = React.useState(true);
+
+  React.useEffect(() => {
+    if (!src) {
       return;
     }
     const img = new Image();
-    this.img = img;
-    img.src = this.props.src;
-    img.onload = this.onLoad;
-    img.onerror = this.onError;
+
+    img.src = src;
+    img.onload = e => setLoading(false);
+    img.onerror = e => setError(e);
+
+    return () => {
+      img.onload = null;
+      img.onerror = null;
+    };
+  }, [src]);
+
+  return { loading, error };
+};
+
+export const SafeImg: React.FC<{
+  src?: string;
+  alt: string;
+  slot?: string;
+  placeholder: string | { ios: string; md: string };
+  style?: React.CSSProperties;
+}> = ({ placeholder, slot, alt, style, ...props }) => {
+  const { error, loading } = useImage(props.src);
+
+  let src = (error ? placeholder : props.src) || placeholder;
+  src = loading ? placeholder : src;
+
+  if (typeof src !== 'string') {
+    return <IonIcon icon={src} style={style as any}></IonIcon>;
   }
-  img?: HTMLImageElement;
-  componentWillUnmount() {
-    if (!this.img) {
-      return;
-    }
-    this.img.onload = null;
-    this.img.onerror = null;
-  }
-  render() {
-    const { placeholder, slot, alt, style } = this.props;
-    const { hasError, loaded } = this.state;
-    const src = (hasError ? placeholder : this.props.src) || placeholder;
-    return (
-      <img
-        slot={slot}
-        src={loaded ? src : placeholder}
-        style={style}
-        alt={alt}
-      />
-    );
-  }
-}
+  return (
+    <img
+      slot={slot}
+      src={src}
+      style={Object.assign({ width: 'auto' }, style)}
+      alt={alt}
+    />
+  );
+};
