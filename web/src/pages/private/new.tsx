@@ -20,7 +20,7 @@ import {
 import { close, logoUsd } from 'ionicons/icons';
 import * as React from 'react';
 import { useMutation, useQuery } from 'react-apollo';
-import { Error, Loading, TopNav, WrapLabel } from '../../components';
+import { Error, Loading, TopNav } from '../../components';
 import { ListWrapper } from '../../components/list-wrapper';
 import { BasicListingLoading, Listing } from '../../components/listing';
 import { SafeImg } from '../../components/safe-img';
@@ -44,7 +44,7 @@ const Book: React.FC<{ onClick?; book: IGoogleBook }> = ({ onClick, book }) => (
         placeholder="/img/book.png"
       />
     </IonThumbnail>
-    <WrapLabel>
+    <IonLabel class="ion-text-wrap">
       {book.title}
       <br />
 
@@ -58,7 +58,7 @@ const Book: React.FC<{ onClick?; book: IGoogleBook }> = ({ onClick, book }) => (
       <small>{book.authors.join(', ')}</small>
       <br></br>
       <small>{book.isbn.join(', ')}</small>
-    </WrapLabel>
+    </IonLabel>
   </IonItem>
 );
 

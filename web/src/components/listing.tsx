@@ -17,7 +17,6 @@ import { range } from 'lodash';
 import * as React from 'react';
 import { IListing } from '../schema.gql';
 import { classes } from '../util';
-import { WrapLabel } from './ionic';
 import { SafeImg } from './safe-img';
 
 export const LoadingListing = () => (
@@ -173,7 +172,7 @@ export const BasicListing: React.FC<{ onClick?; listing: IListing }> = ({
       placeholder="/img/book.png"
       slot="start"
     />
-    <WrapLabel>
+    <IonLabel class="ion-text-wrap">
       {listing.book.title}
       <br />
 
@@ -187,7 +186,7 @@ export const BasicListing: React.FC<{ onClick?; listing: IListing }> = ({
       <small>{listing.book.authors.join(', ')}</small>
       <br />
       <IonBadge color="secondary">${listing.price / 100}</IonBadge>
-    </WrapLabel>
+    </IonLabel>
   </IonItem>
 );
 export const BasicListingLoading = () => (
@@ -197,11 +196,11 @@ export const BasicListingLoading = () => (
       animated
       style={{ width: '128px', height: '180px' }} // 9:6 aspect ratio
     />
-    <WrapLabel>
+    <IonLabel class="ion-text-wrap">
       <IonSkeletonText animated style={{ width: '90%' }} />
       <IonSkeletonText animated style={{ width: '60%' }} />
       <IonSkeletonText animated style={{ width: '50%' }} />
-    </WrapLabel>
+    </IonLabel>
   </IonItem>
 );
 

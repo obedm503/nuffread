@@ -25,11 +25,11 @@ function addRouter<T extends React.ComponentType>(Comp: T) {
     ...props
   }) => {
     const isActive = location.pathname === props.href;
-
+    const color = isActive ? activeColor : (props as any).color;
     return (
       <Component
         {...props}
-        color={isActive ? activeColor : (props as any).color}
+        color={color || null}
         onClick={e => {
           e.preventDefault();
 
@@ -46,8 +46,3 @@ function addRouter<T extends React.ComponentType>(Comp: T) {
 
 export const IonButtonLink = addRouter(IonButton);
 export const IonItemLink = addRouter(IonItem);
-
-export const WrapLabel = ({ children }) => (
-  // @ts-ignore
-  <ion-label text-wrap>{children}</ion-label>
-);
