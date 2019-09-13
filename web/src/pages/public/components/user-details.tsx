@@ -1,71 +1,131 @@
 import {
-  IonButton,
   IonButtons,
+  IonCard,
   IonIcon,
-  IonImg,
   IonItem,
   IonLabel,
-  IonCard,
+  IonSkeletonText,
 } from '@ionic/react';
 import { call, logoFacebook, mail, person } from 'ionicons/icons';
 import * as React from 'react';
-import { IonButtonLink } from '../../../components';
+import { Link } from 'react-router-dom';
+import { IonButtonLink, Error } from '../../../components';
+import { SafeImg } from '../../../components/safe-img';
+import { useUser } from '../../../state';
+import { useQuery } from 'react-apollo';
+import { IQuery } from '../../../schema.gql';
+import gql from 'graphql-tag';
 
-export class UserDetails extends React.PureComponent<
-  {
-    listingId: string;
-  },
-  { showSeller: boolean }
-> {
-  state = { showSeller: false };
-  onClick = () => {
-    this.setState({ showSeller: true });
-  };
-  render() {
-    if (!this.state.showSeller) {
-      return (
-        <IonButton expand="block" onClick={this.onClick}>
-          <IonIcon icon={person} />
+const userHidden = (
+  <IonCard color="white">
+    <IonItem lines="none" color="white">
+      <IonIcon
+        slot="start"
+        icon={person}
+        style={{ fontSize: '8rem' }}
+      ></IonIcon>
 
-          <IonLabel>View Seller</IonLabel>
-        </IonButton>
-      );
+      <IonLabel class="ion-text-wrap">
+        <IonSkeletonText style={{ background: 'black' }}></IonSkeletonText>
+        <h2>
+          <Link to="/login">Login</Link> to see contact information.
+        </h2>
+        <IonSkeletonText style={{ background: 'black' }}></IonSkeletonText>
+      </IonLabel>
+    </IonItem>
+  </IonCard>
+);
+
+const userLoading = (
+  <IonCard color="white">
+    <IonItem lines="none" color="white">
+      <IonSkeletonText
+        slot="start"
+        animated
+        style={{ height: '9rem', width: '7rem' }}
+      />
+
+      <IonLabel class="ion-text-wrap">
+        <IonSkeletonText animated style={{ width: '5rem' }}></IonSkeletonText>
+        <IonSkeletonText animated style={{ width: '6rem' }}></IonSkeletonText>
+      </IonLabel>
+    </IonItem>
+  </IonCard>
+);
+
+const GET_LISTING_SELLER = gql`
+  query GetListing($id: ID!) {
+    listing(id: $id) {
+      id
+      user {
+        id
+        name
+        email
+      }
     }
-
-    return (
-      <IonCard color="white">
-        <IonItem lines="none" color="white">
-          <IonImg slot="start" src="/img/book.png" />
-
-          <IonLabel>
-            <p>
-              <strong>John Doe</strong>
-              <br />
-              <small>Dordt University</small>
-              <br />
-              <small>
-                <a href="mailto: john.doe@mail.com">john.doe@mail.com</a>
-              </small>
-              <br />
-              <small>
-                <a href="tel: +123456789">+123456789</a>
-              </small>
-            </p>
-
-            <IonButtons>
-              <IonButtonLink href="#">
-                <IonIcon slot="icon-only" size="small" icon={call} />
-              </IonButtonLink>
-              <IonButtonLink href="#">
-                <IonIcon slot="icon-only" size="small" icon={logoFacebook} />
-              </IonButtonLink>
-              <IonButtonLink href="#">
-                <IonIcon slot="icon-only" size="small" icon={mail} />
-              </IonButtonLink>
-            </IonButtons>
-          </IonLabel>
-        </IonItem>
-      </IonCard>
-    );
   }
-}
+`;
+const UserInfo = ({ listingId }) => {
+  const { loading, error, data } = useQuery<IQuery>(GET_LISTING_SELLER, {
+    variables: { id: listingId },
+  });
+  if (loading) {
+    return userLoading;
+  }
+  if (error) {
+    return <Error value={error}></Error>;
+  }
+  const user = data!.listing!.user;
+  return (
+    <IonCard color="white">
+      <IonItem lines="none" color="white">
+        <SafeImg
+          style={{ fontSize: '8rem' }}
+          slot="start"
+          src={user.photo}
+          alt={user.name}
+          placeholder={person}
+        ></SafeImg>
+
+        <IonLabel>
+          <p>
+            <strong>{user.name}</strong>
+            <br />
+            <small>Dordt University</small>
+            <br />
+            <small>
+              <a href={`mailto: ${user.email}`}>{user.email}`}</a>
+            </small>
+            <br />
+            <small>
+              <a href="tel: +123456789">+123456789</a>
+            </small>
+          </p>
+
+          <IonButtons>
+            <IonButtonLink href="#">
+              <IonIcon slot="icon-only" size="small" icon={call} />
+            </IonButtonLink>
+            <IonButtonLink href="#">
+              <IonIcon slot="icon-only" size="small" icon={logoFacebook} />
+            </IonButtonLink>
+            <IonButtonLink href="#">
+              <IonIcon slot="icon-only" size="small" icon={mail} />
+            </IonButtonLink>
+          </IonButtons>
+        </IonLabel>
+      </IonItem>
+    </IonCard>
+  );
+};
+
+export const UserDetails: React.FC<{
+  listingId: string;
+}> = ({ listingId }) => {
+  const user = useUser();
+  if (!user) {
+    return userHidden;
+  }
+
+  return <UserInfo listingId={listingId}></UserInfo>;
+};
