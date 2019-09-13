@@ -1,6 +1,6 @@
 import gql from 'graphql-tag';
 import * as React from 'react';
-import { Query } from 'react-apollo';
+import { useQuery } from 'react-apollo';
 import { Error } from '../../../components';
 import { BASIC_LISTING } from '../../../queries';
 import { IQuery } from '../../../schema.gql';
@@ -12,11 +12,6 @@ const TOP_LISTINGS = gql`
   query TopListings {
     top {
       ...BasicListing
-
-      user {
-        id
-        name
-      }
     }
   }
 `;
@@ -24,21 +19,16 @@ const TOP_LISTINGS = gql`
 export const TopListings: React.FC<{
   onClick;
 }> = ({ onClick }) => {
+  const { error, data, loading } = useQuery<IQuery>(TOP_LISTINGS);
+  if (error) {
+    return <Error value={error} />;
+  }
   return (
-    <Query<IQuery> query={TOP_LISTINGS}>
-      {({ error, data, loading }) => {
-        if (error) {
-          return <Error value={error} />;
-        }
-        return (
-          <Listings
-            loading={loading}
-            onClick={onClick}
-            listings={data && data.top}
-            title="Top Listings"
-          />
-        );
-      }}
-    </Query>
+    <Listings
+      loading={loading}
+      onClick={onClick}
+      listings={data && data.top}
+      title="Top Listings"
+    />
   );
 };

@@ -1,5 +1,4 @@
 import { IonRouterOutlet } from '@ionic/react';
-import { ViewManager } from '@ionic/react-router';
 import * as React from 'react';
 import { Route, RouteProps, Switch } from 'react-router';
 import { normalizeUrl } from '../util';
@@ -34,10 +33,6 @@ export class Routes extends React.PureComponent<Props> {
 
 export class IonRoutes extends React.PureComponent<Props> {
   render() {
-    return (
-      <ViewManager>
-        <IonRouterOutlet>{mapRoutes(this.props)}</IonRouterOutlet>
-      </ViewManager>
-    );
+    return <IonRouterOutlet>{mapRoutes(this.props)}</IonRouterOutlet>;
   }
 }
