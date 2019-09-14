@@ -22,24 +22,6 @@
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
 
-    <!-- static form based on
-      https://www.netlify.com/blog/2017/07/20/how-to-integrate-netlifys-form-handling-in-a-react-app/
-    -->
-    <%if (process.env.NODE_ENV === 'production' && process.env.REACT_APP_MODE
-    !== 'ready') { %>
-    <form
-      name="early-access"
-      method="POST"
-      data-netlify="true"
-      netlify-honeypot="bot-field"
-      hidden
-    >
-      <input type="hidden" name="form-name" value="early-access" />
-      <input type="text" name="name" />
-      <input type="email" name="email" />
-    </form>
-    <% } %>
-
     <div id="root"></div>
   </body>
 </html>
