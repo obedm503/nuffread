@@ -18,6 +18,7 @@ import { SystemUser, SystemUserType } from './schema.gql';
 import { School } from './school/school.entity';
 import { User } from './user/user.entity';
 import { UserResolver } from './user/user.resolver';
+import { logger } from './util';
 import { Base } from './util/db';
 import { IContext, IResolver, IResolvers } from './util/types';
 
@@ -34,7 +35,7 @@ const SystemUserResolver: IResolver<SystemUser, Admin | User> = {
 
 const makeLoader = <T extends Base>(Ent: typeof Base) => {
   return new DataLoader(async (ids: string[]) => {
-    console.log(Ent.name, ids);
+    logger.debug(Ent.name, ids);
     const items = await Ent.findByIds<T>(ids);
     return ids.map(id => items.find(item => item['id'] === id));
   });

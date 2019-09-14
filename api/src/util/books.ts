@@ -1,3 +1,4 @@
+import { logger } from '.';
 import { IGoogleBook } from '../schema.gql';
 
 type GoogleBook = {
@@ -98,7 +99,7 @@ const formatBook = (book: GoogleBook): IGoogleBook | undefined => {
         : undefined,
     };
   } catch (e) {
-    console.error(e);
+    logger.error(e);
   }
 };
 

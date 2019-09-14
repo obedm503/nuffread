@@ -22,6 +22,7 @@ import { Listing } from './listing/listing.entity';
 import { getContext, getSchema } from './schema';
 import { School } from './school/school.entity';
 import { User } from './user/user.entity';
+import { logger } from './util';
 import * as db from './util/db';
 
 const Store = pgSession(session);
@@ -71,11 +72,18 @@ const apollo = new ApolloServer({
   context: ({ req, res }) => {
     if (!production) {
       const { operationName, variables, query } = req.body;
-      console.info('\nIncoming Request');
-      console.info(
-        JSON.stringify({ operationName, variables }, null, 2),
-        query,
+      logger.debug('Incoming Request');
+      logger.debug(
+        JSON.stringify(
+          {
+            operationName,
+            variables,
+          },
+          null,
+          2,
+        ),
       );
+      logger.debug(query);
     }
     return getContext({ req, res });
   },
@@ -102,15 +110,15 @@ apollo.applyMiddleware({
   // await con.synchronize();
 
   const server = app.listen(port, () => {
-    console.info(`Listening on port ${port}`);
+    logger.info(`Listening on port ${port}`);
   });
 
   const close = async () => {
     await new Promise(resolve => {
-      console.info('Closing server');
+      logger.info('Closing server');
       server.close(resolve);
     });
-    console.info('Closing db');
+    logger.info('Closing db');
     await db.close();
   };
   process.once('exit', close);
@@ -118,4 +126,4 @@ apollo.applyMiddleware({
     await close();
     process.kill(process.pid, 'SIGUSR2');
   });
-})().catch(e => console.error('main error', e));
+})().catch(e => logger.error('main error', e));

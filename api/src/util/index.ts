@@ -1,4 +1,5 @@
 import { Request } from 'express';
+import * as pino from 'pino';
 import { FindOneOptions } from 'typeorm';
 import { Base } from './db';
 
@@ -27,3 +28,9 @@ export const sleep = (timeout: number): Promise<void> =>
   new Promise(res => {
     setTimeout(res, timeout);
   });
+
+export const logger = pino({
+  prettyPrint: process.env.NODE_ENV !== 'production' && {
+    ignore: 'pid,hostname,time',
+  },
+});
