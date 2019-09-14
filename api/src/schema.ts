@@ -34,6 +34,7 @@ const SystemUserResolver: IResolver<SystemUser, Admin | User> = {
 
 const makeLoader = <T extends Base>(Ent: typeof Base) => {
   return new DataLoader(async (ids: string[]) => {
+    console.log(Ent.name, ids);
     const items = await Ent.findByIds<T>(ids);
     return ids.map(id => items.find(item => item['id'] === id));
   });

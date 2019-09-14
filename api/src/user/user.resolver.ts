@@ -13,9 +13,7 @@ export const UserResolver: IResolver<IUser, User> = {
     return user.name || user.email;
   },
   async listings(user, args, { me }) {
-    if (!isUser(me)) {
-      return [];
-    }
+    isUser(me);
     const listings = await Listing.find({
       where: { userId: user.id },
       order: { createdAt: 'DESC' },

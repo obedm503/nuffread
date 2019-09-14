@@ -70,17 +70,11 @@ app.use((req, res, next) => {
 const apollo = new ApolloServer({
   context: ({ req, res }) => {
     if (!production) {
-      const { operationName, variables } = req.body;
+      const { operationName, variables, query } = req.body;
       console.info('\nIncoming Request');
       console.info(
-        JSON.stringify(
-          {
-            operationName,
-            variables,
-          },
-          null,
-          2,
-        ),
+        JSON.stringify({ operationName, variables }, null, 2),
+        query,
       );
     }
     return getContext({ req, res });

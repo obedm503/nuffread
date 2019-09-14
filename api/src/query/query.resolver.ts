@@ -69,7 +69,7 @@ export const QueryResolver: IResolver<IQuery> = {
     return listings;
   },
 
-  async top(_, args, { me }) {
+  async top(_, args) {
     // TODO: implement real top listings, whatever that means
     return await Listing.find({ take: 10, relations: ['book'] });
   },
@@ -78,7 +78,7 @@ export const QueryResolver: IResolver<IQuery> = {
     return me;
   },
 
-  async listing(_, { id }: IListingOnQueryArguments, { listingLoader, me }) {
+  listing(_, { id }: IListingOnQueryArguments, { listingLoader }) {
     return listingLoader.load(id);
   },
 
