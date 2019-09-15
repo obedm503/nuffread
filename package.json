@@ -22,7 +22,7 @@
     "nodemon": "^1.19.1"
   },
   "resolutions": {
-    "graphql": "14.5.4"
+    "graphql": "14.5.5"
   },
   "engines": {
     "node": "10.16.x",
