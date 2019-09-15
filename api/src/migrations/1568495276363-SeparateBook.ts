@@ -18,9 +18,6 @@ export class SeparateBook1568495276363 implements MigrationInterface {
       )`,
     );
 
-    await queryRunner.query(
-      `ALTER TABLE "listing" DROP CONSTRAINT "FK_00e1e709436862a20ae074f111b"`,
-    );
     await queryRunner.query(`ALTER TABLE "listing" DROP COLUMN "google_id"`);
     await queryRunner.query(`ALTER TABLE "listing" DROP COLUMN "etag"`);
     await queryRunner.query(`ALTER TABLE "listing" DROP COLUMN "isbn"`);
@@ -79,8 +76,5 @@ export class SeparateBook1568495276363 implements MigrationInterface {
       `ALTER TABLE "listing" ADD "google_id" character varying NOT NULL`,
     );
     await queryRunner.query(`DROP TABLE "book"`);
-    await queryRunner.query(
-      `ALTER TABLE "listing" ADD CONSTRAINT "FK_00e1e709436862a20ae074f111b" FOREIGN KEY ("user_id") REFERENCES "seller"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
-    );
   }
 }
