@@ -1,16 +1,12 @@
 const production = process.env.NODE_ENV === 'production';
 const { join, resolve } = require('path');
-
-if (!production) {
-  const { config } = require('dotenv-safe');
-  config({
-    path: resolve(__dirname, '../.env'),
-    example: resolve(__dirname, '../.env.example'),
-  });
-}
-
+require('dotenv-safe').config({
+  path: production ? undefined : resolve(__dirname, '../.env'),
+  example: resolve(__dirname, '../.env.example'),
+});
 require('isomorphic-fetch');
 require('reflect-metadata');
+
 import { ApolloServer } from 'apollo-server-express';
 import * as pgSession from 'connect-pg-simple';
 import * as express from 'express';
