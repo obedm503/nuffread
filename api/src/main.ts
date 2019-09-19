@@ -45,9 +45,9 @@ const app = express()
 
 if (production) {
   // force ssl
-  app.use((req: express.Request, res: express.Response, next) => {
+  app.use((req, res, next) => {
     if (req.header('x-forwarded-proto') !== 'https') {
-      res.redirect(join(`https://${req.hostname}`, req.url));
+      res.redirect(301, join(`https://${req.hostname}`, req.url));
     } else {
       next();
     }
@@ -55,15 +55,6 @@ if (production) {
 }
 
 const port = Number(process.env.PORT) || 8081;
-app.use((req, res, next) => {
-  if (!process.env.URL) {
-    process.env.URL =
-      req.hostname === 'localhost'
-        ? `${req.protocol}://${req.hostname}:${port}`
-        : `${req.protocol}://${req.hostname}`;
-  }
-  next();
-});
 
 const apollo = new ApolloServer({
   context: ({ req, res }) => {
