@@ -11,6 +11,7 @@ import { ApolloServer } from 'apollo-server-express';
 import * as pgSession from 'connect-pg-simple';
 import * as express from 'express';
 import * as session from 'express-session';
+import { promisify } from 'util';
 import { Admin } from './admin/admin.entity';
 import { Book } from './book/book.entity';
 import { Invite } from './invite/invite.entity';
@@ -66,24 +67,21 @@ app.use((req, res, next) => {
 
 const apollo = new ApolloServer({
   context: ({ req, res }) => {
-    if (!production) {
-      const { operationName, variables, query } = req.body;
-      logger.debug('Incoming Request');
-      logger.debug(
-        JSON.stringify(
-          {
-            operationName,
-            variables,
-          },
-          null,
-          2,
-        ),
-      );
-      logger.debug(query);
-    }
+    const { operationName, variables, query } = req.body;
+    logger.info({
+      operationName,
+      variables,
+    });
+    logger.debug(query);
+
     return getContext({ req, res });
   },
   schema: getSchema(),
+  formatError(e) {
+    const { message, path } = e;
+    logger.error({ message, path });
+    return e;
+  },
 });
 
 apollo.applyMiddleware({
@@ -106,20 +104,18 @@ apollo.applyMiddleware({
   // await con.synchronize();
 
   const server = app.listen(port, () => {
-    logger.info(`Listening on port ${port}`);
+    logger.info('start server');
+    logger.debug(`listening on port ${port}`);
   });
 
   const close = async () => {
-    await new Promise(resolve => {
-      logger.info('Closing server');
-      server.close(resolve);
-    });
-    logger.info('Closing db');
     await db.close();
+    logger.info('close server');
+    await promisify(server.close).call(server);
   };
   process.once('exit', close);
   process.once('SIGUSR2', async () => {
     await close();
     process.kill(process.pid, 'SIGUSR2');
   });
-})().catch(e => logger.error('main error', e));
+})().catch(e => logger.fatal(e));

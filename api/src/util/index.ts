@@ -31,7 +31,7 @@ export const sleep = (timeout: number): Promise<void> =>
 
 const production = process.env.NODE_ENV === 'production';
 export const logger = pino({
-  level: production ? 'error' : 'trace',
+  level: production ? 'info' : 'trace',
   prettyPrint: !production && {
     ignore: 'pid,hostname,time',
   },

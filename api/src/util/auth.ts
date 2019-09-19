@@ -1,21 +1,6 @@
-import {
-  ApolloError,
-  AuthenticationError as AuthError,
-} from 'apollo-server-express';
 import { Admin } from '../admin/admin.entity';
 import { User } from '../user/user.entity';
-
-export class AuthorizationError extends ApolloError {
-  constructor(msg?: string) {
-    super(msg || 'Unauthorized', 'UNAUTHORIZED');
-  }
-}
-
-export class AuthenticationError extends AuthError {
-  constructor(msg?: string) {
-    super(msg || 'Unauthenticated');
-  }
-}
+import { AuthenticationError, AuthorizationError } from './error';
 
 export function isUser(me?: Admin | User): me is User {
   if (!me) {

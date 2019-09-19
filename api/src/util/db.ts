@@ -12,10 +12,12 @@ import {
   Connection,
   createConnection,
   CreateDateColumn,
+  Logger,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { PostgresConnectionOptions } from 'typeorm/driver/postgres/PostgresConnectionOptions';
+import { logger } from '.';
 import { SnakeNamingStrategy } from './snake-case';
 
 export const PrimaryKey = () => PrimaryGeneratedColumn('uuid');
@@ -63,6 +65,34 @@ export class Base extends BaseEntity {
   }
 }
 
+const pinoLogger: Logger = {
+  logQuery(query, params) {
+    logger.info({ query, params }, 'query db');
+  },
+  logQueryError(error, query, params) {
+    logger.error({ error, query, params }, 'db error');
+  },
+  log: (level, msg) => {
+    switch (level) {
+      case 'info':
+      case 'log':
+        logger.debug(msg);
+        break;
+      case 'warn':
+        logger.warn(msg);
+    }
+  },
+  logQuerySlow(time, query, params) {
+    logger.warn({ query, params }, `db slow query ${time}`);
+  },
+  logMigration(msg) {
+    logger.info({ msg: 'db migration', migration: msg });
+  },
+  logSchemaBuild(msg) {
+    logger.debug('db build schema: ' + msg);
+  },
+};
+
 let connection: Connection | undefined;
 
 export async function connect(
@@ -75,7 +105,7 @@ export async function connect(
       entities,
       migrations: [resolve(__dirname, '../migrations/*')],
       // subscribers: ['./subscriber/**/*.ts'],
-      logging: 'all',
+      logger: pinoLogger,
       maxQueryExecutionTime: 300,
       extra: {
         ssl: true,
@@ -83,6 +113,7 @@ export async function connect(
       // cache: true,
       namingStrategy: new SnakeNamingStrategy(),
     };
+    logger.info('connect db');
     connection = await createConnection(connectionOptions);
   }
 
@@ -90,6 +121,7 @@ export async function connect(
 }
 export async function close() {
   if (connection) {
+    logger.info('close db');
     await connection.close();
   }
 }

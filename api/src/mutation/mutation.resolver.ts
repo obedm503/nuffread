@@ -1,4 +1,3 @@
-import { ApolloError } from 'apollo-server-core';
 import { compare, hash } from 'bcryptjs';
 import { getConnection } from 'typeorm';
 import { Admin } from '../admin/admin.entity';
@@ -15,10 +14,19 @@ import {
   IResendEmailOnMutationArguments,
 } from '../schema.gql';
 import { sendConfirmationEmail, User } from '../user/user.entity';
-import { AuthenticationError, isUser, isAdmin, isPublic } from '../util/auth';
+import { isAdmin, isPublic, isUser } from '../util/auth';
 import { getBook } from '../util/books';
-import { IResolver } from '../util/types';
 import { send } from '../util/email';
+import {
+  BadRequest,
+  BookNotFound,
+  DuplicateInvite,
+  DuplicateUser,
+  NoInvite,
+  NotConfirmed,
+  WrongCredentials,
+} from '../util/error';
+import { IResolver } from '../util/types';
 
 export const MutationResolver: IResolver<IMutation> = {
   async register(
@@ -30,18 +38,18 @@ export const MutationResolver: IResolver<IMutation> = {
 
     const origin = req.get('origin');
     if (!origin) {
-      throw new ApolloError('BAD_REQUEST');
+      throw new BadRequest();
     }
 
     // email already exists
     if (await User.findOne({ where: { email } })) {
-      throw new AuthenticationError('DUPLICATE_USER');
+      throw new DuplicateUser();
     }
 
     const invite = await Invite.findOne({ where: { email } });
     // only invited users can register
     if (!invite) {
-      throw new AuthenticationError('NO_INVITE');
+      throw new NoInvite();
     }
 
     const passwordHash = await hash(password, 12);
@@ -68,21 +76,21 @@ export const MutationResolver: IResolver<IMutation> = {
     } else if (type === 'ADMIN') {
       Ent = Admin;
     } else {
-      throw new AuthenticationError('INVALID_TYPE');
+      throw new BadRequest();
     }
 
     const me = await Ent.findOne({ where: { email } });
 
     if (!me) {
-      throw new AuthenticationError('WRONG_CREDENTIALS');
+      throw new WrongCredentials();
     }
 
     if (me instanceof User && !me.confirmedAt) {
-      throw new AuthenticationError('NOT_CONFIRMED');
+      throw new NotConfirmed();
     }
 
     if (!(await compare(password, me.passwordHash))) {
-      throw new AuthenticationError('WRONG_CREDENTIALS');
+      throw new WrongCredentials();
     }
 
     if (req.session) {
@@ -108,14 +116,14 @@ export const MutationResolver: IResolver<IMutation> = {
         where: { code },
       });
       if (!invite) {
-        throw new AuthenticationError('NO_INVITE');
+        throw new NoInvite();
       }
 
       const user = await manager.findOne(User, {
         where: { email: invite.email },
       });
       if (!user) {
-        throw new AuthenticationError('WRONG_CREDENTIALS');
+        throw new WrongCredentials();
       }
 
       user.confirmedAt = new Date();
@@ -132,19 +140,19 @@ export const MutationResolver: IResolver<IMutation> = {
     isPublic(me);
     if (me) {
       // is already logged in, no need to resend
-      throw new AuthenticationError('BAD_REQUEST');
+      throw new BadRequest();
     }
 
     const origin = req.get('origin');
     if (!origin) {
-      throw new ApolloError('BAD_REQUEST');
+      throw new BadRequest();
     }
 
     const invite = await Invite.findOne({
       where: { email },
     });
     if (!invite) {
-      throw new AuthenticationError('NO_INVITE');
+      throw new NoInvite();
     }
 
     await sendConfirmationEmail(origin, { email, confirmCode: invite.code });
@@ -165,7 +173,7 @@ export const MutationResolver: IResolver<IMutation> = {
       if (!book) {
         const gBook = await getBook(googleId);
         if (!gBook) {
-          throw new ApolloError('Google Book not found');
+          throw new BookNotFound();
         }
         book = await manager.save(Book.create(gBook));
       }
@@ -188,7 +196,7 @@ export const MutationResolver: IResolver<IMutation> = {
     isPublic(me);
 
     if (await Invite.findOne({ where: { email } })) {
-      throw new ApolloError('DUPLICATE_INVITE');
+      throw new DuplicateInvite();
     }
 
     const invite = Invite.create({ email, name });
@@ -200,7 +208,7 @@ export const MutationResolver: IResolver<IMutation> = {
 
     const invite = await Invite.findOne({ where: { email } });
     if (!invite) {
-      throw new ApolloError('Invite not found', 'INVALID_CREDENTIALS');
+      throw new NoInvite();
     }
     invite.invitedAt = new Date();
     const sentEmail = send({
