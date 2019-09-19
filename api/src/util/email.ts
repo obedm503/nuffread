@@ -1,6 +1,7 @@
 import * as client from '@sendgrid/client';
 import { MailData } from '@sendgrid/helpers/classes/mail';
 import * as mail from '@sendgrid/mail';
+import { config } from '../config';
 
 client.setApiKey(process.env.SENDGRID_API_KEY!);
 client.setDefaultHeader('Accept', '*/*');
@@ -30,7 +31,7 @@ export const send = async ({
   batchId,
 }: SendParameters) => {
   const msg: MailData = {
-    from: { name: 'Nuffread', email: 'no-reply@nuffread.com' },
+    from: { name: config.name, email: config.email },
     to: email,
     html,
     subject,
