@@ -6,6 +6,7 @@ import {
   IonGrid,
   IonItem,
   IonList,
+  IonPage,
   IonRow,
   IonText,
 } from '@ionic/react';
@@ -13,12 +14,10 @@ import { Form, Formik } from 'formik';
 import gql from 'graphql-tag';
 import * as React from 'react';
 import { useMutation } from 'react-apollo';
-import { Redirect } from 'react-router';
 import { Link } from 'react-router-dom';
 import * as yup from 'yup';
 import { Email, IonButtonLink, Text, TopNav } from '../../components';
 import { IMutation } from '../../schema.gql';
-import { useRouter } from '../../state/router';
 
 const REQUEST_INVITE = gql`
   mutation RequestInvite($email: String!, $name: String!) {
@@ -94,13 +93,8 @@ const RequestInvite: React.FC = () => {
 };
 
 export default () => {
-  const { location } = useRouter();
-  if (location.pathname !== '/') {
-    return <Redirect to="/" />;
-  }
-
   return (
-    <>
+    <IonPage>
       <TopNav>
         <IonButtons slot="end">
           <IonButtonLink href="/login">Login</IonButtonLink>
@@ -130,6 +124,6 @@ export default () => {
           </IonRow>
         </IonGrid>
       </IonContent>
-    </>
+    </IonPage>
   );
 };

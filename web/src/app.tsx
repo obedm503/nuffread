@@ -11,6 +11,7 @@ import { Helmet } from 'react-helmet-async';
 import { Redirect, RouteProps } from 'react-router';
 import './app.scss';
 import { Error, Loading, Routes } from './components';
+import Landing from './pages/landing';
 import { AdminLogin, UserLogin } from './pages/login';
 import { IQuery, SystemUser } from './schema.gql';
 import { IsDesktopProvider, UserProvider } from './state';
@@ -65,13 +66,17 @@ const makeLazy = <T extends React.ComponentType<any>>(
     </React.Suspense>
   );
 };
-const Landing = makeLazy(() => import('./pages/landing'));
+
 const Join = makeLazy(() => import('./pages/join'));
 const Public = makeLazy(() => import('./pages/public'));
 const Private = makeLazy(() => import('./pages/private'));
 const Admin = makeLazy(() => import('./pages/admin'));
 
-const userHome = (user: SystemUser) => {
+const isReady = process.env.REACT_APP_MODE === 'ready';
+const homePage = (user?: SystemUser) => {
+  if (!user) {
+    return isReady ? Public : Landing;
+  }
   if (user.__typename === 'Admin') {
     return Admin;
   }
@@ -79,7 +84,6 @@ const userHome = (user: SystemUser) => {
 };
 
 const makeRoutes = memoize((user?: SystemUser): RouteProps[] => {
-  const isReady = process.env.REACT_APP_MODE === 'ready';
   let routes: RouteProps[] = [
     { path: '/login', exact: true, component: user ? ToHome : UserLogin },
   ];
@@ -94,13 +98,7 @@ const makeRoutes = memoize((user?: SystemUser): RouteProps[] => {
     component: user ? ToHome : AdminLogin,
   });
 
-  if (user) {
-    routes.push({ path: '/', component: userHome(user) });
-  } else if (isReady) {
-    routes.push({ path: '/', component: Public });
-  } else {
-    routes.push({ component: Landing });
-  }
+  routes.push({ path: '/', component: homePage(user) });
 
   return routes;
 });
@@ -109,7 +107,8 @@ export const App = () => {
   const { loading, data, error } = useQuery<IQuery>(ME);
 
   if (loading) {
-    return null;
+    const Home = homePage();
+    return <Home></Home>;
   }
   if (error) {
     return <Error value={error} />;
