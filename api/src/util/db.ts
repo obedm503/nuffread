@@ -82,14 +82,14 @@ const pinoLogger: Logger = {
         logger.warn(msg);
     }
   },
-  logQuerySlow(time, query, params) {
-    logger.warn({ query, params }, `db slow query ${time}`);
+  logQuerySlow(duration, query, params) {
+    logger.warn({ query, params, duration }, 'db slow query');
   },
   logMigration(msg) {
-    logger.info({ msg: 'db migration', migration: msg });
+    logger.info({ migration: msg }, 'db migration');
   },
   logSchemaBuild(msg) {
-    logger.debug('db build schema: ' + msg);
+    logger.debug({ schema: msg }, 'db build schema');
   },
 };
 
