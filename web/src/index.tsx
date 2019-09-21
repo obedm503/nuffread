@@ -1,7 +1,6 @@
 import { IonApp } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
 import { ApolloClient } from 'apollo-client';
-import { onError } from 'apollo-link-error';
 import { createHttpLink } from 'apollo-link-http';
 import React from 'react';
 import { ApolloProvider } from 'react-apollo';
@@ -15,16 +14,8 @@ const httpLink = createHttpLink({
   credentials: 'include',
 });
 
-const errorLink = onError(({ networkError }) => {
-  // logout on unauthorized error
-  if (networkError && (networkError as any)['statusCode'] === 401) {
-    localStorage.removeItem('token');
-    window.location.replace('/');
-  }
-});
-
 const client = new ApolloClient({
-  link: errorLink.concat(httpLink),
+  link: httpLink,
   cache: createCache(),
 });
 
