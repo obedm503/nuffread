@@ -11,6 +11,11 @@
     "build:web": "nps clean && nps build.types && nps build.web",
     "build": "nps build"
   },
+  "husky": {
+    "hooks": {
+      "pre-commit": "if [ $(git rev-parse --abbrev-ref HEAD) = 'master' ]; then echo 'cannot commit straight to master' && exit 1; fi"
+    }
+  },
   "dependencies": {
     "dotenv-safe": "^8.1.0",
     "nps": "^5.9.3",
@@ -19,6 +24,7 @@
   "devDependencies": {
     "@gql2ts/types": "^1.9.0",
     "gql2ts": "^1.7.1",
+    "husky": "^3.0.5",
     "nodemon": "^1.19.1"
   },
   "resolutions": {
