@@ -4,6 +4,7 @@
 [[redirects]]
   from = "/graphql"
   to = "https://nuffread.herokuapp.com"
+  status = 200
   force = true
 
 [[redirects]]
