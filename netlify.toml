@@ -1,2 +1,8 @@
 [build]
   environment = { YARN_VERSION = "1.17.3" }
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
