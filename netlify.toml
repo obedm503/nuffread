@@ -6,3 +6,6 @@
   to = "/index.html"
   status = 200
 
+[[redirects]]
+  from = "/graphql"
+  to = "https://nuffread.herokuapp.com"
