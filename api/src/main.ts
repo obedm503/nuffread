@@ -46,11 +46,13 @@ const app = express()
 if (production) {
   // force ssl
   app.use((req, res, next) => {
-    if (req.header('x-forwarded-proto') !== 'https') {
-      res.redirect(301, join(`https://${req.hostname}`, req.url));
-    } else {
-      next();
+    if (
+      req.hostname === 'localhost' ||
+      req.header('x-forwarded-proto') === 'https'
+    ) {
+      return next();
     }
+    res.redirect(301, join(`https://${req.hostname}`, req.url));
   });
 }
 
@@ -72,6 +74,10 @@ const apollo = new ApolloServer({
     const { message, path } = e;
     logger.error({ message, path });
     return e;
+  },
+  formatResponse(response, { context: { res } }) {
+    logger.info(res.getHeaders(), 'headers');
+    return response;
   },
 });
 
