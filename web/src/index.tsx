@@ -55,7 +55,10 @@ serviceWorker.register({
       },
     ];
     document.body.appendChild(toast);
-    toast.present && (await toast.present());
+    toast.present &&
+      toast.present().then(() => {
+        console.log('presented toast');
+      });
   },
 });
 
