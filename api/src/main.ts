@@ -22,6 +22,8 @@ import { User } from './user/user.entity';
 import { logger } from './util';
 import * as db from './util/db';
 
+const ORIGIN = process.env.ORIGIN || 'https://www.nuffread.com';
+console.log(ORIGIN);
 const Store = pgSession(session);
 
 const app = express()
@@ -30,6 +32,11 @@ const app = express()
   .set('trust proxy', true)
   .use(
     session({
+      cookie: {
+        domain: ORIGIN,
+        secure: production,
+        httpOnly: true,
+      },
       secret: process.env.SECRET!,
       resave: false,
       saveUninitialized: false,
@@ -86,9 +93,7 @@ apollo.applyMiddleware({
   path: '/',
   cors: {
     credentials: true,
-    origin: production
-      ? process.env.ORIGIN || 'https://www.nuffread.com'
-      : true,
+    origin: production ? ORIGIN : true,
   },
 });
 
