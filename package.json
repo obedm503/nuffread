@@ -9,7 +9,8 @@
     "build:api": "nps clean && nps build.types && nps build.api",
     "heroku-postbuild": "npm run build:api",
     "build:web": "nps clean && nps build.types && nps build.web",
-    "build": "nps build"
+    "build": "nps build",
+    "start": "nps start"
   },
   "husky": {
     "hooks": {

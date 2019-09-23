@@ -65,7 +65,9 @@ module.exports.scripts = {
   deploy,
   clean: rimraf('.cache web/build api/dist'),
   start: {
+    default: concurrent.nps('start.api', 'start.web'),
     api: series('cd api', 'npm run start'),
+    web: series('cd web', 'npm run start'),
   },
   db: {
     info: [
