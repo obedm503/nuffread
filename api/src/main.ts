@@ -23,7 +23,6 @@ import { logger } from './util';
 import * as db from './util/db';
 
 const ORIGIN = process.env.ORIGIN || 'https://www.nuffread.com';
-console.log(ORIGIN);
 const Store = pgSession(session);
 
 const app = express()
