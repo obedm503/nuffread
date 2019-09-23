@@ -2,10 +2,12 @@
   environment = { YARN_VERSION = "1.17.3" }
 
 [[redirects]]
+  from = "/graphql"
+  to = "https://nuffread.herokuapp.com"
+  force = true
+
+[[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
 
-[[redirects]]
-  from = "/graphql"
-  to = "https://nuffread.herokuapp.com"
