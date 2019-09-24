@@ -86,19 +86,14 @@ const homePage = (user?: SystemUser) => {
 const makeRoutes = memoize((user?: SystemUser): RouteProps[] => {
   let routes: RouteProps[] = [
     { path: '/login', exact: true, component: user ? ToHome : UserLogin },
+    { path: '/join', component: user ? ToHome : Join },
+    {
+      path: '/admin',
+      exact: true,
+      component: user ? ToHome : AdminLogin,
+    },
+    { path: '/', component: homePage(user) },
   ];
-
-  if (isReady) {
-    routes.push({ path: '/join', component: user ? ToHome : Join });
-  }
-
-  routes.push({
-    path: '/admin',
-    exact: true,
-    component: user ? ToHome : AdminLogin,
-  });
-
-  routes.push({ path: '/', component: homePage(user) });
 
   return routes;
 });
