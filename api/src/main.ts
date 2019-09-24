@@ -31,11 +31,6 @@ const app = express()
   .set('trust proxy', true)
   .use(
     session({
-      cookie: {
-        domain: ORIGIN,
-        secure: production,
-        httpOnly: true,
-      },
       secret: process.env.SECRET!,
       resave: false,
       saveUninitialized: false,
