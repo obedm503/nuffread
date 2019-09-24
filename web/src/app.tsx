@@ -89,8 +89,8 @@ const makeRoutes = memoize((user?: SystemUser): RouteProps[] => {
   if (!user) {
     routes.push(
       { path: '/login', exact: true, component: UserLogin },
-      { path: '/join', exact: true, component: Join },
       { path: '/admin', exact: true, component: AdminLogin },
+      { path: '/join', component: Join },
     );
   }
 
