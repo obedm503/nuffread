@@ -13,7 +13,7 @@ import {
   IonSkeletonText,
   IonText,
 } from '@ionic/react';
-import { range } from 'lodash';
+import range from 'lodash/range';
 import * as React from 'react';
 import { IListing } from '../schema.gql';
 import { classes } from '../util';

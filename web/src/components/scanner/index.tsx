@@ -1,6 +1,6 @@
 import { IonButton, IonIcon, IonPopover } from '@ionic/react';
 import { qrScanner } from 'ionicons/icons';
-import { get } from 'lodash';
+import get from 'lodash/get';
 import Quagga from 'quagga';
 import * as React from 'react';
 import './scanner.scss';

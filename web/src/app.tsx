@@ -2,13 +2,12 @@ import {
   InMemoryCache,
   IntrospectionFragmentMatcher,
 } from 'apollo-cache-inmemory';
-import { Kind } from 'graphql';
 import gql from 'graphql-tag';
-import { memoize } from 'lodash';
+import memoize from 'lodash/memoize';
 import * as React from 'react';
 import { useQuery } from 'react-apollo';
 import { Helmet } from 'react-helmet-async';
-import { Redirect, RouteProps } from 'react-router';
+import { RouteProps } from 'react-router';
 import './app.scss';
 import { Error, Loading, Routes } from './components';
 import Landing from './pages/landing';
@@ -23,7 +22,7 @@ export const createCache = () =>
         __schema: {
           types: [
             {
-              kind: Kind.UNION_TYPE_DEFINITION,
+              kind: 'UnionTypeDefinition', // Kind.UNION_TYPE_DEFINITION,
               name: 'SystemUser',
               possibleTypes: [{ name: 'Admin' }, { name: 'User' }],
             },
@@ -49,10 +48,6 @@ const ME = gql`
     }
   }
 `;
-
-function ToHome() {
-  return <Redirect to="/" />;
-}
 
 const makeLazy = <T extends React.ComponentType<any>>(
   factory: () => Promise<{ default: T }>,

@@ -1,21 +1,16 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
-    "allowSyntheticDefaultImports": true,
     "allowJs": true,
     "checkJs": true,
-    "emitDecoratorMetadata": true,
-    "experimentalDecorators": true,
-    "lib": ["dom", "esnext"],
     "module": "esnext",
     "moduleResolution": "node",
+    "allowSyntheticDefaultImports": true,
     "noImplicitAny": false,
-    "outDir": "dist",
     "skipLibCheck": true,
     "sourceMap": true,
     "strict": true,
-    "strictPropertyInitialization": false,
-    "target": "es5"
+    "strictPropertyInitialization": false
   },
   "exclude": ["**/node_modules/**/*", "**/dist/**/*"]
 }

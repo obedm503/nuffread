@@ -14,7 +14,7 @@ import {
 } from '@ionic/react';
 import gql from 'graphql-tag';
 import { send } from 'ionicons/icons';
-import { groupBy } from 'lodash';
+import groupBy from 'lodash/groupBy';
 import React from 'react';
 import { useMutation, useQuery } from 'react-apollo';
 import { Error, Loading } from '../../components';

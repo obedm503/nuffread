@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { Query } from 'react-apollo';
-import { IQuery, IListing } from '../schema.gql';
-import { GET_LISTING } from '../queries';
 import { Error } from '../components';
+import { GET_LISTING } from '../queries';
+import { IListing, IQuery } from '../schema.gql';
 
 export function withListing<T = undefined>(
   Component: React.FunctionComponent<
@@ -23,7 +23,7 @@ export function withListing<T = undefined>(
             <Component
               loading={loading}
               data={(data && data.listing) || undefined}
-              {...props as any}
+              {...(props as any)}
             />
           );
         }}

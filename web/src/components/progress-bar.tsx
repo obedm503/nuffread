@@ -1,4 +1,5 @@
-import { mean, memoize } from 'lodash';
+import mean from 'lodash/mean';
+import memoize from 'lodash/memoize';
 import * as React from 'react';
 
 type Props = { color: string };

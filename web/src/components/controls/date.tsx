@@ -1,5 +1,5 @@
 import { Field, FieldProps } from 'formik';
-import { range } from 'lodash';
+import range from 'lodash/range';
 import * as React from 'react';
 import { Control, ControlProps } from './control';
 

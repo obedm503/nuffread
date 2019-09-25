@@ -1,5 +1,4 @@
 import { IonButton, IonItem } from '@ionic/react';
-import { Omit } from 'lodash';
 import * as React from 'react';
 import { RouteComponentProps, withRouter } from 'react-router';
 

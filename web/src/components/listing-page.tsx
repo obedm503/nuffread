@@ -12,11 +12,12 @@ import {
 } from '@ionic/react';
 import { barcode } from 'ionicons/icons';
 import * as React from 'react';
-import { IonButtonLink, TopNav } from '.';
 import { withListing } from '../containers/listing';
 import { UserDetails } from '../pages/public/components/user-details';
 import { GoBack } from './go-back';
+import { IonButtonLink } from './ionic';
 import { Listing, LoadingListing } from './listing';
+import { TopNav } from './top-nav';
 
 const Fab = () => (
   <IonFab vertical="bottom" horizontal="end" slot="fixed">

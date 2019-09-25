@@ -1,5 +1,5 @@
 // @ts-check
-const { resolve, join } = require('path');
+const { resolve } = require('path');
 require('dotenv-safe').config({
   path: resolve('.env'),
   sample: resolve('.env.example'),

@@ -1,12 +1,19 @@
 {
   "compilerOptions": {
+    "target": "es5",
+    "lib": [
+      "dom",
+      "esnext"
+    ],
     "jsx": "preserve",
-    "esModuleInterop": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
+    "esModuleInterop": true
   },
   "extends": "../tsconfig.json",
-  "include": ["src"]
+  "include": [
+    "src"
+  ]
 }
