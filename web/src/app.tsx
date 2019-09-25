@@ -2,6 +2,7 @@ import {
   InMemoryCache,
   IntrospectionFragmentMatcher,
 } from 'apollo-cache-inmemory';
+import { Kind } from 'graphql';
 import gql from 'graphql-tag';
 import memoize from 'lodash/memoize';
 import * as React from 'react';
@@ -22,7 +23,7 @@ export const createCache = () =>
         __schema: {
           types: [
             {
-              kind: 'UnionTypeDefinition', // Kind.UNION_TYPE_DEFINITION,
+              kind: Kind.UNION_TYPE_DEFINITION,
               name: 'SystemUser',
               possibleTypes: [{ name: 'Admin' }, { name: 'User' }],
             },

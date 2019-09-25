@@ -5806,7 +5806,7 @@ graphql-upload@^8.0.2:
     http-errors "^1.7.2"
     object-path "^0.11.4"
 
-graphql@14.5.6, "graphql@>= 0.10 <15", graphql@^14.3.0, graphql@^14.5.3:
+graphql@14.5.6, "graphql@>= 0.10 <15", graphql@^14.3.0, graphql@^14.5.3, graphql@^14.5.7:
   version "14.5.6"
   resolved "https://registry.yarnpkg.com/graphql/-/graphql-14.5.6.tgz#3fa12173b50e6ccdef953c31c82f37c50ef58bec"
   integrity sha512-zJ6Oz8P1yptV4O4DYXdArSwvmirPetDOBnGFRBl0zQEC68vNW3Ny8qo8VzMgfr+iC8PKiRYJ+f2wub41oDCoQg==
