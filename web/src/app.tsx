@@ -18,6 +18,7 @@ import { IsDesktopProvider, UserProvider } from './state';
 
 export const createCache = () =>
   new InMemoryCache({
+    freezeResults: process.env.NODE_ENV !== 'production',
     fragmentMatcher: new IntrospectionFragmentMatcher({
       introspectionQueryResultData: {
         __schema: {
