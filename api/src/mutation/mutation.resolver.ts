@@ -12,6 +12,7 @@ import {
   IRegisterOnMutationArguments,
   IRequestInviteOnMutationArguments,
   IResendEmailOnMutationArguments,
+  IDeleteListingOnMutationArguments,
 } from '../schema.gql';
 import { sendConfirmationEmail, User } from '../user/user.entity';
 import { isAdmin, isPublic, isUser } from '../util/auth';
@@ -25,8 +26,10 @@ import {
   NoInvite,
   NotConfirmed,
   WrongCredentials,
+  AuthorizationError,
 } from '../util/error';
 import { IResolver } from '../util/types';
+import { sleep } from '../util';
 
 export const MutationResolver: IResolver<IMutation> = {
   async register(
@@ -187,6 +190,20 @@ export const MutationResolver: IResolver<IMutation> = {
       );
       return listing;
     });
+  },
+  async deleteListing(_, { id }: IDeleteListingOnMutationArguments, { me }) {
+    if (!isUser(me)) {
+      return false;
+    }
+
+    const listing = await Listing.findOneOrFail({ where: { id } });
+    if (listing.userId !== me.id) {
+      throw new AuthorizationError();
+    }
+
+    await Listing.delete({ id });
+
+    return true;
   },
   async requestInvite(
     _,
