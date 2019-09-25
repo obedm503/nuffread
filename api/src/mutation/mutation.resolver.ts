@@ -217,7 +217,16 @@ export const MutationResolver: IResolver<IMutation> = {
     }
 
     const invite = Invite.create({ email, name });
-    await invite.save();
+    const sentEmail = send({
+      email: 'obedm503@gmail.com',
+      subject: 'New invite request',
+      html: [
+        `${name} (${email}) has requested an invite.`,
+        'Go to <a href="https://www.nuffread.com/admin">nuffread.com/admin</a> to authorize it.',
+      ].join(' '),
+    });
+    await Promise.all([invite.save(), sentEmail]);
+
     return true;
   },
   async sendInvite(_, { email }, { me }) {

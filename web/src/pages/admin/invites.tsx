@@ -111,7 +111,7 @@ export default () => {
     error: errorInvites,
     data,
     refetch,
-  } = useQuery<IQuery>(INVITES);
+  } = useQuery<IQuery>(INVITES, { pollInterval: 60000 });
   const [
     sendInvite,
     { loading: loadingEmail, error: errorEmail },
