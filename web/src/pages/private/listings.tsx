@@ -1,5 +1,5 @@
 import { QueryResult } from '@apollo/react-common';
-import { useQuery } from '@apollo/react-hooks';
+import { useApolloClient, useMutation, useQuery } from '@apollo/react-hooks';
 import { RefresherEventDetail } from '@ionic/core';
 import {
   IonButton,
@@ -8,19 +8,23 @@ import {
   IonContent,
   IonGrid,
   IonIcon,
+  IonItemOption,
+  IonItemOptions,
+  IonItemSliding,
   IonModal,
   IonPage,
   IonRefresher,
   IonRefresherContent,
   IonRow,
 } from '@ionic/react';
+import ApolloClient, { MutationUpdaterFn } from 'apollo-client';
 import gql from 'graphql-tag';
 import { add } from 'ionicons/icons';
 import * as React from 'react';
 import { Error, TopNav } from '../../components';
 import { BasicListing, BasicListingLoading } from '../../components/listing';
 import { BASIC_LISTING } from '../../queries';
-import { IQuery } from '../../schema.gql';
+import { IMutation, IQuery } from '../../schema.gql';
 import { New } from './new';
 
 const MY_LISTINGS = gql`
@@ -37,6 +41,83 @@ const MY_LISTINGS = gql`
     }
   }
 `;
+const DELETE_LISTING = gql`
+  mutation DeleteListing($id: ID!) {
+    deleteListing(id: $id)
+  }
+`;
+
+const update: (
+  id: string,
+  client: ApolloClient<object>,
+) => MutationUpdaterFn<IMutation> = (id, client) => (cache, { data }) => {
+  const success = data && data.deleteListing;
+  if (!success) {
+    return;
+  }
+  const listingsData = client.readQuery<IQuery>({ query: MY_LISTINGS });
+  if (
+    !listingsData ||
+    !listingsData.me ||
+    listingsData.me.__typename !== 'User' ||
+    !listingsData.me.listings
+  ) {
+    return;
+  }
+  const listings = listingsData.me.listings;
+  client.writeQuery({
+    query: MY_LISTINGS,
+    data: {
+      ...listingsData,
+      me: {
+        ...listingsData.me,
+        listings: listings.filter(item => item.id !== id),
+      },
+    },
+  });
+};
+
+const useDelete = (id: string) => {
+  const [del, { loading, error }] = useMutation<IMutation>(DELETE_LISTING);
+  const client = useApolloClient();
+
+  if (error) {
+    console.error(error);
+  }
+
+  return {
+    del: () => del({ variables: { id }, update: update(id, client) }),
+    loading,
+  };
+};
+
+const SlidingListing = ({ listing }) => {
+  const { del, loading } = useDelete(listing.id);
+  return (
+    <IonItemSliding>
+      <BasicListing listing={listing} disabled={loading} />
+
+      <IonItemOptions side="end">
+        <IonItemOption
+          color="danger"
+          onClick={e => {
+            if (!e.currentTarget) {
+              return;
+            }
+            const t = e.currentTarget as HTMLIonItemOptionElement;
+            const sliding = t.closest('ion-item-sliding');
+            if (sliding) {
+              del();
+              sliding.close();
+            }
+          }}
+        >
+          Delete
+        </IonItemOption>
+      </IonItemOptions>
+    </IonItemSliding>
+  );
+};
 
 const Listings: React.FC<
   Pick<QueryResult<IQuery>, 'data' | 'error' | 'loading'>
@@ -54,9 +135,9 @@ const Listings: React.FC<
 
   return (
     <>
-      {data.me.listings.map(listing => {
-        return <BasicListing listing={listing} key={listing.id} />;
-      })}
+      {data.me.listings.map(listing => (
+        <SlidingListing key={listing.id} listing={listing}></SlidingListing>
+      ))}
     </>
   );
 };

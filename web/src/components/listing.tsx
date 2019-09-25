@@ -161,11 +161,12 @@ export const Listing: React.FC<{
   </IonCard>
 );
 
-export const BasicListing: React.FC<{ onClick?; listing: IListing }> = ({
-  onClick,
-  listing,
-}) => (
-  <IonItem button={!!onClick} onClick={onClick}>
+export const BasicListing: React.FC<{
+  onClick?;
+  listing: IListing;
+  disabled?: boolean;
+}> = ({ onClick, listing, disabled = false }) => (
+  <IonItem button={!!onClick} onClick={onClick} disabled={disabled}>
     <SafeImg
       src={listing.book.thumbnail}
       alt={listing.book.title}
