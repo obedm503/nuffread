@@ -10,7 +10,7 @@ import * as React from 'react';
 import { Helmet } from 'react-helmet-async';
 import { RouteProps } from 'react-router';
 import './app.scss';
-import { Error, Loading, Routes } from './components';
+import { Error, Routes } from './components';
 import Landing from './pages/landing';
 import { AdminLogin, UserLogin } from './pages/login';
 import { IQuery, SystemUser } from './schema.gql';
@@ -55,7 +55,7 @@ const makeLazy = <T extends React.ComponentType<any>>(
   factory: () => Promise<{ default: T }>,
   Fallback?: () => NonNullable<React.ReactNode>,
 ) => {
-  const loading = Fallback ? Fallback() : <Loading />;
+  const loading = Fallback ? Fallback() : null;
   const Comp = React.lazy(factory);
   return props => (
     <React.Suspense fallback={loading}>
