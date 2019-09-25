@@ -1,3 +1,4 @@
+import { useMutation, useQuery } from '@apollo/react-hooks';
 import {
   IonCard,
   IonCardHeader,
@@ -16,7 +17,6 @@ import gql from 'graphql-tag';
 import { send } from 'ionicons/icons';
 import groupBy from 'lodash/groupBy';
 import React from 'react';
-import { useMutation, useQuery } from 'react-apollo';
 import { Error, Loading } from '../../components';
 import { IInvite, IMutation, IQuery } from '../../schema.gql';
 

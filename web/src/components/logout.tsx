@@ -1,8 +1,8 @@
-import { IonIcon, IonItem, IonLabel, IonButton } from '@ionic/react';
+import { useMutation } from '@apollo/react-hooks';
+import { IonButton, IonIcon, IonItem, IonLabel } from '@ionic/react';
 import gql from 'graphql-tag';
 import { logOut } from 'ionicons/icons';
 import * as React from 'react';
-import { useMutation } from 'react-apollo';
 import { IMutation } from '../schema.gql';
 
 const LOGOUT = gql`

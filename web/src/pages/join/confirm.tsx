@@ -1,3 +1,4 @@
+import { useMutation } from '@apollo/react-hooks';
 import {
   IonButton,
   IonCol,
@@ -11,7 +12,6 @@ import gql from 'graphql-tag';
 import { History } from 'history';
 import { add, logIn } from 'ionicons/icons';
 import * as React from 'react';
-import { useMutation } from 'react-apollo';
 import { Redirect, RouteComponentProps } from 'react-router';
 import * as yup from 'yup';
 import { Email, Error, IonButtonLink } from '../../components';

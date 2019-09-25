@@ -1,3 +1,4 @@
+import { useQuery } from '@apollo/react-hooks';
 import {
   InMemoryCache,
   IntrospectionFragmentMatcher,
@@ -6,7 +7,6 @@ import { Kind } from 'graphql';
 import gql from 'graphql-tag';
 import memoize from 'lodash/memoize';
 import * as React from 'react';
-import { useQuery } from 'react-apollo';
 import { Helmet } from 'react-helmet-async';
 import { RouteProps } from 'react-router';
 import './app.scss';

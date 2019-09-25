@@ -1,6 +1,6 @@
+import { useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
 import * as React from 'react';
-import { useQuery } from 'react-apollo';
 import { Error } from '../../../components';
 import { BASIC_LISTING } from '../../../queries';
 import { IQuery } from '../../../schema.gql';

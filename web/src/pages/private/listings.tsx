@@ -1,3 +1,5 @@
+import { QueryResult } from '@apollo/react-common';
+import { useQuery } from '@apollo/react-hooks';
 import { RefresherEventDetail } from '@ionic/core';
 import {
   IonButton,
@@ -15,7 +17,6 @@ import {
 import gql from 'graphql-tag';
 import { add } from 'ionicons/icons';
 import * as React from 'react';
-import { QueryResult, useQuery } from 'react-apollo';
 import { Error, TopNav } from '../../components';
 import { BasicListing, BasicListingLoading } from '../../components/listing';
 import { BASIC_LISTING } from '../../queries';

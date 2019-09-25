@@ -1,3 +1,4 @@
+import { useApolloClient, useMutation } from '@apollo/react-hooks';
 import {
   IonButton,
   IonCard,
@@ -16,7 +17,6 @@ import gql from 'graphql-tag';
 import { History } from 'history';
 import { add, logIn } from 'ionicons/icons';
 import * as React from 'react';
-import { useApolloClient, useMutation } from 'react-apollo';
 import { RouteComponentProps } from 'react-router';
 import { Link } from 'react-router-dom';
 import * as yup from 'yup';

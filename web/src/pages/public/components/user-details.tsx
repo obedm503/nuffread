@@ -1,3 +1,4 @@
+import { useQuery } from '@apollo/react-hooks';
 import {
   IonButtons,
   IonCard,
@@ -6,15 +7,14 @@ import {
   IonLabel,
   IonSkeletonText,
 } from '@ionic/react';
+import gql from 'graphql-tag';
 import { call, logoFacebook, mail, person } from 'ionicons/icons';
 import * as React from 'react';
 import { Link } from 'react-router-dom';
-import { IonButtonLink, Error } from '../../../components';
+import { Error, IonButtonLink } from '../../../components';
 import { SafeImg } from '../../../components/safe-img';
-import { useUser } from '../../../state';
-import { useQuery } from 'react-apollo';
 import { IQuery } from '../../../schema.gql';
-import gql from 'graphql-tag';
+import { useUser } from '../../../state';
 
 const userHidden = (
   <IonCard color="white">

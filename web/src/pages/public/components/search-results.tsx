@@ -1,5 +1,5 @@
+import { useQuery } from '@apollo/react-hooks';
 import * as React from 'react';
-import { useQuery } from 'react-apollo';
 import { Error } from '../../../components';
 import { SEARCH } from '../../../queries';
 import { IQuery } from '../../../schema.gql';

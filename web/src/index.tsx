@@ -1,9 +1,9 @@
+import { ApolloProvider } from '@apollo/react-hooks';
 import { IonApp } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
 import { ApolloClient } from 'apollo-client';
 import { createHttpLink } from 'apollo-link-http';
 import React from 'react';
-import { ApolloProvider } from 'react-apollo';
 import { render } from 'react-dom';
 import { HelmetProvider } from 'react-helmet-async';
 import { App, createCache } from './app';
