@@ -190,7 +190,6 @@ export class New extends React.PureComponent<
   };
 
   render() {
-    console.log(this.state);
     const price =
       typeof this.state.price === 'number'
         ? (this.state.price! / 100).toFixed(2)
