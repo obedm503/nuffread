@@ -966,6 +966,14 @@
     ionicons "^4.6.3"
     tslib "^1.10.0"
 
+"@ionic/core@^4.9.1":
+  version "4.9.1"
+  resolved "https://registry.yarnpkg.com/@ionic/core/-/core-4.9.1.tgz#7ad2f19a1bd8bd77411fd20c26fc22ce9405084a"
+  integrity sha512-m6wlO6/vP4xL3xd8ZGl9lNbmiiMs6I7d33Y13pS65f5EOUC7Fc0+qEEEWtQZc4EGQdB/pmIHlgd8o7MZvV/SXA==
+  dependencies:
+    ionicons "^4.6.3"
+    tslib "^1.10.0"
+
 "@ionic/react-router@^4.9.0-rc.2":
   version "4.9.0-rc.2"
   resolved "https://registry.yarnpkg.com/@ionic/react-router/-/react-router-4.9.0-rc.2.tgz#217a47ca7e4acb36d7686066b54fdf3ffc65de52"
@@ -5806,10 +5814,10 @@ graphql-upload@^8.0.2:
     http-errors "^1.7.2"
     object-path "^0.11.4"
 
-graphql@14.5.6, "graphql@>= 0.10 <15", graphql@^14.3.0, graphql@^14.5.3, graphql@^14.5.7:
-  version "14.5.6"
-  resolved "https://registry.yarnpkg.com/graphql/-/graphql-14.5.6.tgz#3fa12173b50e6ccdef953c31c82f37c50ef58bec"
-  integrity sha512-zJ6Oz8P1yptV4O4DYXdArSwvmirPetDOBnGFRBl0zQEC68vNW3Ny8qo8VzMgfr+iC8PKiRYJ+f2wub41oDCoQg==
+graphql@14.5.7, "graphql@>= 0.10 <15", graphql@^14.3.0, graphql@^14.5.3, graphql@^14.5.7:
+  version "14.5.7"
+  resolved "https://registry.yarnpkg.com/graphql/-/graphql-14.5.7.tgz#8646a3fcc07922319cc3967eba4a64b32929f77f"
+  integrity sha512-as410RMJSUFqF8RcH2QWxZ5ioqHzsH9VWnWbaU+UnDXJ/6azMDIYPrtXCBPXd8rlunEVb7W8z6fuUnNHMbFu9A==
   dependencies:
     iterall "^1.2.2"
 
