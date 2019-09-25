@@ -41,7 +41,7 @@ const Errors = ({ errors }: { errors: readonly GraphQLError[] }) => (
           errMsg = (
             <>
               Email is not yet confirmed. To confirm your email{' '}
-              <Link to="/join/confirm">click here</Link>.
+              <Link to="/join">click here</Link>.
             </>
           );
           break;
@@ -109,7 +109,7 @@ const LoginForm = React.memo<{
                   <IonCol>
                     <IonButtonLink
                       expand="block"
-                      href="/join/signup"
+                      href="/join"
                       color="secondary"
                     >
                       <IonIcon slot="start" icon={add} />

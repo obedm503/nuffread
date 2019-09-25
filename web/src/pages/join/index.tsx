@@ -6,8 +6,8 @@ import { Confirm } from './confirm';
 import { Register } from './register';
 
 const routes: RouteProps[] = [
-  { path: '/:binId?', component: Confirm },
-  { path: '/', component: Register },
+  { path: '/', exact: true, component: Register },
+  { path: '/:binId', component: Confirm },
 ];
 
 export default ({ match }: RouteComponentProps<{}>) => (

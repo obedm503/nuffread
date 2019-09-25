@@ -16,7 +16,7 @@ import {
 import gql from 'graphql-tag';
 import { send } from 'ionicons/icons';
 import groupBy from 'lodash/groupBy';
-import React from 'react';
+import React, { FC } from 'react';
 import { Error, Loading } from '../../components';
 import { IInvite, IMutation, IQuery } from '../../schema.gql';
 
@@ -51,15 +51,59 @@ const SEND_INVITE = gql`
   }
 `;
 
-const Invites: React.FC<{ invites?: IInvite[] }> = ({ invites = [] }) => (
+const Invites: React.FC<{
+  invites?: IInvite[];
+  loading?: boolean;
+  onClick?: (invite: IInvite) => any;
+}> = ({ invites = [], loading = false, onClick }) => (
   <>
     {invites.map(invite => (
-      <IonItem key={invite.email}>
+      <IonItem
+        button
+        disabled={loading}
+        key={invite.email}
+        onClick={onClick && (() => onClick(invite))}
+      >
         <IonLabel>{invite.email}</IonLabel>
+        {loading ? (
+          <IonSpinner slot="end"></IonSpinner>
+        ) : (
+          <IonIcon slot="end" icon={send}></IonIcon>
+        )}
       </IonItem>
     ))}
   </>
 );
+
+const SignedUp: FC<{ invites: IInvite[]; refetch }> = ({
+  invites,
+  refetch,
+}) => {
+  const [sendConfirmation, { loading, error }] = useMutation<IMutation>(
+    SEND_INVITE,
+  );
+
+  if (error) {
+    return <Error value={error}></Error>;
+  }
+
+  return (
+    <IonCard>
+      <IonCardHeader>
+        <IonCardTitle>Signed Up</IonCardTitle>
+      </IonCardHeader>
+
+      <Invites
+        invites={invites}
+        loading={loading}
+        onClick={async invite => {
+          await sendConfirmation({ variables: { email: invite.email } });
+          await refetch();
+        }}
+      ></Invites>
+    </IonCard>
+  );
+};
 
 export default () => {
   const {
@@ -68,9 +112,10 @@ export default () => {
     data,
     refetch,
   } = useQuery<IQuery>(INVITES);
-  const [sendEmail, { loading: loadingEmail, error: errorEmail }] = useMutation<
-    IMutation
-  >(SEND_INVITE);
+  const [
+    sendInvite,
+    { loading: loadingEmail, error: errorEmail },
+  ] = useMutation<IMutation>(SEND_INVITE);
 
   if (loadingInvites) {
     return <Loading></Loading>;
@@ -100,25 +145,14 @@ export default () => {
                   <IonCardTitle>Requested</IonCardTitle>
                 </IonCardHeader>
 
-                {notInvited &&
-                  notInvited.map(invite => (
-                    <IonItem
-                      button
-                      disabled={loadingEmail}
-                      key={invite.email}
-                      onClick={async () => {
-                        await sendEmail({ variables: { email: invite.email } });
-                        await refetch();
-                      }}
-                    >
-                      {loadingEmail ? (
-                        <IonSpinner slot="end"></IonSpinner>
-                      ) : (
-                        <IonIcon slot="end" icon={send}></IonIcon>
-                      )}
-                      <IonLabel>{invite.email}</IonLabel>
-                    </IonItem>
-                  ))}
+                <Invites
+                  invites={notInvited}
+                  loading={loadingEmail}
+                  onClick={async invite => {
+                    await sendInvite({ variables: { email: invite.email } });
+                    await refetch();
+                  }}
+                ></Invites>
               </IonCard>
 
               <IonCard>
@@ -126,16 +160,17 @@ export default () => {
                   <IonCardTitle>Invited</IonCardTitle>
                 </IonCardHeader>
 
-                <Invites invites={notSignedUp}></Invites>
+                <Invites
+                  invites={notSignedUp}
+                  loading={loadingEmail}
+                  onClick={async invite => {
+                    await sendInvite({ variables: { email: invite.email } });
+                    await refetch();
+                  }}
+                ></Invites>
               </IonCard>
 
-              <IonCard>
-                <IonCardHeader>
-                  <IonCardTitle>Signed Up</IonCardTitle>
-                </IonCardHeader>
-
-                <Invites invites={notConfirmed}></Invites>
-              </IonCard>
+              <SignedUp invites={notConfirmed} refetch={refetch}></SignedUp>
 
               <IonCard>
                 <IonCardHeader>

@@ -55,7 +55,7 @@ const ConfirmEmail = React.memo<{
   const [mutate, { loading, data, error }] = useMutation(RESEND_EMAIL);
 
   if (data && data.resendEmail) {
-    return <Redirect to={`/join/confirm/${data.resendEmail}`} />;
+    return <Redirect to={`/join/${data.resendEmail}`} />;
   }
 
   return (
@@ -80,7 +80,7 @@ const ConfirmEmail = React.memo<{
                       <div className="field" key={err.message}>
                         <p className="help is-danger">
                           Email is not registered.
-                          <IonButtonLink href="/join/signup">
+                          <IonButtonLink href="/join">
                             <IonIcon slot="start" icon={add} />
                             <IonLabel>Join Instead</IonLabel>
                           </IonButtonLink>
