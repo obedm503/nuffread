@@ -3,32 +3,19 @@ import * as React from 'react';
 import { RouteComponentProps, RouteProps } from 'react-router';
 import { IonButtonLink, Routes, TopNav } from '../../components';
 import { Confirm } from './confirm';
-import { Home } from './home';
-import { Pricing } from './pricing';
 import { Register } from './register';
 
 const routes: RouteProps[] = [
-  { path: '/pricing', component: Pricing },
-  { path: '/signup', component: Register },
-  { path: '/confirm/:binId?', component: Confirm },
-  { path: '/', component: Home },
+  { path: '/:binId?', component: Confirm },
+  { path: '/', component: Register },
 ];
 
 export default ({ match }: RouteComponentProps<{}>) => (
   <>
     <TopNav>
-      <IonButtons slot="start">
+      <IonButtons slot="end">
         <IonButtonLink activeColor="dark" href="/join">
           <IonLabel>Join</IonLabel>
-        </IonButtonLink>
-      </IonButtons>
-
-      <IonButtons slot="end">
-        <IonButtonLink activeColor="dark" href="/join/pricing">
-          <IonLabel>Pricing</IonLabel>
-        </IonButtonLink>
-        <IonButtonLink activeColor="dark" href="/join/signup">
-          <IonLabel>Signup</IonLabel>
         </IonButtonLink>
       </IonButtons>
     </TopNav>

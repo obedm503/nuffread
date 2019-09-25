@@ -16,7 +16,7 @@ export const sendConfirmationEmail = async (
   base: string,
   { email, confirmCode }: { email: string; confirmCode: string },
 ) => {
-  const link = `${base}/confirm/${confirmCode}`;
+  const link = `${base}/${confirmCode}`;
   await send({
     email,
     subject: 'Click to confirm email',
