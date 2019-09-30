@@ -29,7 +29,6 @@ import {
   AuthorizationError,
 } from '../util/error';
 import { IResolver } from '../util/types';
-import { sleep } from '../util';
 
 export const MutationResolver: IResolver<IMutation> = {
   async register(
