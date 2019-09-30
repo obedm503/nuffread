@@ -1,6 +1,5 @@
 import { useMutation } from '@apollo/react-hooks';
 import {
-  IonButton,
   IonCard,
   IonCardContent,
   IonCol,
@@ -15,7 +14,7 @@ import { add } from 'ionicons/icons';
 import * as React from 'react';
 import { Link } from 'react-router-dom';
 import * as yup from 'yup';
-import { Email, Password } from '../../components';
+import { Email, IonSubmit, Password } from '../../components';
 import { IMutation } from '../../schema.gql';
 import { passwordSchema } from '../../util';
 
@@ -44,15 +43,15 @@ const RegisterSuccess = () => <>Click the confirmation link in your email.</>;
 const RegisterForm: React.FC = () => {
   const [mutate, { error, data }] = useMutation<IMutation>(REGISTER);
 
-  const noIntiveError =
+  if (data && data.register) {
+    return <RegisterSuccess />;
+  }
+
+  const noInviteError =
     error && error.graphQLErrors.find(err => err.message === 'NO_INVITE');
 
   const duplicateUserError =
     error && error.graphQLErrors.find(err => err.message === 'DUPLICATE_USER');
-
-  if (data && data.register) {
-    return <RegisterSuccess />;
-  }
 
   const onSubmit = ({ email, password }) =>
     mutate({ variables: { email, password } });
@@ -76,7 +75,7 @@ const RegisterForm: React.FC = () => {
                 </IonCol>
               </IonRow>
 
-              {noIntiveError ? (
+              {noInviteError ? (
                 <p className="help is-danger">
                   You need an invite first. <Link to="/">Request invite?</Link>
                 </p>
@@ -91,21 +90,10 @@ const RegisterForm: React.FC = () => {
 
               <IonRow>
                 <IonCol>
-                  <input
-                    type="submit"
-                    style={{
-                      position: 'absolute',
-                      left: '-9999px',
-                      width: '1px',
-                      height: '1px',
-                    }}
-                    tabIndex={-1}
-                  />
-
-                  <IonButton color="primary" expand="block" type="submit">
+                  <IonSubmit color="primary" expand="block">
                     <IonIcon slot="start" icon={add} />
                     <IonLabel>Join</IonLabel>
-                  </IonButton>
+                  </IonSubmit>
                 </IonCol>
               </IonRow>
             </IonGrid>
@@ -120,7 +108,7 @@ export const Register = props => (
   <IonGrid>
     <IonRow>
       <IonCol sizeMd="6" offsetMd="3">
-        <IonCard>
+        <IonCard color="white">
           <IonCardContent>
             <RegisterForm {...props} />
           </IonCardContent>

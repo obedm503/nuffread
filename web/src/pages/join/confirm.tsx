@@ -14,7 +14,7 @@ import { add, logIn } from 'ionicons/icons';
 import * as React from 'react';
 import { Redirect, RouteComponentProps } from 'react-router';
 import * as yup from 'yup';
-import { Email, Error, IonButtonLink } from '../../components';
+import { Email, Error, IonButtonLink, IonSubmit } from '../../components';
 import { useUser } from '../../state';
 
 const RESEND_EMAIL = gql`
@@ -92,10 +92,10 @@ const ConfirmEmail = React.memo<{
                 })
               : null}
 
-            <IonButton color="primary" type="submit">
+            <IonSubmit color="primary">
               <IonIcon slot="start" icon={logIn} />
               <span>Send Email</span>
-            </IonButton>
+            </IonSubmit>
           </Form>
         );
       }}

@@ -1,6 +1,5 @@
 import { useApolloClient, useMutation } from '@apollo/react-hooks';
 import {
-  IonButton,
   IonCard,
   IonCardContent,
   IonCol,
@@ -20,7 +19,13 @@ import * as React from 'react';
 import { RouteComponentProps } from 'react-router';
 import { Link } from 'react-router-dom';
 import * as yup from 'yup';
-import { Email, IonButtonLink, Password, TopNav } from '../components';
+import {
+  Email,
+  IonButtonLink,
+  IonSubmit,
+  Password,
+  TopNav,
+} from '../components';
 import { IMutation, SystemUserType } from '../schema.gql';
 
 const LOGIN = gql`
@@ -119,21 +124,10 @@ const LoginForm = React.memo<{
                 )}
 
                 <IonCol>
-                  <input
-                    type="submit"
-                    style={{
-                      position: 'absolute',
-                      left: '-9999px',
-                      width: '1px',
-                      height: '1px',
-                    }}
-                    tabIndex={-1}
-                  />
-
-                  <IonButton expand="block" color="primary" type="submit">
+                  <IonSubmit expand="block" color="primary">
                     <IonIcon slot="start" icon={logIn} />
                     <IonLabel>Login</IonLabel>
-                  </IonButton>
+                  </IonSubmit>
                 </IonCol>
               </IonRow>
             </IonGrid>

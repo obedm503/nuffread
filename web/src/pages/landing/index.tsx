@@ -1,6 +1,5 @@
 import { useMutation } from '@apollo/react-hooks';
 import {
-  IonButton,
   IonButtons,
   IonCol,
   IonContent,
@@ -16,7 +15,13 @@ import gql from 'graphql-tag';
 import * as React from 'react';
 import { Link } from 'react-router-dom';
 import * as yup from 'yup';
-import { Email, IonButtonLink, Text, TopNav } from '../../components';
+import {
+  Email,
+  IonButtonLink,
+  IonSubmit,
+  Text,
+  TopNav,
+} from '../../components';
 import { IMutation } from '../../schema.gql';
 
 const REQUEST_INVITE = gql`
@@ -73,19 +78,7 @@ const RequestInvite: React.FC = () => {
         ) : null}
 
         <div className="ion-padding">
-          <input
-            type="submit"
-            style={{
-              position: 'absolute',
-              left: '-9999px',
-              width: '1px',
-              height: '1px',
-            }}
-            tabIndex={-1}
-          />
-          <IonButton expand="block" type="submit">
-            Request your invite
-          </IonButton>
+          <IonSubmit expand="block">Request your invite</IonSubmit>
         </div>
       </Form>
     </Formik>
