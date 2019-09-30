@@ -1,6 +1,7 @@
 import * as client from '@sendgrid/client';
 import { MailData } from '@sendgrid/helpers/classes/mail';
 import * as mail from '@sendgrid/mail';
+import { logger } from '.';
 import { config } from '../config';
 
 client.setApiKey(process.env.SENDGRID_API_KEY!);
@@ -40,6 +41,8 @@ export const send = async ({
   };
 
   await mail.send(msg); // send or schedule email
+
+  logger.info('sent email', { email });
 };
 
 export const cancel = async id => {
