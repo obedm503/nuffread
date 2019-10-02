@@ -21,8 +21,8 @@ export const Control: React.FC<
     <>
       <IonItem
         style={{
-          // handle highlight color myself because ionic react doesn't yet
-          '--highlight-background': showError
+          '--highlight-height': '2px', // always show highlight
+          '--highlight-color-focused': showError
             ? 'var(--ion-color-danger)'
             : isTouched
             ? 'var(--ion-color-success)'
