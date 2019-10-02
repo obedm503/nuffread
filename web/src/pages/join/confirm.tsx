@@ -1,129 +1,65 @@
 import { useMutation } from '@apollo/react-hooks';
-import {
-  IonCard,
-  IonCardContent,
-  IonCol,
-  IonGrid,
-  IonIcon,
-  IonItem,
-  IonLabel,
-  IonList,
-  IonRow,
-} from '@ionic/react';
-import { Form, Formik } from 'formik';
+import { IonCard, IonCardContent, IonCol, IonGrid, IonRow } from '@ionic/react';
 import gql from 'graphql-tag';
-import { History } from 'history';
-import { add, logIn } from 'ionicons/icons';
 import * as React from 'react';
-import { Redirect, RouteComponentProps } from 'react-router';
-import { object } from 'yup';
-import { Email, Error, IonButtonLink, IonSubmit } from '../../components';
+import { RouteComponentProps } from 'react-router';
+import { Link } from 'react-router-dom';
 import { apolloFormErrors } from '../../components/apollo-error';
-import { IMutation } from '../../schema.gql';
-import { useUser } from '../../state';
-import { studentEmailSchema } from '../../util';
-
-const RESEND_EMAIL = gql`
-  mutation ResendEmail($binId: String, $email: String) {
-    resendEmail(binId: $binId, email: $email)
-  }
-`;
-
-const ResendEmail = React.memo<{ binId: string }>(({ binId }) => {
-  const [mutate, { error }] = useMutation<IMutation>(RESEND_EMAIL);
-
-  if (error) {
-    return <Error value={error} />;
-  }
-
-  return (
-    <IonItem
-      button
-      onClick={() => mutate({ variables: { binId } })}
-      color="primary"
-    >
-      <IonLabel>Click here to resend email</IonLabel>
-    </IonItem>
-  );
-});
-
-const emailSchema = object().shape({
-  email: studentEmailSchema,
-});
+import { IConfirmOnMutationArguments, IMutation } from '../../schema.gql';
+import { useRouter } from '../../state/router';
 
 const Errors = apolloFormErrors({
-  WRONG_CREDENTIALS: (
+  NO_INVITE: (
     <>
-      Email is not registered.
-      <IonButtonLink href="/join">
-        <IonIcon slot="start" icon={add} />
-        <IonLabel>Join Instead</IonLabel>
-      </IonButtonLink>
+      You need an invite first. <Link to="/">Request invite?</Link>
     </>
   ),
+  NO_APPROVED_INVITE: 'Your invite request has not been approved.',
 });
 
+const CONFIRM_EMAIL = gql`
+  mutation ConfirmEmail($code: String!) {
+    confirm(code: $code)
+  }
+`;
 const ConfirmEmail = React.memo<{
-  history: History;
-}>(() => {
-  const [mutate, { loading, data, error }] = useMutation<IMutation>(
-    RESEND_EMAIL,
-  );
+  code: string;
+}>(({ code }) => {
+  const { history } = useRouter();
+  const [mutate, { error, called }] = useMutation<
+    IMutation,
+    IConfirmOnMutationArguments
+  >(CONFIRM_EMAIL, {
+    onCompleted: data => {
+      if (data && data.confirm) {
+        history.push('/login');
+      }
+    },
+  });
 
-  if (loading) {
-    return <div>Loading...</div>;
+  if (error) {
+    return <Errors error={error}></Errors>;
   }
-  if (data && data.resendEmail) {
-    return <Redirect to={`/join/${data.resendEmail}`} />;
+
+  if (!called) {
+    mutate({ variables: { code } });
   }
 
-  return (
-    <Formik<{ email: string }>
-      onSubmit={({ email }) => mutate({ variables: { email } })}
-      validationSchema={emailSchema}
-      initialValues={{ email: '' }}
-    >
-      <Form>
-        <IonList>
-          <Email name="email" label="Email" />
-
-          <Errors error={error}></Errors>
-        </IonList>
-
-        <IonSubmit color="primary">
-          <IonIcon slot="start" icon={logIn} />
-          <span>Send Email</span>
-        </IonSubmit>
-      </Form>
-    </Formik>
-  );
+  return <IonCardContent>Loading...</IonCardContent>;
 });
 
-export const Confirm = React.memo<RouteComponentProps<{ binId?: string }>>(
-  ({ match, history }) => {
-    const me = useUser();
-    if (me) {
-      return <Redirect to="/" />;
-    }
-    return (
-      <IonGrid>
-        <IonRow>
-          <IonCol sizeSm="4" offsetSm="4">
-            {match.params.binId ? (
-              <IonCard color="white">
-                <IonCardContent>
-                  An email has been sent to your email. Please click the link to
-                  confirm and continue to your account.
-                </IonCardContent>
-
-                <ResendEmail binId={match.params.binId} />
-              </IonCard>
-            ) : (
-              <ConfirmEmail history={history} />
-            )}
-          </IonCol>
-        </IonRow>
-      </IonGrid>
-    );
-  },
-);
+export const Confirm = React.memo<
+  RouteComponentProps<{ confirmationCode: string }>
+>(({ match: { params: { confirmationCode } } }) => {
+  return (
+    <IonGrid>
+      <IonRow>
+        <IonCol sizeSm="4" offsetSm="4">
+          <IonCard color="white">
+            <ConfirmEmail code={confirmationCode} />
+          </IonCard>
+        </IonCol>
+      </IonRow>
+    </IonGrid>
+  );
+});

@@ -7,7 +7,7 @@ import { Register } from './register';
 
 const routes: RouteProps[] = [
   { path: '/', exact: true, component: Register },
-  { path: '/:binId', component: Confirm },
+  { path: '/:confirmationCode', component: Confirm },
 ];
 
 export default ({ match }: RouteComponentProps<{}>) => (

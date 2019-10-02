@@ -33,7 +33,7 @@ type Mutation {
   login(email: String!, password: String!, type: SystemUserType!): Boolean!
   logout: Boolean!
   confirm(code: String!): Boolean!
-  resendEmail(email: String!): Boolean!
+  # resendEmail(code: String!): Boolean!
 
   createListing(listing: ListingInput!): Listing!
   deleteListing(id: ID!): Boolean

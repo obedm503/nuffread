@@ -12,7 +12,6 @@ import {
   IMutation,
   IRegisterOnMutationArguments,
   IRequestInviteOnMutationArguments,
-  IResendEmailOnMutationArguments,
 } from '../schema.gql';
 import { sendConfirmationEmail, User } from '../user/user.entity';
 import { isAdmin, isPublic, isUser } from '../util/auth';
@@ -134,37 +133,37 @@ export const MutationResolver: IResolver<IMutation> = {
         throw new WrongCredentials();
       }
 
+      if (user.confirmedAt) {
+        return true; // user is already confirmed
+      }
+
       user.confirmedAt = new Date();
       await manager.save(user);
 
       return true;
     });
   },
-  async resendEmail(
-    _,
-    { email }: IResendEmailOnMutationArguments,
-    { me, req },
-  ) {
-    isPublic(me);
-    if (me) {
-      // is already logged in, no need to resend
-      throw new BadRequest();
-    }
+  // async resendEmail(_, { code }: IResendEmailOnMutationArguments, { me, req }) {
+  //   // is already logged in, no need to resend
+  //   isPublic(me);
 
-    const origin = req.get('origin');
-    if (!origin) {
-      throw new BadRequest();
-    }
+  //   const origin = req.get('origin');
+  //   if (!origin) {
+  //     throw new BadRequest();
+  //   }
 
-    const invite = await Invite.findOne({
-      where: { email },
-    });
-    isInvited(invite);
+  //   const invite = await Invite.findOne({
+  //     where: { code },
+  //   });
+  //   isInvited(invite);
 
-    await sendConfirmationEmail(origin, { email, confirmCode: invite!.code });
+  //   await sendConfirmationEmail(origin, {
+  //     email: invite!.email,
+  //     confirmCode: invite!.code,
+  //   });
 
-    return true;
-  },
+  //   return true;
+  // },
   async createListing(
     _,
     {
