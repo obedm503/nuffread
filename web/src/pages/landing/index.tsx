@@ -14,7 +14,7 @@ import { Form, Formik } from 'formik';
 import gql from 'graphql-tag';
 import * as React from 'react';
 import { Link } from 'react-router-dom';
-import * as yup from 'yup';
+import { object, string } from 'yup';
 import {
   Email,
   IonButtonLink,
@@ -23,6 +23,7 @@ import {
   TopNav,
 } from '../../components';
 import { IMutation } from '../../schema.gql';
+import { studentEmailSchema } from '../../util';
 
 const REQUEST_INVITE = gql`
   mutation RequestInvite($email: String!, $name: String!) {
@@ -31,17 +32,9 @@ const REQUEST_INVITE = gql`
 `;
 
 type FormSchema = { email: string; name: string };
-const schema = yup.object<FormSchema>().shape({
-  email: yup
-    .string()
-    .required('Email is required')
-    .email('Must be a valid email')
-    .test(
-      'edu',
-      'Must be a student email',
-      value => !!value && value.endsWith('.edu'),
-    ),
-  name: yup.string().required('Name is required'),
+const schema = object<FormSchema>().shape({
+  email: studentEmailSchema,
+  name: string().required('Name is required'),
 });
 
 const RequestInvite: React.FC = () => {

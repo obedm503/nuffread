@@ -18,7 +18,7 @@ import { add, logIn } from 'ionicons/icons';
 import * as React from 'react';
 import { RouteComponentProps } from 'react-router';
 import { Link } from 'react-router-dom';
-import * as yup from 'yup';
+import { object } from 'yup';
 import {
   Email,
   IonButtonLink,
@@ -27,6 +27,7 @@ import {
   TopNav,
 } from '../components';
 import { IMutation, SystemUserType } from '../schema.gql';
+import { emailSchema, passwordSchema } from '../util';
 
 const LOGIN = gql`
   mutation Login($email: String!, $password: String!, $type: SystemUserType!) {
@@ -51,7 +52,7 @@ const Errors = ({ errors }: { errors: readonly GraphQLError[] }) => (
           );
           break;
         case 'WRONG_CREDENTIALS':
-          errMsg = 'Wrong email or password.';
+          errMsg = 'Wrong email or passphrase.';
           break;
       }
 
@@ -103,7 +104,7 @@ const LoginForm = React.memo<{
               <IonRow>
                 <IonCol>
                   <Email name="email" label="Email" />
-                  <Password name="password" label="Password" />
+                  <Password name="password" label="Passphrase" />
 
                   {error ? <Errors errors={error.graphQLErrors} /> : null}
                 </IonCol>
@@ -138,24 +139,13 @@ const LoginForm = React.memo<{
   );
 });
 
-const adminSchema = yup.object().shape({
-  email: yup
-    .string()
-    .required()
-    .email(),
-  password: yup.string().required(),
+const adminSchema = object().shape({
+  email: emailSchema,
+  password: passwordSchema,
 });
-const userSchema = yup.object().shape({
-  email: yup
-    .string()
-    .required()
-    .email()
-    .test(
-      'edu',
-      'Must be student email',
-      value => !!value && value.endsWith('.edu'),
-    ),
-  password: yup.string().required(),
+const userSchema = object().shape({
+  email: emailSchema,
+  password: passwordSchema,
 });
 
 export class UserLogin extends React.PureComponent<

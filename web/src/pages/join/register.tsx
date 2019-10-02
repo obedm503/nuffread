@@ -13,10 +13,10 @@ import gql from 'graphql-tag';
 import { add } from 'ionicons/icons';
 import * as React from 'react';
 import { Link } from 'react-router-dom';
-import * as yup from 'yup';
+import { object } from 'yup';
 import { Email, IonSubmit, Password } from '../../components';
 import { IMutation } from '../../schema.gql';
-import { passwordSchema } from '../../util';
+import { strongPasswordSchema, studentEmailSchema } from '../../util';
 
 const REGISTER = gql`
   mutation Register($email: String!, $password: String!) {
@@ -25,17 +25,9 @@ const REGISTER = gql`
 `;
 
 type FormSchema = { email: string; password: string };
-const schema = yup.object<FormSchema>().shape({
-  email: yup
-    .string()
-    .required('Email is required')
-    .email('Must be a valid email')
-    .test(
-      'edu',
-      'Must be a student email',
-      value => !!value && value.endsWith('.edu'),
-    ),
-  password: passwordSchema,
+const schema = object<FormSchema>().shape({
+  email: studentEmailSchema,
+  password: strongPasswordSchema,
 });
 
 const RegisterSuccess = () => <>Click the confirmation link in your email.</>;

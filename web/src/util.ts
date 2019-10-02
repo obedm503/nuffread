@@ -43,9 +43,17 @@ export const classes = (
     .filter(Boolean)
     .join(' ');
 
-export const passwordSchema = yup
+export const emailSchema = yup
   .string()
-  .required('Passphrase is required')
+  .required('Email is required')
+  .email('Must be a valid email');
+export const studentEmailSchema = emailSchema.test(
+  'edu',
+  'Must be student email',
+  value => !!value && value.endsWith('.edu'),
+);
+export const passwordSchema = yup.string().required('Passphrase is required');
+export const strongPasswordSchema = passwordSchema
   .min(10, 'Must be at least 8 characters long')
   .test('uppercase', 'Must contain at least one uppercase letter', value => {
     return !!value && value.split('').some(char => char === char.toUpperCase());
@@ -59,6 +67,6 @@ export const passwordSchema = yup
   .test('special', 'Must contain at least one special character', value => {
     return !!value && /[ !@#$%^&*~?<>_+-]+/.test(value);
   });
-export function validatePassword(password: string): boolean {
-  return passwordSchema.isValidSync(password);
+export function validateStrongPassword(password: string): boolean {
+  return strongPasswordSchema.isValidSync(password);
 }

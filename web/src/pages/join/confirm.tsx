@@ -13,9 +13,10 @@ import { History } from 'history';
 import { add, logIn } from 'ionicons/icons';
 import * as React from 'react';
 import { Redirect, RouteComponentProps } from 'react-router';
-import * as yup from 'yup';
+import { object } from 'yup';
 import { Email, Error, IonButtonLink, IonSubmit } from '../../components';
 import { useUser } from '../../state';
+import { studentEmailSchema } from '../../util';
 
 const RESEND_EMAIL = gql`
   mutation ResendEmail($binId: String, $email: String) {
@@ -37,16 +38,8 @@ const ResendEmail = React.memo<{ binId: string }>(({ binId }) => {
   );
 });
 
-const emailSchema = yup.object().shape({
-  email: yup
-    .string()
-    .required()
-    .email()
-    .test(
-      'edu',
-      'Must be student email',
-      value => !!value && value.endsWith('.edu'),
-    ),
+const emailSchema = object().shape({
+  email: studentEmailSchema,
 });
 
 const ConfirmEmail = React.memo<{
