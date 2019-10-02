@@ -1,9 +1,11 @@
 import { useMutation } from '@apollo/react-hooks';
 import {
-  IonButton,
+  IonCard,
+  IonCardContent,
   IonCol,
   IonGrid,
   IonIcon,
+  IonItem,
   IonLabel,
   IonRow,
 } from '@ionic/react';
@@ -32,9 +34,13 @@ const ResendEmail = React.memo<{ binId: string }>(({ binId }) => {
   }
 
   return (
-    <IonButton onClick={() => mutate({ variables: { binId } })} color="primary">
-      Click here to resend email.
-    </IonButton>
+    <IonItem
+      button
+      onClick={() => mutate({ variables: { binId } })}
+      color="primary"
+    >
+      <IonLabel>Click here to resend email</IonLabel>
+    </IonItem>
   );
 });
 
@@ -70,15 +76,15 @@ const ConfirmEmail = React.memo<{
               ? error.graphQLErrors.map(err => {
                   if (err.message === 'WRONG_CREDENTIALS') {
                     return (
-                      <div className="field" key={err.message}>
-                        <p className="help is-danger">
+                      <IonItem color="danger" key={err.message}>
+                        <IonLabel>
                           Email is not registered.
                           <IonButtonLink href="/join">
                             <IonIcon slot="start" icon={add} />
                             <IonLabel>Join Instead</IonLabel>
                           </IonButtonLink>
-                        </p>
-                      </div>
+                        </IonLabel>
+                      </IonItem>
                     );
                   }
                   return null;
@@ -107,15 +113,14 @@ export const Confirm = React.memo<RouteComponentProps<{ binId?: string }>>(
         <IonRow>
           <IonCol sizeSm="4" offsetSm="4">
             {match.params.binId ? (
-              <>
-                <p className="is-size-5">
+              <IonCard color="white">
+                <IonCardContent>
                   An email has been sent to your email. Please click the link to
                   confirm and continue to your account.
-                </p>
-                <p className="is-size-5">
-                  <ResendEmail binId={match.params.binId} />
-                </p>
-              </>
+                </IonCardContent>
+
+                <ResendEmail binId={match.params.binId} />
+              </IonCard>
             ) : (
               <ConfirmEmail history={history} />
             )}
