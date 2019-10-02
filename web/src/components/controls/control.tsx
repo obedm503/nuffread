@@ -15,7 +15,8 @@ export const Control: React.FC<ControlProps & { form: FormikProps<any> }> = ({
   children,
   form: { touched, errors, submitCount },
 }) => {
-  const isTouched = !!(touched && touched[name]);
+  const isSubmitted = submitCount > 0;
+  const isTouched = isSubmitted && !!(touched && touched[name]);
   const showError = isTouched && errors[name];
   const errorMessage = error || (errors[name] ? errors[name] : '');
   return (
