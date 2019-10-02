@@ -40,6 +40,7 @@ const Errors = apolloFormErrors({
       You need an invite first. <Link to="/">Request invite?</Link>
     </>
   ),
+  NO_APPROVED_INVITE: 'Your invite request has not been approved.',
   DUPLICATE_USER: (
     <>
       This email is already registered. <Link to="/login">Login?</Link>

@@ -7,28 +7,38 @@ import { Listing } from '../listing/listing.entity';
 import {
   IConfirmOnMutationArguments,
   ICreateListingOnMutationArguments,
+  IDeleteListingOnMutationArguments,
   ILoginOnMutationArguments,
   IMutation,
   IRegisterOnMutationArguments,
   IRequestInviteOnMutationArguments,
   IResendEmailOnMutationArguments,
-  IDeleteListingOnMutationArguments,
 } from '../schema.gql';
 import { sendConfirmationEmail, User } from '../user/user.entity';
 import { isAdmin, isPublic, isUser } from '../util/auth';
 import { getBook } from '../util/books';
 import { send } from '../util/email';
 import {
+  AuthorizationError,
   BadRequest,
   BookNotFound,
   DuplicateInvite,
   DuplicateUser,
+  NoApprovedInvite,
   NoInvite,
   NotConfirmed,
   WrongCredentials,
-  AuthorizationError,
 } from '../util/error';
 import { IResolver } from '../util/types';
+
+const isInvited = (invite?: Invite) => {
+  if (!invite) {
+    throw new NoInvite();
+  }
+  if (!invite.invitedAt) {
+    throw new NoApprovedInvite();
+  }
+};
 
 export const MutationResolver: IResolver<IMutation> = {
   async register(
@@ -50,9 +60,7 @@ export const MutationResolver: IResolver<IMutation> = {
 
     const invite = await Invite.findOne({ where: { email } });
     // only invited users can register
-    if (!invite) {
-      throw new NoInvite();
-    }
+    isInvited(invite);
 
     const passwordHash = await hash(password, 12);
 
@@ -61,7 +69,7 @@ export const MutationResolver: IResolver<IMutation> = {
 
     await sendConfirmationEmail(origin, {
       email: user.email,
-      confirmCode: invite.code,
+      confirmCode: invite!.code,
     });
 
     return true;
@@ -117,12 +125,10 @@ export const MutationResolver: IResolver<IMutation> = {
       const invite = await manager.findOne(Invite, {
         where: { code },
       });
-      if (!invite) {
-        throw new NoInvite();
-      }
+      isInvited(invite);
 
       const user = await manager.findOne(User, {
-        where: { email: invite.email },
+        where: { email: invite!.email },
       });
       if (!user) {
         throw new WrongCredentials();
@@ -153,11 +159,9 @@ export const MutationResolver: IResolver<IMutation> = {
     const invite = await Invite.findOne({
       where: { email },
     });
-    if (!invite) {
-      throw new NoInvite();
-    }
+    isInvited(invite);
 
-    await sendConfirmationEmail(origin, { email, confirmCode: invite.code });
+    await sendConfirmationEmail(origin, { email, confirmCode: invite!.code });
 
     return true;
   },
