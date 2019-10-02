@@ -55,10 +55,6 @@ const LoginForm = React.memo<{
   const [mutate, { loading, error }] = useMutation<IMutation>(LOGIN);
   const client = useApolloClient();
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
   const onSubmit = async ({ email, password }) => {
     const res = await mutate({
       variables: { email, password, type },
@@ -75,34 +71,38 @@ const LoginForm = React.memo<{
       validationSchema={schema}
       initialValues={{ email: '', password: '' }}
     >
-      <Form>
-        <IonList>
-          <Email name="email" label="Email" />
-          <Password name="password" label="Passphrase" />
+      {loading ? (
+        <div>Loading...</div>
+      ) : (
+        <Form>
+          <IonList>
+            <Email name="email" label="Email" />
+            <Password name="password" label="Passphrase" />
 
-          <Errors error={error} />
-        </IonList>
+            <Errors error={error} />
+          </IonList>
 
-        <IonGrid>
-          <IonRow>
-            {admin ? null : (
+          <IonGrid>
+            <IonRow>
+              {admin ? null : (
+                <IonCol>
+                  <IonButtonLink expand="block" href="/join" color="secondary">
+                    <IonIcon slot="start" icon={add} />
+                    <IonLabel>Join</IonLabel>
+                  </IonButtonLink>
+                </IonCol>
+              )}
+
               <IonCol>
-                <IonButtonLink expand="block" href="/join" color="secondary">
-                  <IonIcon slot="start" icon={add} />
-                  <IonLabel>Join</IonLabel>
-                </IonButtonLink>
+                <IonSubmit expand="block" color="primary">
+                  <IonIcon slot="start" icon={logIn} />
+                  <IonLabel>Login</IonLabel>
+                </IonSubmit>
               </IonCol>
-            )}
-
-            <IonCol>
-              <IonSubmit expand="block" color="primary">
-                <IonIcon slot="start" icon={logIn} />
-                <IonLabel>Login</IonLabel>
-              </IonSubmit>
-            </IonCol>
-          </IonRow>
-        </IonGrid>
-      </Form>
+            </IonRow>
+          </IonGrid>
+        </Form>
+      )}
     </Formik>
   );
 });
