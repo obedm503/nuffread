@@ -18,14 +18,9 @@ export const Text: React.FC<Props> = ({
   return (
     <Field
       name={name}
-      render={({ field, form: { touched, errors, values } }: FieldProps) => {
+      render={({ field, form }: FieldProps) => {
         return (
-          <Control
-            {...controlProps}
-            touched={touched}
-            errors={errors}
-            values={values}
-          >
+          <Control {...controlProps} form={form}>
             <IonInput
               {...inputProps}
               type={type}

@@ -1,4 +1,5 @@
 import { IonItem, IonLabel, IonText } from '@ionic/react';
+import { FormikProps } from 'formik';
 import * as React from 'react';
 
 export type ControlProps = {
@@ -7,13 +8,13 @@ export type ControlProps = {
   name: string;
 };
 
-export const Control: React.FC<
-  ControlProps & {
-    touched?;
-    errors;
-    values?;
-  }
-> = ({ label, error, name, touched, errors, children }) => {
+export const Control: React.FC<ControlProps & { form: FormikProps<any> }> = ({
+  label,
+  error,
+  name,
+  children,
+  form: { touched, errors, submitCount },
+}) => {
   const isTouched = !!(touched && touched[name]);
   const showError = isTouched && errors[name];
   const errorMessage = error || (errors[name] ? errors[name] : '');
