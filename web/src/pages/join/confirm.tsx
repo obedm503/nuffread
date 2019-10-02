@@ -7,6 +7,7 @@ import {
   IonIcon,
   IonItem,
   IonLabel,
+  IonList,
   IonRow,
 } from '@ionic/react';
 import { Form, Formik } from 'formik';
@@ -17,6 +18,8 @@ import * as React from 'react';
 import { Redirect, RouteComponentProps } from 'react-router';
 import { object } from 'yup';
 import { Email, Error, IonButtonLink, IonSubmit } from '../../components';
+import { apolloFormErrors } from '../../components/apollo-error';
+import { IMutation } from '../../schema.gql';
 import { useUser } from '../../state';
 import { studentEmailSchema } from '../../util';
 
@@ -27,7 +30,7 @@ const RESEND_EMAIL = gql`
 `;
 
 const ResendEmail = React.memo<{ binId: string }>(({ binId }) => {
-  const [mutate, { error }] = useMutation(RESEND_EMAIL);
+  const [mutate, { error }] = useMutation<IMutation>(RESEND_EMAIL);
 
   if (error) {
     return <Error value={error} />;
@@ -48,11 +51,28 @@ const emailSchema = object().shape({
   email: studentEmailSchema,
 });
 
+const Errors = apolloFormErrors({
+  WRONG_CREDENTIALS: (
+    <>
+      Email is not registered.
+      <IonButtonLink href="/join">
+        <IonIcon slot="start" icon={add} />
+        <IonLabel>Join Instead</IonLabel>
+      </IonButtonLink>
+    </>
+  ),
+});
+
 const ConfirmEmail = React.memo<{
   history: History;
 }>(() => {
-  const [mutate, { loading, data, error }] = useMutation(RESEND_EMAIL);
+  const [mutate, { loading, data, error }] = useMutation<IMutation>(
+    RESEND_EMAIL,
+  );
 
+  if (loading) {
+    return <div>Loading...</div>;
+  }
   if (data && data.resendEmail) {
     return <Redirect to={`/join/${data.resendEmail}`} />;
   }
@@ -63,41 +83,18 @@ const ConfirmEmail = React.memo<{
       validationSchema={emailSchema}
       initialValues={{ email: '' }}
     >
-      {() => {
-        if (loading) {
-          return <div>Loading...</div>;
-        }
+      <Form>
+        <IonList>
+          <Email name="email" label="Email" />
 
-        return (
-          <Form>
-            <Email name="email" label="Email" />
+          <Errors error={error}></Errors>
+        </IonList>
 
-            {error
-              ? error.graphQLErrors.map(err => {
-                  if (err.message === 'WRONG_CREDENTIALS') {
-                    return (
-                      <IonItem color="danger" key={err.message}>
-                        <IonLabel>
-                          Email is not registered.
-                          <IonButtonLink href="/join">
-                            <IonIcon slot="start" icon={add} />
-                            <IonLabel>Join Instead</IonLabel>
-                          </IonButtonLink>
-                        </IonLabel>
-                      </IonItem>
-                    );
-                  }
-                  return null;
-                })
-              : null}
-
-            <IonSubmit color="primary">
-              <IonIcon slot="start" icon={logIn} />
-              <span>Send Email</span>
-            </IonSubmit>
-          </Form>
-        );
-      }}
+        <IonSubmit color="primary">
+          <IonIcon slot="start" icon={logIn} />
+          <span>Send Email</span>
+        </IonSubmit>
+      </Form>
     </Formik>
   );
 });

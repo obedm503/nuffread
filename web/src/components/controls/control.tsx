@@ -1,6 +1,12 @@
-import { IonItem, IonLabel, IonText } from '@ionic/react';
+import { IonItem, IonLabel } from '@ionic/react';
 import { FormikProps } from 'formik';
 import * as React from 'react';
+
+export const ControlError = ({ children }) => (
+  <IonItem>
+    <IonLabel color="danger">{children}</IonLabel>
+  </IonItem>
+);
 
 export type ControlProps = {
   label: React.ReactNode;
@@ -36,13 +42,7 @@ export const Control: React.FC<ControlProps & { form: FormikProps<any> }> = ({
         {children}
       </IonItem>
 
-      {showError ? (
-        <IonItem>
-          <IonLabel>
-            <IonText color="danger">{errorMessage}</IonText>
-          </IonLabel>
-        </IonItem>
-      ) : null}
+      {showError ? <ControlError>{errorMessage}</ControlError> : null}
     </>
   );
 };

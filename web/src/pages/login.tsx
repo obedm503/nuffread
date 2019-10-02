@@ -6,12 +6,11 @@ import {
   IonContent,
   IonGrid,
   IonIcon,
-  IonItem,
   IonLabel,
+  IonList,
   IonRow,
 } from '@ionic/react';
 import { Form, Formik } from 'formik';
-import { GraphQLError } from 'graphql';
 import gql from 'graphql-tag';
 import { History } from 'history';
 import { add, logIn } from 'ionicons/icons';
@@ -26,6 +25,7 @@ import {
   Password,
   TopNav,
 } from '../components';
+import { apolloFormErrors } from '../components/apollo-error';
 import { IMutation, SystemUserType } from '../schema.gql';
 import { emailSchema, passwordSchema } from '../util';
 
@@ -35,39 +35,16 @@ const LOGIN = gql`
   }
 `;
 
-const Errors = ({ errors }: { errors: readonly GraphQLError[] }) => (
-  <>
-    {errors.map(err => {
-      let errMsg;
-      switch (err.message) {
-        case 'DUPLICATE_USER':
-          errMsg = 'Email is already registered.';
-          break;
-        case 'NOT_CONFIRMED':
-          errMsg = (
-            <>
-              Email is not yet confirmed. To confirm your email{' '}
-              <Link to="/join">click here</Link>.
-            </>
-          );
-          break;
-        case 'WRONG_CREDENTIALS':
-          errMsg = 'Wrong email or passphrase.';
-          break;
-      }
-
-      if (!errMsg) {
-        return null;
-      }
-
-      return (
-        <IonItem key={err.message}>
-          <IonLabel color="danger">{errMsg}</IonLabel>
-        </IonItem>
-      );
-    })}
-  </>
-);
+const Errors = apolloFormErrors({
+  DUPLICATE_USER: 'Email is already registered.',
+  NOT_CONFIRMED: (
+    <>
+      Email is not yet confirmed. To confirm your email{' '}
+      <Link to="/join">click here</Link>.
+    </>
+  ),
+  WRONG_CREDENTIALS: 'Wrong email or passphrase.',
+});
 
 const LoginForm = React.memo<{
   type: keyof typeof SystemUserType;
@@ -77,6 +54,11 @@ const LoginForm = React.memo<{
 }>(({ schema, admin, type, history }) => {
   const [mutate, { loading, error }] = useMutation<IMutation>(LOGIN);
   const client = useApolloClient();
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
   const onSubmit = async ({ email, password }) => {
     const res = await mutate({
       variables: { email, password, type },
@@ -93,48 +75,34 @@ const LoginForm = React.memo<{
       validationSchema={schema}
       initialValues={{ email: '', password: '' }}
     >
-      {() => {
-        if (loading) {
-          return <div>Loading...</div>;
-        }
+      <Form>
+        <IonList>
+          <Email name="email" label="Email" />
+          <Password name="password" label="Passphrase" />
 
-        return (
-          <Form>
-            <IonGrid>
-              <IonRow>
-                <IonCol>
-                  <Email name="email" label="Email" />
-                  <Password name="password" label="Passphrase" />
+          <Errors error={error} />
+        </IonList>
 
-                  {error ? <Errors errors={error.graphQLErrors} /> : null}
-                </IonCol>
-              </IonRow>
+        <IonGrid>
+          <IonRow>
+            {admin ? null : (
+              <IonCol>
+                <IonButtonLink expand="block" href="/join" color="secondary">
+                  <IonIcon slot="start" icon={add} />
+                  <IonLabel>Join</IonLabel>
+                </IonButtonLink>
+              </IonCol>
+            )}
 
-              <IonRow>
-                {admin ? null : (
-                  <IonCol>
-                    <IonButtonLink
-                      expand="block"
-                      href="/join"
-                      color="secondary"
-                    >
-                      <IonIcon slot="start" icon={add} />
-                      <IonLabel>Join</IonLabel>
-                    </IonButtonLink>
-                  </IonCol>
-                )}
-
-                <IonCol>
-                  <IonSubmit expand="block" color="primary">
-                    <IonIcon slot="start" icon={logIn} />
-                    <IonLabel>Login</IonLabel>
-                  </IonSubmit>
-                </IonCol>
-              </IonRow>
-            </IonGrid>
-          </Form>
-        );
-      }}
+            <IonCol>
+              <IonSubmit expand="block" color="primary">
+                <IonIcon slot="start" icon={logIn} />
+                <IonLabel>Login</IonLabel>
+              </IonSubmit>
+            </IonCol>
+          </IonRow>
+        </IonGrid>
+      </Form>
     </Formik>
   );
 });

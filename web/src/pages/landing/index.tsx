@@ -22,6 +22,7 @@ import {
   Text,
   TopNav,
 } from '../../components';
+import { apolloFormErrors } from '../../components/apollo-error';
 import { IMutation } from '../../schema.gql';
 import { studentEmailSchema } from '../../util';
 
@@ -37,12 +38,15 @@ const schema = object<FormSchema>().shape({
   name: string().required('Name is required'),
 });
 
+const Errors = apolloFormErrors({
+  DUPLICATE_INVITE: (
+    <>
+      This email is already registered. <Link to="/login">Login?</Link>
+    </>
+  ),
+});
 const RequestInvite: React.FC = () => {
   const [mutate, { error, data }] = useMutation<IMutation>(REQUEST_INVITE);
-
-  const duplicateInviteError =
-    error &&
-    error.graphQLErrors.find(err => err.message === 'DUPLICATE_INVITE');
 
   if (data && data.requestInvite) {
     return <p>We got your request. If approved, we will send you an email.</p>;
@@ -62,13 +66,9 @@ const RequestInvite: React.FC = () => {
         <IonList lines="full">
           <Text name="name" label="Name" />
           <Email name="email" label="Email" />
-        </IonList>
 
-        {duplicateInviteError ? (
-          <p className="help is-danger">
-            This email is already registered. <Link to="/login">Login?</Link>
-          </p>
-        ) : null}
+          <Errors error={error}></Errors>
+        </IonList>
 
         <div className="ion-padding">
           <IonSubmit expand="block">Request your invite</IonSubmit>

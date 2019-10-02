@@ -17,7 +17,7 @@ const onCompleted = (data: IMutation) => {
   }
 };
 const useLogout = () => {
-  const [mutate] = useMutation(LOGOUT, { onCompleted });
+  const [mutate] = useMutation<IMutation>(LOGOUT, { onCompleted });
   return () => mutate();
 };
 

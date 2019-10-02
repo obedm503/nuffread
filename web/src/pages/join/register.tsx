@@ -6,6 +6,7 @@ import {
   IonGrid,
   IonIcon,
   IonLabel,
+  IonList,
   IonRow,
 } from '@ionic/react';
 import { Form, Formik } from 'formik';
@@ -15,6 +16,7 @@ import * as React from 'react';
 import { Link } from 'react-router-dom';
 import { object } from 'yup';
 import { Email, IonSubmit, Password } from '../../components';
+import { apolloFormErrors } from '../../components/apollo-error';
 import { IMutation } from '../../schema.gql';
 import { strongPasswordSchema, studentEmailSchema } from '../../util';
 
@@ -32,18 +34,25 @@ const schema = object<FormSchema>().shape({
 
 const RegisterSuccess = () => <>Click the confirmation link in your email.</>;
 
+const Errors = apolloFormErrors({
+  NO_INVITE: (
+    <>
+      You need an invite first. <Link to="/">Request invite?</Link>
+    </>
+  ),
+  DUPLICATE_USER: (
+    <>
+      This email is already registered. <Link to="/login">Login?</Link>
+    </>
+  ),
+});
+
 const RegisterForm: React.FC = () => {
   const [mutate, { error, data }] = useMutation<IMutation>(REGISTER);
 
   if (data && data.register) {
     return <RegisterSuccess />;
   }
-
-  const noInviteError =
-    error && error.graphQLErrors.find(err => err.message === 'NO_INVITE');
-
-  const duplicateUserError =
-    error && error.graphQLErrors.find(err => err.message === 'DUPLICATE_USER');
 
   const onSubmit = ({ email, password }) =>
     mutate({ variables: { email, password } });
@@ -56,42 +65,19 @@ const RegisterForm: React.FC = () => {
         password: '',
       }}
     >
-      {() => {
-        return (
-          <Form>
-            <IonGrid>
-              <IonRow>
-                <IonCol>
-                  <Email name="email" label="Email" />
-                  <Password name="password" label="Passphrase" />
-                </IonCol>
-              </IonRow>
+      <Form>
+        <IonList>
+          <Email name="email" label="Email" />
+          <Password name="password" label="Passphrase" />
 
-              {noInviteError ? (
-                <p className="help is-danger">
-                  You need an invite first. <Link to="/">Request invite?</Link>
-                </p>
-              ) : null}
+          <Errors error={error}></Errors>
+        </IonList>
 
-              {duplicateUserError ? (
-                <p className="help is-danger">
-                  This email is already registered.{' '}
-                  <Link to="/login">Login?</Link>
-                </p>
-              ) : null}
-
-              <IonRow>
-                <IonCol>
-                  <IonSubmit color="primary" expand="block">
-                    <IonIcon slot="start" icon={add} />
-                    <IonLabel>Join</IonLabel>
-                  </IonSubmit>
-                </IonCol>
-              </IonRow>
-            </IonGrid>
-          </Form>
-        );
-      }}
+        <IonSubmit color="primary" expand="block">
+          <IonIcon slot="start" icon={add} />
+          <IonLabel>Join</IonLabel>
+        </IonSubmit>
+      </Form>
     </Formik>
   );
 };
