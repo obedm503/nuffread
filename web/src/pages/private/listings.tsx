@@ -11,7 +11,6 @@ import {
   IonItemOption,
   IonItemOptions,
   IonItemSliding,
-  IonModal,
   IonPage,
   IonRefresher,
   IonRefresherContent,
@@ -25,7 +24,7 @@ import { Error, TopNav } from '../../components';
 import { BasicListing, BasicListingLoading } from '../../components/listing';
 import { BASIC_LISTING } from '../../queries';
 import { IMutation, IQuery } from '../../schema.gql';
-import { New } from './new';
+import { CreateListing } from './new';
 
 const MY_LISTINGS = gql`
   ${BASIC_LISTING}
@@ -141,12 +140,6 @@ const Listings: React.FC<
     </>
   );
 };
-
-const CreateListing = ({ show, onCancel }) => (
-  <IonModal isOpen={show}>
-    <New onCancel={onCancel} />
-  </IonModal>
-);
 
 export const MyListings: React.FC = () => {
   const [showModal, setShowModal] = React.useState(false);

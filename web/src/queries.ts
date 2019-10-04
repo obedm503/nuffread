@@ -55,9 +55,13 @@ export const GET_LISTING = gql`
 export const CREATE_LISTING = gql`
   ${BASIC_LISTING}
 
-  mutation CreateListing($googleId: String!, $price: Int!, $schoolId: ID!) {
+  mutation CreateListing(
+    $googleId: String!
+    $price: Int!
+    $description: String!
+  ) {
     createListing(
-      listing: { googleId: $googleId, price: $price, schoolId: $schoolId }
+      listing: { googleId: $googleId, price: $price, description: $description }
     ) {
       ...BasicListing
     }

@@ -97,7 +97,7 @@ type Listing {
 input ListingInput {
   googleId: String!
   price: Int!
-  schoolId: ID!
+  description: String!
 }
 
 type Book {

@@ -167,7 +167,7 @@ export const MutationResolver: IResolver<IMutation> = {
   async createListing(
     _,
     {
-      listing: { googleId, price, schoolId },
+      listing: { googleId, price, description },
     }: ICreateListingOnMutationArguments,
     { me },
   ) {
@@ -187,7 +187,9 @@ export const MutationResolver: IResolver<IMutation> = {
           book,
           price,
           user: me,
-          schoolId,
+          description,
+          // TODO: fix schools, this is dordt
+          schoolId: 'f3560244-0fee-4b63-bb79-966a8c04a950',
         }),
       );
       return listing;

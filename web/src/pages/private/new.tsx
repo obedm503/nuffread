@@ -13,7 +13,7 @@ import {
   IonInput,
   IonItem,
   IonLabel,
-  IonPage,
+  IonModal,
   IonRow,
   IonTextarea,
   IonThumbnail,
@@ -26,7 +26,12 @@ import { BasicListingLoading, Listing } from '../../components/listing';
 import { SafeImg } from '../../components/safe-img';
 import { SearchBar } from '../../components/search-bar';
 import { CREATE_LISTING, SEARCH_GOOGLE } from '../../queries';
-import { IGoogleBook, IMutation, IQuery } from '../../schema.gql';
+import {
+  IGoogleBook,
+  IListingInput,
+  IMutation,
+  IQuery,
+} from '../../schema.gql';
 
 type Props = {
   books?: IGoogleBook[];
@@ -142,18 +147,23 @@ const PickBook: React.FC<{ onClick: (book: IGoogleBook) => void }> = ({
   );
 };
 
-const CreateListing = ({ googleId, price, description, book }) => {
-  const [create, { loading, data, error }] = useMutation<IMutation>(
-    CREATE_LISTING,
-    {
-      variables: {
-        googleId,
-        price,
-        description,
-        schoolId: 'f3560244-0fee-4b63-bb79-966a8c04a950',
-      },
+const ListingPreview: React.FC<{
+  googleId: string;
+  price: number;
+  description: string;
+  book;
+}> = ({ googleId, price, description, book }) => {
+  const [create, { loading, data, error }] = useMutation<
+    IMutation,
+    IListingInput
+  >(CREATE_LISTING, {
+    variables: {
+      googleId,
+      price,
+      description,
     },
-  );
+  });
+
   if (error) {
     return <Error value={error}></Error>;
   }
@@ -166,13 +176,14 @@ const CreateListing = ({ googleId, price, description, book }) => {
       <Listing
         listing={Object.assign({ book, price }, data && data.createListing)}
       ></Listing>
+
       {data ? null : <IonButton onClick={() => create()}>Create</IonButton>}
     </>
   );
 };
 
-export class New extends React.PureComponent<
-  { onCancel },
+export class CreateListing extends React.PureComponent<
+  { onCancel; show: boolean },
   {
     searchValue: string;
     googleId: string;
@@ -189,13 +200,27 @@ export class New extends React.PureComponent<
     price: undefined,
   };
 
+  onPickBook = book => this.setState({ googleId: book.googleId, book });
+
+  onPriceChange = ({ detail }) => {
+    if (detail.value) {
+      this.setState({
+        price: parseFloat(detail.value) * 100,
+      });
+    }
+  };
+  onDescriptionChange = ({ detail }) => {
+    if (detail.value) {
+      this.setState({ description: detail.value });
+    }
+  };
   render() {
     const price =
       typeof this.state.price === 'number'
         ? (this.state.price! / 100).toFixed(2)
         : '';
     return (
-      <IonPage>
+      <IonModal isOpen={this.props.show}>
         <TopNav>
           <IonButtons slot="secondary">
             <IonButton onClick={this.props.onCancel}>
@@ -214,11 +239,7 @@ export class New extends React.PureComponent<
                   </IonCardHeader>
 
                   <IonCardContent>
-                    <PickBook
-                      onClick={book =>
-                        this.setState({ googleId: book.googleId, book })
-                      }
-                    />
+                    <PickBook onClick={this.onPickBook} />
                   </IonCardContent>
                 </IonCard>
 
@@ -229,19 +250,13 @@ export class New extends React.PureComponent<
 
                   <IonCardContent>
                     <IonItem>
-                      <IonLabel position="stacked">Price</IonLabel>
-                      <IonIcon icon={logoUsd} slot="start"></IonIcon>
+                      <IonLabel>Price</IonLabel>
+                      <IonIcon icon={logoUsd} size="small"></IonIcon>
                       <IonInput
                         type="number"
                         value={price}
                         debounce={500}
-                        onIonChange={({ detail }) => {
-                          if (detail.value) {
-                            this.setState({
-                              price: parseFloat(detail.value) * 100,
-                            });
-                          }
-                        }}
+                        onIonChange={this.onPriceChange}
                       ></IonInput>
                     </IonItem>
 
@@ -250,11 +265,7 @@ export class New extends React.PureComponent<
                       <IonTextarea
                         value={this.state.description}
                         debounce={500}
-                        onIonChange={({ detail }) => {
-                          if (detail.value) {
-                            this.setState({ description: detail.value });
-                          }
-                        }}
+                        onIonChange={this.onDescriptionChange}
                       ></IonTextarea>
                     </IonItem>
                   </IonCardContent>
@@ -275,10 +286,10 @@ export class New extends React.PureComponent<
 
                   <IonCardContent>
                     {this.state.book ? (
-                      <CreateListing
+                      <ListingPreview
                         {...this.state}
-                        price={this.state.price || ''}
-                      ></CreateListing>
+                        price={this.state.price || 0}
+                      ></ListingPreview>
                     ) : null}
                   </IonCardContent>
                 </IonCard>
@@ -286,7 +297,7 @@ export class New extends React.PureComponent<
             </IonRow>
           </IonGrid>
         </IonContent>
-      </IonPage>
+      </IonModal>
     );
   }
 }
