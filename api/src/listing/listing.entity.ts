@@ -1,4 +1,4 @@
-import { IsInstance, IsNotEmpty, IsNumber } from 'class-validator';
+import { IsInstance, IsNotEmpty, IsNumber, IsString } from 'class-validator';
 import { Column, Entity, Index, JoinColumn, ManyToOne } from 'typeorm';
 import { Book } from '../book/book.entity';
 import { School } from '../school/school.entity';
@@ -18,6 +18,7 @@ export class Listing extends Base {
   readonly updatedAt: Date;
 
   @Column()
+  @IsString()
   bookId: string;
 
   @ManyToOne(() => Book, book => book.listings)
@@ -31,6 +32,7 @@ export class Listing extends Base {
   price: number;
 
   @Column()
+  @IsString()
   schoolId: string;
 
   @ManyToOne(() => School, school => school.listings)
@@ -40,6 +42,7 @@ export class Listing extends Base {
   school: School;
 
   @Column()
+  @IsString()
   userId: string;
 
   @ManyToOne(() => User, user => user.listings)
