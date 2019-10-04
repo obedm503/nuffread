@@ -8,6 +8,7 @@ import { Book } from '../book/book.entity';
 import { Listing } from '../listing/listing.entity';
 import { School } from '../school/school.entity';
 import { User } from '../user/user.entity';
+import { Invite } from '../invite/invite.entity';
 
 export type IContext = {
   req: Request;
@@ -19,13 +20,14 @@ export type IContext = {
   schoolLoader: DataLoader<string, School | undefined>;
   listingLoader: DataLoader<string, Listing | undefined>;
   bookLoader: DataLoader<string, Book | undefined>;
+  inviteLoader: DataLoader<string, Invite | undefined>;
 };
 
 // these types are based on graphql-tools types
 
 // from https://stackoverflow.com/questions/54713272/how-can-i-make-a-partialt-but-only-for-nullable-fields
 type NullableKeys<T> = {
-  [K in keyof T]: undefined extends T[K] ? K : never
+  [K in keyof T]: undefined extends T[K] ? K : never;
 }[keyof T];
 // type NullablePartial<T> = Partial<T> & Omit<T, NullableKeys<T>>;
 
@@ -44,7 +46,7 @@ type FixObject<T> = T extends Array<infer ST>
         [K in Exclude<keyof T, NullableKeys<T>>]: IfObject<
           T[K],
           SubObject<T[K]>
-        >
+        >;
       }
   : T;
 type FixPartials<T> = T extends Array<infer ST>
@@ -68,7 +70,7 @@ export type IResolver<TQuery = any, TRoot = never> = {
   [key in keyof BaseResolver<TQuery>]?:
     | IFieldResolver<TRoot, BaseResolver<TQuery>[key]>
     | IResolverOptions<TRoot, IContext>
-    | IResolver<TQuery, TRoot>
+    | IResolver<TQuery, TRoot>;
 };
 
 export interface IResolvers {

@@ -12,15 +12,10 @@ import * as pgSession from 'connect-pg-simple';
 import * as express from 'express';
 import * as session from 'express-session';
 import { promisify } from 'util';
-import { Admin } from './admin/admin.entity';
-import { Book } from './book/book.entity';
-import { Invite } from './invite/invite.entity';
-import { Listing } from './listing/listing.entity';
-import { getContext, getSchema } from './schema';
-import { School } from './school/school.entity';
-import { User } from './user/user.entity';
+import { getContext, getEntities, getSchema } from './schema';
 import { logger } from './util';
 import * as db from './util/db';
+import { BadRequest } from './util/error';
 
 const ORIGIN = process.env.ORIGIN || 'https://www.nuffread.com';
 const Store = pgSession(session);
@@ -74,11 +69,12 @@ const apollo = new ApolloServer({
   formatError(e) {
     const { message, path } = e;
     logger.error({ message, path });
+
+    if (e.extensions && e.extensions.code === 'BAD_USER_INPUT') {
+      return new BadRequest();
+    }
+
     return e;
-  },
-  formatResponse(response, { context: { res } }) {
-    logger.info(res.getHeaders(), 'headers');
-    return response;
   },
 });
 
@@ -92,7 +88,7 @@ apollo.applyMiddleware({
 });
 
 (async () => {
-  const con = await db.connect([User, School, Admin, Listing, Book, Invite]);
+  const con = await db.connect(getEntities());
 
   // await con.undoLastMigration();
   // run pending migrations

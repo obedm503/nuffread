@@ -7,7 +7,7 @@ import { resolve } from 'path';
 import * as Stripe from 'stripe';
 import { Admin } from './admin/admin.entity';
 import { Book } from './book/book.entity';
-import { BookResolver } from './book/book.resolver';
+import { Invite } from './invite/invite.entity';
 import { InviteResolver } from './invite/invite.resolver';
 import { Listing } from './listing/listing.entity';
 import { ListingResolver } from './listing/listing.resolver';
@@ -51,7 +51,6 @@ function createSchema(): GraphQLSchema {
     SystemUser: SystemUserResolver,
     Query: QueryResolver,
     Listing: ListingResolver,
-    Book: BookResolver,
     Mutation: MutationResolver,
     User: UserResolver,
     Invite: InviteResolver,
@@ -110,5 +109,8 @@ export async function getContext({
     schoolLoader: makeLoader(School),
     listingLoader: makeLoader(Listing),
     bookLoader: makeLoader(Book),
+    inviteLoader: makeLoader(Invite),
   };
 }
+
+export const getEntities = () => [User, Admin, School, Listing, Book, Invite];
