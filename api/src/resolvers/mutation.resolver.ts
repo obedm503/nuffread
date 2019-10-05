@@ -39,7 +39,7 @@ export const MutationResolver: IResolver<IMutation> = {
   async register(
     _,
     { email, password }: IRegisterOnMutationArguments,
-    { req, me },
+    { req, me, inviteLoader },
   ) {
     isPublic(me);
 
@@ -53,7 +53,7 @@ export const MutationResolver: IResolver<IMutation> = {
       throw new DuplicateUser();
     }
 
-    const invite = await Invite.findOne({ where: { email } });
+    const invite = await inviteLoader.load(email);
     // only invited users can register
     isInvited(invite);
 
@@ -191,13 +191,17 @@ export const MutationResolver: IResolver<IMutation> = {
       return listing;
     });
   },
-  async deleteListing(_, { id }: IDeleteListingOnMutationArguments, { me }) {
+  async deleteListing(
+    _,
+    { id }: IDeleteListingOnMutationArguments,
+    { me, listingLoader },
+  ) {
     if (!isUser(me)) {
       return false;
     }
 
-    const listing = await Listing.findOneOrFail({ where: { id } });
-    if (listing.userId !== me.id) {
+    const listing = await listingLoader.load(id);
+    if (!listing || listing.userId !== me.id) {
       throw new AuthorizationError();
     }
 
@@ -208,11 +212,11 @@ export const MutationResolver: IResolver<IMutation> = {
   async requestInvite(
     _,
     { email, name }: IRequestInviteOnMutationArguments,
-    { me },
+    { me, inviteLoader },
   ) {
     isPublic(me);
 
-    if (await Invite.findOne({ where: { email } })) {
+    if (await inviteLoader.load(email)) {
       throw new DuplicateInvite();
     }
 
@@ -229,10 +233,10 @@ export const MutationResolver: IResolver<IMutation> = {
 
     return true;
   },
-  async sendInvite(_, { email }, { me }) {
+  async sendInvite(_, { email }, { me, inviteLoader }) {
     isAdmin(me);
 
-    const invite = await Invite.findOne({ where: { email } });
+    const invite = await inviteLoader.load(email);
     if (!invite) {
       throw new NoInvite();
     }

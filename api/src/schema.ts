@@ -96,7 +96,15 @@ export async function getContext({
     schoolLoader: makeLoader(School),
     listingLoader: makeLoader(Listing),
     bookLoader: makeLoader(Book),
-    inviteLoader: makeLoader(Invite),
+    inviteLoader: new DataLoader(async (emails: string[]) => {
+      logger.debug('Invite', emails);
+      const invites = await Invite.find({
+        where: emails.map(email => ({ email })),
+      });
+      return emails.map(email =>
+        invites.find(invite => invite.email === email),
+      );
+    }),
   };
 }
 
