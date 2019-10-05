@@ -11,8 +11,11 @@ import { Helmet } from 'react-helmet-async';
 import { RouteProps } from 'react-router';
 import './app.scss';
 import { Error, Routes } from './components';
+import Join from './pages/join';
 import Landing from './pages/landing';
 import { AdminLogin, UserLogin } from './pages/login';
+import Private from './pages/private';
+import Public from './pages/public';
 import { IQuery, SystemUser } from './schema.gql';
 import { IsDesktopProvider, UserProvider } from './state';
 
@@ -64,9 +67,6 @@ const makeLazy = <T extends React.ComponentType<any>>(
   );
 };
 
-const Join = makeLazy(() => import('./pages/join'));
-const Public = makeLazy(() => import('./pages/public'));
-const Private = makeLazy(() => import('./pages/private'));
 const Admin = makeLazy(() => import('./pages/admin'));
 
 const isReady = process.env.REACT_APP_MODE === 'ready';

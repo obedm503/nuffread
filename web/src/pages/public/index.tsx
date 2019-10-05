@@ -6,7 +6,7 @@ import {
   IonRouterOutlet,
   IonRow,
 } from '@ionic/react';
-import React, { memo } from 'react';
+import React from 'react';
 import { Route, RouteComponentProps } from 'react-router';
 import { ListingPage } from '../../components/listing-page';
 import { SearchBar } from '../../components/search-bar';
@@ -44,11 +44,11 @@ const Detail = (routeProps: RouteComponentProps<{ listingId: string }>) => {
   return <ListingPage id={routeProps.match.params.listingId} base="/" />;
 };
 
-export default memo<RouteComponentProps>(() => {
+export default () => {
   return (
     <IonRouterOutlet>
       <Route path="/" exact component={Master} />
       <Route path="/:listingId" component={Detail} />
     </IonRouterOutlet>
   );
-});
+};
