@@ -37,7 +37,7 @@ export const Control: React.FC<ControlProps & { form: FormikProps<any> }> = ({
             : '',
         }}
       >
-        <IonLabel>{label}</IonLabel>
+        <IonLabel position="floating">{label}</IonLabel>
 
         {children}
       </IonItem>
