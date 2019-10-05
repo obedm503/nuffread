@@ -7,22 +7,10 @@ import {
   OneToOne,
   Unique,
 } from 'typeorm';
-import { Invite } from '../invite/invite.entity';
-import { Listing } from '../listing/listing.entity';
-import { Base, Created, IsEdu, PrimaryKey, Updated } from '../util/db';
-import { send } from '../util/email';
-
-export const sendConfirmationEmail = async (
-  base: string,
-  { email, confirmCode }: { email: string; confirmCode: string },
-) => {
-  const link = `${base}/join/${confirmCode}`;
-  await send({
-    email,
-    subject: 'Finish the signup process',
-    html: `Click the <a href="${link}">link</a> to confirm your email. <br /><br /> ${link}`,
-  });
-};
+import { IsEdu } from '../util';
+import { Base, Created, PrimaryKey, Updated } from '../util/db';
+import { Invite } from './invite.entity';
+import { Listing } from './listing.entity';
 
 @Entity()
 @Unique(['email'])

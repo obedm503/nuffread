@@ -1,8 +1,7 @@
-import { Listing } from '../listing/listing.entity';
-import { IUser } from '../schema.gql';
+import { Listing, User, Admin } from '../entities';
+import { IUser, SystemUser } from '../schema.gql';
 import { isAdmin, isUser } from '../util/auth';
 import { IResolver } from '../util/types';
-import { User } from './user.entity';
 
 export const UserResolver: IResolver<IUser, User> = {
   confirmedAt({ confirmedAt }, args, { me }) {
@@ -20,5 +19,16 @@ export const UserResolver: IResolver<IUser, User> = {
       relations: ['book'],
     });
     return listings;
+  },
+};
+
+export const SystemUserResolver: IResolver<SystemUser, Admin | User> = {
+  __resolveType(me) {
+    if (me instanceof User) {
+      return 'User';
+    }
+    if (me instanceof Admin) {
+      return 'Admin';
+    }
   },
 };

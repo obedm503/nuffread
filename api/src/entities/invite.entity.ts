@@ -9,8 +9,9 @@ import {
   Unique,
 } from 'typeorm';
 import { promisify } from 'util';
-import { User } from '../user/user.entity';
-import { Base, Created, IsEdu } from '../util/db';
+import { IsEdu } from '../util';
+import { Base, Created } from '../util/db';
+import { User } from './user.entity';
 
 const randomBytes = promisify(crypto.randomBytes);
 

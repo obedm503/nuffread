@@ -5,33 +5,20 @@ import { GraphQLSchema } from 'graphql';
 import { makeExecutableSchema } from 'graphql-tools';
 import { resolve } from 'path';
 import * as Stripe from 'stripe';
-import { Admin } from './admin/admin.entity';
-import { Book } from './book/book.entity';
-import { Invite } from './invite/invite.entity';
-import { InviteResolver } from './invite/invite.resolver';
-import { Listing } from './listing/listing.entity';
-import { ListingResolver } from './listing/listing.resolver';
-import { MutationResolver } from './mutation/mutation.resolver';
-import { QueryResolver } from './query/query.resolver';
-import { DateResolver } from './scalars/date';
-import { SystemUser, SystemUserType } from './schema.gql';
-import { School } from './school/school.entity';
-import { User } from './user/user.entity';
-import { UserResolver } from './user/user.resolver';
-import { logger } from './util';
+import { Admin, Book, Invite, Listing, School, User } from './entities';
+import {
+  DateResolver,
+  InviteResolver,
+  ListingResolver,
+  MutationResolver,
+  QueryResolver,
+  SystemUserResolver,
+  UserResolver,
+} from './resolvers';
+import { SystemUserType } from './schema.gql';
+import { logger, sleep } from './util';
 import { Base } from './util/db';
-import { IContext, IResolver, IResolvers } from './util/types';
-
-const SystemUserResolver: IResolver<SystemUser, Admin | User> = {
-  __resolveType(me) {
-    if (me instanceof User) {
-      return 'User';
-    }
-    if (me instanceof Admin) {
-      return 'Admin';
-    }
-  },
-};
+import { IContext, IResolvers } from './util/types';
 
 const makeLoader = <T extends Base>(Ent: typeof Base) => {
   return new DataLoader(async (ids: string[]) => {

@@ -1,9 +1,6 @@
 import { compare, hash } from 'bcryptjs';
 import { getConnection } from 'typeorm';
-import { Admin } from '../admin/admin.entity';
-import { Book } from '../book/book.entity';
-import { Invite } from '../invite/invite.entity';
-import { Listing } from '../listing/listing.entity';
+import { Admin, Book, Invite, Listing, User } from '../entities';
 import {
   IConfirmOnMutationArguments,
   ICreateListingOnMutationArguments,
@@ -13,10 +10,8 @@ import {
   IRegisterOnMutationArguments,
   IRequestInviteOnMutationArguments,
 } from '../schema.gql';
-import { sendConfirmationEmail, User } from '../user/user.entity';
 import { isAdmin, isPublic, isUser } from '../util/auth';
-import { getBook } from '../util/books';
-import { send } from '../util/email';
+import { send, sendConfirmationEmail } from '../util/email';
 import {
   AuthorizationError,
   BadRequest,
@@ -28,6 +23,7 @@ import {
   NotConfirmed,
   WrongCredentials,
 } from '../util/error';
+import { getBook } from '../util/google-books';
 import { IResolver } from '../util/types';
 
 const isInvited = (invite?: Invite) => {

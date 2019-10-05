@@ -1,6 +1,5 @@
 import { getConnection } from 'typeorm';
-import { Invite } from '../invite/invite.entity';
-import { Listing } from '../listing/listing.entity';
+import { Invite, Listing } from '../entities';
 import {
   IGoogleBookOnQueryArguments,
   IListingOnQueryArguments,
@@ -9,7 +8,7 @@ import {
   ISearchOnQueryArguments,
 } from '../schema.gql';
 import { isAdmin, isUser } from '../util/auth';
-import { getBook, searchBooks } from '../util/books';
+import { getBook, searchBooks } from '../util/google-books';
 import { IResolver } from '../util/types';
 
 export const QueryResolver: IResolver<IQuery> = {

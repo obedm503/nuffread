@@ -1,7 +1,7 @@
+import { Listing } from '../entities';
 import { IListing, IUser } from '../schema.gql';
 import { isUser } from '../util/auth';
 import { IResolver } from '../util/types';
-import { Listing } from './listing.entity';
 
 export const ListingResolver: IResolver<IListing, Listing> = {
   userId({ userId }, args, { me }) {

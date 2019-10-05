@@ -3,12 +3,7 @@ import { Request, Response } from 'express';
 import { GraphQLResolveInfo, GraphQLScalarType } from 'graphql';
 import { IEnumResolver, IResolverOptions, MergeInfo } from 'graphql-tools';
 import Stripe from 'stripe';
-import { Admin } from '../admin/admin.entity';
-import { Book } from '../book/book.entity';
-import { Listing } from '../listing/listing.entity';
-import { School } from '../school/school.entity';
-import { User } from '../user/user.entity';
-import { Invite } from '../invite/invite.entity';
+import { Admin, Book, Invite, Listing, School, User } from '../entities';
 
 export type IContext = {
   req: Request;

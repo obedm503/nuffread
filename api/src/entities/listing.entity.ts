@@ -1,9 +1,10 @@
-import { IsInstance, IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 import { Column, Entity, Index, JoinColumn, ManyToOne } from 'typeorm';
-import { Book } from '../book/book.entity';
-import { School } from '../school/school.entity';
-import { User } from '../user/user.entity';
+import { IsInstance } from '../util';
 import { Base, Created, PrimaryKey, Updated } from '../util/db';
+import { Book } from './book.entity';
+import { School } from './school.entity';
+import { User } from './user.entity';
 
 @Entity()
 @Index('listing_search_text_idx', { synchronize: false }) // handled by migration
@@ -24,7 +25,7 @@ export class Listing extends Base {
   @ManyToOne(() => Book, book => book.listings)
   @JoinColumn({ name: 'book_id' })
   @IsNotEmpty()
-  @IsInstance(Book)
+  @IsInstance(() => Book)
   book: Book;
 
   @Column()
@@ -38,7 +39,7 @@ export class Listing extends Base {
   @ManyToOne(() => School, school => school.listings)
   @JoinColumn({ name: 'school_id' })
   @IsNotEmpty()
-  @IsInstance(School)
+  @IsInstance(() => School)
   school: School;
 
   @Column()
@@ -48,7 +49,7 @@ export class Listing extends Base {
   @ManyToOne(() => User, user => user.listings)
   @JoinColumn({ name: 'user_id' })
   @IsNotEmpty()
-  @IsInstance(User)
+  @IsInstance(() => User)
   user: User;
 
   // give recommendations based on books used for the same class

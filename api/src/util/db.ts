@@ -1,9 +1,5 @@
 import { UserInputError } from 'apollo-server-express';
-import {
-  registerDecorator,
-  validate,
-  ValidationOptions,
-} from 'class-validator';
+import { validate } from 'class-validator';
 import { resolve } from 'path';
 import {
   BaseEntity,
@@ -29,21 +25,6 @@ export const Updated = () =>
   UpdateDateColumn({
     type: 'timestamp with time zone',
   });
-export function IsEdu(validationOptions?: ValidationOptions) {
-  return function(object: Object, propertyName: string) {
-    registerDecorator({
-      name: 'isEdu',
-      target: object.constructor,
-      propertyName: propertyName,
-      options: validationOptions,
-      validator: {
-        validate(value: any) {
-          return typeof value === 'string' && value.endsWith('.edu');
-        },
-      },
-    });
-  };
-}
 
 export class Base extends BaseEntity {
   @BeforeInsert()

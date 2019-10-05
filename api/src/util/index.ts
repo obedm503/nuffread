@@ -1,3 +1,4 @@
+import { registerDecorator, ValidationOptions } from 'class-validator';
 import { Request } from 'express';
 import * as pino from 'pino';
 import { FindOneOptions } from 'typeorm';
@@ -36,3 +37,35 @@ export const logger = pino({
     ignore: 'pid,hostname,time',
   },
 });
+
+type Class = new (...args: any[]) => any;
+export function IsInstance(getter: () => Class, options?: ValidationOptions) {
+  return function(object: Object, propertyName: string) {
+    registerDecorator({
+      target: object.constructor,
+      propertyName,
+      options,
+      validator: {
+        validate(value: any) {
+          const Type = getter();
+          return Type && typeof Type === 'function' && value instanceof Type;
+        },
+      },
+    });
+  };
+}
+
+export function IsEdu(options?: ValidationOptions) {
+  return function(object: Object, propertyName: string) {
+    registerDecorator({
+      target: object.constructor,
+      propertyName,
+      options,
+      validator: {
+        validate(value: any) {
+          return typeof value === 'string' && value.endsWith('.edu');
+        },
+      },
+    });
+  };
+}

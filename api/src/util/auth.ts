@@ -1,5 +1,4 @@
-import { Admin } from '../admin/admin.entity';
-import { User } from '../user/user.entity';
+import { Admin, User } from '../entities';
 import { AuthenticationError, AuthorizationError } from './error';
 
 export function isUser(me?: Admin | User): me is User {
