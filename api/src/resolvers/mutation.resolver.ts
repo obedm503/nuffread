@@ -11,7 +11,7 @@ import {
   IRequestInviteOnMutationArguments,
 } from '../schema.gql';
 import { isAdmin, isPublic, isUser } from '../util/auth';
-import { send, sendConfirmationEmail } from '../util/email';
+import { send } from '../util/email';
 import {
   AuthorizationError,
   BadRequest,
@@ -25,6 +25,18 @@ import {
 } from '../util/error';
 import { getBook } from '../util/google-books';
 import { IResolver } from '../util/types';
+
+export const sendConfirmationEmail = async (
+  base: string,
+  { email, confirmCode }: { email: string; confirmCode: string },
+) => {
+  const link = `${base}/join/${confirmCode}`;
+  await send({
+    email,
+    subject: 'Finish the signup process',
+    html: `Click the <a href="${link}">link</a> to confirm your email. <br /><br /> ${link}`,
+  });
+};
 
 const isInvited = (invite?: Invite) => {
   if (!invite) {

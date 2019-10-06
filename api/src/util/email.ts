@@ -66,15 +66,3 @@ export const cancel = async id => {
     }
   }
 };
-
-export const sendConfirmationEmail = async (
-  base: string,
-  { email, confirmCode }: { email: string; confirmCode: string },
-) => {
-  const link = `${base}/join/${confirmCode}`;
-  await send({
-    email,
-    subject: 'Finish the signup process',
-    html: `Click the <a href="${link}">link</a> to confirm your email. <br /><br /> ${link}`,
-  });
-};
