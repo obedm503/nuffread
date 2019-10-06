@@ -3,7 +3,7 @@ import { FormikProps } from 'formik';
 import * as React from 'react';
 
 export const ControlError = ({ children }) => (
-  <IonItem>
+  <IonItem lines="full">
     <IonLabel color="danger">{children}</IonLabel>
   </IonItem>
 );
@@ -12,6 +12,7 @@ export type ControlProps = {
   label: React.ReactNode;
   error?: React.ReactNode;
   name: string;
+  disabled?: boolean;
 };
 
 export const Control: React.FC<ControlProps & { form: FormikProps<any> }> = ({
@@ -28,6 +29,7 @@ export const Control: React.FC<ControlProps & { form: FormikProps<any> }> = ({
   return (
     <>
       <IonItem
+        lines="full"
         style={{
           '--highlight-height': '2px', // always show highlight
           '--highlight-color-focused': showError

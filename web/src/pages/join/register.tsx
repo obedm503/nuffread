@@ -2,6 +2,7 @@ import { useMutation } from '@apollo/react-hooks';
 import {
   IonCard,
   IonCardContent,
+  IonCardTitle,
   IonCol,
   IonGrid,
   IonIcon,
@@ -49,7 +50,7 @@ const Errors = apolloFormErrors({
 });
 
 const RegisterForm: React.FC = () => {
-  const [mutate, { error, data }] = useMutation<IMutation>(REGISTER);
+  const [mutate, { error, data, loading }] = useMutation<IMutation>(REGISTER);
 
   if (data && data.register) {
     return <RegisterSuccess />;
@@ -68,16 +69,22 @@ const RegisterForm: React.FC = () => {
     >
       <Form>
         <IonList>
-          <Email name="email" label="Email" />
-          <Password name="password" label="Passphrase" />
+          <Email name="email" label="Email" disabled={loading} />
+          <Password name="password" label="Passphrase" disabled={loading} />
 
           <Errors error={error}></Errors>
         </IonList>
 
-        <IonSubmit color="primary" expand="block">
-          <IonIcon slot="start" icon={add} />
-          <IonLabel>Join</IonLabel>
-        </IonSubmit>
+        <IonGrid>
+          <IonRow>
+            <IonCol>
+              <IonSubmit expand="block" disabled={loading}>
+                <IonIcon slot="start" icon={add} />
+                <IonLabel>Join</IonLabel>
+              </IonSubmit>
+            </IonCol>
+          </IonRow>
+        </IonGrid>
       </Form>
     </Formik>
   );
@@ -86,9 +93,11 @@ const RegisterForm: React.FC = () => {
 export const Register = props => (
   <IonGrid>
     <IonRow>
-      <IonCol sizeMd="6" offsetMd="3">
+      <IonCol sizeMd="6" offsetMd="3" sizeLg="4" offsetLg="4">
         <IonCard color="white">
           <IonCardContent>
+            <IonCardTitle className="ion-text-center">Join</IonCardTitle>
+
             <RegisterForm {...props} />
           </IonCardContent>
         </IonCard>

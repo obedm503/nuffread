@@ -1,10 +1,14 @@
 import { useMutation } from '@apollo/react-hooks';
 import {
   IonButtons,
+  IonCard,
+  IonCardContent,
+  IonCardTitle,
   IonCol,
   IonContent,
   IonGrid,
   IonItem,
+  IonLabel,
   IonList,
   IonPage,
   IonRow,
@@ -46,7 +50,9 @@ const Errors = apolloFormErrors({
   ),
 });
 const RequestInvite: React.FC = () => {
-  const [mutate, { error, data }] = useMutation<IMutation>(REQUEST_INVITE);
+  const [mutate, { error, data, loading }] = useMutation<IMutation>(
+    REQUEST_INVITE,
+  );
 
   if (data && data.requestInvite) {
     return <p>We got your request. If approved, we will send you an email.</p>;
@@ -63,16 +69,22 @@ const RequestInvite: React.FC = () => {
       }}
     >
       <Form>
-        <IonList lines="full">
-          <Text name="name" label="Name" />
-          <Email name="email" label="Email" />
+        <IonList>
+          <Text name="name" label="Name" disabled={loading} />
+          <Email name="email" label="Email" disabled={loading} />
 
           <Errors error={error}></Errors>
         </IonList>
 
-        <div className="ion-padding">
-          <IonSubmit expand="block">Request your invite</IonSubmit>
-        </div>
+        <IonGrid>
+          <IonRow>
+            <IonCol>
+              <IonSubmit expand="block" disabled={loading}>
+                <IonLabel>Request your invite</IonLabel>
+              </IonSubmit>
+            </IonCol>
+          </IonRow>
+        </IonGrid>
       </Form>
     </Formik>
   );
@@ -102,10 +114,14 @@ export default () => {
               </IonList>
             </IonCol>
 
-            <IonCol size="10" offset="1" sizeMd="4" offsetMd="2">
-              <h1>Request early access</h1>
+            <IonCol size="12" sizeMd="5" offsetMd="1" sizeLg="4" offsetLg="2">
+              <IonCard color="white">
+                <IonCardContent>
+                  <IonCardTitle>Request early access</IonCardTitle>
 
-              <RequestInvite></RequestInvite>
+                  <RequestInvite />
+                </IonCardContent>
+              </IonCard>
             </IonCol>
           </IonRow>
         </IonGrid>

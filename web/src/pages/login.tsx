@@ -2,6 +2,7 @@ import { useApolloClient, useMutation } from '@apollo/react-hooks';
 import {
   IonCard,
   IonCardContent,
+  IonCardTitle,
   IonCol,
   IonContent,
   IonGrid,
@@ -71,38 +72,34 @@ const LoginForm = React.memo<{
       validationSchema={schema}
       initialValues={{ email: '', password: '' }}
     >
-      {loading ? (
-        <div>Loading...</div>
-      ) : (
-        <Form>
-          <IonList>
-            <Email name="email" label="Email" />
-            <Password name="password" label="Passphrase" />
+      <Form>
+        <IonList>
+          <Email name="email" label="Email" disabled={loading} />
+          <Password name="password" label="Passphrase" disabled={loading} />
 
-            <Errors error={error} />
-          </IonList>
+          <Errors error={error} />
+        </IonList>
 
-          <IonGrid>
-            <IonRow>
-              {admin ? null : (
-                <IonCol>
-                  <IonButtonLink expand="block" href="/join" color="secondary">
-                    <IonIcon slot="start" icon={add} />
-                    <IonLabel>Join</IonLabel>
-                  </IonButtonLink>
-                </IonCol>
-              )}
-
+        <IonGrid>
+          <IonRow>
+            {admin ? null : (
               <IonCol>
-                <IonSubmit expand="block" color="primary">
-                  <IonIcon slot="start" icon={logIn} />
-                  <IonLabel>Login</IonLabel>
-                </IonSubmit>
+                <IonButtonLink expand="block" href="/join" color="secondary">
+                  <IonIcon slot="start" icon={add} />
+                  <IonLabel>Join</IonLabel>
+                </IonButtonLink>
               </IonCol>
-            </IonRow>
-          </IonGrid>
-        </Form>
-      )}
+            )}
+
+            <IonCol>
+              <IonSubmit expand="block" disabled={loading}>
+                <IonIcon slot="start" icon={logIn} />
+                <IonLabel>Login</IonLabel>
+              </IonSubmit>
+            </IonCol>
+          </IonRow>
+        </IonGrid>
+      </Form>
     </Formik>
   );
 });
@@ -128,9 +125,13 @@ export class UserLogin extends React.PureComponent<
         <IonContent>
           <IonGrid>
             <IonRow>
-              <IonCol sizeMd="6" offsetMd="3">
+              <IonCol sizeMd="6" offsetMd="3" sizeLg="4" offsetLg="4">
                 <IonCard>
                   <IonCardContent>
+                    <IonCardTitle className="ion-text-center">
+                      Login
+                    </IonCardTitle>
+
                     <LoginForm
                       history={history}
                       type={admin ? 'ADMIN' : 'USER'}

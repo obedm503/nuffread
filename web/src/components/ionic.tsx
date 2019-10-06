@@ -46,22 +46,26 @@ function addRouter<T extends React.ComponentType>(Comp: T) {
 export const IonButtonLink = addRouter(IonButton);
 export const IonItemLink = addRouter(IonItem);
 
+const hiddenSubmit = (
+  <input
+    type="submit"
+    style={{
+      position: 'absolute',
+      left: '-9999px',
+      width: '1px',
+      height: '1px',
+    }}
+    tabIndex={-1}
+  />
+);
+
 export const IonSubmit: React.FC<
   React.ComponentPropsWithRef<typeof IonButton>
 > = ({ children, ...props }) => (
   <>
-    <input
-      type="submit"
-      style={{
-        position: 'absolute',
-        left: '-9999px',
-        width: '1px',
-        height: '1px',
-      }}
-      tabIndex={-1}
-    />
+    {hiddenSubmit}
 
-    <IonButton {...props} type="submit">
+    <IonButton type="submit" {...props}>
       {children}
     </IonButton>
   </>
