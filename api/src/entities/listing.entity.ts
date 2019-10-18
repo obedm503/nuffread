@@ -3,7 +3,6 @@ import { Column, Entity, Index, JoinColumn, ManyToOne } from 'typeorm';
 import { IsInstance } from '../util';
 import { Base, Created, PrimaryKey, Updated } from '../util/db';
 import { Book } from './book.entity';
-import { School } from './school.entity';
 import { User } from './user.entity';
 
 @Entity()
@@ -31,16 +30,6 @@ export class Listing extends Base {
   @Column()
   @IsNumber()
   price: number;
-
-  @Column()
-  @IsString()
-  schoolId: string;
-
-  @ManyToOne(() => School, school => school.listings)
-  @JoinColumn({ name: 'school_id' })
-  @IsNotEmpty()
-  @IsInstance(() => School)
-  school: School;
 
   @Column()
   @IsString()

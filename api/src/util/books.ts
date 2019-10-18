@@ -231,7 +231,6 @@ export const saveBooks = con =>
         Listing.create({
           book,
           userId: '01183498-83c5-43c6-9179-4966938450a1',
-          schoolId: 'f3560244-0fee-4b63-bb79-966a8c04a950',
           price: Math.floor(Math.random() * 80) * 100,
         }),
       ),

@@ -3,7 +3,7 @@ import { Request, Response } from 'express';
 import { GraphQLResolveInfo, GraphQLScalarType } from 'graphql';
 import { IEnumResolver, IResolverOptions, MergeInfo } from 'graphql-tools';
 import Stripe from 'stripe';
-import { Admin, Book, Invite, Listing, School, User } from '../entities';
+import { Admin, Book, Invite, Listing, User } from '../entities';
 
 export type IContext = {
   req: Request;
@@ -12,7 +12,6 @@ export type IContext = {
   stripe: Stripe;
   userLoader: DataLoader<string, User | undefined>;
   adminLoader: DataLoader<string, Admin | undefined>;
-  schoolLoader: DataLoader<string, School | undefined>;
   listingLoader: DataLoader<string, Listing | undefined>;
   bookLoader: DataLoader<string, Book | undefined>;
   inviteLoader: DataLoader<string, Invite | undefined>;

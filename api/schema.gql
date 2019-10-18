@@ -23,9 +23,6 @@ type Mutation {
   createUser(user: UserInput!): User!
   deleteUser(id: ID!): Boolean!
 
-  createSchool(school: SchoolInput!): School!
-  deleteSchool(id: ID!): Boolean!
-
   requestInvite(email: String!, name: String!): Boolean!
   sendInvite(email: String!): Invite!
 
@@ -63,16 +60,6 @@ input UserInput {
   name: String!
 }
 
-type School {
-  id: ID!
-
-  name: String!
-}
-
-input SchoolInput {
-  name: String!
-}
-
 type Admin {
   id: ID!
 
@@ -88,8 +75,6 @@ type Listing {
 
   bookId: String!
   book: Book!
-  schoolId: String!
-  school: School!
   userId: String!
   user: User!
 }

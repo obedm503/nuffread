@@ -5,7 +5,7 @@ import { GraphQLSchema } from 'graphql';
 import { makeExecutableSchema } from 'graphql-tools';
 import { resolve } from 'path';
 import * as Stripe from 'stripe';
-import { Admin, Book, Invite, Listing, School, User } from './entities';
+import { Admin, Book, Invite, Listing, User } from './entities';
 import {
   DateResolver,
   InviteResolver,
@@ -16,7 +16,7 @@ import {
   UserResolver,
 } from './resolvers';
 import { SystemUserType } from './schema.gql';
-import { logger, sleep } from './util';
+import { logger } from './util';
 import { Base } from './util/db';
 import { IContext, IResolvers } from './util/types';
 
@@ -93,7 +93,6 @@ export async function getContext({
     stripe: getStripe(),
     userLoader: makeLoader(User),
     adminLoader: makeLoader(Admin),
-    schoolLoader: makeLoader(School),
     listingLoader: makeLoader(Listing),
     bookLoader: makeLoader(Book),
     inviteLoader: new DataLoader(async (emails: string[]) => {
@@ -108,4 +107,4 @@ export async function getContext({
   };
 }
 
-export const getEntities = () => [User, Admin, School, Listing, Book, Invite];
+export const getEntities = () => [User, Admin, Listing, Book, Invite];
