@@ -2,7 +2,7 @@ import { IonButtons } from '@ionic/react';
 import * as React from 'react';
 import { IonButtonLink, TopNav } from '../../../components';
 import { GoBack } from '../../../components/go-back';
-import { OnlyMobile } from '../../../state';
+import { OnlyMobile } from '../../../state/desktop';
 
 export const Nav: React.FC<{
   title?: string;

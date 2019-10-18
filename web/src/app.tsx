@@ -17,7 +17,8 @@ import { AdminLogin, UserLogin } from './pages/login';
 import Private from './pages/private';
 import Public from './pages/public';
 import { IQuery, SystemUser } from './schema.gql';
-import { IsDesktopProvider, UserProvider } from './state';
+import { IsDesktopProvider } from './state/desktop';
+import { UserProvider } from './state/user';
 
 export const createCache = () =>
   new InMemoryCache({

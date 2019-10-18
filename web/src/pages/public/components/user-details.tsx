@@ -14,7 +14,7 @@ import { Link } from 'react-router-dom';
 import { Error, IonButtonLink } from '../../../components';
 import { SafeImg } from '../../../components/safe-img';
 import { IQuery } from '../../../schema.gql';
-import { useUser } from '../../../state';
+import { useUser } from '../../../state/user';
 
 const userHidden = (
   <IonCard color="white">
