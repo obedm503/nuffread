@@ -7,7 +7,7 @@ require('dotenv-safe').config({
 require('isomorphic-fetch');
 require('reflect-metadata');
 
-import { ApolloServer } from 'apollo-server-express';
+import { ApolloServer, ApolloError } from 'apollo-server-express';
 import * as pgSession from 'connect-pg-simple';
 import * as express from 'express';
 import * as session from 'express-session';
@@ -15,7 +15,7 @@ import { promisify } from 'util';
 import { getContext, getEntities, getSchema } from './schema';
 import { logger } from './util';
 import * as db from './util/db';
-import { BadRequest } from './util/error';
+import { BadRequest, InternalError } from './util/error';
 
 const ORIGIN = process.env.ORIGIN || 'https://www.nuffread.com';
 const Store = pgSession(session);
@@ -67,14 +67,22 @@ const apollo = new ApolloServer({
   },
   schema: getSchema(),
   formatError(e) {
-    const { message, path } = e;
+    const { message, path, extensions, originalError } = e;
     logger.error({ message, path });
 
-    if (e.extensions && e.extensions.code === 'BAD_USER_INPUT') {
+    if (!production) {
+      return e;
+    }
+
+    if (extensions && extensions.code === 'BAD_USER_INPUT') {
       return new BadRequest();
     }
 
-    return e;
+    if (originalError instanceof ApolloError) {
+      return e;
+    }
+
+    return new InternalError();
   },
 });
 

@@ -1,7 +1,7 @@
 import { ServerError, ServerParseError } from 'apollo-link-http-common';
 import { GraphQLError } from 'graphql';
 import mixpanel from 'mixpanel-browser';
-import { Component, ErrorInfo } from 'react';
+import { ErrorInfo } from 'react';
 
 const isProd = process.env.NODE_ENV === 'production';
 
@@ -90,7 +90,7 @@ const handleRejections = event => {
   }
   event.preventDefault();
 
-  if (event.reason.constructor.name === 'ApolloError') {
+  if (event.reason.graphQLErrors || event.reason.networkError) {
     // apollo errors are handled by the error link
     return;
   }
@@ -105,14 +105,4 @@ if (module['hot']) {
     window.removeEventListener('unhandledrejection', handleRejections);
     window.onerror = null;
   });
-}
-
-export class ErrorBoundary extends Component {
-  componentDidCatch(error: Error, info: ErrorInfo) {
-    tracker.event('RENDER_ERROR', { error, info });
-  }
-
-  render() {
-    return this.props.children;
-  }
 }

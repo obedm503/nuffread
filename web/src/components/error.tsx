@@ -2,8 +2,7 @@ import * as React from 'react';
 
 export const Error = ({ value }) => {
   if (process.env.NODE_ENV === 'production') {
-    console.error(value);
-    return null;
+    throw value;
   }
   return (
     <div className="container" style={{ overflow: 'hidden' }}>

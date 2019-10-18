@@ -17,8 +17,8 @@ export const apolloFormErrors = (handlers: {
       {errors.map(e => {
         const Render = handlers[e.message];
         if (!Render) {
-          console.error('Unhandled Apollo error', e);
-          return null;
+          // unhandled error
+          throw error;
         }
         return (
           <ControlError key={e.message}>

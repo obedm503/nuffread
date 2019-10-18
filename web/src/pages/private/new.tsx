@@ -147,7 +147,7 @@ const PickBook: React.FC<{ onClick: (book: IGoogleBook) => void }> = ({
   );
 };
 
-const ListingPreview: React.FC<{
+const ConfirmListing: React.FC<{
   googleId: string;
   price: number;
   description: string;
@@ -286,10 +286,10 @@ export class CreateListing extends React.PureComponent<
 
                   <IonCardContent>
                     {this.state.book ? (
-                      <ListingPreview
+                      <ConfirmListing
                         {...this.state}
                         price={this.state.price || 0}
-                      ></ListingPreview>
+                      ></ConfirmListing>
                     ) : null}
                   </IonCardContent>
                 </IonCard>

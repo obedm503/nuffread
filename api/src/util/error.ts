@@ -58,3 +58,9 @@ export class NotConfirmed extends ApolloError {
     super('NOT_CONFIRMED');
   }
 }
+
+export class InternalError extends ApolloError {
+  constructor() {
+    super('INTERNAL_SERVER_ERROR');
+  }
+}
