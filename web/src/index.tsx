@@ -2,37 +2,69 @@ import { ApolloProvider } from '@apollo/react-hooks';
 import { IonApp } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
 import { ApolloClient } from 'apollo-client';
+import { onError } from 'apollo-link-error';
 import { createHttpLink } from 'apollo-link-http';
-import React from 'react';
+import { UnregisterCallback } from 'history';
+import React, { Component } from 'react';
 import { render } from 'react-dom';
 import { HelmetProvider } from 'react-helmet-async';
+import { RouteComponentProps, withRouter } from 'react-router';
 import { App, createCache } from './app';
 import * as serviceWorker from './serviceWorker';
+import { ErrorBoundary, tracker } from './state/tracker';
 
+const errorLink = onError(({ graphQLErrors, networkError }) => {
+  if (graphQLErrors) {
+    tracker.event('GRAPHQL_ERROR', {
+      errors: graphQLErrors,
+    });
+  }
+
+  if (networkError) {
+    tracker.event('NETWORK_ERROR', {
+      error: networkError,
+    });
+  }
+});
 const httpLink = createHttpLink({
   uri: process.env.REACT_APP_API,
   credentials: 'include',
 });
 
 const client = new ApolloClient({
-  link: httpLink,
+  link: errorLink.concat(httpLink),
   cache: createCache(),
 });
 
+const WrappedApp = withRouter(
+  class extends Component<RouteComponentProps> {
+    unsub: UnregisterCallback;
+    componentDidMount() {
+      this.unsub = this.props.history.listen(location => {
+        tracker.event('NAVIGATE', { to: location.pathname + location.search });
+      });
+    }
+    componentWillUnmount() {
+      this.unsub && this.unsub();
+    }
+    render() {
+      return <App></App>;
+    }
+  },
+);
+
 const main = (
-  // <UAProvider value={navigator.userAgent}>
-  // <HostProvider value={location.origin}>
-  <HelmetProvider>
-    <ApolloProvider client={client}>
-      <IonApp>
-        <IonReactRouter>
-          <App />
-        </IonReactRouter>
-      </IonApp>
-    </ApolloProvider>
-  </HelmetProvider>
-  // </HostProvider>
-  // </UAProvider>
+  <ErrorBoundary>
+    <HelmetProvider>
+      <ApolloProvider client={client}>
+        <IonApp>
+          <IonReactRouter>
+            <WrappedApp />
+          </IonReactRouter>
+        </IonApp>
+      </ApolloProvider>
+    </HelmetProvider>
+  </ErrorBoundary>
 );
 
 render(main, document.getElementById('root'));

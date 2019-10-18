@@ -19,6 +19,7 @@ import Public from './pages/public';
 import { IQuery, SystemUser } from './schema.gql';
 import { IsDesktopProvider } from './state/desktop';
 import { UserProvider } from './state/user';
+import { tracker } from './state/tracker';
 
 export const createCache = () =>
   new InMemoryCache({
@@ -84,7 +85,9 @@ const homePage = (user?: SystemUser) => {
 const makeRoutes = memoize((user?: SystemUser): RouteProps[] => {
   const routes: RouteProps[] = [];
 
-  if (!user) {
+  if (user) {
+    tracker.identify(user.id);
+  } else {
     routes.push(
       { path: '/login', exact: true, component: UserLogin },
       { path: '/admin', exact: true, component: AdminLogin },
