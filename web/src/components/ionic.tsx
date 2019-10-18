@@ -14,7 +14,7 @@ type Props<T extends React.ElementType> = Omit<
 
 function addRouter<T extends React.ComponentType>(Comp: T) {
   const Component = Comp as Function;
-  const comp: React.FC<Props<T>> = ({
+  const Wrapper: React.FC<Props<T>> = ({
     history,
     location,
     match,
@@ -40,7 +40,7 @@ function addRouter<T extends React.ComponentType>(Comp: T) {
       />
     );
   };
-  return withRouter(comp);
+  return withRouter(Wrapper);
 }
 
 export const IonButtonLink = addRouter(IonButton);
