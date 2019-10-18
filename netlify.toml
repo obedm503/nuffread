@@ -1,5 +1,5 @@
 [build]
-  environment = { YARN_VERSION = "1.19.0" }
+  environment = { YARN_VERSION = "1.19.1" }
 
 [[redirects]]
   from = "/graphql"
