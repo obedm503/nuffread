@@ -59,7 +59,7 @@ module.exports.scripts = {
       concurrent.nps('build.web', 'build.api'),
     ),
     types: buildTypes,
-    web: series('cd web', 'NODE_ENV=production npm run build'),
+    web: series('cd web', 'npm run build'),
     api: series('cd api', 'npm run build'),
   },
   deploy,
