@@ -106,3 +106,17 @@ if (module['hot']) {
     window.onerror = null;
   });
 }
+
+// better error logging
+if (!('toJSON' in Error.prototype)) {
+  // eslint-disable-next-line
+  Error.prototype['toJSON'] = function() {
+    const e = {};
+
+    Object.getOwnPropertyNames(this).forEach(key => {
+      e[key] = this[key];
+    });
+
+    return e;
+  };
+}
