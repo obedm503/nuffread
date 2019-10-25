@@ -17,7 +17,7 @@ import { tracker } from '../state/tracker';
 import { TopNav } from './top-nav';
 
 export const TrackApp = withRouter(
-  class extends Component<RouteComponentProps, { hasError: boolean }> {
+  class Tracker extends Component<RouteComponentProps, { hasError: boolean }> {
     state = { hasError: false };
     componentDidCatch(error: Error, info: ErrorInfo) {
       tracker.event('RENDER_ERROR', { error, info });

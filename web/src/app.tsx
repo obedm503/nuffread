@@ -15,11 +15,10 @@ import Join from './pages/join';
 import Landing from './pages/landing';
 import { AdminLogin, UserLogin } from './pages/login';
 import Private from './pages/private';
-import Public from './pages/public';
 import { IQuery, SystemUser } from './schema.gql';
 import { IsDesktopProvider } from './state/desktop';
-import { UserProvider } from './state/user';
 import { tracker } from './state/tracker';
+import { UserProvider } from './state/user';
 
 export const createCache = () =>
   new InMemoryCache({
@@ -70,6 +69,7 @@ const makeLazy = <T extends React.ComponentType<any>>(
 };
 
 const Admin = makeLazy(() => import('./pages/admin'));
+const Public = makeLazy(() => import('./pages/public'));
 
 const isReady = process.env.REACT_APP_MODE === 'ready';
 const homePage = (user?: SystemUser) => {

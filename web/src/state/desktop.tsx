@@ -11,7 +11,7 @@ export class IsDesktopProvider extends React.PureComponent<
 > {
   state = { isDesktop: false };
   match: MediaQueryList;
-  onChange = e => {
+  onChange = (e: MediaQueryListEvent) => {
     this.setState({ isDesktop: e.matches });
   };
   componentDidMount() {
@@ -19,11 +19,11 @@ export class IsDesktopProvider extends React.PureComponent<
 
     this.setState({ isDesktop: this.match.matches });
 
-    this.match.addEventListener('change', this.onChange);
+    this.match.addListener(this.onChange);
   }
   componentWillUnmount() {
     if (this.match) {
-      this.match.removeEventListener('change', this.onChange);
+      this.match.removeListener(this.onChange);
     }
   }
   render() {
@@ -31,24 +31,14 @@ export class IsDesktopProvider extends React.PureComponent<
   }
 }
 
-type OnlyProps = { children: () => React.ReactNode };
-export const OnlyDesktop: React.FC<OnlyProps> = ({ children }) => (
-  <Consumer>
-    {({ isDesktop }) => {
-      if (!isDesktop) {
-        return null;
-      }
-      return children();
-    }}
-  </Consumer>
-);
-export const OnlyMobile: React.FC<OnlyProps> = ({ children }) => (
+type OnlyProps = { children: React.FC };
+export const OnlyMobile: React.FC<OnlyProps> = ({ children: Render }) => (
   <Consumer>
     {({ isDesktop }) => {
       if (isDesktop) {
         return null;
       }
-      return children();
+      return <Render />;
     }}
   </Consumer>
 );
