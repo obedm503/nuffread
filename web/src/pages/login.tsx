@@ -28,11 +28,19 @@ import {
 } from '../components';
 import { apolloFormErrors } from '../components/apollo-error';
 import { IMutation, SystemUserType } from '../schema.gql';
+import { tracker } from '../state/tracker';
 import { emailSchema, passwordSchema } from '../util';
 
 const LOGIN = gql`
   mutation Login($email: String!, $password: String!, $type: SystemUserType!) {
-    login(email: $email, password: $password, type: $type)
+    login(email: $email, password: $password, type: $type) {
+      ... on User {
+        id
+      }
+      ... on Admin {
+        id
+      }
+    }
   }
 `;
 
@@ -62,6 +70,7 @@ const LoginForm = React.memo<{
     });
     if (res && res.data && res.data.login) {
       await client.resetStore();
+      tracker.login(res.data.login.id);
       history.push('/');
     }
   };

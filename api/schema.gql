@@ -26,8 +26,8 @@ type Mutation {
   requestInvite(email: String!, name: String!): Boolean!
   sendInvite(email: String!): Invite!
 
-  register(email: String!, password: String!): Boolean!
-  login(email: String!, password: String!, type: SystemUserType!): Boolean!
+  register(email: String!, password: String!): User!
+  login(email: String!, password: String!, type: SystemUserType!): SystemUser!
   logout: Boolean!
   confirm(code: String!): Boolean!
   # resendEmail(code: String!): Boolean!

@@ -19,8 +19,11 @@ import { TopNav } from './top-nav';
 export const TrackApp = withRouter(
   class Tracker extends Component<RouteComponentProps, { hasError: boolean }> {
     state = { hasError: false };
-    componentDidCatch(error: Error, info: ErrorInfo) {
-      tracker.event('RENDER_ERROR', { error, info });
+    componentDidCatch(
+      { name, message, stack }: Error,
+      { componentStack }: ErrorInfo,
+    ) {
+      tracker.event('RENDER_ERROR', { name, message, stack, componentStack });
 
       // remove modals because they're not removed automatically by
       // ionic when trashing the tree

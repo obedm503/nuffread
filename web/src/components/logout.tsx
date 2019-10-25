@@ -4,6 +4,7 @@ import gql from 'graphql-tag';
 import { logOut } from 'ionicons/icons';
 import * as React from 'react';
 import { IMutation } from '../schema.gql';
+import { tracker } from '../state/tracker';
 
 const LOGOUT = gql`
   mutation Logout {
@@ -12,6 +13,8 @@ const LOGOUT = gql`
 `;
 
 const onCompleted = (data: IMutation) => {
+  tracker.logout();
+
   if (data && data.logout && typeof window !== 'undefined' && window.location) {
     window.location.href = '/';
   }

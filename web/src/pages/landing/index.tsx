@@ -3,6 +3,7 @@ import {
   IonButtons,
   IonCard,
   IonCardContent,
+  IonCardHeader,
   IonCardTitle,
   IonCol,
   IonContent,
@@ -28,6 +29,7 @@ import {
 } from '../../components';
 import { apolloFormErrors } from '../../components/apollo-error';
 import { IMutation } from '../../schema.gql';
+import { tracker } from '../../state/tracker';
 import { studentEmailSchema } from '../../util';
 
 const REQUEST_INVITE = gql`
@@ -49,6 +51,7 @@ const Errors = apolloFormErrors({
     </>
   ),
 });
+
 const RequestInvite: React.FC = () => {
   const [mutate, { error, data, loading }] = useMutation<IMutation>(
     REQUEST_INVITE,
@@ -58,7 +61,10 @@ const RequestInvite: React.FC = () => {
     return <p>We got your request. If approved, we will send you an email.</p>;
   }
 
-  const onSubmit = ({ email, name }) => mutate({ variables: { email, name } });
+  const onSubmit = async ({ email, name }) => {
+    await mutate({ variables: { email, name } });
+    tracker.invite(email);
+  };
   return (
     <Formik<FormSchema>
       onSubmit={onSubmit}
@@ -116,9 +122,11 @@ export default () => {
 
             <IonCol size="12" sizeMd="5" offsetMd="1" sizeLg="4" offsetLg="2">
               <IonCard color="white">
-                <IonCardContent>
+                <IonCardHeader>
                   <IonCardTitle>Request early access</IonCardTitle>
+                </IonCardHeader>
 
+                <IonCardContent>
                   <RequestInvite />
                 </IonCardContent>
               </IonCard>

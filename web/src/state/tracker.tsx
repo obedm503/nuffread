@@ -1,12 +1,15 @@
 import { ServerError, ServerParseError } from 'apollo-link-http-common';
 import { GraphQLError } from 'graphql';
 import mixpanel from 'mixpanel-browser';
-import { ErrorInfo } from 'react';
 
 const isProd = process.env.NODE_ENV === 'production';
 
-if (isProd) {
-  mixpanel.init(process.env.REACT_APP_MIXPANEL_KEY!);
+const track = !!process.env.REACT_APP_MIXPANEL_TOKEN;
+
+if (track) {
+  mixpanel.init(process.env.REACT_APP_MIXPANEL_TOKEN!, {
+    api_host: isProd ? 'https://api.mixpanel.com' : 'http://api.mixpanel.com',
+  });
 }
 
 type ErrorEventsMap = {
@@ -20,41 +23,54 @@ type ErrorEventsMap = {
         stack?: string;
       };
   ASYNC_ERROR: { reason };
-  RENDER_ERROR: { error: Error; info: ErrorInfo };
+  RENDER_ERROR: {
+    name: string;
+    message: string;
+    stack?: string;
+    componentStack: string;
+  };
   NETWORK_ERROR: { error: Error | ServerError | ServerParseError };
   GRAPHQL_ERROR: { errors: readonly GraphQLError[] };
 };
+type AppEvents = {
+  NAVIGATE: { to: string };
+};
+type EventsMap = ErrorEventsMap & AppEvents;
 
-type EventsMap = ErrorEventsMap & { NAVIGATE: { to: string } };
+const log = isProd ? ((() => {}) as typeof console.log) : console.log;
 
 export const tracker = {
-  identify(id: string) {
-    if (!isProd) {
-      console.log('identify', id);
-      return;
+  login(id: string) {
+    log('identify', id);
+    if (track) {
+      mixpanel.identify(id);
     }
-    mixpanel.identify(id);
   },
-  alias(id: string) {
-    if (!isProd) {
-      console.log('alias', id);
-      return;
+  invite(email: string) {
+    log('invite', { email });
+    if (track) {
+      mixpanel.identify(email);
+      mixpanel.track('REQUEST_INVITE', { email });
     }
-    mixpanel.alias(id);
+  },
+  register(id: string, email: string) {
+    log('register', id, { email });
+    if (track) {
+      mixpanel.alias(id, email);
+      mixpanel.people.set({ email });
+    }
+  },
+  logout() {
+    log('logout');
+    if (track) {
+      mixpanel.reset();
+    }
   },
   event<K extends keyof EventsMap>(event: K, details: EventsMap[K]) {
-    if (!isProd) {
-      console.log('event', event, details);
-      return;
+    log('event', event, details);
+    if (track) {
+      mixpanel.track(event, details);
     }
-    mixpanel.track(event, details);
-  },
-  people(details: Record<string, any>) {
-    if (!isProd) {
-      console.log('people', details);
-      return;
-    }
-    mixpanel.people.set(details);
   },
 };
 

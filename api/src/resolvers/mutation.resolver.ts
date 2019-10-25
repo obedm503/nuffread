@@ -9,6 +9,7 @@ import {
   IMutation,
   IRegisterOnMutationArguments,
   IRequestInviteOnMutationArguments,
+  IUser,
 } from '../schema.gql';
 import { isAdmin, isPublic, isUser } from '../util/auth';
 import { send } from '../util/email';
@@ -52,7 +53,7 @@ export const MutationResolver: IResolver<IMutation> = {
     _,
     { email, password }: IRegisterOnMutationArguments,
     { req, me, inviteLoader },
-  ) {
+  ): Promise<IUser> {
     isPublic(me);
 
     const origin = req.get('origin');
@@ -71,15 +72,14 @@ export const MutationResolver: IResolver<IMutation> = {
 
     const passwordHash = await hash(password, 12);
 
-    const user = User.create({ email, passwordHash });
-    await User.save(user);
+    const user = await User.save(User.create({ email, passwordHash }));
 
     await sendConfirmationEmail(origin, {
       email: user.email,
       confirmCode: invite!.code,
     });
 
-    return true;
+    return user as any;
   },
 
   async login(
@@ -115,7 +115,7 @@ export const MutationResolver: IResolver<IMutation> = {
       req.session.userType = type;
     }
 
-    return true;
+    return me;
   },
   async logout(_, args, { req, res }) {
     if (req.session) {

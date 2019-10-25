@@ -86,7 +86,7 @@ const makeRoutes = memoize((user?: SystemUser): RouteProps[] => {
   const routes: RouteProps[] = [];
 
   if (user) {
-    tracker.identify(user.id);
+    tracker.login(user.id);
   } else {
     routes.push(
       { path: '/login', exact: true, component: UserLogin },
