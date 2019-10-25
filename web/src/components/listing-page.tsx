@@ -1,4 +1,5 @@
 import {
+  IonBackButton,
   IonButtons,
   IonCol,
   IonContent,
@@ -14,7 +15,6 @@ import { barcode } from 'ionicons/icons';
 import * as React from 'react';
 import { withListing } from '../containers/listing';
 import { UserDetails } from '../pages/public/components/user-details';
-import { GoBack } from './go-back';
 import { IonButtonLink } from './ionic';
 import { Listing, LoadingListing } from './listing';
 import { TopNav } from './top-nav';
@@ -57,7 +57,7 @@ export const ListingPage = withListing<{ base: string }>(
       <IonPage>
         <TopNav title={listing ? listing.book.title : ''}>
           <IonButtons slot="start">
-            <GoBack base={base} />
+            <IonBackButton defaultHref={base} />
           </IonButtons>
         </TopNav>
 

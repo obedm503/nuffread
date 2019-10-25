@@ -1,7 +1,6 @@
-import { IonButtons } from '@ionic/react';
+import { IonBackButton, IonButtons } from '@ionic/react';
 import * as React from 'react';
 import { IonButtonLink, TopNav } from '../../../components';
-import { GoBack } from '../../../components/go-back';
 import { OnlyMobile } from '../../../state/desktop';
 
 export const Nav: React.FC<{
@@ -12,9 +11,9 @@ export const Nav: React.FC<{
   <TopNav toolbar={children} title={title}>
     <IonButtons slot="start">
       {alwaysBack ? (
-        <GoBack base={base} />
+        <IonBackButton defaultHref={base} />
       ) : (
-        <OnlyMobile children={() => <GoBack base={base} />} />
+        <OnlyMobile children={() => <IonBackButton defaultHref={base} />} />
       )}
     </IonButtons>
 
