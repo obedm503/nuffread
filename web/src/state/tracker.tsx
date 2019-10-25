@@ -37,32 +37,34 @@ type AppEvents = {
 };
 type EventsMap = ErrorEventsMap & AppEvents;
 
-const log = isProd ? ((() => {}) as typeof console.log) : console.log;
+const log: typeof console.log = isProd ? () => {} : console.log;
 
 export const tracker = {
-  login(id: string) {
-    log('identify', id);
-    if (track) {
-      mixpanel.identify(id);
-    }
-  },
-  invite(email: string) {
-    log('invite', { email });
+  login({ email }: { email: string }) {
+    log('identify', email);
     if (track) {
       mixpanel.identify(email);
+      mixpanel.track('LOGIN', { email });
+    }
+  },
+  invite({ email }: { email: string }) {
+    log('invite', { email });
+    if (track) {
+      mixpanel.alias(email);
       mixpanel.track('REQUEST_INVITE', { email });
     }
   },
-  register(id: string, email: string) {
-    log('register', id, { email });
+  register({ email }: { email: string }) {
+    log('register', email);
     if (track) {
-      mixpanel.alias(id, email);
-      mixpanel.people.set({ email });
+      mixpanel.identify(email);
+      mixpanel.track('REGISTER', { email });
     }
   },
   logout() {
     log('logout');
     if (track) {
+      mixpanel.track('LOGOUT');
       mixpanel.reset();
     }
   },

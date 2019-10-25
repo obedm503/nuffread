@@ -58,8 +58,7 @@ const onRegister = (data: IMutation) => {
   if (!data.register) {
     return;
   }
-  const { id, email } = data.register;
-  tracker.register(id, email);
+  tracker.register({ email: data.register.email });
 };
 const RegisterForm: React.FC = () => {
   const [mutate, { error, data, loading }] = useMutation<IMutation>(REGISTER, {

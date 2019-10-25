@@ -36,9 +36,11 @@ const LOGIN = gql`
     login(email: $email, password: $password, type: $type) {
       ... on User {
         id
+        email
       }
       ... on Admin {
         id
+        email
       }
     }
   }
@@ -70,7 +72,7 @@ const LoginForm = React.memo<{
     });
     if (res && res.data && res.data.login) {
       await client.resetStore();
-      tracker.login(res.data.login.id);
+      tracker.login({ email: res.data.login.email });
       history.push('/');
     }
   };
