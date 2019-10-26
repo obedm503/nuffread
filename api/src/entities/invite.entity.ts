@@ -44,7 +44,7 @@ export class Invite extends Base {
   @BeforeInsert()
   private async addCode() {
     const buffer = await randomBytes(48);
-    this.code = buffer.toString('base64');
+    this.code = buffer.toString('hex');
   }
 
   @Column({ nullable: true })
