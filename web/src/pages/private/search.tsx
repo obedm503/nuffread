@@ -18,7 +18,7 @@ export const Search = memo<RouteComponentProps>(props => {
         <IonGrid>
           <IonRow>
             <IonCol size="12" sizeLg="10" offsetLg="1">
-              <SearchBar onSearch={onSearch} searchValue={searchValue} />
+              {/* <SearchBar onSearch={onSearch} searchValue={searchValue} /> */}
 
               {searchValue ? (
                 <SearchListings onClick={onClick} searchValue={searchValue} />

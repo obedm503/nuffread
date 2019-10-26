@@ -19,9 +19,6 @@ export class SearchBar extends React.PureComponent<SearchBarProps> {
     return (
       <IonToolbar color="white">
         <IonSearchbar
-          color="light"
-          // stick with ios search style because of color differences
-          mode="ios"
           value={this.props.searchValue || ''}
           onIonChange={this.onChange}
           debounce={500}
