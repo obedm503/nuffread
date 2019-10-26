@@ -120,7 +120,10 @@ export const searchBooks = async (query: string): Promise<IGoogleBook[]> => {
   const json: {
     kind: string;
     totalItems: number;
-    items: GoogleBook[];
+    items?: GoogleBook[];
   } = await res.json();
+  if (!Array.isArray(json.items)) {
+    return [];
+  }
   return json.items.map(item => formatBook(item)!).filter(b => !!b);
 };
