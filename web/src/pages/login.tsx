@@ -14,18 +14,12 @@ import {
 import { Form, Formik } from 'formik';
 import gql from 'graphql-tag';
 import { History } from 'history';
-import { add, logIn } from 'ionicons/icons';
+import { logIn } from 'ionicons/icons';
 import * as React from 'react';
 import { RouteComponentProps } from 'react-router';
 import { Link } from 'react-router-dom';
 import { object } from 'yup';
-import {
-  Email,
-  IonButtonLink,
-  IonSubmit,
-  Password,
-  TopNav,
-} from '../components';
+import { Email, IonSubmit, Password, TopNav } from '../components';
 import { apolloFormErrors } from '../components/apollo-error';
 import { IMutation, SystemUserType } from '../schema.gql';
 import { tracker } from '../state/tracker';
@@ -93,15 +87,6 @@ const LoginForm = React.memo<{
 
         <IonGrid>
           <IonRow>
-            {admin ? null : (
-              <IonCol>
-                <IonButtonLink expand="block" href="/join" color="secondary">
-                  <IonIcon slot="start" icon={add} />
-                  <IonLabel>Join</IonLabel>
-                </IonButtonLink>
-              </IonCol>
-            )}
-
             <IonCol>
               <IonSubmit expand="block" disabled={loading}>
                 <IonIcon slot="start" icon={logIn} />

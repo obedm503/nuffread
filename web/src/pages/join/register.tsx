@@ -43,7 +43,7 @@ const RegisterSuccess = () => <p>Click the confirmation link in your email.</p>;
 const Errors = apolloFormErrors({
   NO_INVITE: (
     <>
-      You need an invite first. <Link to="/">Request invite?</Link>
+      You need an invite first. <Link to="/">Get your invite.</Link>
     </>
   ),
   NO_APPROVED_INVITE: 'Your invite request has not been approved.',

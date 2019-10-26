@@ -47,7 +47,7 @@ const schema = object<FormSchema>().shape({
 const Errors = apolloFormErrors({
   DUPLICATE_INVITE: (
     <>
-      This email is already registered. <Link to="/login">Login?</Link>
+      This email is already registered <Link to="/login">login</Link> instead
     </>
   ),
 });
@@ -58,7 +58,9 @@ const RequestInvite: React.FC = () => {
   );
 
   if (data && data.requestInvite) {
-    return <p>We got your request. If approved, we will send you an email.</p>;
+    return (
+      <p>We got your request. We will send you an email when it's approved.</p>
+    );
   }
 
   const onSubmit = async ({ email, name }) => {
@@ -86,7 +88,7 @@ const RequestInvite: React.FC = () => {
           <IonRow>
             <IonCol>
               <IonSubmit expand="block" disabled={loading}>
-                <IonLabel>Request your invite</IonLabel>
+                <IonLabel>Get your invite</IonLabel>
               </IonSubmit>
             </IonCol>
           </IonRow>
@@ -123,7 +125,7 @@ export default () => {
             <IonCol size="12" sizeMd="5" offsetMd="1" sizeLg="4" offsetLg="2">
               <IonCard color="white">
                 <IonCardHeader>
-                  <IonCardTitle>Request early access</IonCardTitle>
+                  <IonCardTitle>Get early access</IonCardTitle>
                 </IonCardHeader>
 
                 <IonCardContent>

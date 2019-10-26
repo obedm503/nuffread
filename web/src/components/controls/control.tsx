@@ -4,7 +4,9 @@ import * as React from 'react';
 
 export const ControlError = ({ children }) => (
   <IonItem lines="full">
-    <IonLabel color="danger">{children}</IonLabel>
+    <IonLabel color="danger" class="ion-text-wrap">
+      {children}
+    </IonLabel>
   </IonItem>
 );
 

@@ -11,10 +11,10 @@ import { useRouter } from '../../state/router';
 const Errors = apolloFormErrors({
   NO_INVITE: (
     <>
-      You need an invite first. <Link to="/">Request invite?</Link>
+      You need an invite first. <Link to="/">Get your invite.</Link>
     </>
   ),
-  NO_APPROVED_INVITE: 'Your invite request has not been approved.',
+  NO_APPROVED_INVITE: 'Your invite has not been approved yet.',
 });
 
 const CONFIRM_EMAIL = gql`
