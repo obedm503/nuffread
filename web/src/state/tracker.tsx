@@ -44,6 +44,7 @@ export const tracker = {
     log('identify', email);
     if (track) {
       mixpanel.identify(email);
+      mixpanel.people.set({ $last_login: new Date(), $email: email });
       mixpanel.track('LOGIN', { email });
     }
   },
@@ -51,6 +52,7 @@ export const tracker = {
     log('invite', { email });
     if (track) {
       mixpanel.alias(email);
+      mixpanel.people.set({ $created: new Date(), $email: email });
       mixpanel.track('REQUEST_INVITE', { email });
     }
   },

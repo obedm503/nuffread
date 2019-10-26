@@ -63,9 +63,9 @@ const RequestInvite: React.FC = () => {
     );
   }
 
-  const onSubmit = async ({ email, name }) => {
+  const onSubmit = async ({ email, name }: { email: string; name: string }) => {
     await mutate({ variables: { email, name } });
-    tracker.invite(email);
+    tracker.invite({ email });
   };
   return (
     <Formik<FormSchema>
