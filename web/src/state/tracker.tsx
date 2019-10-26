@@ -33,7 +33,7 @@ type ErrorEventsMap = {
   GRAPHQL_ERROR: { errors: readonly GraphQLError[] };
 };
 type AppEvents = {
-  NAVIGATE: { to: string };
+  NAVIGATE: { to: string; from: string };
 };
 type EventsMap = ErrorEventsMap & AppEvents;
 

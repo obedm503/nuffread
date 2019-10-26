@@ -40,10 +40,15 @@ export const TrackApp = withRouter(
     }
     unsub: UnregisterCallback;
     componentDidMount() {
+      const loc = this.props.history.location;
+      let from = loc.pathname + loc.search;
       this.unsub = this.props.history.listen(location => {
+        const to = location.pathname + location.search;
         tracker.event('NAVIGATE', {
-          to: location.pathname + location.search,
+          from,
+          to,
         });
+        from = to;
       });
     }
     componentWillUnmount() {
