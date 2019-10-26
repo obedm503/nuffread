@@ -72,6 +72,7 @@ type Listing {
   id: ID!
   createdAt: Date!
   price: Int!
+  description: String!
 
   bookId: String!
   book: Book!
