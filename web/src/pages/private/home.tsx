@@ -9,7 +9,7 @@ import { SearchListings } from '../public/components/search-results';
 import { TopListings } from '../public/components/top-listings';
 import { SearchBar } from '../../components/search-bar';
 
-export const Search = memo<RouteComponentProps>(props => {
+export const Home = memo<RouteComponentProps>(props => {
   const { onClick, onSearch, searchValue } = useSearch();
   return (
     <IonPage>
