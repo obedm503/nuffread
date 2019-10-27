@@ -70,7 +70,11 @@ export const QueryResolver: IResolver<IQuery> = {
 
   async top(_, args) {
     // TODO: implement real top listings, whatever that means
-    return await Listing.find({ take: 10, relations: ['book'] });
+    return await Listing.find({
+      take: 10,
+      relations: ['book'],
+      order: { createdAt: 'DESC' },
+    });
   },
 
   async me(_, args, { me }) {
