@@ -2,6 +2,7 @@ import { useApolloClient, useMutation } from '@apollo/react-hooks';
 import {
   IonCard,
   IonCardContent,
+  IonCardHeader,
   IonCardTitle,
   IonCol,
   IonContent,
@@ -21,6 +22,7 @@ import { Link } from 'react-router-dom';
 import { object } from 'yup';
 import { Email, IonSubmit, Password, TopNav } from '../components';
 import { apolloFormErrors } from '../components/apollo-error';
+import { Container } from '../components/container';
 import { IMutation, SystemUserType } from '../schema.gql';
 import { tracker } from '../state/tracker';
 import { emailSchema, passwordSchema } from '../util';
@@ -94,6 +96,11 @@ const LoginForm = React.memo<{
               </IonSubmit>
             </IonCol>
           </IonRow>
+          <IonRow>
+            <IonCol className="ion-text-center">
+              <Link to="/reset">Forgot passphrase?</Link>
+            </IonCol>
+          </IonRow>
         </IonGrid>
       </Form>
     </Formik>
@@ -119,26 +126,22 @@ export class UserLogin extends React.PureComponent<
         <TopNav />
 
         <IonContent>
-          <IonGrid>
-            <IonRow>
-              <IonCol sizeMd="6" offsetMd="3" sizeLg="4" offsetLg="4">
-                <IonCard>
-                  <IonCardContent>
-                    <IonCardTitle className="ion-text-center">
-                      Login
-                    </IonCardTitle>
+          <Container>
+            <IonCard>
+              <IonCardHeader>
+                <IonCardTitle className="ion-text-center">Login</IonCardTitle>
+              </IonCardHeader>
 
-                    <LoginForm
-                      history={history}
-                      type={admin ? 'ADMIN' : 'USER'}
-                      schema={admin ? adminSchema : userSchema}
-                      admin={admin}
-                    />
-                  </IonCardContent>
-                </IonCard>
-              </IonCol>
-            </IonRow>
-          </IonGrid>
+              <IonCardContent>
+                <LoginForm
+                  history={history}
+                  type={admin ? 'ADMIN' : 'USER'}
+                  schema={admin ? adminSchema : userSchema}
+                  admin={admin}
+                />
+              </IonCardContent>
+            </IonCard>
+          </Container>
         </IonContent>
       </>
     );

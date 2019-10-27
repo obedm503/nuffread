@@ -14,6 +14,7 @@ import { Listing } from './listing.entity';
 
 @Entity()
 @Unique(['email'])
+@Unique(['passwordResetToken'])
 export class User extends Base {
   @PrimaryKey()
   readonly id: string;
@@ -53,4 +54,8 @@ export class User extends Base {
   @OneToOne(() => Invite, invite => invite.user)
   @JoinColumn({ name: 'email', referencedColumnName: 'email' })
   invite: Invite;
+
+  @Column({ nullable: true })
+  @IsString()
+  passwordResetToken?: string;
 }

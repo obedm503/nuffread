@@ -1,5 +1,6 @@
 import { compare, hash } from 'bcryptjs';
 import { getConnection } from 'typeorm';
+import { CONFIG } from '../config';
 import { Admin, Book, Invite, Listing, User } from '../entities';
 import {
   IConfirmOnMutationArguments,
@@ -9,8 +10,12 @@ import {
   IMutation,
   IRegisterOnMutationArguments,
   IRequestInviteOnMutationArguments,
+  IRequestResetPasswordOnMutationArguments,
+  IResetPasswordOnMutationArguments,
+  ISendInviteOnMutationArguments,
   IUser,
 } from '../schema.gql';
+import { jwt, logger } from '../util';
 import { isAdmin, isPublic, isUser } from '../util/auth';
 import { send } from '../util/email';
 import {
@@ -27,11 +32,14 @@ import {
 import { getBook } from '../util/google-books';
 import { IResolver } from '../util/types';
 
-export const sendConfirmationEmail = async (
-  base: string,
-  { email, confirmCode }: { email: string; confirmCode: string },
-) => {
-  const link = `${base}/join/${confirmCode}`;
+export const sendConfirmationEmail = async ({
+  email,
+  confirmCode,
+}: {
+  email: string;
+  confirmCode: string;
+}) => {
+  const link = `${CONFIG.origin}/join/${confirmCode}`;
   await send({
     email,
     subject: 'Finish the signup process',
@@ -56,11 +64,6 @@ export const MutationResolver: IResolver<IMutation> = {
   ): Promise<IUser> {
     isPublic(me);
 
-    const origin = req.get('origin');
-    if (!origin) {
-      throw new BadRequest();
-    }
-
     // email already exists
     if (await User.findOne({ where: { email } })) {
       throw new DuplicateUser();
@@ -74,7 +77,7 @@ export const MutationResolver: IResolver<IMutation> = {
 
     const user = await User.save(User.create({ email, passwordHash }));
 
-    await sendConfirmationEmail(origin, {
+    await sendConfirmationEmail({
       email: user.email,
       confirmCode: invite!.code,
     });
@@ -155,17 +158,12 @@ export const MutationResolver: IResolver<IMutation> = {
   //   // is already logged in, no need to resend
   //   isPublic(me);
 
-  //   const origin = req.get('origin');
-  //   if (!origin) {
-  //     throw new BadRequest();
-  //   }
-
   //   const invite = await Invite.findOne({
   //     where: { code },
   //   });
   //   isInvited(invite);
 
-  //   await sendConfirmationEmail(origin, {
+  //   await sendConfirmationEmail(config.origin, {
   //     email: invite!.email,
   //     confirmCode: invite!.code,
   //   });
@@ -222,7 +220,7 @@ export const MutationResolver: IResolver<IMutation> = {
   async requestInvite(
     _,
     { email, name }: IRequestInviteOnMutationArguments,
-    { me, inviteLoader },
+    { me, inviteLoader, req },
   ) {
     isPublic(me);
 
@@ -236,14 +234,18 @@ export const MutationResolver: IResolver<IMutation> = {
       subject: 'New invite request',
       html: [
         `${name} (${email}) has requested an invite.`,
-        'Go to <a href="https://www.nuffread.com/admin">nuffread.com/admin</a> to authorize it.',
+        `Go to <a href="${CONFIG.origin}/admin">https://www.nuffread.com/admin</a> to authorize it.`,
       ].join(' '),
     });
     await Promise.all([invite.save(), sentEmail]);
 
     return true;
   },
-  async sendInvite(_, { email }, { me, inviteLoader }) {
+  async sendInvite(
+    _,
+    { email }: ISendInviteOnMutationArguments,
+    { me, inviteLoader, req },
+  ) {
     isAdmin(me);
 
     const invite = await inviteLoader.load(email);
@@ -254,10 +256,70 @@ export const MutationResolver: IResolver<IMutation> = {
     const sentEmail = send({
       email,
       subject: 'Welcome to Nuffread',
-      html: `Your request has been approved. Go to <a href="https://www.nuffread.com/join">nuffread.com/join</a> and go through the standard signup process.
+      html: `Your request has been approved. Go to <a href="${CONFIG.origin}/join">https://www.nuffread.com/join</a> and go through the standard signup process.
     `,
     });
     const [savedInvite] = await Promise.all([invite.save(), sentEmail]);
     return savedInvite;
+  },
+
+  async requestResetPassword(
+    _,
+    { email }: IRequestResetPasswordOnMutationArguments,
+    { me },
+  ) {
+    isPublic(me);
+
+    const user = await User.findOne({ where: { email } });
+    if (!user) {
+      return true; // email doens't exist, but don't tell the client
+    }
+
+    // can be called multiple times, but only the last request will be valid
+    const token = await jwt.sign({ email }, { expiresIn: '2h' });
+    user.passwordResetToken = token;
+
+    const sentEmail = send({
+      email,
+      subject: 'Reset your password',
+      html: `To reset your password, click the link below.
+      <br/>
+      If you did not request to change your password, simply ignore this email.
+
+      <a href="${CONFIG.origin}/reset/${token}">https://www.nuffread.com/reset/${token}</a>
+    `,
+    });
+    await Promise.all([user.save(), sentEmail]);
+
+    return true;
+  },
+  async resetPassword(
+    _,
+    { token, password }: IResetPasswordOnMutationArguments,
+    { me },
+  ) {
+    isPublic(me);
+
+    const user = await User.findOne({ where: { passwordResetToken: token } });
+    if (!user) {
+      throw new WrongCredentials();
+    }
+
+    try {
+      await jwt.verify(token); // verify token is not expired
+    } catch (e) {
+      // token is expired, delete it
+      user.passwordResetToken = undefined;
+      await user.save();
+
+      logger.error(e, { email: user.email });
+      throw new WrongCredentials();
+    }
+
+    user.passwordHash = await hash(password, 12);
+    user.passwordResetToken = undefined;
+    await user.save();
+
+    return true;
   },
 };

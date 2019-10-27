@@ -7,17 +7,17 @@ require('dotenv-safe').config({
 require('isomorphic-fetch');
 require('reflect-metadata');
 
-import { ApolloServer, ApolloError } from 'apollo-server-express';
+import { ApolloError, ApolloServer } from 'apollo-server-express';
 import * as pgSession from 'connect-pg-simple';
 import * as express from 'express';
 import * as session from 'express-session';
 import { promisify } from 'util';
+import { CONFIG } from './config';
 import { getContext, getEntities, getSchema } from './schema';
 import { logger } from './util';
 import * as db from './util/db';
 import { BadRequest, InternalError } from './util/error';
 
-const ORIGIN = process.env.ORIGIN || 'https://www.nuffread.com';
 const Store = pgSession(session);
 
 const app = express()
@@ -91,7 +91,7 @@ apollo.applyMiddleware({
   path: '/',
   cors: {
     credentials: true,
-    origin: production ? ORIGIN : true,
+    origin: production ? CONFIG.origin : true,
   },
 });
 

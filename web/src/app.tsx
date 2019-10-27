@@ -15,6 +15,7 @@ import Join from './pages/join';
 import Landing from './pages/landing';
 import { AdminLogin, UserLogin } from './pages/login';
 import Private from './pages/private';
+import ResetPassword from './pages/reset-password';
 import { IQuery, SystemUser } from './schema.gql';
 import { IsDesktopProvider } from './state/desktop';
 import { tracker } from './state/tracker';
@@ -92,6 +93,7 @@ const makeRoutes = memoize((user?: SystemUser): RouteProps[] => {
       { path: '/login', exact: true, component: UserLogin },
       { path: '/admin', exact: true, component: AdminLogin },
       { path: '/join', component: Join },
+      { path: '/reset', component: ResetPassword },
     );
   }
 

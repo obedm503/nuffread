@@ -1,5 +1,6 @@
 import { registerDecorator, ValidationOptions } from 'class-validator';
 import { Request } from 'express';
+import { sign, SignOptions, verify, VerifyOptions } from 'jsonwebtoken';
 import * as pino from 'pino';
 import { FindOneOptions } from 'typeorm';
 import { Base } from './db';
@@ -69,3 +70,20 @@ export function IsEdu(options?: ValidationOptions) {
     });
   };
 }
+
+export const jwt = {
+  sign: (payload: any, options: SignOptions): Promise<string> => {
+    return new Promise((res, rej) => {
+      sign(payload, process.env.SECRET!, options, (err, token) =>
+        err ? rej(err) : res(token),
+      );
+    });
+  },
+  verify: (token: string, options?: VerifyOptions): Promise<any> => {
+    return new Promise((res, rej) => {
+      verify(token, process.env.SECRET!, options, (err, payload) =>
+        err ? rej(err) : res(payload),
+      );
+    });
+  },
+};

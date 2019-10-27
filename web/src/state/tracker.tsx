@@ -35,6 +35,8 @@ type ErrorEventsMap = {
 type AppEvents = {
   NAVIGATE: { to: string; from: string };
   CREATE_LISTING: { price: number };
+  REQUEST_RESET_PASSWORD: { email: string };
+  RESET_PASSWORD: {};
 };
 type EventsMap = ErrorEventsMap & AppEvents;
 
