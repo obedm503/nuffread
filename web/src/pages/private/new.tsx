@@ -183,7 +183,7 @@ const ConfirmListing: React.FC<{
 };
 
 export class CreateListing extends React.PureComponent<
-  { onCancel; show: boolean },
+  { onCancel },
   {
     searchValue: string;
     googleId: string;

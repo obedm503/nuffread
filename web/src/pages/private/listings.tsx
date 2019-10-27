@@ -165,10 +165,9 @@ export const MyListings: React.FC = () => {
           <IonRefresherContent></IonRefresherContent>
         </IonRefresher>
 
-        <CreateListing
-          show={showModal}
-          onCancel={() => setShowModal(false)}
-        ></CreateListing>
+        {showModal ? (
+          <CreateListing onCancel={() => setShowModal(false)}></CreateListing>
+        ) : null}
 
         <IonGrid>
           <IonRow>
