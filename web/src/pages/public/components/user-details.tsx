@@ -13,8 +13,50 @@ import * as React from 'react';
 import { Link } from 'react-router-dom';
 import { Error, IonButtonLink } from '../../../components';
 import { SafeImg } from '../../../components/safe-img';
-import { IQuery } from '../../../schema.gql';
+import { IQuery, IUser } from '../../../schema.gql';
 import { useUser } from '../../../state/user';
+
+export const UserInfo = React.memo<{ user: IUser }>(({ user }) => (
+  <IonCard color="white">
+    <IonItem lines="none">
+      <SafeImg
+        style={{ fontSize: '8rem', color: 'var(--ion-color-contrast)' }}
+        slot="start"
+        src={user.photo}
+        alt={user.name}
+        placeholder={person}
+      ></SafeImg>
+
+      <IonLabel>
+        <p>
+          <strong>{user.name}</strong>
+          <br />
+          <small>Dordt University</small>
+          <br />
+          <small>
+            <a href={`mailto: ${user.email}`}>{user.email}</a>
+          </small>
+          <br />
+          <small>
+            <a href="tel: +123456789">+123456789</a>
+          </small>
+        </p>
+
+        <IonButtons>
+          <IonButtonLink href="#">
+            <IonIcon slot="icon-only" size="small" icon={call} />
+          </IonButtonLink>
+          <IonButtonLink href="#">
+            <IonIcon slot="icon-only" size="small" icon={logoFacebook} />
+          </IonButtonLink>
+          <IonButtonLink href="#">
+            <IonIcon slot="icon-only" size="small" icon={mail} />
+          </IonButtonLink>
+        </IonButtons>
+      </IonLabel>
+    </IonItem>
+  </IonCard>
+));
 
 const userHidden = (
   <IonCard color="white">
@@ -65,7 +107,7 @@ const GET_LISTING_SELLER = gql`
     }
   }
 `;
-const UserInfo = ({ listingId }) => {
+const ListingUser = ({ listingId }) => {
   const { loading, error, data } = useQuery<IQuery>(GET_LISTING_SELLER, {
     variables: { id: listingId },
   });
@@ -76,47 +118,7 @@ const UserInfo = ({ listingId }) => {
     return <Error value={error}></Error>;
   }
   const user = data!.listing!.user;
-  return (
-    <IonCard color="white">
-      <IonItem lines="none" color="white">
-        <SafeImg
-          style={{ fontSize: '8rem' }}
-          slot="start"
-          src={user.photo}
-          alt={user.name}
-          placeholder={person}
-        ></SafeImg>
-
-        <IonLabel>
-          <p>
-            <strong>{user.name}</strong>
-            <br />
-            <small>Dordt University</small>
-            <br />
-            <small>
-              <a href={`mailto: ${user.email}`}>{user.email}`}</a>
-            </small>
-            <br />
-            <small>
-              <a href="tel: +123456789">+123456789</a>
-            </small>
-          </p>
-
-          <IonButtons>
-            <IonButtonLink href="#">
-              <IonIcon slot="icon-only" size="small" icon={call} />
-            </IonButtonLink>
-            <IonButtonLink href="#">
-              <IonIcon slot="icon-only" size="small" icon={logoFacebook} />
-            </IonButtonLink>
-            <IonButtonLink href="#">
-              <IonIcon slot="icon-only" size="small" icon={mail} />
-            </IonButtonLink>
-          </IonButtons>
-        </IonLabel>
-      </IonItem>
-    </IonCard>
-  );
+  return <UserInfo user={user} />;
 };
 
 export const UserDetails: React.FC<{
@@ -127,5 +129,5 @@ export const UserDetails: React.FC<{
     return userHidden;
   }
 
-  return <UserInfo listingId={listingId}></UserInfo>;
+  return <ListingUser listingId={listingId}></ListingUser>;
 };

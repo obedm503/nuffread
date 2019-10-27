@@ -1,17 +1,31 @@
 import { IonButtons, IonContent, IonPage } from '@ionic/react';
 import * as React from 'react';
-import { Popover, TopNav, LogoutItem } from '../../components';
+import { Container, LogoutItem, Popover, TopNav } from '../../components';
+import { useUser } from '../../state/user';
+import { UserInfo } from '../public/components/user-details';
 
-export const Profile = () => (
-  <IonPage>
-    <TopNav>
-      <IonButtons slot="end">
-        <Popover>
-          <LogoutItem />
-        </Popover>
-      </IonButtons>
-    </TopNav>
+export const Profile = () => {
+  const user = useUser();
 
-    <IonContent>my profile</IonContent>
-  </IonPage>
-);
+  if (!user || user.__typename !== 'User') {
+    return null;
+  }
+
+  return (
+    <IonPage>
+      <TopNav>
+        <IonButtons slot="end">
+          <Popover>
+            <LogoutItem />
+          </Popover>
+        </IonButtons>
+      </TopNav>
+
+      <IonContent>
+        <Container>
+          <UserInfo user={user}></UserInfo>
+        </Container>
+      </IonContent>
+    </IonPage>
+  );
+};
