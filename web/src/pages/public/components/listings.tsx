@@ -1,7 +1,6 @@
 import { IonItem, IonLabel } from '@ionic/react';
 import * as React from 'react';
 import { ListWrapper } from '../../../components/list-wrapper';
-import { BasicListing, BasicListingLoading } from '../../../components/listing';
 import { IListing } from '../../../schema.gql';
 
 type Props = {
@@ -9,6 +8,9 @@ type Props = {
   loading: boolean;
   onClick;
   title?: string;
+  component: React.ComponentType<{ onClick; listing: IListing }> & {
+    loading: JSX.Element[];
+  };
 };
 
 export class Listings extends React.PureComponent<Props> {
@@ -16,12 +18,10 @@ export class Listings extends React.PureComponent<Props> {
     this.props.onClick(id);
   };
   render() {
-    const { listings, loading, title } = this.props;
+    const { listings, loading, title, component: Listing } = this.props;
 
     if (loading || !Array.isArray(listings)) {
-      return (
-        <ListWrapper title={title}>{BasicListingLoading.list}</ListWrapper>
-      );
+      return <ListWrapper title={title}>{Listing.loading}</ListWrapper>;
     }
 
     if (!listings.length) {
@@ -36,12 +36,12 @@ export class Listings extends React.PureComponent<Props> {
 
     return (
       <ListWrapper title={title}>
-        {listings.map((listing, i) => {
+        {listings.map(listing => {
           if (!listing) {
             return null;
           }
           return (
-            <BasicListing
+            <Listing
               key={listing.id}
               onClick={this.onClick(listing.id)}
               listing={listing}

@@ -1,22 +1,16 @@
 import {
   IonBackButton,
   IonButtons,
-  IonCol,
   IonContent,
   IonFab,
   IonFabButton,
-  IonGrid,
-  IonIcon,
-  IonList,
   IonPage,
-  IonRow,
 } from '@ionic/react';
-import { barcode } from 'ionicons/icons';
 import * as React from 'react';
 import { withListing } from '../containers/listing';
 import { UserDetails } from '../pages/public/components/user-details';
-import { IonButtonLink } from './ionic';
-import { Listing, LoadingListing } from './listing';
+import { Container } from './container';
+import { ListingCard } from './listing-card';
 import { TopNav } from './top-nav';
 
 const Fab = () => (
@@ -25,15 +19,6 @@ const Fab = () => (
       <b>Buy</b>
     </IonFabButton>
   </IonFab>
-);
-const None = () => (
-  <IonRow>
-    <IonCol size="12" sizeLg="10" offsetLg="1">
-      <IonList lines="none">
-        <LoadingListing />
-      </IonList>
-    </IonCol>
-  </IonRow>
 );
 
 // const Slides: React.FC<{ listing: IListing }> = ({ listing }) => (
@@ -64,39 +49,17 @@ export const ListingPage = withListing<{ base: string }>(
         <IonContent>
           {listing ? <Fab /> : null}
 
-          <IonGrid>
+          <Container>
             {loading || !listing ? (
-              <None />
+              ListingCard.loading[0]
             ) : (
               <>
-                <IonRow>
-                  <IonCol size="12" sizeLg="10" offsetLg="1">
-                    <Listing listing={listing}>
-                      <IonButtons>
-                        <IonButtonLink href="#">
-                          <IonIcon slot="icon-only" icon={barcode} />
-                        </IonButtonLink>
-                      </IonButtons>
-                    </Listing>
-                  </IonCol>
-                </IonRow>
+                <ListingCard listing={listing} detailed></ListingCard>
 
-                <IonRow>
-                  <IonCol size="12" sizeLg="10" offsetLg="1">
-                    <UserDetails listingId={listing.id} />
-                  </IonCol>
-                </IonRow>
-
-                {/* <IonRow>
-                  <IonCol size="12" sizeLg="10" offsetLg="1">
-                    <IonCard>
-                      <Slides listing={listing} />
-                    </IonCard>
-                  </IonCol>
-                </IonRow> */}
+                <UserDetails listingId={listing.id} />
               </>
             )}
-          </IonGrid>
+          </Container>
         </IonContent>
       </IonPage>
     );

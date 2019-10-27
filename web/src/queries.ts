@@ -5,6 +5,7 @@ export const BASIC_LISTING = gql`
     id
     createdAt
     price
+    description
     book {
       id
       googleId

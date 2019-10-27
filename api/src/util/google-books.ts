@@ -36,10 +36,10 @@ type GoogleBook = {
     imageLinks?: {
       smallThumbnail: string;
       thumbnail: string;
-      small: string;
-      medium: string;
-      large: string;
-      extraLarge: string;
+      small?: string;
+      medium?: string;
+      large?: string;
+      extraLarge?: string;
     };
     language: string;
     previewLink: string;
@@ -69,6 +69,29 @@ type GoogleBook = {
   };
 };
 
+const getLargestImage = (book: GoogleBook): string | undefined => {
+  const images = book.volumeInfo.imageLinks;
+  if (!images) {
+    return;
+  }
+  if (images.extraLarge) {
+    return images.extraLarge;
+  }
+  if (images.large) {
+    return images.large;
+  }
+  if (images.medium) {
+    return images.medium;
+  }
+  if (images.small) {
+    return images.small;
+  }
+  if (images.thumbnail) {
+    return images.thumbnail;
+  }
+  return images.smallThumbnail;
+};
+
 const formatBook = (book: GoogleBook): IGoogleBook | undefined => {
   try {
     if (!book.volumeInfo.industryIdentifiers || !book.volumeInfo.authors) {
@@ -94,9 +117,7 @@ const formatBook = (book: GoogleBook): IGoogleBook | undefined => {
         ? new Date(book.volumeInfo.publishedDate)
         : undefined,
       // publisher: book.volumeInfo.publisher,
-      thumbnail: book.volumeInfo.imageLinks
-        ? book.volumeInfo.imageLinks.thumbnail
-        : undefined,
+      thumbnail: getLargestImage(book),
     };
   } catch (e) {
     logger.error(e);
@@ -115,7 +136,7 @@ export const getBook = async (
 
 export const searchBooks = async (query: string): Promise<IGoogleBook[]> => {
   const res = await fetch(
-    `https://www.googleapis.com/books/v1/volumes?q=${query}`,
+    `https://www.googleapis.com/books/v1/volumes?maxResults=20&q=${query}`,
   );
   const json: {
     kind: string;

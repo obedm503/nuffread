@@ -34,6 +34,7 @@ type ErrorEventsMap = {
 };
 type AppEvents = {
   NAVIGATE: { to: string; from: string };
+  CREATE_LISTING: { price: number };
 };
 type EventsMap = ErrorEventsMap & AppEvents;
 
@@ -70,7 +71,7 @@ export const tracker = {
       mixpanel.reset();
     }
   },
-  event<K extends keyof EventsMap>(event: K, details: EventsMap[K]) {
+  event<K extends keyof EventsMap>(event: K, details: EventsMap[K]): void {
     log('event', event, details);
     if (track) {
       mixpanel.track(event, details);

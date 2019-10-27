@@ -2,6 +2,7 @@ import { useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
 import * as React from 'react';
 import { Error } from '../../../components';
+import { ListingCard } from '../../../components/listing-card';
 import { BASIC_LISTING } from '../../../queries';
 import { IQuery } from '../../../schema.gql';
 import { Listings } from './listings';
@@ -28,7 +29,7 @@ export const TopListings: React.FC<{
       loading={loading}
       onClick={onClick}
       listings={data && data.top}
-      title="Top Listings"
+      component={ListingCard}
     />
   );
 };

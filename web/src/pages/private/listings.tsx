@@ -4,9 +4,7 @@ import { RefresherEventDetail } from '@ionic/core';
 import {
   IonButton,
   IonButtons,
-  IonCol,
   IonContent,
-  IonGrid,
   IonIcon,
   IonItemOption,
   IonItemOptions,
@@ -14,14 +12,14 @@ import {
   IonPage,
   IonRefresher,
   IonRefresherContent,
-  IonRow,
 } from '@ionic/react';
 import ApolloClient, { MutationUpdaterFn } from 'apollo-client';
 import gql from 'graphql-tag';
 import { add } from 'ionicons/icons';
 import * as React from 'react';
 import { Error, TopNav } from '../../components';
-import { BasicListing, BasicListingLoading } from '../../components/listing';
+import { Container } from '../../components/container';
+import { ListingBasic } from '../../components/listing-basic';
 import { BASIC_LISTING } from '../../queries';
 import { IMutation, IQuery } from '../../schema.gql';
 import { CreateListing } from './new';
@@ -81,7 +79,7 @@ const useDelete = (id: string) => {
   const client = useApolloClient();
 
   if (error) {
-    console.error(error);
+    throw error;
   }
 
   return {
@@ -92,25 +90,28 @@ const useDelete = (id: string) => {
 
 const SlidingListing = ({ listing }) => {
   const { del, loading } = useDelete(listing.id);
+
+  const onClick = React.useCallback(
+    (e: React.MouseEvent<HTMLIonItemOptionElement, MouseEvent>) => {
+      if (!e.currentTarget) {
+        return;
+      }
+      const t = e.currentTarget as HTMLIonItemOptionElement;
+      const sliding = t.closest('ion-item-sliding');
+      if (sliding) {
+        del();
+        sliding.close();
+      }
+    },
+    [del],
+  );
+
   return (
     <IonItemSliding>
-      <BasicListing listing={listing} disabled={loading} />
+      <ListingBasic listing={listing} disabled={loading} />
 
       <IonItemOptions side="end">
-        <IonItemOption
-          color="danger"
-          onClick={e => {
-            if (!e.currentTarget) {
-              return;
-            }
-            const t = e.currentTarget as HTMLIonItemOptionElement;
-            const sliding = t.closest('ion-item-sliding');
-            if (sliding) {
-              del();
-              sliding.close();
-            }
-          }}
-        >
+        <IonItemOption color="danger" onClick={onClick}>
           Delete
         </IonItemOption>
       </IonItemOptions>
@@ -122,7 +123,7 @@ const Listings: React.FC<
   Pick<QueryResult<IQuery>, 'data' | 'error' | 'loading'>
 > = ({ loading, error, data }) => {
   if (loading) {
-    return <>{BasicListingLoading.list}</>;
+    return <>{ListingBasic.loading}</>;
   }
   if (error || !data || !data.me || data.me.__typename !== 'User') {
     return <Error value={error} />;
@@ -169,13 +170,9 @@ export const MyListings: React.FC = () => {
           <CreateListing onCancel={() => setShowModal(false)}></CreateListing>
         ) : null}
 
-        <IonGrid>
-          <IonRow>
-            <IonCol size="12" sizeLg="10" offsetLg="1">
-              <Listings loading={loading} error={error} data={data} />
-            </IonCol>
-          </IonRow>
-        </IonGrid>
+        <Container>
+          <Listings loading={loading} error={error} data={data} />
+        </Container>
       </IonContent>
     </IonPage>
   );

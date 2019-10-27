@@ -22,7 +22,8 @@ import { close, logoUsd } from 'ionicons/icons';
 import * as React from 'react';
 import { Error, Loading, TopNav } from '../../components';
 import { ListWrapper } from '../../components/list-wrapper';
-import { BasicListingLoading, Listing } from '../../components/listing';
+import { ListingBasic } from '../../components/listing-basic';
+import { ListingCard } from '../../components/listing-card';
 import { SafeImg } from '../../components/safe-img';
 import { SearchBar } from '../../components/search-bar';
 import { CREATE_LISTING, SEARCH_GOOGLE } from '../../queries';
@@ -32,16 +33,26 @@ import {
   IMutation,
   IQuery,
 } from '../../schema.gql';
+import { tracker } from '../../state/tracker';
 
 type Props = {
   books?: IGoogleBook[];
   loading: boolean;
   onClick: (book: IGoogleBook) => void;
   title?: string;
+  activeId?: string;
 };
 
-const Book: React.FC<{ onClick?; book: IGoogleBook }> = ({ onClick, book }) => (
-  <IonItem button={!!onClick} onClick={onClick}>
+const Book: React.FC<{ onClick?; book: IGoogleBook; active: boolean }> = ({
+  onClick,
+  book,
+  active,
+}) => (
+  <IonItem
+    button={!!onClick}
+    onClick={onClick}
+    color={active ? 'primary' : undefined}
+  >
     <IonThumbnail slot="start" style={{ '--size': '100%' }}>
       <SafeImg
         src={book.thumbnail}
@@ -75,9 +86,7 @@ class Books extends React.PureComponent<Props> {
     const { books, loading, title } = this.props;
 
     if (loading || !Array.isArray(books)) {
-      return (
-        <ListWrapper title={title}>{BasicListingLoading.list}</ListWrapper>
-      );
+      return <ListWrapper title={title}>{ListingBasic.loading}</ListWrapper>;
     }
 
     if (!books.length) {
@@ -92,7 +101,7 @@ class Books extends React.PureComponent<Props> {
 
     return (
       <ListWrapper title={title}>
-        {books.map((book, i) => {
+        {books.map(book => {
           if (!book) {
             return null;
           }
@@ -101,6 +110,7 @@ class Books extends React.PureComponent<Props> {
               key={book.googleId}
               onClick={this.onClick(book)}
               book={book}
+              active={this.props.activeId === book.googleId}
             />
           );
         })}
@@ -112,7 +122,8 @@ class Books extends React.PureComponent<Props> {
 const SearchResults: React.FC<{
   onClick: (book: IGoogleBook) => void;
   searchValue: string;
-}> = ({ onClick, searchValue }) => {
+  activeId?: string;
+}> = ({ onClick, searchValue, activeId }) => {
   const { error, data, loading } = useQuery<IQuery>(SEARCH_GOOGLE, {
     fetchPolicy: 'no-cache',
     variables: { query: searchValue },
@@ -128,25 +139,34 @@ const SearchResults: React.FC<{
       onClick={onClick}
       books={data && data.searchGoogle}
       title={'Results for: ' + searchValue}
+      activeId={activeId}
     />
   );
 };
 
-const PickBook: React.FC<{ onClick: (book: IGoogleBook) => void }> = ({
-  onClick,
-}) => {
+const PickBook: React.FC<{
+  onClick: (book: IGoogleBook) => void;
+  activeId?: string;
+}> = ({ onClick, activeId }) => {
   const [searchValue, setSearchValue] = React.useState('');
   return (
     <>
       <SearchBar onSearch={setSearchValue} searchValue={searchValue} />
 
       {searchValue ? (
-        <SearchResults onClick={onClick} searchValue={searchValue} />
+        <SearchResults
+          onClick={onClick}
+          searchValue={searchValue}
+          activeId={activeId}
+        />
       ) : null}
     </>
   );
 };
 
+const onCompleted = ({ createListing }: IMutation) => {
+  tracker.event('CREATE_LISTING', { price: createListing.price });
+};
 const ConfirmListing: React.FC<{
   googleId: string;
   price: number;
@@ -162,6 +182,7 @@ const ConfirmListing: React.FC<{
       price,
       description,
     },
+    onCompleted,
   });
 
   if (error) {
@@ -171,11 +192,13 @@ const ConfirmListing: React.FC<{
     return <Loading></Loading>;
   }
 
+  const listing = Object.assign(
+    { book, price, createdAt: new Date() },
+    data && data.createListing,
+  );
   return (
     <>
-      <Listing
-        listing={Object.assign({ book, price }, data && data.createListing)}
-      ></Listing>
+      <ListingCard listing={listing} />
 
       {data ? null : <IonButton onClick={() => create()}>Create</IonButton>}
     </>
@@ -220,7 +243,7 @@ export class CreateListing extends React.PureComponent<
         ? (this.state.price! / 100).toFixed(2)
         : '';
     return (
-      <IonModal isOpen={this.props.show}>
+      <IonModal isOpen>
         <TopNav>
           <IonButtons slot="secondary">
             <IonButton onClick={this.props.onCancel}>
@@ -239,7 +262,10 @@ export class CreateListing extends React.PureComponent<
                   </IonCardHeader>
 
                   <IonCardContent>
-                    <PickBook onClick={this.onPickBook} />
+                    <PickBook
+                      onClick={this.onPickBook}
+                      activeId={this.state.googleId}
+                    />
                   </IonCardContent>
                 </IonCard>
 
