@@ -7,7 +7,7 @@ import {
   ISearchGoogleOnQueryArguments,
   ISearchOnQueryArguments,
 } from '../schema.gql';
-import { isAdmin, isUser } from '../util/auth';
+import { ensureAdmin, ensureUser } from '../util/auth';
 import { getBook, searchBooks } from '../util/google-books';
 import { IResolver } from '../util/types';
 
@@ -86,7 +86,7 @@ export const QueryResolver: IResolver<IQuery> = {
   },
 
   async searchGoogle(_, { query }: ISearchGoogleOnQueryArguments, { me }) {
-    isUser(me);
+    ensureUser(me);
 
     if (!query) {
       return;
@@ -94,7 +94,7 @@ export const QueryResolver: IResolver<IQuery> = {
     return await searchBooks(query);
   },
   async googleBook(_, { id }: IGoogleBookOnQueryArguments, { me }) {
-    isUser(me);
+    ensureUser(me);
 
     const book = await getBook(id);
     if (!book) {
@@ -104,7 +104,7 @@ export const QueryResolver: IResolver<IQuery> = {
   },
 
   async invites(_, args, { me }) {
-    isAdmin(me);
+    ensureAdmin(me);
 
     return Invite.find();
   },

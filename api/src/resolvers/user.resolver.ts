@@ -1,18 +1,18 @@
 import { Listing, User, Admin } from '../entities';
 import { IUser, SystemUser } from '../schema.gql';
-import { isAdmin, isUser } from '../util/auth';
+import { ensureAdmin, ensureUser } from '../util/auth';
 import { IResolver } from '../util/types';
 
 export const UserResolver: IResolver<IUser, User> = {
   confirmedAt({ confirmedAt }, args, { me }) {
-    isAdmin(me);
+    ensureAdmin(me);
     return confirmedAt;
   },
   name(user) {
     return user.name || user.email;
   },
   async listings(user, args, { me }) {
-    isUser(me);
+    ensureUser(me);
     const listings = await Listing.find({
       where: { userId: user.id },
       order: { createdAt: 'DESC' },

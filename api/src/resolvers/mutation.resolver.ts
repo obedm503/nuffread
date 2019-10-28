@@ -16,7 +16,7 @@ import {
   IUser,
 } from '../schema.gql';
 import { jwt, logger } from '../util';
-import { isAdmin, isPublic, isUser } from '../util/auth';
+import { ensureAdmin, ensurePublic, ensureUser } from '../util/auth';
 import { send } from '../util/email';
 import {
   AuthorizationError,
@@ -62,7 +62,7 @@ export const MutationResolver: IResolver<IMutation> = {
     { email, password }: IRegisterOnMutationArguments,
     { req, me, inviteLoader },
   ): Promise<IUser> {
-    isPublic(me);
+    ensurePublic(me);
 
     // email already exists
     if (await User.findOne({ where: { email } })) {
@@ -129,7 +129,7 @@ export const MutationResolver: IResolver<IMutation> = {
     return true;
   },
   async confirm(_, { code }: IConfirmOnMutationArguments, { me }) {
-    isPublic(me);
+    ensurePublic(me);
 
     return await getConnection().transaction(async manager => {
       const invite = await manager.findOne(Invite, {
@@ -177,7 +177,7 @@ export const MutationResolver: IResolver<IMutation> = {
     }: ICreateListingOnMutationArguments,
     { me },
   ) {
-    isUser(me);
+    ensureUser(me);
 
     return await getConnection().transaction(async manager => {
       let book = await manager.findOne(Book, { where: { googleId } });
@@ -204,7 +204,7 @@ export const MutationResolver: IResolver<IMutation> = {
     { id }: IDeleteListingOnMutationArguments,
     { me, listingLoader },
   ) {
-    if (!isUser(me)) {
+    if (!ensureUser(me)) {
       return false;
     }
 
@@ -222,7 +222,7 @@ export const MutationResolver: IResolver<IMutation> = {
     { email, name }: IRequestInviteOnMutationArguments,
     { me, inviteLoader, req },
   ) {
-    isPublic(me);
+    ensurePublic(me);
 
     if (await inviteLoader.load(email)) {
       throw new DuplicateInvite();
@@ -246,7 +246,7 @@ export const MutationResolver: IResolver<IMutation> = {
     { email }: ISendInviteOnMutationArguments,
     { me, inviteLoader, req },
   ) {
-    isAdmin(me);
+    ensureAdmin(me);
 
     const invite = await inviteLoader.load(email);
     if (!invite) {
@@ -268,7 +268,7 @@ export const MutationResolver: IResolver<IMutation> = {
     { email }: IRequestResetPasswordOnMutationArguments,
     { me },
   ) {
-    isPublic(me);
+    ensurePublic(me);
 
     const user = await User.findOne({ where: { email } });
     if (!user) {
@@ -298,7 +298,7 @@ export const MutationResolver: IResolver<IMutation> = {
     { token, password }: IResetPasswordOnMutationArguments,
     { me },
   ) {
-    isPublic(me);
+    ensurePublic(me);
 
     const user = await User.findOne({ where: { passwordResetToken: token } });
     if (!user) {

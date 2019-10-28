@@ -1,7 +1,7 @@
 import { Admin, User } from '../entities';
 import { AuthenticationError, AuthorizationError } from './error';
 
-export function isUser(me?: Admin | User): me is User {
+export function ensureUser(me?: Admin | User): me is User {
   if (!me) {
     throw new AuthenticationError();
   }
@@ -12,7 +12,7 @@ export function isUser(me?: Admin | User): me is User {
   return me instanceof User;
 }
 
-export function isAdmin(me?: Admin | User): me is Admin {
+export function ensureAdmin(me?: Admin | User): me is Admin {
   if (!me) {
     throw new AuthenticationError();
   }
@@ -22,7 +22,7 @@ export function isAdmin(me?: Admin | User): me is Admin {
 
   return me instanceof Admin;
 }
-export function isPublic(me?: Admin | User): me is undefined {
+export function ensurePublic(me?: Admin | User): me is undefined {
   if (me) {
     throw new AuthenticationError();
   }
