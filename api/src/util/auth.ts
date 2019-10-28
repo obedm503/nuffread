@@ -1,6 +1,10 @@
 import { Admin, User } from '../entities';
 import { AuthenticationError, AuthorizationError } from './error';
 
+export function isUser(me?: User): me is User {
+  return me instanceof User && !!me.confirmedAt;
+}
+
 export function ensureUser(me?: Admin | User): me is User {
   if (!me) {
     throw new AuthenticationError();

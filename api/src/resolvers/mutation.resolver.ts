@@ -16,7 +16,7 @@ import {
   IUser,
 } from '../schema.gql';
 import { jwt, logger } from '../util';
-import { ensureAdmin, ensurePublic, ensureUser } from '../util/auth';
+import { ensureAdmin, ensurePublic, ensureUser, isUser } from '../util/auth';
 import { send } from '../util/email';
 import {
   AuthorizationError,
@@ -271,7 +271,7 @@ export const MutationResolver: IResolver<IMutation> = {
     ensurePublic(me);
 
     const user = await User.findOne({ where: { email } });
-    if (!user) {
+    if (!isUser(user)) {
       return true; // email doens't exist, but don't tell the client
     }
 
@@ -301,7 +301,7 @@ export const MutationResolver: IResolver<IMutation> = {
     ensurePublic(me);
 
     const user = await User.findOne({ where: { passwordResetToken: token } });
-    if (!user) {
+    if (!isUser(user)) {
       throw new WrongCredentials();
     }
 
