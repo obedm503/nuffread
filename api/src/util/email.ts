@@ -42,7 +42,7 @@ export const send = async ({
 
   await mail.send(msg); // send or schedule email
 
-  logger.info('sent email', { email });
+  logger.info({ email }, 'sent email');
 };
 
 export const cancel = async id => {
