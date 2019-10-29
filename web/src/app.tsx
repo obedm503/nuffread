@@ -47,6 +47,7 @@ const ME = gql`
         email
         name
         photo
+        schoolName
       }
       ... on Admin {
         id

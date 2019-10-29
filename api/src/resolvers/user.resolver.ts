@@ -1,9 +1,13 @@
-import { Listing, User, Admin } from '../entities';
+import { Admin, Listing, User } from '../entities';
 import { IUser, SystemUser } from '../schema.gql';
 import { ensureAdmin, ensureUser } from '../util/auth';
+import { getSchoolName } from '../util/schools';
 import { IResolver } from '../util/types';
 
 export const UserResolver: IResolver<IUser, User> = {
+  schoolName({ email }) {
+    return getSchoolName(email);
+  },
   confirmedAt({ confirmedAt }, args, { me }) {
     ensureAdmin(me);
     return confirmedAt;

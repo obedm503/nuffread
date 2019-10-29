@@ -56,6 +56,7 @@ type User {
   invite: Invite!
 
   confirmedAt: Date
+  schoolName: String
 }
 
 input UserInput {

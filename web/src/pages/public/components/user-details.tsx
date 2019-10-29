@@ -30,16 +30,20 @@ export const UserInfo = React.memo<{ user: IUser }>(({ user }) => (
       <IonLabel>
         <p>
           <strong>{user.name}</strong>
-          <br />
-          <small>Dordt University</small>
+          {user.schoolName ? (
+            <>
+              <br />
+              <small>{user.schoolName}</small>
+            </>
+          ) : null}
           <br />
           <small>
             <a href={`mailto: ${user.email}`}>{user.email}</a>
           </small>
-          <br />
+          {/* <br />
           <small>
             <a href="tel: +123456789">+123456789</a>
-          </small>
+          </small> */}
         </p>
 
         <IonButtons>
@@ -103,6 +107,7 @@ const GET_LISTING_SELLER = gql`
         id
         name
         email
+        schoolName
       }
     }
   }
