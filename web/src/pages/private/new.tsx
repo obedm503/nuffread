@@ -6,18 +6,16 @@ import {
   IonCardContent,
   IonCardHeader,
   IonCardTitle,
-  IonCol,
   IonContent,
-  IonGrid,
   IonIcon,
   IonInput,
   IonItem,
   IonLabel,
   IonModal,
-  IonRow,
   IonTextarea,
   IonThumbnail,
 } from '@ionic/react';
+import gql from 'graphql-tag';
 import { close, logoUsd } from 'ionicons/icons';
 import * as React from 'react';
 import { Error, Loading, TopNav } from '../../components';
@@ -164,6 +162,21 @@ const PickBook: React.FC<{
   );
 };
 
+const GOOGLE_BOOK = gql`
+  query GoogleBook($googleId: ID!) {
+    googleBook(id: $googleId) {
+      etag
+      googleId
+      authors
+      isbn
+      publishedAt
+      title
+      subTitle
+      thumbnail
+    }
+  }
+`;
+
 const onCompleted = ({ createListing }: IMutation) => {
   tracker.event('CREATE_LISTING', { price: createListing.price });
 };
@@ -171,12 +184,11 @@ const ConfirmListing: React.FC<{
   googleId: string;
   price: number;
   description: string;
-  book;
-}> = ({ googleId, price, description, book }) => {
-  const [create, { loading, data, error }] = useMutation<
-    IMutation,
-    IListingInput
-  >(CREATE_LISTING, {
+}> = ({ googleId, price, description }) => {
+  const [
+    create,
+    { loading: mutLoading, data: mutData, error: mutError },
+  ] = useMutation<IMutation, IListingInput>(CREATE_LISTING, {
     variables: {
       googleId,
       price,
@@ -185,22 +197,34 @@ const ConfirmListing: React.FC<{
     onCompleted,
   });
 
-  if (error) {
-    return <Error value={error}></Error>;
+  const { loading: qLoading, data: qData, error: qError } = useQuery<IQuery>(
+    GOOGLE_BOOK,
+    { variables: { googleId } },
+  );
+
+  if (qError || mutError) {
+    return <Error value={qError || mutError}></Error>;
   }
-  if (loading) {
+  if (qLoading || mutLoading) {
     return <Loading></Loading>;
   }
 
-  const listing = Object.assign(
-    { book, price, createdAt: new Date() },
-    data && data.createListing,
+  const googleBook = qData && qData.googleBook;
+
+  const listingPreview = Object.assign(
+    { book: googleBook, price, createdAt: new Date() },
+    mutData && mutData.createListing,
   );
+
   return (
     <>
-      <ListingCard listing={listing} />
+      <ListingCard listing={listingPreview} />
 
-      {data ? null : <IonButton onClick={() => create()}>Create</IonButton>}
+      {mutData ? null : (
+        <IonButton expand="block" onClick={() => create()}>
+          Create
+        </IonButton>
+      )}
     </>
   );
 };
@@ -212,18 +236,16 @@ export class CreateListing extends React.PureComponent<
     googleId: string;
     price?: number;
     description: string;
-    book?: IGoogleBook;
   }
 > {
   state = {
     searchValue: '',
     googleId: '',
     description: '',
-    book: undefined,
     price: undefined,
   };
 
-  onPickBook = book => this.setState({ googleId: book.googleId, book });
+  onPickBook = book => this.setState({ googleId: book.googleId });
 
   onPriceChange = ({ detail }) => {
     if (detail.value) {
@@ -253,75 +275,61 @@ export class CreateListing extends React.PureComponent<
         </TopNav>
 
         <IonContent>
-          <IonGrid>
-            <IonRow>
-              <IonCol size="12" sizeLg="10" offsetLg="1">
-                <IonCard>
-                  <IonCardHeader>
-                    <IonCardTitle>Pick a book</IonCardTitle>
-                  </IonCardHeader>
+          <IonCard>
+            <IonCardHeader>
+              <IonCardTitle>Pick a book</IonCardTitle>
+            </IonCardHeader>
 
-                  <IonCardContent>
-                    <PickBook
-                      onClick={this.onPickBook}
-                      activeId={this.state.googleId}
-                    />
-                  </IonCardContent>
-                </IonCard>
+            <IonCardContent>
+              <PickBook
+                onClick={this.onPickBook}
+                activeId={this.state.googleId}
+              />
+            </IonCardContent>
+          </IonCard>
 
-                <IonCard>
-                  <IonCardHeader>
-                    <IonCardTitle>Details</IonCardTitle>
-                  </IonCardHeader>
+          <IonCard>
+            <IonCardHeader>
+              <IonCardTitle>Details</IonCardTitle>
+            </IonCardHeader>
 
-                  <IonCardContent>
-                    <IonItem>
-                      <IonLabel>Price</IonLabel>
-                      <IonIcon icon={logoUsd} size="small"></IonIcon>
-                      <IonInput
-                        type="number"
-                        value={price}
-                        debounce={500}
-                        onIonChange={this.onPriceChange}
-                      ></IonInput>
-                    </IonItem>
+            <IonCardContent>
+              <IonItem>
+                <IonLabel>Price</IonLabel>
+                <IonIcon icon={logoUsd} size="small"></IonIcon>
+                <IonInput
+                  type="number"
+                  value={price}
+                  debounce={500}
+                  onIonChange={this.onPriceChange}
+                ></IonInput>
+              </IonItem>
 
-                    <IonItem>
-                      <IonLabel position="floating">Description</IonLabel>
-                      <IonTextarea
-                        value={this.state.description}
-                        debounce={500}
-                        onIonChange={this.onDescriptionChange}
-                      ></IonTextarea>
-                    </IonItem>
-                  </IonCardContent>
-                </IonCard>
+              <IonItem>
+                <IonLabel position="floating">Description</IonLabel>
+                <IonTextarea
+                  value={this.state.description}
+                  debounce={500}
+                  onIonChange={this.onDescriptionChange}
+                ></IonTextarea>
+              </IonItem>
+            </IonCardContent>
+          </IonCard>
 
-                <IonCard>
-                  <IonCardHeader>
-                    <IonCardTitle>Upload pictures</IonCardTitle>
-                  </IonCardHeader>
+          {/* <IonCard>
+            <IonCardHeader>
+              <IonCardTitle>Upload pictures</IonCardTitle>
+            </IonCardHeader>
 
-                  <IonCardContent>upload pictures</IonCardContent>
-                </IonCard>
+            <IonCardContent>upload pictures</IonCardContent>
+          </IonCard> */}
 
-                <IonCard>
-                  <IonCardHeader>
-                    <IonCardTitle>Confirm</IonCardTitle>
-                  </IonCardHeader>
-
-                  <IonCardContent>
-                    {this.state.book ? (
-                      <ConfirmListing
-                        {...this.state}
-                        price={this.state.price || 0}
-                      ></ConfirmListing>
-                    ) : null}
-                  </IonCardContent>
-                </IonCard>
-              </IonCol>
-            </IonRow>
-          </IonGrid>
+          {this.state.googleId ? (
+            <ConfirmListing
+              {...this.state}
+              price={this.state.price || 0}
+            ></ConfirmListing>
+          ) : null}
         </IonContent>
       </IonModal>
     );
