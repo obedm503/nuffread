@@ -232,19 +232,18 @@ const PreviewListing: React.FC<{
   price: number;
   description: string;
 }> = ({ googleId, price, description }) => {
-  const { loading: qLoading, data: qData, error: qError } = useQuery<IQuery>(
-    GOOGLE_BOOK,
-    { variables: { googleId } },
-  );
+  const { loading, data, error } = useQuery<IQuery>(GOOGLE_BOOK, {
+    variables: { googleId },
+  });
 
-  if (qError) {
-    return <Error value={qError}></Error>;
+  if (error) {
+    return <Error value={error}></Error>;
   }
-  if (qLoading) {
+  if (loading) {
     return <Loading></Loading>;
   }
 
-  const googleBook = qData && qData.googleBook;
+  const googleBook = data && data.googleBook;
 
   const listingPreview: any = {
     book: googleBook,
