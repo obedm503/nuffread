@@ -57,21 +57,23 @@ const LoginForm = React.memo<{
   type: keyof typeof SystemUserType;
   history: History;
   schema;
-  admin?: boolean;
-}>(({ schema, admin, type, history }) => {
+}>(({ schema, type, history }) => {
   const [mutate, { loading, error }] = useMutation<IMutation>(LOGIN);
   const client = useApolloClient();
 
-  const onSubmit = async ({ email, password }) => {
-    const res = await mutate({
-      variables: { email, password, type },
-    });
-    if (res && res.data && res.data.login) {
-      await client.resetStore();
-      tracker.login({ email: res.data.login.email });
-      history.push('/');
-    }
-  };
+  const onSubmit = React.useCallback(
+    async ({ email, password }) => {
+      const res = await mutate({
+        variables: { email, password, type },
+      });
+      if (res && res.data && res.data.login) {
+        await client.resetStore();
+        tracker.login({ email: res.data.login.email });
+        history.push('/');
+      }
+    },
+    [client, history, mutate, type],
+  );
 
   return (
     <Formik<{ email: string; password: string }>
@@ -137,7 +139,6 @@ export class UserLogin extends React.PureComponent<
                   history={history}
                   type={admin ? 'ADMIN' : 'USER'}
                   schema={admin ? adminSchema : userSchema}
-                  admin={admin}
                 />
               </IonCardContent>
             </IonCard>
