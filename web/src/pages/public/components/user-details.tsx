@@ -53,7 +53,7 @@ export const UserInfo = React.memo<{ user: IUser }>(({ user }) => (
           <IonButtonLink href="#">
             <IonIcon slot="icon-only" size="small" icon={logoFacebook} />
           </IonButtonLink>
-          <IonButtonLink href="#">
+          <IonButtonLink href={`mailto: ${user.email}`}>
             <IonIcon slot="icon-only" size="small" icon={mail} />
           </IonButtonLink>
         </IonButtons>
