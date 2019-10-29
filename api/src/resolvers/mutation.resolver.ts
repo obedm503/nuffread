@@ -59,10 +59,11 @@ const isInvited = (invite?: Invite) => {
 export const MutationResolver: IResolver<IMutation> = {
   async register(
     _,
-    { email, password }: IRegisterOnMutationArguments,
+    { email: emailInput, password }: IRegisterOnMutationArguments,
     { req, me, inviteLoader },
   ): Promise<IUser> {
     ensurePublic(me);
+    const email = emailInput.toLowerCase();
 
     // email already exists
     if (await User.findOne({ where: { email } })) {
@@ -87,7 +88,7 @@ export const MutationResolver: IResolver<IMutation> = {
 
   async login(
     _,
-    { email, password, type }: ILoginOnMutationArguments,
+    { email: emailInput, password, type }: ILoginOnMutationArguments,
     { req },
   ) {
     let Ent: typeof Admin | typeof User;
@@ -99,6 +100,7 @@ export const MutationResolver: IResolver<IMutation> = {
       throw new BadRequest();
     }
 
+    const email = emailInput.toLowerCase();
     const me = await Ent.findOne({ where: { email } });
 
     if (!me) {
@@ -219,11 +221,12 @@ export const MutationResolver: IResolver<IMutation> = {
   },
   async requestInvite(
     _,
-    { email, name }: IRequestInviteOnMutationArguments,
+    { email: emailInput, name }: IRequestInviteOnMutationArguments,
     { me, inviteLoader, req },
   ) {
     ensurePublic(me);
 
+    const email = emailInput.toLowerCase();
     if (await inviteLoader.load(email)) {
       throw new DuplicateInvite();
     }
@@ -243,11 +246,12 @@ export const MutationResolver: IResolver<IMutation> = {
   },
   async sendInvite(
     _,
-    { email }: ISendInviteOnMutationArguments,
+    { email: emailInput }: ISendInviteOnMutationArguments,
     { me, inviteLoader, req },
   ) {
     ensureAdmin(me);
 
+    const email = emailInput.toLowerCase();
     const invite = await inviteLoader.load(email);
     if (!invite) {
       throw new NoInvite();
@@ -265,11 +269,12 @@ export const MutationResolver: IResolver<IMutation> = {
 
   async requestResetPassword(
     _,
-    { email }: IRequestResetPasswordOnMutationArguments,
+    { email: emailInput }: IRequestResetPasswordOnMutationArguments,
     { me },
   ) {
     ensurePublic(me);
 
+    const email = emailInput.toLowerCase();
     const user = await User.findOne({ where: { email } });
     if (!isUser(user)) {
       return true; // email doens't exist, but don't tell the client
