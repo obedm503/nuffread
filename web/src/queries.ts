@@ -19,6 +19,21 @@ export const BASIC_LISTING = gql`
   }
 `;
 
+export const MY_LISTINGS = gql`
+  ${BASIC_LISTING}
+
+  query GetMyListings {
+    me {
+      ... on User {
+        id
+        listings {
+          ...BasicListing
+        }
+      }
+    }
+  }
+`;
+
 export const SEARCH = gql`
   ${BASIC_LISTING}
 

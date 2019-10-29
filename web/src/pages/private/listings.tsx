@@ -20,24 +20,10 @@ import * as React from 'react';
 import { Error, TopNav } from '../../components';
 import { Container } from '../../components/container';
 import { ListingBasic } from '../../components/listing-basic';
-import { BASIC_LISTING } from '../../queries';
+import { MY_LISTINGS } from '../../queries';
 import { IMutation, IQuery } from '../../schema.gql';
 import { CreateListing } from './new';
 
-const MY_LISTINGS = gql`
-  ${BASIC_LISTING}
-
-  query GetMyListings {
-    me {
-      ... on User {
-        id
-        listings {
-          ...BasicListing
-        }
-      }
-    }
-  }
-`;
 const DELETE_LISTING = gql`
   mutation DeleteListing($id: ID!) {
     deleteListing(id: $id)
@@ -75,7 +61,7 @@ const update: (
 };
 
 const useDelete = (id: string) => {
-  const [del, { loading, error }] = useMutation<IMutation>(DELETE_LISTING);
+  const [mutate, { loading, error }] = useMutation<IMutation>(DELETE_LISTING);
   const client = useApolloClient();
 
   if (error) {
@@ -83,7 +69,7 @@ const useDelete = (id: string) => {
   }
 
   return {
-    del: () => del({ variables: { id }, update: update(id, client) }),
+    del: () => mutate({ variables: { id }, update: update(id, client) }),
     loading,
   };
 };
