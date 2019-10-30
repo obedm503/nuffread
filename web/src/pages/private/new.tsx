@@ -34,14 +34,6 @@ import {
 } from '../../schema.gql';
 import { tracker } from '../../state/tracker';
 
-type Props = {
-  books?: IGoogleBook[];
-  loading: boolean;
-  onClick: (book: IGoogleBook) => void;
-  title?: string;
-  activeId?: string;
-};
-
 const Book: React.FC<{ onClick?; book: IGoogleBook; active: boolean }> = ({
   onClick,
   book,
@@ -77,52 +69,12 @@ const Book: React.FC<{ onClick?; book: IGoogleBook; active: boolean }> = ({
   </IonItem>
 );
 
-class Books extends React.PureComponent<Props> {
-  onClick = id => () => {
-    this.props.onClick(id);
-  };
-  render() {
-    const { books, loading, title } = this.props;
-
-    if (loading || !Array.isArray(books)) {
-      return <ListWrapper title={title}>{ListingBasic.loading}</ListWrapper>;
-    }
-
-    if (!books.length) {
-      return (
-        <ListWrapper title={title}>
-          <IonItem color="white">
-            <IonLabel>Found nothing...</IonLabel>
-          </IonItem>
-        </ListWrapper>
-      );
-    }
-
-    return (
-      <ListWrapper title={title}>
-        {books.map(book => {
-          if (!book) {
-            return null;
-          }
-          return (
-            <Book
-              key={book.googleId}
-              onClick={this.onClick(book)}
-              book={book}
-              active={this.props.activeId === book.googleId}
-            />
-          );
-        })}
-      </ListWrapper>
-    );
-  }
-}
-
-const SearchResults: React.FC<{
+const SearchResults = React.memo<{
   onClick: (book: IGoogleBook) => void;
   searchValue: string;
   activeId?: string;
-}> = ({ onClick, searchValue, activeId }) => {
+  isFocused: boolean;
+}>(({ onClick, searchValue, activeId, isFocused }) => {
   const { error, data, loading } = useQuery<IQuery>(SEARCH_GOOGLE, {
     fetchPolicy: 'no-cache',
     variables: { query: searchValue },
@@ -132,36 +84,80 @@ const SearchResults: React.FC<{
     return <Error value={error} />;
   }
 
-  return (
-    <Books
-      loading={loading}
-      onClick={onClick}
-      books={data && data.searchGoogle}
-      title={'Results for: ' + searchValue}
-      activeId={activeId}
-    />
-  );
-};
+  const title = 'Results for: ' + searchValue;
+  const books = data && data.searchGoogle;
 
-const PickBook: React.FC<{
+  if (loading || !Array.isArray(books)) {
+    return <ListWrapper title={title}>{ListingBasic.loading}</ListWrapper>;
+  }
+
+  if (!books.length) {
+    return (
+      <ListWrapper title={title}>
+        <IonItem color="white">
+          <IonLabel>Found nothing...</IonLabel>
+        </IonItem>
+      </ListWrapper>
+    );
+  }
+
+  if (activeId && !isFocused) {
+    const activeBook = books.find(book => book.googleId === activeId);
+    if (!activeBook) {
+      return null;
+    }
+    return (
+      <ListWrapper title={title}>
+        <Book book={activeBook} active />
+      </ListWrapper>
+    );
+  }
+
+  return (
+    <ListWrapper title={title}>
+      {books.map(book => {
+        if (!book) {
+          return null;
+        }
+        return (
+          <Book
+            key={book.googleId}
+            onClick={() => onClick(book)}
+            book={book}
+            active={activeId === book.googleId}
+          />
+        );
+      })}
+    </ListWrapper>
+  );
+});
+
+const PickBook = React.memo<{
   onClick: (book: IGoogleBook) => void;
+  onFocus;
   activeId?: string;
-}> = ({ onClick, activeId }) => {
+  isFocused: boolean;
+}>(({ onClick, onFocus, activeId, isFocused }) => {
   const [searchValue, setSearchValue] = React.useState('');
   return (
     <>
-      <SearchBar onSearch={setSearchValue} searchValue={searchValue} />
+      <SearchBar
+        onSearch={setSearchValue}
+        searchValue={searchValue}
+        onFocus={onFocus}
+      />
 
       {searchValue ? (
         <SearchResults
           onClick={onClick}
           searchValue={searchValue}
           activeId={activeId}
+          isFocused={isFocused}
         />
       ) : null}
     </>
   );
-};
+});
 
 const GOOGLE_BOOK = gql`
   query GoogleBook($googleId: ID!) {
@@ -261,34 +257,44 @@ const useListingState = () => {
     googleId: string;
     price?: number;
     description: string;
+    isFocused: boolean;
   }>({
     searchValue: '',
     googleId: '',
-    description: '',
     price: undefined,
+    description: '',
+    isFocused: false,
   });
+
+  const pickBook = React.useCallback(
+    (book: IGoogleBook) =>
+      set(state => ({ ...state, googleId: book.googleId, isFocused: false })),
+    [set],
+  );
+  const setPrice = React.useCallback(
+    ({ detail }) => {
+      if (detail.value) {
+        set(state => ({ ...state, price: parseFloat(detail.value) * 100 }));
+      }
+    },
+    [set],
+  );
 
   return {
     state,
-    onPickBook: React.useCallback(
-      book => set({ ...state, googleId: book.googleId }),
-      [state, set],
+    pickBook: pickBook,
+    onFocus: React.useCallback(
+      () => set(state => ({ ...state, isFocused: true })),
+      [set],
     ),
-    onPriceChange: React.useCallback(
+    setPrice: setPrice,
+    setDescription: React.useCallback(
       ({ detail }) => {
         if (detail.value) {
-          set({ ...state, price: parseFloat(detail.value) * 100 });
+          set(state => ({ ...state, description: detail.value }));
         }
       },
-      [state, set],
-    ),
-    onDescriptionChange: React.useCallback(
-      ({ detail }) => {
-        if (detail.value) {
-          set({ ...state, description: detail.value });
-        }
-      },
-      [state, set],
+      [set],
     ),
   };
 };
@@ -296,9 +302,10 @@ const useListingState = () => {
 export const CreateListing = React.memo<{ onCancel }>(({ onCancel }) => {
   const {
     state,
-    onPickBook,
-    onDescriptionChange,
-    onPriceChange,
+    pickBook,
+    setDescription,
+    setPrice,
+    onFocus,
   } = useListingState();
   const { create, loading, error, listing } = useCreateListing(state, onCancel);
 
@@ -321,7 +328,12 @@ export const CreateListing = React.memo<{ onCancel }>(({ onCancel }) => {
           </IonCardHeader>
 
           <IonCardContent>
-            <PickBook onClick={onPickBook} activeId={state.googleId} />
+            <PickBook
+              onClick={pickBook}
+              activeId={state.googleId}
+              onFocus={onFocus}
+              isFocused={state.isFocused}
+            />
           </IonCardContent>
         </IonCard>
 
@@ -338,7 +350,7 @@ export const CreateListing = React.memo<{ onCancel }>(({ onCancel }) => {
                 type="number"
                 value={price}
                 debounce={500}
-                onIonChange={onPriceChange}
+                onIonChange={setPrice}
               ></IonInput>
             </IonItem>
 
@@ -347,7 +359,7 @@ export const CreateListing = React.memo<{ onCancel }>(({ onCancel }) => {
               <IonTextarea
                 value={state.description}
                 debounce={500}
-                onIonChange={onDescriptionChange}
+                onIonChange={setDescription}
               ></IonTextarea>
             </IonItem>
           </IonCardContent>

@@ -6,6 +6,7 @@ import { Scanner } from './scanner';
 type SearchBarProps = {
   onSearch: (search: string) => void;
   searchValue?: string;
+  onFocus?: (event: CustomEvent<void>) => void;
 };
 export class SearchBar extends React.PureComponent<SearchBarProps> {
   onChange = (e: CustomEvent<SearchbarChangeEventDetail>) => {
@@ -22,6 +23,7 @@ export class SearchBar extends React.PureComponent<SearchBarProps> {
           value={this.props.searchValue || ''}
           onIonChange={this.onChange}
           debounce={500}
+          onIonFocus={this.props.onFocus}
         />
 
         <IonButtons slot="end">
