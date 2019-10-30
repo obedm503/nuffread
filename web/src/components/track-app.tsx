@@ -44,6 +44,9 @@ export const TrackApp = withRouter(
       let from = loc.pathname + loc.search;
       this.unsub = this.props.history.listen(location => {
         const to = location.pathname + location.search;
+        if (to === from) {
+          return;
+        }
         tracker.event('NAVIGATE', {
           from,
           to,
