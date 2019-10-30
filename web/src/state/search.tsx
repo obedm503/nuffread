@@ -1,5 +1,5 @@
 import { join } from 'path';
-import { useCallback, useState } from 'react';
+import { useCallback } from 'react';
 import { useRouter } from './router';
 
 export const useSearch = () => {
@@ -7,31 +7,21 @@ export const useSearch = () => {
 
   const searchParams = new URLSearchParams(history.location.search);
 
-  // const onSearch = useCallback(
-  //   (searchValue: string | undefined) => {
-  //     let search: string | undefined;
-  //     if (searchValue) {
-  //       const query = new URLSearchParams(location.search);
-  //       query.set('q', searchValue);
-  //       search = query.toString();
-  //     }
-  //     try {
-  //       history.push({
-  //         pathname: location.pathname,
-  //         search,
-  //       });
-  //     } catch (e) {
-  //       console.warn('history error', e);
-  //     }
-  //   },
-  //   [location, history],
-  // );
-  const [searchValue, setSearch] = useState('');
+  const searchValue = searchParams.get('q') || undefined;
   const onSearch = useCallback(
     (value: string | undefined) => {
-      setSearch(value || '');
+      let search: string | undefined;
+      if (value) {
+        const query = new URLSearchParams(location.search);
+        query.set('q', value);
+        search = query.toString();
+      }
+      history.push({
+        pathname: location.pathname,
+        search,
+      });
     },
-    [setSearch],
+    [location, history],
   );
 
   const onClick = useCallback(
@@ -45,7 +35,6 @@ export const useSearch = () => {
   );
 
   return {
-    // searchValue: searchParams.get('q') || undefined,
     searchValue,
     onSearch,
     onClick,
