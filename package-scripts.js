@@ -8,22 +8,6 @@ if (process.env.NODE_ENV !== 'production') {
   });
 }
 
-const buildTypes = series(
-  [
-    'gql2ts',
-    'api/schema.gql',
-    '--ignore-type-name-declaration',
-    '--output-file api/src/schema.gql.ts',
-    `--external-options ${resolve('./gql2tsrc.js')}`,
-  ].join(' '),
-  [
-    'gql2ts',
-    'api/schema.gql',
-    '--output-file web/src/schema.gql.ts',
-    `--external-options ${resolve('./gql2tsrc.js')}`,
-  ].join(' '),
-);
-
 // based on https://stackoverflow.com/a/40178818/4371892
 const push = name =>
   [
@@ -48,17 +32,17 @@ module.exports.scripts = {
       'nps clean',
       concurrent.nps('dev.types', 'dev.web', 'dev.api'),
     ),
-    types: `nodemon --watch "api/schema.gql" --exec "${buildTypes}"`,
+    types: 'graphql-codegen --config codegen.yml --watch',
     web: series('cd web', 'npm run dev'),
     api: series('cd api', 'npm run dev'),
   },
   build: {
     default: series(
       'nps clean',
-      buildTypes,
+      'nps build.types',
       concurrent.nps('build.web', 'build.api'),
     ),
-    types: buildTypes,
+    types: 'graphql-codegen --config codegen.yml',
     web: series('cd web', 'npm run build'),
     api: series('cd api', 'npm run build'),
   },

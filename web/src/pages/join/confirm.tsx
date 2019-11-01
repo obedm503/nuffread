@@ -5,7 +5,7 @@ import * as React from 'react';
 import { RouteComponentProps } from 'react-router';
 import { Link } from 'react-router-dom';
 import { apolloFormErrors } from '../../components/apollo-error';
-import { IConfirmOnMutationArguments, IMutation } from '../../schema.gql';
+import { IMutation, IMutationConfirmArgs } from '../../schema.gql';
 import { useRouter } from '../../state/router';
 
 const Errors = apolloFormErrors({
@@ -28,7 +28,7 @@ const ConfirmEmail = React.memo<{
   const { history } = useRouter();
   const [mutate, { error, called }] = useMutation<
     IMutation,
-    IConfirmOnMutationArguments
+    IMutationConfirmArgs
   >(CONFIRM_EMAIL, {
     onCompleted: data => {
       if (data && data.confirm) {

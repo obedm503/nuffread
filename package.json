@@ -23,10 +23,9 @@
     "nps-utils": "^1.5.0"
   },
   "devDependencies": {
-    "@gql2ts/types": "^1.9.0",
-    "gql2ts": "^1.7.1",
-    "husky": "^3.0.5",
-    "nodemon": "^1.19.1"
+    "@graphql-codegen/cli": "^1.8.2",
+    "@graphql-codegen/typescript": "1.8.2",
+    "husky": "^3.0.5"
   },
   "resolutions": {
     "graphql": "14.5.8"

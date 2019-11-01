@@ -31,6 +31,8 @@ import {
   IListingInput,
   IMutation,
   IQuery,
+  IQueryGoogleBookArgs,
+  IQuerySearchGoogleArgs,
 } from '../../schema.gql';
 import { tracker } from '../../state/tracker';
 
@@ -46,7 +48,7 @@ const Book: React.FC<{ onClick?; book: IGoogleBook; active: boolean }> = ({
   >
     <IonThumbnail slot="start" style={{ '--size': '100%' }}>
       <SafeImg
-        src={book.thumbnail}
+        src={book.thumbnail || undefined}
         alt={book.title}
         placeholder="/img/book.png"
       />
@@ -75,10 +77,10 @@ const SearchResults = React.memo<{
   activeId?: string;
   isFocused: boolean;
 }>(({ onClick, searchValue, activeId, isFocused }) => {
-  const { error, data, loading } = useQuery<IQuery>(SEARCH_GOOGLE, {
-    fetchPolicy: 'no-cache',
-    variables: { query: searchValue },
-  });
+  const { error, data, loading } = useQuery<IQuery, IQuerySearchGoogleArgs>(
+    SEARCH_GOOGLE,
+    { fetchPolicy: 'no-cache', variables: { query: searchValue } },
+  );
 
   if (error) {
     return <Error value={error} />;
@@ -160,8 +162,8 @@ const PickBook = React.memo<{
 });
 
 const GOOGLE_BOOK = gql`
-  query GoogleBook($googleId: ID!) {
-    googleBook(id: $googleId) {
+  query GoogleBook($id: ID!) {
+    googleBook(id: $id) {
       etag
       googleId
       authors
@@ -228,9 +230,10 @@ const PreviewListing: React.FC<{
   price: number;
   description: string;
 }> = ({ googleId, price, description }) => {
-  const { loading, data, error } = useQuery<IQuery>(GOOGLE_BOOK, {
-    variables: { googleId },
-  });
+  const { loading, data, error } = useQuery<IQuery, IQueryGoogleBookArgs>(
+    GOOGLE_BOOK,
+    { variables: { id: googleId } },
+  );
 
   if (error) {
     return <Error value={error}></Error>;

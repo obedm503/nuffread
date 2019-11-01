@@ -1,0 +1,24 @@
+overwrite: true
+schema: 'api/schema.gql'
+config:
+  typesPrefix: I
+  enumPrefix: false
+  nonOptionalTypename: true
+
+generates:
+  web/src/schema.gql.ts:
+    plugins:
+      - 'typescript'
+    config:
+      immutableTypes: true
+      scalars:
+        Date: string
+  api/src/schema.gql.ts:
+    plugins:
+      - 'typescript'
+    config:
+      maybeValue: T
+      skipTypename: true
+      immutableTypes: false
+      scalars:
+        Date: Date

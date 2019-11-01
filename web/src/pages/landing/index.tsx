@@ -28,7 +28,7 @@ import {
   TopNav,
 } from '../../components';
 import { apolloFormErrors } from '../../components/apollo-error';
-import { IMutation } from '../../schema.gql';
+import { IMutation, IMutationRequestInviteArgs } from '../../schema.gql';
 import { tracker } from '../../state/tracker';
 import { studentEmailSchema } from '../../util';
 
@@ -53,9 +53,10 @@ const Errors = apolloFormErrors({
 });
 
 const RequestInvite: React.FC = () => {
-  const [mutate, { error, data, loading }] = useMutation<IMutation>(
-    REQUEST_INVITE,
-  );
+  const [mutate, { error, data, loading }] = useMutation<
+    IMutation,
+    IMutationRequestInviteArgs
+  >(REQUEST_INVITE);
 
   if (data && data.requestInvite) {
     return (

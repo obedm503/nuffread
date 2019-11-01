@@ -1,22 +1,18 @@
 import { getConnection } from 'typeorm';
 import { Invite, Listing } from '../entities';
 import {
-  IGoogleBookOnQueryArguments,
-  IListingOnQueryArguments,
   IQuery,
-  ISearchGoogleOnQueryArguments,
-  ISearchOnQueryArguments,
+  IQueryGoogleBookArgs,
+  IQueryListingArgs,
+  IQuerySearchArgs,
+  IQuerySearchGoogleArgs,
 } from '../schema.gql';
 import { ensureAdmin, ensureUser } from '../util/auth';
 import { getBook, searchBooks } from '../util/google-books';
 import { IResolver } from '../util/types';
 
 export const QueryResolver: IResolver<IQuery> = {
-  async search(
-    _,
-    { query, maxPrice, minPrice }: ISearchOnQueryArguments,
-    { me },
-  ) {
+  async search(_, { query, maxPrice, minPrice }: IQuerySearchArgs, { me }) {
     const segments =
       query &&
       query
@@ -81,11 +77,11 @@ export const QueryResolver: IResolver<IQuery> = {
     return me;
   },
 
-  listing(_, { id }: IListingOnQueryArguments, { listingLoader }) {
+  listing(_, { id }: IQueryListingArgs, { listingLoader }) {
     return listingLoader.load(id);
   },
 
-  async searchGoogle(_, { query }: ISearchGoogleOnQueryArguments, { me }) {
+  async searchGoogle(_, { query }: IQuerySearchGoogleArgs, { me }) {
     ensureUser(me);
 
     if (!query) {
@@ -93,7 +89,7 @@ export const QueryResolver: IResolver<IQuery> = {
     }
     return await searchBooks(query);
   },
-  async googleBook(_, { id }: IGoogleBookOnQueryArguments, { me }) {
+  async googleBook(_, { id }: IQueryGoogleBookArgs, { me }) {
     ensureUser(me);
 
     const book = await getBook(id);

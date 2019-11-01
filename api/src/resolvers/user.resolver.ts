@@ -1,5 +1,5 @@
 import { Admin, Listing, User } from '../entities';
-import { IUser, SystemUser } from '../schema.gql';
+import { ISystemUser, IUser } from '../schema.gql';
 import { ensureAdmin, ensureUser } from '../util/auth';
 import { getSchoolName } from '../util/schools';
 import { IResolver } from '../util/types';
@@ -26,7 +26,7 @@ export const UserResolver: IResolver<IUser, User> = {
   },
 };
 
-export const SystemUserResolver: IResolver<SystemUser, Admin | User> = {
+export const SystemUserResolver: IResolver<ISystemUser, Admin | User> = {
   __resolveType(me) {
     if (me instanceof User) {
       return 'User';

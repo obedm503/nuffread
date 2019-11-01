@@ -21,7 +21,11 @@ import { Error, TopNav } from '../../components';
 import { Container } from '../../components/container';
 import { ListingBasic } from '../../components/listing-basic';
 import { MY_LISTINGS } from '../../queries';
-import { IMutation, IQuery } from '../../schema.gql';
+import {
+  IMutation,
+  IMutationDeleteListingArgs,
+  IQuery,
+} from '../../schema.gql';
 import { CreateListing } from './new';
 
 const DELETE_LISTING = gql`
@@ -61,7 +65,10 @@ const update: (
 };
 
 const useDelete = (id: string) => {
-  const [mutate, { loading, error }] = useMutation<IMutation>(DELETE_LISTING);
+  const [mutate, { loading, error }] = useMutation<
+    IMutation,
+    IMutationDeleteListingArgs
+  >(DELETE_LISTING);
   const client = useApolloClient();
 
   if (error) {

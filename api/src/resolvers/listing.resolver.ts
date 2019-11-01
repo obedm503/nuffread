@@ -1,5 +1,5 @@
 import { Listing } from '../entities';
-import { IListing, IUser } from '../schema.gql';
+import { IListing } from '../schema.gql';
 import { ensureUser } from '../util/auth';
 import { IResolver } from '../util/types';
 
@@ -8,9 +8,9 @@ export const ListingResolver: IResolver<IListing, Listing> = {
     ensureUser(me);
     return userId;
   },
-  async user({ userId, user }, args, { userLoader, me }): Promise<IUser> {
+  async user({ userId, user }, args, { userLoader, me }) {
     ensureUser(me);
-    return (user || (await userLoader.load(userId))) as any;
+    return user || (await userLoader.load(userId));
   },
   async book({ bookId, book }, args, { bookLoader }) {
     return book || (await bookLoader.load(bookId));

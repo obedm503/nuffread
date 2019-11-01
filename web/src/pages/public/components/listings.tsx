@@ -4,7 +4,7 @@ import { ListWrapper } from '../../../components/list-wrapper';
 import { IListing } from '../../../schema.gql';
 
 type Props = {
-  listings?: IListing[];
+  listings?: readonly IListing[];
   loading: boolean;
   onClick;
   title?: string;

@@ -18,7 +18,12 @@ import { send } from 'ionicons/icons';
 import groupBy from 'lodash/groupBy';
 import React, { FC } from 'react';
 import { Error, Loading } from '../../components';
-import { IInvite, IMutation, IQuery } from '../../schema.gql';
+import {
+  IInvite,
+  IMutation,
+  IMutationSendInviteArgs,
+  IQuery,
+} from '../../schema.gql';
 
 const INVITES = gql`
   query GetInvites {
@@ -79,9 +84,10 @@ const SignedUp: FC<{ invites: IInvite[]; refetch }> = ({
   invites,
   refetch,
 }) => {
-  const [sendConfirmation, { loading, error }] = useMutation<IMutation>(
-    SEND_INVITE,
-  );
+  const [sendConfirmation, { loading, error }] = useMutation<
+    IMutation,
+    IMutationSendInviteArgs
+  >(SEND_INVITE);
 
   if (error) {
     return <Error value={error}></Error>;
@@ -115,7 +121,7 @@ export default () => {
   const [
     sendInvite,
     { loading: loadingEmail, error: errorEmail },
-  ] = useMutation<IMutation>(SEND_INVITE);
+  ] = useMutation<IMutation, IMutationSendInviteArgs>(SEND_INVITE);
 
   if (loadingInvites) {
     return <Loading></Loading>;

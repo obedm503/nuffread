@@ -3,16 +3,16 @@ import { getConnection } from 'typeorm';
 import { CONFIG } from '../config';
 import { Admin, Book, Invite, Listing, User } from '../entities';
 import {
-  IConfirmOnMutationArguments,
-  ICreateListingOnMutationArguments,
-  IDeleteListingOnMutationArguments,
-  ILoginOnMutationArguments,
   IMutation,
-  IRegisterOnMutationArguments,
-  IRequestInviteOnMutationArguments,
-  IRequestResetPasswordOnMutationArguments,
-  IResetPasswordOnMutationArguments,
-  ISendInviteOnMutationArguments,
+  IMutationConfirmArgs,
+  IMutationCreateListingArgs,
+  IMutationDeleteListingArgs,
+  IMutationLoginArgs,
+  IMutationRegisterArgs,
+  IMutationRequestInviteArgs,
+  IMutationRequestResetPasswordArgs,
+  IMutationResetPasswordArgs,
+  IMutationSendInviteArgs,
   IUser,
 } from '../schema.gql';
 import { jwt, logger } from '../util';
@@ -59,7 +59,7 @@ const isInvited = (invite?: Invite) => {
 export const MutationResolver: IResolver<IMutation> = {
   async register(
     _,
-    { email: emailInput, password }: IRegisterOnMutationArguments,
+    { email: emailInput, password }: IMutationRegisterArgs,
     { req, me, inviteLoader },
   ): Promise<IUser> {
     ensurePublic(me);
@@ -88,7 +88,7 @@ export const MutationResolver: IResolver<IMutation> = {
 
   async login(
     _,
-    { email: emailInput, password, type }: ILoginOnMutationArguments,
+    { email: emailInput, password, type }: IMutationLoginArgs,
     { req },
   ) {
     let Ent: typeof Admin | typeof User;
@@ -130,7 +130,7 @@ export const MutationResolver: IResolver<IMutation> = {
 
     return true;
   },
-  async confirm(_, { code }: IConfirmOnMutationArguments, { me }) {
+  async confirm(_, { code }: IMutationConfirmArgs, { me }) {
     ensurePublic(me);
 
     return await getConnection().transaction(async manager => {
@@ -174,9 +174,7 @@ export const MutationResolver: IResolver<IMutation> = {
   // },
   async createListing(
     _,
-    {
-      listing: { googleId, price, description },
-    }: ICreateListingOnMutationArguments,
+    { listing: { googleId, price, description } }: IMutationCreateListingArgs,
     { me },
   ) {
     ensureUser(me);
@@ -203,7 +201,7 @@ export const MutationResolver: IResolver<IMutation> = {
   },
   async deleteListing(
     _,
-    { id }: IDeleteListingOnMutationArguments,
+    { id }: IMutationDeleteListingArgs,
     { me, listingLoader },
   ) {
     if (!ensureUser(me)) {
@@ -221,7 +219,7 @@ export const MutationResolver: IResolver<IMutation> = {
   },
   async requestInvite(
     _,
-    { email: emailInput, name }: IRequestInviteOnMutationArguments,
+    { email: emailInput, name }: IMutationRequestInviteArgs,
     { me, inviteLoader, req },
   ) {
     ensurePublic(me);
@@ -246,7 +244,7 @@ export const MutationResolver: IResolver<IMutation> = {
   },
   async sendInvite(
     _,
-    { email: emailInput }: ISendInviteOnMutationArguments,
+    { email: emailInput }: IMutationSendInviteArgs,
     { me, inviteLoader, req },
   ) {
     ensureAdmin(me);
@@ -269,7 +267,7 @@ export const MutationResolver: IResolver<IMutation> = {
 
   async requestResetPassword(
     _,
-    { email: emailInput }: IRequestResetPasswordOnMutationArguments,
+    { email: emailInput }: IMutationRequestResetPasswordArgs,
     { me },
   ) {
     ensurePublic(me);
@@ -300,7 +298,7 @@ export const MutationResolver: IResolver<IMutation> = {
   },
   async resetPassword(
     _,
-    { token, password }: IResetPasswordOnMutationArguments,
+    { token, password }: IMutationResetPasswordArgs,
     { me },
   ) {
     ensurePublic(me);

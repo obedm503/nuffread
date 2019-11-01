@@ -13,54 +13,57 @@ import * as React from 'react';
 import { Link } from 'react-router-dom';
 import { Error, IonButtonLink } from '../../../components';
 import { SafeImg } from '../../../components/safe-img';
-import { IQuery, IUser } from '../../../schema.gql';
+import { IQuery, IQueryListingArgs, IUser } from '../../../schema.gql';
 import { useUser } from '../../../state/user';
 
-export const UserInfo = React.memo<{ user: IUser }>(({ user }) => (
-  <IonCard color="white">
-    <IonItem lines="none">
-      <SafeImg
-        style={{ fontSize: '8rem', color: 'var(--ion-color-contrast)' }}
-        slot="start"
-        src={user.photo}
-        alt={user.name}
-        placeholder={person}
-      ></SafeImg>
+export const UserInfo = React.memo<{ user: IUser }>(({ user }) => {
+  const name = user.name || user.email;
+  return (
+    <IonCard color="white">
+      <IonItem lines="none">
+        <SafeImg
+          style={{ fontSize: '8rem', color: 'var(--ion-color-contrast)' }}
+          slot="start"
+          src={user.photo || undefined}
+          alt={name}
+          placeholder={person}
+        ></SafeImg>
 
-      <IonLabel>
-        <p>
-          <strong>{user.name}</strong>
-          {user.schoolName ? (
-            <>
-              <br />
-              <small>{user.schoolName}</small>
-            </>
-          ) : null}
-          <br />
-          <small>
-            <a href={`mailto: ${user.email}`}>{user.email}</a>
-          </small>
-          {/* <br />
+        <IonLabel>
+          <p>
+            <strong>{name}</strong>
+            {user.schoolName ? (
+              <>
+                <br />
+                <small>{user.schoolName}</small>
+              </>
+            ) : null}
+            <br />
+            <small>
+              <a href={`mailto: ${user.email}`}>{user.email}</a>
+            </small>
+            {/* <br />
           <small>
             <a href="tel: +123456789">+123456789</a>
           </small> */}
-        </p>
+          </p>
 
-        <IonButtons>
-          <IonButtonLink href="#">
-            <IonIcon slot="icon-only" size="small" icon={call} />
-          </IonButtonLink>
-          <IonButtonLink href="#">
-            <IonIcon slot="icon-only" size="small" icon={logoFacebook} />
-          </IonButtonLink>
-          <IonButtonLink href={`mailto: ${user.email}`}>
-            <IonIcon slot="icon-only" size="small" icon={mail} />
-          </IonButtonLink>
-        </IonButtons>
-      </IonLabel>
-    </IonItem>
-  </IonCard>
-));
+          <IonButtons>
+            <IonButtonLink href="#">
+              <IonIcon slot="icon-only" size="small" icon={call} />
+            </IonButtonLink>
+            <IonButtonLink href="#">
+              <IonIcon slot="icon-only" size="small" icon={logoFacebook} />
+            </IonButtonLink>
+            <IonButtonLink href={`mailto: ${user.email}`}>
+              <IonIcon slot="icon-only" size="small" icon={mail} />
+            </IonButtonLink>
+          </IonButtons>
+        </IonLabel>
+      </IonItem>
+    </IonCard>
+  );
+});
 
 const userHidden = (
   <IonCard color="white">
@@ -100,7 +103,7 @@ const userLoading = (
 );
 
 const GET_LISTING_SELLER = gql`
-  query GetListing($id: ID!) {
+  query GetListingSeller($id: ID!) {
     listing(id: $id) {
       id
       user {
@@ -113,9 +116,10 @@ const GET_LISTING_SELLER = gql`
   }
 `;
 const ListingUser = ({ listingId }) => {
-  const { loading, error, data } = useQuery<IQuery>(GET_LISTING_SELLER, {
-    variables: { id: listingId },
-  });
+  const { loading, error, data } = useQuery<IQuery, IQueryListingArgs>(
+    GET_LISTING_SELLER,
+    { variables: { id: listingId } },
+  );
   if (loading) {
     return userLoading;
   }

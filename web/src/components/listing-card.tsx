@@ -40,7 +40,7 @@ export const ListingCard: React.FC<{
 
     <IonCardContent>
       <SafeImg
-        src={listing.book.thumbnail}
+        src={listing.book.thumbnail || undefined}
         alt={[listing.book.title, listing.book.subTitle].join(' ')}
         placeholder="/img/book.png"
         style={{

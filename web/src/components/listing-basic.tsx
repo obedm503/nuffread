@@ -11,7 +11,7 @@ export const ListingBasic: React.FC<{
 }> & { loading } = ({ onClick, listing, disabled = false }) => (
   <IonItem button={!!onClick} onClick={onClick} disabled={disabled}>
     <SafeImg
-      src={listing.book.thumbnail}
+      src={listing.book.thumbnail || undefined}
       alt={listing.book.title}
       placeholder="/img/book.png"
       slot="start"

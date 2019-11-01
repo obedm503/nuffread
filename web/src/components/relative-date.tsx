@@ -1,8 +1,9 @@
 import { differenceInDays, formatDistanceToNow } from 'date-fns';
 import upperFirst from 'lodash/upperFirst';
 import React, { FC } from 'react';
+import { Scalars } from '../schema.gql';
 
-export const RelativeDate: FC<{ date?: Date }> = ({ date }) => {
+export const RelativeDate: FC<{ date?: Scalars['Date'] }> = ({ date }) => {
   if (!date) {
     return null;
   }

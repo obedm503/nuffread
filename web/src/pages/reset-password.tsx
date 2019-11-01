@@ -28,7 +28,7 @@ import {
   Routes,
   TopNav,
 } from '../components';
-import { IMutation } from '../schema.gql';
+import { IMutation, IMutationRequestResetPasswordArgs } from '../schema.gql';
 import { useRouter } from '../state/router';
 import { tracker } from '../state/tracker';
 import { emailSchema, strongPasswordSchema } from '../util';
@@ -62,9 +62,10 @@ const REQUEST_RESET = gql`
 `;
 const requestSchema = object().shape({ email: emailSchema });
 const RequestResetForm: FC = () => {
-  const [mutate, { loading, error, data }] = useMutation<IMutation>(
-    REQUEST_RESET,
-  );
+  const [mutate, { loading, error, data }] = useMutation<
+    IMutation,
+    IMutationRequestResetPasswordArgs
+  >(REQUEST_RESET);
 
   const onSubmit = useCallback(
     async ({ email }) => {

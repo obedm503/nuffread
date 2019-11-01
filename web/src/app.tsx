@@ -16,7 +16,7 @@ import Landing from './pages/landing';
 import { AdminLogin, UserLogin } from './pages/login';
 import Private from './pages/private';
 import ResetPassword from './pages/reset-password';
-import { IQuery, SystemUser } from './schema.gql';
+import { IQuery, ISystemUser } from './schema.gql';
 import { IsDesktopProvider } from './state/desktop';
 import { tracker } from './state/tracker';
 import { UserProvider } from './state/user';
@@ -74,7 +74,7 @@ const Admin = makeLazy(() => import('./pages/admin'));
 const Public = makeLazy(() => import('./pages/public'));
 
 const isReady = process.env.REACT_APP_MODE === 'ready';
-const homePage = (user?: SystemUser) => {
+const homePage = (user?: ISystemUser) => {
   if (!user) {
     return isReady ? Public : Landing;
   }
@@ -84,7 +84,7 @@ const homePage = (user?: SystemUser) => {
   return Private;
 };
 
-const makeRoutes = memoize((user?: SystemUser): RouteProps[] => {
+const makeRoutes = memoize((user?: ISystemUser): RouteProps[] => {
   const routes: RouteProps[] = [];
 
   if (user) {
@@ -113,7 +113,7 @@ export const App = () => {
     return <Error value={error} />;
   }
 
-  const me = data && data.me;
+  const me = (data && data.me) || undefined;
   const routes = makeRoutes(me);
   return (
     <IsDesktopProvider>

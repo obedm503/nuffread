@@ -23,7 +23,7 @@ import { object } from 'yup';
 import { Email, IonSubmit, Password, TopNav } from '../components';
 import { apolloFormErrors } from '../components/apollo-error';
 import { Container } from '../components/container';
-import { IMutation, SystemUserType } from '../schema.gql';
+import { IMutation, IMutationLoginArgs, SystemUserType } from '../schema.gql';
 import { tracker } from '../state/tracker';
 import { emailSchema, passwordSchema } from '../util';
 
@@ -54,11 +54,14 @@ const Errors = apolloFormErrors({
 });
 
 const LoginForm = React.memo<{
-  type: keyof typeof SystemUserType;
+  type: SystemUserType;
   history: History;
   schema;
 }>(({ schema, type, history }) => {
-  const [mutate, { loading, error }] = useMutation<IMutation>(LOGIN);
+  const [mutate, { loading, error }] = useMutation<
+    IMutation,
+    IMutationLoginArgs
+  >(LOGIN);
   const client = useApolloClient();
 
   const onSubmit = React.useCallback(
@@ -137,7 +140,7 @@ export class UserLogin extends React.PureComponent<
               <IonCardContent>
                 <LoginForm
                   history={history}
-                  type={admin ? 'ADMIN' : 'USER'}
+                  type={admin ? SystemUserType.Admin : SystemUserType.User}
                   schema={admin ? adminSchema : userSchema}
                 />
               </IonCardContent>
