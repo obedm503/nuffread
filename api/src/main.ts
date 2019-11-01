@@ -56,11 +56,8 @@ const port = Number(process.env.PORT) || 8081;
 
 const apollo = new ApolloServer({
   context: ({ req, res }) => {
-    const { operationName, variables, query } = req.body;
-    logger.info({
-      operationName,
-      variables,
-    });
+    const { operationName, query } = req.body;
+    logger.info({ operationName });
     logger.debug(query);
 
     return getContext({ req, res });
