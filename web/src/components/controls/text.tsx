@@ -20,9 +20,8 @@ export const Text: React.FC<Props> = ({
 }) => {
   const controlProps: ControlProps = { error, label, name };
   return (
-    <Field
-      name={name}
-      render={({ field, form }: FieldProps) => {
+    <Field name={name}>
+      {({ field, form }: FieldProps) => {
         // use custom handlers to use ionic's events
         const onBlur = (e: CustomEvent) => {
           const ionInput = getTarget(e);
@@ -53,6 +52,6 @@ export const Text: React.FC<Props> = ({
           </Control>
         );
       }}
-    />
+    </Field>
   );
 };
