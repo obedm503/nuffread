@@ -1,29 +1,11 @@
 // @ts-check
-const { resolve } = require('path');
-const { concurrent, series, rimraf, copy } = require('nps-utils');
+const { concurrent, series, rimraf } = require('nps-utils');
 
 if (process.env.NODE_ENV !== 'production') {
   require('dotenv').load({
     path: './api/.env',
   });
 }
-
-// based on https://stackoverflow.com/a/40178818/4371892
-const push = name =>
-  [
-    `git push https://git.heroku.com/nuffread-${name}-staging.git`,
-    `\`git subtree split --prefix ${name} $(git branch | grep \\* | cut -d ' ' -f2)\`:refs/heads/master`,
-    '--force',
-  ].join(' ');
-const deploy = series(
-  'sed -i /dist/d .gitignore',
-  'git add .',
-  'git commit -m "Edit .gitignore to publish"',
-  push('web'),
-  push('api'),
-  'git reset HEAD~',
-  'git checkout .gitignore',
-);
 
 module.exports.scripts = {
   default: 'nps dev',
@@ -46,7 +28,6 @@ module.exports.scripts = {
     web: series('cd web', 'npm run build'),
     api: series('cd api', 'npm run build'),
   },
-  deploy,
   clean: rimraf('.cache web/build api/dist'),
   start: {
     default: concurrent.nps('start.api', 'start.web'),
