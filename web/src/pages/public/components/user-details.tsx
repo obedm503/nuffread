@@ -1,4 +1,3 @@
-import { useQuery } from '@apollo/react-hooks';
 import {
   IonButtons,
   IonCard,
@@ -13,7 +12,8 @@ import * as React from 'react';
 import { Link } from 'react-router-dom';
 import { Error, IonButtonLink } from '../../../components';
 import { SafeImg } from '../../../components/safe-img';
-import { IQuery, IQueryListingArgs, IUser } from '../../../schema.gql';
+import { IQueryListingArgs, IUser } from '../../../schema.gql';
+import { useQuery } from '../../../state/apollo';
 import { useUser } from '../../../state/user';
 
 export const UserInfo = React.memo<{ user: IUser }>(({ user }) => {
@@ -116,7 +116,7 @@ const GET_LISTING_SELLER = gql`
   }
 `;
 const ListingUser = ({ listingId }) => {
-  const { loading, error, data } = useQuery<IQuery, IQueryListingArgs>(
+  const { loading, error, data } = useQuery<IQueryListingArgs>(
     GET_LISTING_SELLER,
     { variables: { id: listingId } },
   );

@@ -1,4 +1,3 @@
-import { useQuery } from '@apollo/react-hooks';
 import {
   InMemoryCache,
   IntrospectionFragmentMatcher,
@@ -16,7 +15,8 @@ import Landing from './pages/landing';
 import { AdminLogin, UserLogin } from './pages/login';
 import Private from './pages/private';
 import ResetPassword from './pages/reset-password';
-import { IQuery, ISystemUser } from './schema.gql';
+import { ISystemUser } from './schema.gql';
+import { useQuery } from './state/apollo';
 import { IsDesktopProvider } from './state/desktop';
 import { tracker } from './state/tracker';
 import { UserProvider } from './state/user';
@@ -103,7 +103,7 @@ const makeRoutes = memoize((user?: ISystemUser): RouteProps[] => {
 });
 
 export const App = () => {
-  const { loading, data, error } = useQuery<IQuery>(ME);
+  const { loading, data, error } = useQuery(ME);
 
   if (loading) {
     const Home = homePage();

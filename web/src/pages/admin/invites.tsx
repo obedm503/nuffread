@@ -1,4 +1,3 @@
-import { useMutation, useQuery } from '@apollo/react-hooks';
 import {
   IonCard,
   IonCardHeader,
@@ -18,12 +17,8 @@ import { send } from 'ionicons/icons';
 import groupBy from 'lodash/groupBy';
 import React, { FC } from 'react';
 import { Error, Loading } from '../../components';
-import {
-  IInvite,
-  IMutation,
-  IMutationSendInviteArgs,
-  IQuery,
-} from '../../schema.gql';
+import { IInvite, IMutationSendInviteArgs } from '../../schema.gql';
+import { useMutation, useQuery } from '../../state/apollo';
 
 const INVITES = gql`
   query GetInvites {
@@ -85,7 +80,6 @@ const SignedUp: FC<{ invites: IInvite[]; refetch }> = ({
   refetch,
 }) => {
   const [sendConfirmation, { loading, error }] = useMutation<
-    IMutation,
     IMutationSendInviteArgs
   >(SEND_INVITE);
 
@@ -117,11 +111,11 @@ export default () => {
     error: errorInvites,
     data,
     refetch,
-  } = useQuery<IQuery>(INVITES, { pollInterval: 60000 });
+  } = useQuery(INVITES, { pollInterval: 60000 });
   const [
     sendInvite,
     { loading: loadingEmail, error: errorEmail },
-  ] = useMutation<IMutation, IMutationSendInviteArgs>(SEND_INVITE);
+  ] = useMutation<IMutationSendInviteArgs>(SEND_INVITE);
 
   if (loadingInvites) {
     return <Loading></Loading>;

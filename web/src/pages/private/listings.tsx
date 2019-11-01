@@ -1,5 +1,5 @@
 import { QueryResult } from '@apollo/react-common';
-import { useApolloClient, useMutation, useQuery } from '@apollo/react-hooks';
+import { useApolloClient } from '@apollo/react-hooks';
 import { RefresherEventDetail } from '@ionic/core';
 import {
   IonButton,
@@ -26,6 +26,7 @@ import {
   IMutationDeleteListingArgs,
   IQuery,
 } from '../../schema.gql';
+import { useMutation, useQuery } from '../../state/apollo';
 import { CreateListing } from './new';
 
 const DELETE_LISTING = gql`
@@ -65,10 +66,9 @@ const update: (
 };
 
 const useDelete = (id: string) => {
-  const [mutate, { loading, error }] = useMutation<
-    IMutation,
-    IMutationDeleteListingArgs
-  >(DELETE_LISTING);
+  const [mutate, { loading, error }] = useMutation<IMutationDeleteListingArgs>(
+    DELETE_LISTING,
+  );
   const client = useApolloClient();
 
   if (error) {
@@ -137,7 +137,7 @@ const Listings: React.FC<
 
 export const MyListings: React.FC = () => {
   const [showModal, setShowModal] = React.useState(false);
-  const { loading, error, data, refetch } = useQuery<IQuery>(MY_LISTINGS);
+  const { loading, error, data, refetch } = useQuery(MY_LISTINGS);
 
   const onRefresh = async (event: CustomEvent<RefresherEventDetail>) => {
     await refetch();

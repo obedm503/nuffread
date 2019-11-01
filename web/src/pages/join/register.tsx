@@ -1,4 +1,3 @@
-import { useMutation } from '@apollo/react-hooks';
 import {
   IonCard,
   IonCardContent,
@@ -20,6 +19,7 @@ import { object } from 'yup';
 import { Email, IonSubmit, Password } from '../../components';
 import { apolloFormErrors } from '../../components/apollo-error';
 import { IMutation, IMutationRegisterArgs } from '../../schema.gql';
+import { useMutation } from '../../state/apollo';
 import { tracker } from '../../state/tracker';
 import { strongPasswordSchema, studentEmailSchema } from '../../util';
 
@@ -61,12 +61,10 @@ const onRegister = (data: IMutation) => {
   tracker.register({ email: data.register.email });
 };
 const RegisterForm: React.FC = () => {
-  const [mutate, { error, data, loading }] = useMutation<
-    IMutation,
-    IMutationRegisterArgs
-  >(REGISTER, {
-    onCompleted: onRegister,
-  });
+  const [mutate, { error, data, loading }] = useMutation<IMutationRegisterArgs>(
+    REGISTER,
+    { onCompleted: onRegister },
+  );
 
   if (data && data.register) {
     return <RegisterSuccess />;

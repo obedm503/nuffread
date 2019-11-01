@@ -1,9 +1,9 @@
-import { useMutation } from '@apollo/react-hooks';
 import { IonButton, IonIcon, IonItem, IonLabel } from '@ionic/react';
 import gql from 'graphql-tag';
 import { logOut } from 'ionicons/icons';
 import * as React from 'react';
 import { IMutation } from '../schema.gql';
+import { useMutation } from '../state/apollo';
 import { tracker } from '../state/tracker';
 
 const LOGOUT = gql`
@@ -20,7 +20,7 @@ const onCompleted = (data: IMutation) => {
   }
 };
 const useLogout = () => {
-  const [mutate] = useMutation<IMutation>(LOGOUT, { onCompleted });
+  const [mutate] = useMutation(LOGOUT, { onCompleted });
   return () => mutate();
 };
 

@@ -1,11 +1,11 @@
-import { useMutation } from '@apollo/react-hooks';
 import { IonCard, IonCardContent, IonCol, IonGrid, IonRow } from '@ionic/react';
 import gql from 'graphql-tag';
 import * as React from 'react';
 import { RouteComponentProps } from 'react-router';
 import { Link } from 'react-router-dom';
 import { apolloFormErrors } from '../../components/apollo-error';
-import { IMutation, IMutationConfirmArgs } from '../../schema.gql';
+import { IMutationConfirmArgs } from '../../schema.gql';
+import { useMutation } from '../../state/apollo';
 import { useRouter } from '../../state/router';
 
 const Errors = apolloFormErrors({
@@ -26,16 +26,16 @@ const ConfirmEmail = React.memo<{
   code: string;
 }>(({ code }) => {
   const { history } = useRouter();
-  const [mutate, { error, called }] = useMutation<
-    IMutation,
-    IMutationConfirmArgs
-  >(CONFIRM_EMAIL, {
-    onCompleted: data => {
-      if (data && data.confirm) {
-        history.push('/login');
-      }
+  const [mutate, { error, called }] = useMutation<IMutationConfirmArgs>(
+    CONFIRM_EMAIL,
+    {
+      onCompleted: data => {
+        if (data && data.confirm) {
+          history.push('/login');
+        }
+      },
     },
-  });
+  );
 
   if (error) {
     return <Errors error={error}></Errors>;

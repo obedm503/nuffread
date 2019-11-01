@@ -1,4 +1,4 @@
-import { useApolloClient, useMutation, useQuery } from '@apollo/react-hooks';
+import { useApolloClient } from '@apollo/react-hooks';
 import {
   IonButton,
   IonButtons,
@@ -34,6 +34,7 @@ import {
   IQueryGoogleBookArgs,
   IQuerySearchGoogleArgs,
 } from '../../schema.gql';
+import { useMutation, useQuery } from '../../state/apollo';
 import { tracker } from '../../state/tracker';
 
 const Book: React.FC<{ onClick?; book: IGoogleBook; active: boolean }> = ({
@@ -77,7 +78,7 @@ const SearchResults = React.memo<{
   activeId?: string;
   isFocused: boolean;
 }>(({ onClick, searchValue, activeId, isFocused }) => {
-  const { error, data, loading } = useQuery<IQuery, IQuerySearchGoogleArgs>(
+  const { error, data, loading } = useQuery<IQuerySearchGoogleArgs>(
     SEARCH_GOOGLE,
     { fetchPolicy: 'no-cache', variables: { query: searchValue } },
   );
@@ -179,41 +180,41 @@ const GOOGLE_BOOK = gql`
 const onCompleted = ({ createListing }: IMutation) => {
   tracker.event('CREATE_LISTING', { price: createListing.price });
 };
-const useCreateListing = (variables, closeModal) => {
+const useCreateListing = (listing: IListingInput, closeModal) => {
   const client = useApolloClient();
-  const [create, { loading, data, error }] = useMutation<
-    IMutation,
-    IListingInput
-  >(CREATE_LISTING, {
-    variables,
-    onCompleted,
-    update: (proxy, { data }) => {
-      const newListing = data && data.createListing;
-      if (!newListing) {
-        return;
-      }
-      const listingsData = client.readQuery<IQuery>({ query: MY_LISTINGS });
-      if (
-        !listingsData ||
-        !listingsData.me ||
-        listingsData.me.__typename !== 'User' ||
-        !listingsData.me.listings
-      ) {
-        return;
-      }
-      const listings = listingsData.me.listings;
-      client.writeQuery({
-        query: MY_LISTINGS,
-        data: {
-          ...listingsData,
-          me: {
-            ...listingsData.me,
-            listings: [newListing, ...listings],
+  const [create, { loading, data, error }] = useMutation<IListingInput>(
+    CREATE_LISTING,
+    {
+      variables: listing,
+      onCompleted,
+      update: (proxy, { data }) => {
+        const newListing = data && data.createListing;
+        if (!newListing) {
+          return;
+        }
+        const listingsData = client.readQuery<IQuery>({ query: MY_LISTINGS });
+        if (
+          !listingsData ||
+          !listingsData.me ||
+          listingsData.me.__typename !== 'User' ||
+          !listingsData.me.listings
+        ) {
+          return;
+        }
+        const listings = listingsData.me.listings;
+        client.writeQuery({
+          query: MY_LISTINGS,
+          data: {
+            ...listingsData,
+            me: {
+              ...listingsData.me,
+              listings: [newListing, ...listings],
+            },
           },
-        },
-      });
+        });
+      },
     },
-  });
+  );
   return {
     create: React.useCallback(async () => {
       await create();
@@ -230,10 +231,9 @@ const PreviewListing: React.FC<{
   price: number;
   description: string;
 }> = ({ googleId, price, description }) => {
-  const { loading, data, error } = useQuery<IQuery, IQueryGoogleBookArgs>(
-    GOOGLE_BOOK,
-    { variables: { id: googleId } },
-  );
+  const { loading, data, error } = useQuery<IQueryGoogleBookArgs>(GOOGLE_BOOK, {
+    variables: { id: googleId },
+  });
 
   if (error) {
     return <Error value={error}></Error>;
@@ -258,13 +258,13 @@ const useListingState = () => {
   const [state, set] = React.useState<{
     searchValue: string;
     googleId: string;
-    price?: number;
+    price: number;
     description: string;
     isFocused: boolean;
   }>({
     searchValue: '',
     googleId: '',
-    price: undefined,
+    price: 0,
     description: '',
     isFocused: false,
   });
@@ -310,7 +310,14 @@ export const CreateListing = React.memo<{ onCancel }>(({ onCancel }) => {
     setPrice,
     onFocus,
   } = useListingState();
-  const { create, loading, error, listing } = useCreateListing(state, onCancel);
+  const { create, loading, error, listing } = useCreateListing(
+    {
+      price: state.price,
+      description: state.description,
+      googleId: state.googleId,
+    },
+    onCancel,
+  );
 
   const price =
     typeof state.price === 'number' ? (state.price! / 100).toFixed(2) : '';

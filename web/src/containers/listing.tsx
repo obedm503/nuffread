@@ -1,8 +1,8 @@
-import { useQuery } from '@apollo/react-hooks';
 import * as React from 'react';
 import { Error } from '../components';
 import { GET_LISTING } from '../queries';
-import { IListing, IQuery, IQueryListingArgs } from '../schema.gql';
+import { IListing, IQueryListingArgs } from '../schema.gql';
+import { useQuery } from '../state/apollo';
 
 export function withListing<T = undefined>(
   Component: React.FunctionComponent<
@@ -13,10 +13,9 @@ export function withListing<T = undefined>(
   >,
 ): React.FunctionComponent<{ id: string } & T> {
   return ({ id, children, ...props }) => {
-    const { loading, error, data } = useQuery<IQuery, IQueryListingArgs>(
-      GET_LISTING,
-      { variables: { id } },
-    );
+    const { loading, error, data } = useQuery<IQueryListingArgs>(GET_LISTING, {
+      variables: { id },
+    });
     if (error) {
       return <Error value={error} />;
     }

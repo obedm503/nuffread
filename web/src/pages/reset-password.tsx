@@ -1,4 +1,3 @@
-import { useMutation } from '@apollo/react-hooks';
 import {
   IonCard,
   IonCardContent,
@@ -28,7 +27,11 @@ import {
   Routes,
   TopNav,
 } from '../components';
-import { IMutation, IMutationRequestResetPasswordArgs } from '../schema.gql';
+import {
+  IMutationRequestResetPasswordArgs,
+  IMutationResetPasswordArgs,
+} from '../schema.gql';
+import { useMutation } from '../state/apollo';
 import { useRouter } from '../state/router';
 import { tracker } from '../state/tracker';
 import { emailSchema, strongPasswordSchema } from '../util';
@@ -63,7 +66,6 @@ const REQUEST_RESET = gql`
 const requestSchema = object().shape({ email: emailSchema });
 const RequestResetForm: FC = () => {
   const [mutate, { loading, error, data }] = useMutation<
-    IMutation,
     IMutationRequestResetPasswordArgs
   >(REQUEST_RESET);
 
@@ -115,7 +117,9 @@ const ResetErrors = apolloFormErrors({
 });
 
 const ResetForm: FC<{ token: string }> = ({ token }) => {
-  const [mutate, { loading, error }] = useMutation<IMutation>(RESET);
+  const [mutate, { loading, error }] = useMutation<IMutationResetPasswordArgs>(
+    RESET,
+  );
   const { history } = useRouter();
 
   const onSubmit = useCallback(

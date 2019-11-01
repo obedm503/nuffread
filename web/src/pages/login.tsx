@@ -1,4 +1,4 @@
-import { useApolloClient, useMutation } from '@apollo/react-hooks';
+import { useApolloClient } from '@apollo/react-hooks';
 import {
   IonCard,
   IonCardContent,
@@ -23,7 +23,8 @@ import { object } from 'yup';
 import { Email, IonSubmit, Password, TopNav } from '../components';
 import { apolloFormErrors } from '../components/apollo-error';
 import { Container } from '../components/container';
-import { IMutation, IMutationLoginArgs, SystemUserType } from '../schema.gql';
+import { IMutationLoginArgs, SystemUserType } from '../schema.gql';
+import { useMutation } from '../state/apollo';
 import { tracker } from '../state/tracker';
 import { emailSchema, passwordSchema } from '../util';
 
@@ -58,10 +59,7 @@ const LoginForm = React.memo<{
   history: History;
   schema;
 }>(({ schema, type, history }) => {
-  const [mutate, { loading, error }] = useMutation<
-    IMutation,
-    IMutationLoginArgs
-  >(LOGIN);
+  const [mutate, { loading, error }] = useMutation<IMutationLoginArgs>(LOGIN);
   const client = useApolloClient();
 
   const onSubmit = React.useCallback(
