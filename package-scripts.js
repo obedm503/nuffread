@@ -7,6 +7,9 @@ if (process.env.NODE_ENV !== 'production') {
   });
 }
 
+// sent to mixpanel, serves as a version tag
+process.env.REACT_APP_VERSION = new Date().toISOString();
+
 module.exports.scripts = {
   default: 'nps dev',
   dev: {

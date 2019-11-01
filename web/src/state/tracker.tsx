@@ -5,6 +5,9 @@ import mixpanel from 'mixpanel-browser';
 const isProd = process.env.NODE_ENV === 'production';
 
 const track = !!process.env.REACT_APP_MIXPANEL_TOKEN;
+const version = process.env.REACT_APP_VERSION!;
+
+console.info('App version: ' + version);
 
 if (track) {
   mixpanel.init(process.env.REACT_APP_MIXPANEL_TOKEN!, {
@@ -48,7 +51,7 @@ export const tracker = {
     if (track) {
       mixpanel.identify(email);
       mixpanel.people.set({ $last_login: new Date(), $email: email });
-      mixpanel.track('LOGIN', { email });
+      mixpanel.track('LOGIN', { email, version });
     }
   },
   invite({ email }: { email: string }) {
@@ -56,27 +59,27 @@ export const tracker = {
     if (track) {
       mixpanel.alias(email);
       mixpanel.people.set({ $created: new Date(), $email: email });
-      mixpanel.track('REQUEST_INVITE', { email });
+      mixpanel.track('REQUEST_INVITE', { email, version });
     }
   },
   register({ email }: { email: string }) {
     log('register', email);
     if (track) {
       mixpanel.identify(email);
-      mixpanel.track('REGISTER', { email });
+      mixpanel.track('REGISTER', { email, version });
     }
   },
   logout() {
     log('logout');
     if (track) {
-      mixpanel.track('LOGOUT');
+      mixpanel.track('LOGOUT', { version });
       mixpanel.reset();
     }
   },
   event<K extends keyof EventsMap>(event: K, details: EventsMap[K]): void {
     log('event', event, details);
     if (track) {
-      mixpanel.track(event, details);
+      mixpanel.track(event, { ...details, version });
     }
   },
 };
