@@ -1,5 +1,6 @@
 // @ts-check
 const { concurrent, series, rimraf } = require('nps-utils');
+const { lightFormat } = require('date-fns');
 
 if (process.env.NODE_ENV !== 'production') {
   require('dotenv').load({
@@ -8,7 +9,8 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 // sent to mixpanel, serves as a version tag
-process.env.REACT_APP_VERSION = new Date().toISOString();
+// formatted to look like 20191103131121
+process.env.REACT_APP_VERSION = lightFormat(new Date(), 'yyyyMMddHHmmss');
 
 module.exports.scripts = {
   default: 'nps dev',
