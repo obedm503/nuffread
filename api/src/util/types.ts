@@ -47,8 +47,8 @@ type FixPartials<T> = T extends Array<infer ST>
   ? FixObject<ST>[]
   : FixObject<T>;
 
-type IFieldResolver<TSource, TReturn> = (
-  source: TSource,
+type IFieldResolver<TRoot, TReturn> = (
+  root: TRoot,
   args: any,
   context: IContext,
   info: GraphQLResolveInfo & {

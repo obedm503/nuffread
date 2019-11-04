@@ -61,7 +61,7 @@ export const MutationResolver: IResolver<IMutation> = {
     _,
     { email: emailInput, password }: IMutationRegisterArgs,
     { req, me, inviteLoader },
-  ): Promise<IUser> {
+  ) {
     ensurePublic(me);
     const email = emailInput.toLowerCase();
 
@@ -83,7 +83,7 @@ export const MutationResolver: IResolver<IMutation> = {
       confirmCode: invite!.code,
     });
 
-    return user as any;
+    return user;
   },
 
   async login(
