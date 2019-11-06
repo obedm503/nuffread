@@ -96,11 +96,11 @@ const Loading = () => (
   <IonCard color="white">
     <IonCardHeader>
       <IonCardTitle>
-        <IonSkeletonText animated style={{ width: '90%', height: '1em' }} />
+        <IonSkeletonText animated style={{ width: '90%' }} />
       </IonCardTitle>
 
       <IonCardSubtitle>
-        <IonSkeletonText animated style={{ width: '45%', height: '1em' }} />
+        <IonSkeletonText animated style={{ width: '45%' }} />
       </IonCardSubtitle>
     </IonCardHeader>
 
@@ -108,19 +108,25 @@ const Loading = () => (
       <IonSkeletonText
         slot="start"
         animated
-        style={{ width: '100%', height: '55vh' }} // 9:6 aspect ratio
+        style={{
+          // 6:9 aspect ratio
+          width: 'calc(55vh * 6 / 9)',
+          height: '55vh',
+          marginLeft: 'auto',
+          marginRight: 'auto',
+        }}
       />
     </IonCardContent>
 
     <IonItem lines="inset">
       <IonLabel>
-        <IonSkeletonText animated style={{ width: '100%', height: '1em' }} />
+        <IonSkeletonText animated style={{ width: '100%' }} />
       </IonLabel>
     </IonItem>
     <IonItem lines="none">
       <IonLabel>
         <small>
-          <IonSkeletonText animated style={{ width: '20%', height: '1em' }} />
+          <IonSkeletonText animated style={{ width: '20%' }} />
         </small>
       </IonLabel>
     </IonItem>

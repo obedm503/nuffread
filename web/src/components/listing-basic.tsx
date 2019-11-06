@@ -15,7 +15,7 @@ export const ListingBasic: React.FC<{
       alt={listing.book.title}
       placeholder="/img/book.png"
       slot="start"
-      style={{ width: '40%' }}
+      style={{ width: '40%', marginTop: '4px', marginBottom: '4px' }}
     />
 
     <IonLabel class="ion-text-wrap">
@@ -41,12 +41,22 @@ const Loading = () => (
     <IonSkeletonText
       slot="start"
       animated
-      style={{ width: '128px', height: '180px' }} // 9:6 aspect ratio
+      style={{
+        // 6:9 aspect ratio
+        width: '40%',
+        paddingTop: '66%',
+        marginTop: '4px',
+        marginBottom: '4px',
+      }}
     />
     <IonLabel class="ion-text-wrap">
       <IonSkeletonText animated style={{ width: '90%' }} />
-      <IonSkeletonText animated style={{ width: '60%' }} />
-      <IonSkeletonText animated style={{ width: '50%' }} />
+      <small>
+        <IonSkeletonText animated style={{ width: '60%' }} />
+      </small>
+      <small>
+        <IonSkeletonText animated style={{ width: '50%' }} />
+      </small>
     </IonLabel>
   </IonItem>
 );
