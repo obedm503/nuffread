@@ -1,4 +1,3 @@
-import { getConnection } from 'typeorm';
 import { Invite, Listing } from '../entities';
 import {
   IQuery,
@@ -6,13 +5,14 @@ import {
   IQueryListingArgs,
   IQuerySearchArgs,
   IQuerySearchGoogleArgs,
+  IQueryTopArgs,
 } from '../schema.gql';
 import { ensureAdmin, ensureUser } from '../util/auth';
 import { getBook, searchBooks } from '../util/google-books';
 import { IResolver } from '../util/types';
 
 export const QueryResolver: IResolver<IQuery> = {
-  async search(_, { query, maxPrice, minPrice }: IQuerySearchArgs, { me }) {
+  async search(_, { query, paginate }: IQuerySearchArgs, { me }) {
     const segments =
       query &&
       query
@@ -23,7 +23,7 @@ export const QueryResolver: IResolver<IQuery> = {
         .filter(Boolean); // eliminate spaces
 
     if (!segments || !segments.length) {
-      return [];
+      return { items: [], totalCount: 0 };
     }
 
     // how to partial search
@@ -35,10 +35,14 @@ export const QueryResolver: IResolver<IQuery> = {
     // mastering full text search
     // https://compose.com/articles/mastering-postgresql-tools-full-text-search-and-phrase-search/
 
-    const builder = getConnection()
-      .createQueryBuilder(Listing, 'listing')
+    const limit = (paginate && paginate.limit) || 10;
+    const offset = paginate && paginate.offset;
+
+    const builder = Listing.createQueryBuilder('listing')
       .innerJoinAndSelect('listing.book', 'book')
-      .select();
+      // skip and take break with custom ORDER BY expression
+      .limit(limit)
+      .offset(offset);
 
     for (let i = 0; i < segments.length; i++) {
       const segment = segments[i];
@@ -60,17 +64,22 @@ export const QueryResolver: IResolver<IQuery> = {
       'DESC',
     );
 
-    const listings = await builder.getMany();
-    return listings;
+    const [items, totalCount] = await builder.getManyAndCount();
+
+    return {
+      totalCount,
+      items,
+    };
   },
 
-  async top(_, args) {
-    // TODO: implement real top listings, whatever that means
-    return await Listing.find({
-      take: 10,
-      relations: ['book'],
+  async top(_, { paginate }: IQueryTopArgs) {
+    const [items, totalCount] = await Listing.findAndCount({
+      take: (paginate && paginate.limit) || 10,
+      skip: paginate && paginate.offset,
       order: { createdAt: 'DESC' },
+      relations: ['book'],
     });
+    return { items, totalCount };
   },
 
   async me(_, args, { me }) {

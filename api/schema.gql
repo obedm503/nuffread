@@ -5,9 +5,23 @@ enum SystemUserType {
   USER
 }
 
+input PaginationInput {
+  limit: Int
+  offset: Int
+}
+type PaginatedListings {
+  items: [Listing!]!
+  totalCount: Int!
+}
+
 type Query {
-  search(query: String, maxPrice: Int, minPrice: Int): [Listing!]!
-  top: [Listing!]!
+  search(
+    query: String
+    maxPrice: Int
+    minPrice: Int
+    paginate: PaginationInput
+  ): PaginatedListings!
+  top(paginate: PaginationInput): PaginatedListings!
 
   me: SystemUser
 

@@ -34,16 +34,6 @@ export const MY_LISTINGS = gql`
   }
 `;
 
-export const SEARCH = gql`
-  ${BASIC_LISTING}
-
-  query Search($query: String!) {
-    search(query: $query) {
-      ...BasicListing
-    }
-  }
-`;
-
 export const SEARCH_GOOGLE = gql`
   query SearchGoogle($query: String!) {
     searchGoogle(query: $query) {
