@@ -27,6 +27,14 @@ const makeLoader = <T extends Base>(Ent: typeof Base) => {
     return ids.map(id => items.find(item => item['id'] === id));
   });
 };
+const makeEmailLoader = <T extends Base>(Ent: typeof Base) => {
+  return new DataLoader(async (emails: string[]) => {
+    const items = await Ent.find<T>({
+      where: { emails: emails.map(email => ({ email })) },
+    });
+    return emails.map(email => items.find(item => item['email'] === email));
+  });
+};
 
 function createSchema(): GraphQLSchema {
   const typeDefs = fs.readFileSync(
@@ -95,15 +103,8 @@ export async function getContext({
     adminLoader: makeLoader(Admin),
     listingLoader: makeLoader(Listing),
     bookLoader: makeLoader(Book),
-    inviteLoader: new DataLoader(async (emails: string[]) => {
-      logger.debug('Invite', emails);
-      const invites = await Invite.find({
-        where: emails.map(email => ({ email })),
-      });
-      return emails.map(email =>
-        invites.find(invite => invite.email === email),
-      );
-    }),
+    inviteLoader: makeEmailLoader(Invite),
+    userEmailLoader: makeEmailLoader(User),
   };
 }
 

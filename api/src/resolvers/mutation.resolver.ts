@@ -13,7 +13,6 @@ import {
   IMutationRequestResetPasswordArgs,
   IMutationResetPasswordArgs,
   IMutationSendInviteArgs,
-  IUser,
 } from '../schema.gql';
 import { jwt, logger } from '../util';
 import { ensureAdmin, ensurePublic, ensureUser, isUser } from '../util/auth';
@@ -60,13 +59,13 @@ export const MutationResolver: IResolver<IMutation> = {
   async register(
     _,
     { email: emailInput, password }: IMutationRegisterArgs,
-    { req, me, inviteLoader },
+    { req, me, inviteLoader, userEmailLoader },
   ) {
     ensurePublic(me);
     const email = emailInput.toLowerCase();
 
     // email already exists
-    if (await User.findOne({ where: { email } })) {
+    if (await userEmailLoader.load(email)) {
       throw new DuplicateUser();
     }
 
@@ -268,12 +267,12 @@ export const MutationResolver: IResolver<IMutation> = {
   async requestResetPassword(
     _,
     { email: emailInput }: IMutationRequestResetPasswordArgs,
-    { me },
+    { me, userEmailLoader },
   ) {
     ensurePublic(me);
 
     const email = emailInput.toLowerCase();
-    const user = await User.findOne({ where: { email } });
+    const user = await userEmailLoader.load(email);
     if (!isUser(user)) {
       return true; // email doens't exist, but don't tell the client
     }

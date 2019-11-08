@@ -11,6 +11,7 @@ export type IContext = {
   me?: User | Admin;
   stripe: Stripe;
   userLoader: DataLoader<string, User | undefined>;
+  userEmailLoader: DataLoader<string, User | undefined>;
   adminLoader: DataLoader<string, Admin | undefined>;
   listingLoader: DataLoader<string, Listing | undefined>;
   bookLoader: DataLoader<string, Book | undefined>;
