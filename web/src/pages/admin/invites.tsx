@@ -2,21 +2,18 @@ import {
   IonCard,
   IonCardHeader,
   IonCardTitle,
-  IonCol,
   IonContent,
-  IonGrid,
   IonIcon,
   IonItem,
   IonLabel,
   IonPage,
-  IonRow,
   IonSpinner,
 } from '@ionic/react';
 import gql from 'graphql-tag';
 import { send } from 'ionicons/icons';
 import groupBy from 'lodash/groupBy';
 import React, { FC } from 'react';
-import { Error, Loading } from '../../components';
+import { Container, Error, Loading } from '../../components';
 import { IInvite, IMutationSendInviteArgs } from '../../schema.gql';
 import { useMutation, useQuery } from '../../state/apollo';
 
@@ -64,7 +61,9 @@ const Invites: React.FC<{
         key={invite.email}
         onClick={onClick && (() => onClick(invite))}
       >
-        <IonLabel>{invite.email}</IonLabel>
+        <IonLabel>
+          {invite.name} ({invite.email})
+        </IonLabel>
         {loading ? (
           <IonSpinner slot="end"></IonSpinner>
         ) : (
@@ -105,6 +104,14 @@ const SignedUp: FC<{ invites: IInvite[]; refetch }> = ({
   );
 };
 
+const Wrapper = ({ children }) => (
+  <IonPage>
+    <IonContent>
+      <Container>{children}</Container>
+    </IonContent>
+  </IonPage>
+);
+
 export default () => {
   const {
     loading: loadingInvites,
@@ -118,7 +125,11 @@ export default () => {
   ] = useMutation<IMutationSendInviteArgs>(SEND_INVITE);
 
   if (loadingInvites) {
-    return <Loading></Loading>;
+    return (
+      <Wrapper>
+        <Loading></Loading>
+      </Wrapper>
+    );
   }
   if (errorInvites || errorEmail) {
     return <Error value={errorInvites || errorEmail}></Error>;
@@ -135,54 +146,46 @@ export default () => {
   );
 
   return (
-    <IonPage>
-      <IonContent>
-        <IonGrid>
-          <IonRow>
-            <IonCol size="12" sizeLg="10" offsetLg="1">
-              <IonCard>
-                <IonCardHeader>
-                  <IonCardTitle>Requested</IonCardTitle>
-                </IonCardHeader>
+    <Wrapper>
+      <IonCard>
+        <IonCardHeader>
+          <IonCardTitle>Requested</IonCardTitle>
+        </IonCardHeader>
 
-                <Invites
-                  invites={notInvited}
-                  loading={loadingEmail}
-                  onClick={async invite => {
-                    await sendInvite({ variables: { email: invite.email } });
-                    await refetch();
-                  }}
-                ></Invites>
-              </IonCard>
+        <Invites
+          invites={notInvited}
+          loading={loadingEmail}
+          onClick={async invite => {
+            await sendInvite({ variables: { email: invite.email } });
+            await refetch();
+          }}
+        ></Invites>
+      </IonCard>
 
-              <IonCard>
-                <IonCardHeader>
-                  <IonCardTitle>Invited</IonCardTitle>
-                </IonCardHeader>
+      <IonCard>
+        <IonCardHeader>
+          <IonCardTitle>Invited</IonCardTitle>
+        </IonCardHeader>
 
-                <Invites
-                  invites={notSignedUp}
-                  loading={loadingEmail}
-                  onClick={async invite => {
-                    await sendInvite({ variables: { email: invite.email } });
-                    await refetch();
-                  }}
-                ></Invites>
-              </IonCard>
+        <Invites
+          invites={notSignedUp}
+          loading={loadingEmail}
+          onClick={async invite => {
+            await sendInvite({ variables: { email: invite.email } });
+            await refetch();
+          }}
+        ></Invites>
+      </IonCard>
 
-              <SignedUp invites={notConfirmed} refetch={refetch}></SignedUp>
+      <SignedUp invites={notConfirmed} refetch={refetch}></SignedUp>
 
-              <IonCard>
-                <IonCardHeader>
-                  <IonCardTitle>Confirmed Email</IonCardTitle>
-                </IonCardHeader>
+      <IonCard>
+        <IonCardHeader>
+          <IonCardTitle>Confirmed Email</IonCardTitle>
+        </IonCardHeader>
 
-                <Invites invites={confirmed}></Invites>
-              </IonCard>
-            </IonCol>
-          </IonRow>
-        </IonGrid>
-      </IonContent>
-    </IonPage>
+        <Invites invites={confirmed}></Invites>
+      </IonCard>
+    </Wrapper>
   );
 };
