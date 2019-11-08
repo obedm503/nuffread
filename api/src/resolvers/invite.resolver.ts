@@ -1,4 +1,4 @@
-import { Invite, User } from '../entities';
+import { Invite } from '../entities';
 import { IInvite } from '../schema.gql';
 import { ensureAdmin } from '../util/auth';
 import { IResolver } from '../util/types';
