@@ -12,9 +12,13 @@ import {
 import gql from 'graphql-tag';
 import { send } from 'ionicons/icons';
 import groupBy from 'lodash/groupBy';
-import React, { FC } from 'react';
+import React, { FC, useCallback } from 'react';
 import { Container, Error, Loading } from '../../components';
-import { IInvite, IMutationSendInviteArgs } from '../../schema.gql';
+import {
+  IInvite,
+  IMutationResendConfirmEmailArgs,
+  IMutationSendInviteArgs,
+} from '../../schema.gql';
 import { useMutation, useQuery } from '../../state/apollo';
 
 const INVITES = gql`
@@ -56,7 +60,7 @@ const Invites: React.FC<{
   <>
     {invites.map(invite => (
       <IonItem
-        button
+        button={!!onClick}
         disabled={loading}
         key={invite.email}
         onClick={onClick && (() => onClick(invite))}
@@ -64,7 +68,7 @@ const Invites: React.FC<{
         <IonLabel>
           {invite.name} ({invite.email})
         </IonLabel>
-        {loading ? (
+        {!onClick ? null : loading ? (
           <IonSpinner slot="end"></IonSpinner>
         ) : (
           <IonIcon slot="end" icon={send}></IonIcon>
@@ -74,13 +78,26 @@ const Invites: React.FC<{
   </>
 );
 
+const RESEND_CONFIRMATION_EMAIL = gql`
+  mutation ResendConfirmationEmail($email: String!) {
+    resendConfirmEmail(email: $email)
+  }
+`;
 const SignedUp: FC<{ invites: IInvite[]; refetch }> = ({
   invites,
   refetch,
 }) => {
-  const [sendConfirmation, { loading, error }] = useMutation<
-    IMutationSendInviteArgs
-  >(SEND_INVITE);
+  const [resendConfirmation, { loading, error }] = useMutation<
+    IMutationResendConfirmEmailArgs
+  >(RESEND_CONFIRMATION_EMAIL);
+
+  const onClick = useCallback(
+    async invite => {
+      await resendConfirmation({ variables: { email: invite.email } });
+      await refetch();
+    },
+    [resendConfirmation, refetch],
+  );
 
   if (error) {
     return <Error value={error}></Error>;
@@ -92,14 +109,7 @@ const SignedUp: FC<{ invites: IInvite[]; refetch }> = ({
         <IonCardTitle>Signed Up</IonCardTitle>
       </IonCardHeader>
 
-      <Invites
-        invites={invites}
-        loading={loading}
-        onClick={async invite => {
-          await sendConfirmation({ variables: { email: invite.email } });
-          await refetch();
-        }}
-      ></Invites>
+      <Invites invites={invites} loading={loading} onClick={onClick} />
     </IonCard>
   );
 };

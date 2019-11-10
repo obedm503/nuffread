@@ -11,6 +11,7 @@ import {
   IMutationRegisterArgs,
   IMutationRequestInviteArgs,
   IMutationRequestResetPasswordArgs,
+  IMutationResendConfirmEmailArgs,
   IMutationResetPasswordArgs,
   IMutationSendInviteArgs,
 } from '../schema.gql';
@@ -155,22 +156,31 @@ export const MutationResolver: IResolver<IMutation> = {
       return true;
     });
   },
-  // async resendEmail(_, { code }: IResendEmailOnMutationArguments, { me, req }) {
-  //   // is already logged in, no need to resend
-  //   isPublic(me);
+  async resendConfirmEmail(
+    _,
+    { email: emailInput }: IMutationResendConfirmEmailArgs,
+    { me, inviteLoader, userEmailLoader },
+  ) {
+    ensureAdmin(me);
 
-  //   const invite = await Invite.findOne({
-  //     where: { code },
-  //   });
-  //   isInvited(invite);
+    const email = emailInput.toLowerCase();
 
-  //   await sendConfirmationEmail(config.origin, {
-  //     email: invite!.email,
-  //     confirmCode: invite!.code,
-  //   });
+    const invite = await inviteLoader.load(email);
+    isInvited(invite);
 
-  //   return true;
-  // },
+    const user = await userEmailLoader.load(email);
+    if (!user) {
+      throw new WrongCredentials();
+    }
+
+    if (user.confirmedAt) {
+      return true; // user is already confirmed
+    }
+
+    await sendConfirmationEmail({ email, confirmCode: invite!.code });
+
+    return true;
+  },
   async createListing(
     _,
     { listing: { googleId, price, description } }: IMutationCreateListingArgs,

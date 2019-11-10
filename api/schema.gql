@@ -39,12 +39,12 @@ type Mutation {
 
   requestInvite(email: String!, name: String!): Boolean!
   sendInvite(email: String!): Invite!
+  resendConfirmEmail(email: String!): Boolean!
 
   register(email: String!, password: String!): User!
   login(email: String!, password: String!, type: SystemUserType!): SystemUser!
   logout: Boolean!
   confirm(code: String!): Boolean!
-  # resendEmail(code: String!): Boolean!
   requestResetPassword(email: String!): Boolean!
   resetPassword(token: String!, password: String!): Boolean!
 
