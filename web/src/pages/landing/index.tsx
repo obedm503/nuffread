@@ -101,7 +101,7 @@ const RequestInvite: React.FC = () => {
 export default () => {
   return (
     <IonPage>
-      <TopNav>
+      <TopNav homeHref="/">
         <IonButtons slot="end">
           <IonButtonLink href="/login">Login</IonButtonLink>
         </IonButtons>

@@ -40,7 +40,7 @@ export const ListingPage = withListing<{ base: string }>(
   ({ data: listing, loading, base }) => {
     return (
       <IonPage>
-        <TopNav title={listing ? listing.book.title : ''}>
+        <TopNav homeHref={false} title={listing ? listing.book.title : ''}>
           <IonButtons slot="start">
             <IonBackButton defaultHref={base} />
           </IonButtons>

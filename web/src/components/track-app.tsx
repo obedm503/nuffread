@@ -61,7 +61,7 @@ export const TrackApp = withRouter(
       if (this.state.hasError) {
         return (
           <IonPage>
-            <TopNav />
+            <TopNav homeHref="/" />
 
             <IonContent>
               <IonGrid>

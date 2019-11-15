@@ -323,7 +323,7 @@ export const CreateListing = React.memo<{ onCancel }>(({ onCancel }) => {
     typeof state.price === 'number' ? (state.price! / 100).toFixed(2) : '';
   return (
     <IonModal isOpen onDidDismiss={onCancel}>
-      <TopNav>
+      <TopNav title="New Listing" homeHref={false}>
         <IonButtons slot="secondary">
           <IonButton onClick={onCancel}>
             <IonIcon slot="icon-only" icon={close}></IonIcon>

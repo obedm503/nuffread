@@ -175,7 +175,7 @@ const routes: RouteProps[] = [
 ];
 export default memo<RouteComponentProps<{ token: string }>>(({ match }) => (
   <>
-    <TopNav />
+    <TopNav homeHref="/" />
 
     <IonContent>
       <Container>

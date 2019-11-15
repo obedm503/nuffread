@@ -13,7 +13,7 @@ export const Profile = () => {
 
   return (
     <IonPage>
-      <TopNav>
+      <TopNav homeHref="/home">
         <IonButtons slot="end">
           <Popover>
             <LogoutItem />

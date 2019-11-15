@@ -126,7 +126,7 @@ export class UserLogin extends React.PureComponent<
     const { history, admin = false } = this.props;
     return (
       <>
-        <TopNav />
+        <TopNav homeHref="/" />
 
         <IonContent>
           <Container>

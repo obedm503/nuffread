@@ -1,6 +1,6 @@
 import { IonContent } from '@ionic/react';
 import * as React from 'react';
-import { RouteComponentProps, RouteProps } from 'react-router';
+import { RouteProps } from 'react-router';
 import { Routes, TopNav } from '../../components';
 import { Confirm } from './confirm';
 import { Register } from './register';
@@ -10,12 +10,12 @@ const routes: RouteProps[] = [
   { path: '/:confirmationCode', component: Confirm },
 ];
 
-export default ({ match }: RouteComponentProps<{}>) => (
+export default () => (
   <>
-    <TopNav />
+    <TopNav homeHref="/" />
 
     <IonContent>
-      <Routes base={match.url} routes={routes} />
+      <Routes routes={routes} />
     </IonContent>
   </>
 );

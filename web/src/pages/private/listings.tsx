@@ -146,13 +146,13 @@ export const MyListings: React.FC = () => {
 
   return (
     <IonPage>
-      <TopNav>
-        <IonButtons slot="end">
-          <IonButton onClick={() => setShowModal(true)}>
-            <IonIcon slot="icon-only" icon={add} />
-          </IonButton>
-        </IonButtons>
-      </TopNav>
+        <TopNav homeHref="/home">
+          <IonButtons slot="end">
+            <IonButton onClick={() => setShowModal(true)}>
+              <IonIcon slot="icon-only" icon={add} />
+            </IonButton>
+          </IonButtons>
+        </TopNav>
 
       <IonContent>
         <IonRefresher slot="fixed" onIonRefresh={onRefresh}>

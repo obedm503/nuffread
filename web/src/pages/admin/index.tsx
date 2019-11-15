@@ -18,7 +18,7 @@ import Invites from './invites';
 export default () => {
   return (
     <IonPage>
-      <TopNav>
+      <TopNav homeHref="/invites">
         <IonButtons slot="end">
           <LogoutButton />
         </IonButtons>
@@ -29,11 +29,9 @@ export default () => {
           <IonRouterOutlet>
             <Redirect from="/" exact to="/invites" />
             <Route path="/:tab(invites)" exact component={Invites} />
-            <Route
-              path="/:tab(other)"
-              exact
-              component={() => <div>other page</div>}
-            />
+            <Route path="/:tab(other)" exact>
+              <div>other page</div>
+            </Route>
           </IonRouterOutlet>
 
           <IonTabBar slot="bottom">

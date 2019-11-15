@@ -8,7 +8,7 @@ export const Nav: React.FC<{
   alwaysBack?: boolean;
   base: string;
 }> = ({ children, title, alwaysBack = false, base }) => (
-  <TopNav toolbar={children} title={title}>
+  <TopNav toolbar={children} title={title} homeHref={base}>
     <IonButtons slot="start">
       {alwaysBack ? (
         <IonBackButton defaultHref={base} />

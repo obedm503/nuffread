@@ -13,7 +13,7 @@ export const Home = memo<RouteComponentProps>(props => {
   const { onClick, onSearch, searchValue } = useSearch();
   return (
     <IonPage>
-      <TopNav />
+      <TopNav homeHref="/home" />
 
       <IonContent>
         <Container>
