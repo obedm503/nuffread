@@ -4,11 +4,17 @@ import { GraphQLResolveInfo, GraphQLScalarType } from 'graphql';
 import { IEnumResolver, IResolverOptions, MergeInfo } from 'graphql-tools';
 import Stripe from 'stripe';
 import { Admin, Book, Invite, Listing, User } from '../entities';
+import { SystemUserType } from '../schema.gql';
 
+export type UserSession = Express.Session & {
+  userId: string;
+  userType: SystemUserType;
+};
 export type IContext = {
   req: Request;
   res: Response;
-  me?: User | Admin;
+  session?: UserSession;
+  getMe: () => Promise<User | Admin | undefined>;
   stripe: Stripe;
   userLoader: DataLoader<string, User | undefined>;
   userEmailLoader: DataLoader<string, User | undefined>;

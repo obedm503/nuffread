@@ -4,8 +4,8 @@ import { ensureAdmin } from '../util/auth';
 import { IResolver } from '../util/types';
 
 export const InviteResolver: IResolver<IInvite, Invite> = {
-  async user({ email, user }, args, { me, userEmailLoader }) {
-    ensureAdmin(me);
+  async user({ email, user }, args, { session, userEmailLoader }) {
+    ensureAdmin(session);
 
     return user || (await userEmailLoader.load(email));
   },

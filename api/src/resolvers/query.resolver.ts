@@ -12,7 +12,7 @@ import { getBook, searchBooks } from '../util/google-books';
 import { IResolver } from '../util/types';
 
 export const QueryResolver: IResolver<IQuery> = {
-  async search(_, { query, paginate }: IQuerySearchArgs, { me }) {
+  async search(_, { query, paginate }: IQuerySearchArgs) {
     const segments =
       query &&
       query
@@ -82,24 +82,24 @@ export const QueryResolver: IResolver<IQuery> = {
     return { items, totalCount };
   },
 
-  async me(_, args, { me }) {
-    return me;
+  async me(_, args, { getMe }) {
+    return await getMe();
   },
 
   listing(_, { id }: IQueryListingArgs, { listingLoader }) {
     return listingLoader.load(id);
   },
 
-  async searchGoogle(_, { query }: IQuerySearchGoogleArgs, { me }) {
-    ensureUser(me);
+  async searchGoogle(_, { query }: IQuerySearchGoogleArgs, { session }) {
+    ensureUser(session);
 
     if (!query) {
       return;
     }
     return await searchBooks(query);
   },
-  async googleBook(_, { id }: IQueryGoogleBookArgs, { me }) {
-    ensureUser(me);
+  async googleBook(_, { id }: IQueryGoogleBookArgs, { session }) {
+    ensureUser(session);
 
     const book = await getBook(id);
     if (!book) {
@@ -108,8 +108,8 @@ export const QueryResolver: IResolver<IQuery> = {
     return book;
   },
 
-  async invites(_, args, { me }) {
-    ensureAdmin(me);
+  async invites(_, args, { session }) {
+    ensureAdmin(session);
 
     return Invite.find();
   },

@@ -8,15 +8,15 @@ export const UserResolver: IResolver<IUser, User> = {
   schoolName({ email }) {
     return getSchoolName(email);
   },
-  confirmedAt({ confirmedAt }, args, { me }) {
-    ensureAdmin(me);
+  confirmedAt({ confirmedAt }, args, { session }) {
+    ensureAdmin(session);
     return confirmedAt;
   },
   name(user) {
     return user.name || user.email;
   },
-  async listings(user, args, { me }) {
-    ensureUser(me);
+  async listings(user, args, { session }) {
+    ensureUser(session);
     const listings = await Listing.find({
       where: { userId: user.id },
       order: { createdAt: 'DESC' },

@@ -60,9 +60,9 @@ export const MutationResolver: IResolver<IMutation> = {
   async register(
     _,
     { email: emailInput, password }: IMutationRegisterArgs,
-    { req, me, inviteLoader, userEmailLoader },
+    { inviteLoader, userEmailLoader, session },
   ) {
-    ensurePublic(me);
+    ensurePublic(session);
     const email = emailInput.toLowerCase();
 
     // email already exists
@@ -130,8 +130,8 @@ export const MutationResolver: IResolver<IMutation> = {
 
     return true;
   },
-  async confirm(_, { code }: IMutationConfirmArgs, { me }) {
-    ensurePublic(me);
+  async confirm(_, { code }: IMutationConfirmArgs, { session }) {
+    ensurePublic(session);
 
     return await getConnection().transaction(async manager => {
       const invite = await manager.findOne(Invite, {
@@ -159,9 +159,9 @@ export const MutationResolver: IResolver<IMutation> = {
   async resendConfirmEmail(
     _,
     { email: emailInput }: IMutationResendConfirmEmailArgs,
-    { me, inviteLoader, userEmailLoader },
+    { session, inviteLoader, userEmailLoader },
   ) {
-    ensureAdmin(me);
+    ensureAdmin(session);
 
     const email = emailInput.toLowerCase();
 
@@ -184,9 +184,9 @@ export const MutationResolver: IResolver<IMutation> = {
   async createListing(
     _,
     { listing: { googleId, price, description } }: IMutationCreateListingArgs,
-    { me },
+    { getMe, session },
   ) {
-    ensureUser(me);
+    ensureUser(session);
 
     return await getConnection().transaction(async manager => {
       let book = await manager.findOne(Book, { where: { googleId } });
@@ -201,7 +201,7 @@ export const MutationResolver: IResolver<IMutation> = {
         Listing.create({
           book,
           price,
-          user: me,
+          user: await getMe(),
           description,
         }),
       );
@@ -211,14 +211,12 @@ export const MutationResolver: IResolver<IMutation> = {
   async deleteListing(
     _,
     { id }: IMutationDeleteListingArgs,
-    { me, listingLoader },
+    { getMe, listingLoader, session },
   ) {
-    if (!ensureUser(me)) {
-      return false;
-    }
+    ensureUser(session);
 
-    const listing = await listingLoader.load(id);
-    if (!listing || listing.userId !== me.id) {
+    const [me, listing] = await Promise.all([getMe(), listingLoader.load(id)]);
+    if (!listing || !me || listing.userId !== me.id) {
       throw new AuthorizationError();
     }
 
@@ -229,9 +227,9 @@ export const MutationResolver: IResolver<IMutation> = {
   async requestInvite(
     _,
     { email: emailInput, name }: IMutationRequestInviteArgs,
-    { me, inviteLoader, req },
+    { session, inviteLoader },
   ) {
-    ensurePublic(me);
+    ensurePublic(session);
 
     const email = emailInput.toLowerCase();
     if (await inviteLoader.load(email)) {
@@ -254,9 +252,9 @@ export const MutationResolver: IResolver<IMutation> = {
   async sendInvite(
     _,
     { email: emailInput }: IMutationSendInviteArgs,
-    { me, inviteLoader, req },
+    { session, inviteLoader },
   ) {
-    ensureAdmin(me);
+    ensureAdmin(session);
 
     const email = emailInput.toLowerCase();
     const invite = await inviteLoader.load(email);
@@ -277,9 +275,9 @@ export const MutationResolver: IResolver<IMutation> = {
   async requestResetPassword(
     _,
     { email: emailInput }: IMutationRequestResetPasswordArgs,
-    { me, userEmailLoader },
+    { session, userEmailLoader },
   ) {
-    ensurePublic(me);
+    ensurePublic(session);
 
     const email = emailInput.toLowerCase();
     const user = await userEmailLoader.load(email);
@@ -308,9 +306,9 @@ export const MutationResolver: IResolver<IMutation> = {
   async resetPassword(
     _,
     { token, password }: IMutationResetPasswordArgs,
-    { me },
+    { session },
   ) {
-    ensurePublic(me);
+    ensurePublic(session);
 
     const user = await User.findOne({ where: { passwordResetToken: token } });
     if (!isUser(user)) {

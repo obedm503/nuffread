@@ -18,9 +18,9 @@ import {
 import { SystemUserType } from './schema.gql';
 import { logger } from './util';
 import { Base } from './util/db';
-import { IContext, IResolvers } from './util/types';
+import { IContext, IResolvers, UserSession } from './util/types';
 
-const makeLoader = <T extends Base>(Ent: typeof Base) => {
+const makeIdLoader = <T extends Base>(Ent: typeof Base) => {
   return new DataLoader(async (ids: string[]) => {
     logger.debug(Ent.name, ids);
     const items = await Ent.findByIds<T>(ids);
@@ -56,14 +56,17 @@ function createSchema(): GraphQLSchema {
   });
 }
 
-async function getUser(
-  id: string,
-  type: SystemUserType,
-): Promise<User | Admin | undefined> {
-  if (type === 'USER') {
+async function getMe(session?: UserSession): Promise<User | Admin | undefined> {
+  if (!session) {
+    return;
+  }
+
+  const id = session.userId;
+  const type = session.userType;
+  if (type === SystemUserType.User) {
     return User.findOne(id);
   }
-  if (type === 'ADMIN') {
+  if (type === SystemUserType.Admin) {
     return Admin.findOne(id);
   }
 }
@@ -91,18 +94,23 @@ export async function getContext({
   req: Request;
   res: Response;
 }): Promise<IContext> {
-  const me = req.session
-    ? await getUser(req.session.userId, req.session.userType)
-    : undefined;
+  const session = req.session as UserSession | undefined;
+  let me;
   return {
-    me,
+    getMe: async () => {
+      if (!me) {
+        me = await getMe(session);
+      }
+      return me;
+    },
     req,
     res,
+    session,
     stripe: getStripe(),
-    userLoader: makeLoader(User),
-    adminLoader: makeLoader(Admin),
-    listingLoader: makeLoader(Listing),
-    bookLoader: makeLoader(Book),
+    userLoader: makeIdLoader(User),
+    adminLoader: makeIdLoader(Admin),
+    listingLoader: makeIdLoader(Listing),
+    bookLoader: makeIdLoader(Book),
     inviteLoader: makeEmailLoader(Invite),
     userEmailLoader: makeEmailLoader(User),
   };

@@ -1,34 +1,40 @@
-import { Admin, User } from '../entities';
+import { User } from '../entities';
+import { SystemUserType } from '../schema.gql';
 import { AuthenticationError, AuthorizationError } from './error';
+import { UserSession } from './types';
 
 export function isUser(me?: User): me is User {
   return me instanceof User && !!me.confirmedAt;
 }
 
-export function ensureUser(me?: Admin | User): me is User {
-  if (!me) {
-    throw new AuthenticationError();
-  }
-  if (!(me instanceof User)) {
-    throw new AuthorizationError();
+export function ensureUser(me?: UserSession): void {
+  if (
+    me &&
+    'userType' in me &&
+    typeof me.userType === 'string' &&
+    me.userType === SystemUserType.User
+  ) {
+    return;
   }
 
-  return me instanceof User;
+  throw new AuthorizationError();
 }
 
-export function ensureAdmin(me?: Admin | User): me is Admin {
-  if (!me) {
-    throw new AuthenticationError();
-  }
-  if (!(me instanceof Admin)) {
-    throw new AuthorizationError();
+export function ensureAdmin(me?: UserSession): void {
+  if (
+    me &&
+    'userType' in me &&
+    typeof me.userType === 'string' &&
+    me.userType === SystemUserType.Admin
+  ) {
+    return;
   }
 
-  return me instanceof Admin;
+  throw new AuthorizationError();
 }
-export function ensurePublic(me?: Admin | User): me is undefined {
+
+export function ensurePublic(me?: UserSession): void {
   if (me) {
     throw new AuthenticationError();
   }
-  return !me;
 }
