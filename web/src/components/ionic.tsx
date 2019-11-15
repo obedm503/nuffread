@@ -25,20 +25,18 @@ function addRouter<T extends React.ComponentType>(Comp: T) {
   }) => {
     const isActive = location.pathname === props.href;
     const color = isActive ? activeColor : (props as any).color;
-    return (
-      <Component
-        {...props}
-        color={color || null}
-        onClick={e => {
-          e.preventDefault();
+    const onClick = React.useCallback(
+      e => {
+        e.preventDefault();
 
-          if (props.href) {
-            const method = replace ? history.replace : history.push;
-            method(props.href);
-          }
-        }}
-      />
+        if (props.href) {
+          const method = replace ? history.replace : history.push;
+          method(props.href);
+        }
+      },
+      [history.push, history.replace, props.href, replace],
     );
+    return <Component {...props} color={color || null} onClick={onClick} />;
   };
   return withRouter(Wrapper);
 }
@@ -59,9 +57,9 @@ const hiddenSubmit = (
   />
 );
 
-export const IonSubmit: React.FC<
-  React.ComponentPropsWithRef<typeof IonButton>
-> = ({ children, ...props }) => (
+export const IonSubmit: React.FC<React.ComponentPropsWithRef<
+  typeof IonButton
+>> = ({ children, ...props }) => (
   <>
     {hiddenSubmit}
 
