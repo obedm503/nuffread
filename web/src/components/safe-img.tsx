@@ -26,13 +26,13 @@ const useImage = (src?: string) => {
   return { loading, error };
 };
 
-export const SafeImg: React.FC<{
+export const SafeImg = React.memo<{
   src?: string;
   alt: string;
   slot?: string;
   placeholder: string | { ios: string; md: string };
   style?: React.CSSProperties;
-}> = ({ placeholder, slot, alt, style, ...props }) => {
+}>(function SafeImg({ placeholder, slot, alt, style, ...props }) {
   const { error, loading } = useImage(props.src);
 
   let src = (error ? placeholder : props.src) || placeholder;
@@ -49,4 +49,4 @@ export const SafeImg: React.FC<{
       alt={alt}
     />
   );
-};
+});

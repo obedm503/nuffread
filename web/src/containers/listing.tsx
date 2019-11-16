@@ -12,7 +12,7 @@ export function withListing<T = undefined>(
     } & T
   >,
 ): React.FunctionComponent<{ id: string } & T> {
-  return ({ id, children, ...props }) => {
+  const WithListing = React.memo<{ id } & T>(({ id, children, ...props }) => {
     const { loading, error, data } = useQuery<IQueryListingArgs>(GET_LISTING, {
       variables: { id },
     });
@@ -26,5 +26,8 @@ export function withListing<T = undefined>(
         {...(props as any)}
       />
     );
-  };
+  });
+  WithListing.displayName = `Memo(WithListing(${Component.displayName ||
+    Component.name}))`;
+  return WithListing;
 }

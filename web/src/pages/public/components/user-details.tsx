@@ -115,7 +115,9 @@ const GET_LISTING_SELLER = gql`
     }
   }
 `;
-const ListingUser = ({ listingId }) => {
+const ListingSeller = React.memo<{ listingId: string }>(function ListingSeller({
+  listingId,
+}) {
   const { loading, error, data } = useQuery<IQueryListingArgs>(
     GET_LISTING_SELLER,
     { variables: { id: listingId } },
@@ -128,7 +130,7 @@ const ListingUser = ({ listingId }) => {
   }
   const user = data!.listing!.user;
   return <UserInfo user={user} />;
-};
+});
 
 export const UserDetails: React.FC<{
   listingId: string;
@@ -138,5 +140,5 @@ export const UserDetails: React.FC<{
     return userHidden;
   }
 
-  return <ListingUser listingId={listingId}></ListingUser>;
+  return <ListingSeller listingId={listingId}></ListingSeller>;
 };

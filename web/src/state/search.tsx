@@ -5,9 +5,10 @@ import { useRouter } from './router';
 export const useSearch = () => {
   const { location, history, match } = useRouter();
 
-  const searchParams = new URLSearchParams(history.location.search);
+  const currentSearch = history.location.search;
+  const searchValue = new URLSearchParams(currentSearch).get('q') || undefined;
 
-  const searchValue = searchParams.get('q') || undefined;
+  const push = history.push;
   const onSearch = useCallback(
     (value: string | undefined) => {
       let search: string | undefined;
@@ -16,22 +17,22 @@ export const useSearch = () => {
         query.set('q', value);
         search = query.toString();
       }
-      history.push({
+      push({
         pathname: location.pathname,
         search,
       });
     },
-    [location, history],
+    [location.search, location.pathname, push],
   );
 
   const onClick = useCallback(
     (id: string) => {
-      history.push({
+      push({
         pathname: join(match.url, id),
-        search: searchParams.toString(),
+        search: currentSearch,
       });
     },
-    [history, match, searchParams],
+    [push, match.url, currentSearch],
   );
 
   return {

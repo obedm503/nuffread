@@ -21,9 +21,9 @@ const TOP_LISTINGS = gql`
   }
 `;
 
-export const TopListings: React.FC<{
+export const TopListings = React.memo<{
   onClick;
-}> = ({ onClick }) => {
+}>(function TopListings({ onClick }) {
   const { error, data, loading, fetchMore } = useQuery<IPaginationInput>(
     TOP_LISTINGS,
     { variables: { offset: 0 } },
@@ -73,4 +73,4 @@ export const TopListings: React.FC<{
       ) : null}
     </>
   );
-};
+});
