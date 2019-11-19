@@ -52,10 +52,18 @@ const Errors = apolloFormErrors({
   ),
 });
 
-const RequestInvite: React.FC = () => {
+const RequestInvite = React.memo(function RequestInvite() {
   const [mutate, { error, data, loading }] = useMutation<
     IMutationRequestInviteArgs
   >(REQUEST_INVITE);
+
+  const onSubmit = React.useCallback(
+    async ({ email, name }: { email: string; name: string }) => {
+      await mutate({ variables: { email, name } });
+      tracker.invite({ email });
+    },
+    [mutate],
+  );
 
   if (data && data.requestInvite) {
     return (
@@ -63,10 +71,6 @@ const RequestInvite: React.FC = () => {
     );
   }
 
-  const onSubmit = async ({ email, name }: { email: string; name: string }) => {
-    await mutate({ variables: { email, name } });
-    tracker.invite({ email });
-  };
   return (
     <Formik<FormSchema>
       onSubmit={onSubmit}
@@ -96,9 +100,9 @@ const RequestInvite: React.FC = () => {
       </Form>
     </Formik>
   );
-};
+});
 
-export default () => {
+export default React.memo(function Landing() {
   return (
     <IonPage>
       <TopNav homeHref="/">
@@ -138,4 +142,4 @@ export default () => {
       </IonContent>
     </IonPage>
   );
-};
+});

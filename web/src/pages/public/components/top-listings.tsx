@@ -1,11 +1,12 @@
-import { IonInfiniteScroll } from '@ionic/react';
+import { IonInfiniteScroll, useIonViewDidEnter } from '@ionic/react';
 import gql from 'graphql-tag';
 import * as React from 'react';
 import { Error } from '../../../components';
 import { ListingCard } from '../../../components/listing-card';
 import { BASIC_LISTING } from '../../../queries';
 import { IPaginationInput } from '../../../schema.gql';
-import { useQuery } from '../../../state/apollo';
+import { useLazyQuery } from '../../../state/apollo';
+import { queryLoading } from '../../../util';
 import { Listings } from './listings';
 
 const TOP_LISTINGS = gql`
@@ -24,10 +25,11 @@ const TOP_LISTINGS = gql`
 export const TopListings = React.memo<{
   onClick;
 }>(function TopListings({ onClick }) {
-  const { error, data, loading, fetchMore } = useQuery<IPaginationInput>(
-    TOP_LISTINGS,
-    { variables: { offset: 0 } },
-  );
+  const [load, { error, data, loading, fetchMore, called }] = useLazyQuery<
+    IPaginationInput
+  >(TOP_LISTINGS, { variables: { offset: 0 } });
+  useIonViewDidEnter(load);
+  const isLoading = queryLoading({ called, loading });
   const currentCount = (data && data.top.items.length) || 0;
 
   const getMore = React.useCallback(
@@ -60,7 +62,7 @@ export const TopListings = React.memo<{
   return (
     <>
       <Listings
-        loading={loading}
+        loading={isLoading}
         onClick={onClick}
         listings={data && data.top.items}
         component={ListingCard}

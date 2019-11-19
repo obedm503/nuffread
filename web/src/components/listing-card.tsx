@@ -10,87 +10,98 @@ import {
   IonSkeletonText,
 } from '@ionic/react';
 import range from 'lodash/range';
-import React from 'react';
+import React, { memo, NamedExoticComponent } from 'react';
 import { IListing } from '../schema.gql';
 import { RelativeDate } from './relative-date';
 import { SafeImg } from './safe-img';
 
-export const ListingCard: React.FC<{
+const badgeStyle = { fontSize: 'inherit', float: 'right' };
+const imgStyle = {
+  width: 'auto',
+  maxHeight: '55vh',
+  minHeight: '35vh',
+  margin: '4px auto 4px auto',
+};
+const placeholderImgStyle = {
+  // 6:9 aspect ratio
+  width: 'calc(55vh * 6 / 9)',
+  height: '55vh',
+  margin: '4px auto 4px auto',
+};
+type Props = {
   onClick?;
   listing: IListing;
   detailed?: boolean;
-}> & { loading } = ({ onClick, listing, detailed = false }) => (
-  <IonCard color="white" onClick={onClick} button={!!onClick}>
-    <IonCardHeader>
-      <IonCardTitle>
-        {listing.book.title}
+};
+export const ListingCard = memo<Props>(function ListingCard({
+  onClick,
+  listing,
+  detailed = false,
+}) {
+  return (
+    <IonCard color="white" onClick={onClick} button={!!onClick}>
+      <IonCardHeader>
+        <IonCardTitle>
+          {listing.book.title}
 
-        <IonBadge
-          color="secondary"
-          style={{ fontSize: 'inherit', float: 'right' }}
-        >
-          ${listing.price / 100}
-        </IonBadge>
-      </IonCardTitle>
+          <IonBadge color="secondary" style={badgeStyle}>
+            ${listing.price / 100}
+          </IonBadge>
+        </IonCardTitle>
 
-      {listing.book.subTitle ? (
-        <IonCardSubtitle>{listing.book.subTitle}</IonCardSubtitle>
-      ) : null}
-    </IonCardHeader>
+        {listing.book.subTitle ? (
+          <IonCardSubtitle>{listing.book.subTitle}</IonCardSubtitle>
+        ) : null}
+      </IonCardHeader>
 
-    <IonCardContent>
-      <SafeImg
-        src={listing.book.thumbnail || undefined}
-        alt={[listing.book.title, listing.book.subTitle].join(' ')}
-        placeholder="/img/book.png"
-        style={{
-          width: 'auto',
-          maxHeight: '55vh',
-          minHeight: '35vh',
-          marginLeft: 'auto',
-          marginRight: 'auto',
-        }}
-      />
-    </IonCardContent>
+      <IonCardContent>
+        <SafeImg
+          src={listing.book.thumbnail || undefined}
+          alt={[listing.book.title, listing.book.subTitle].join(' ')}
+          placeholder="/img/book.png"
+          style={imgStyle}
+        />
+      </IonCardContent>
 
-    <IonItem lines="inset">
-      <IonLabel>
-        <b>{listing.book.authors.join(', ')}</b> {listing.description}
-      </IonLabel>
-    </IonItem>
-
-    {detailed
-      ? listing.book.isbn.map(isbn => (
-          <IonItem lines="inset" key={isbn}>
-            <IonLabel>
-              <small>
-                <b>ISBN: </b> {isbn}
-              </small>
-            </IonLabel>
-          </IonItem>
-        ))
-      : null}
-
-    {detailed && listing.book.publishedAt ? (
       <IonItem lines="inset">
         <IonLabel>
+          <b>{listing.book.authors.join(', ')}</b> {listing.description}
+        </IonLabel>
+      </IonItem>
+
+      {detailed
+        ? listing.book.isbn.map(isbn => (
+            <IonItem lines="inset" key={isbn}>
+              <IonLabel>
+                <small>
+                  <b>ISBN: </b> {isbn}
+                </small>
+              </IonLabel>
+            </IonItem>
+          ))
+        : null}
+
+      {detailed && listing.book.publishedAt ? (
+        <IonItem lines="inset">
+          <IonLabel>
+            <small>
+              <b>Published on: </b>
+              {new Date(listing.book.publishedAt).toLocaleDateString()}
+            </small>
+          </IonLabel>
+        </IonItem>
+      ) : null}
+
+      <IonItem lines="none">
+        <IonLabel>
           <small>
-            <b>Published on: </b>
-            {new Date(listing.book.publishedAt).toLocaleDateString()}
+            <RelativeDate date={listing.createdAt} />
           </small>
         </IonLabel>
       </IonItem>
-    ) : null}
-
-    <IonItem lines="none">
-      <IonLabel>
-        <small>
-          <RelativeDate date={listing.createdAt} />
-        </small>
-      </IonLabel>
-    </IonItem>
-  </IonCard>
-);
+    </IonCard>
+  );
+}) as NamedExoticComponent<Props> & { loading };
 
 const Loading = () => (
   <IonCard color="white">
@@ -105,17 +116,7 @@ const Loading = () => (
     </IonCardHeader>
 
     <IonCardContent>
-      <IonSkeletonText
-        slot="start"
-        animated
-        style={{
-          // 6:9 aspect ratio
-          width: 'calc(55vh * 6 / 9)',
-          height: '55vh',
-          marginLeft: 'auto',
-          marginRight: 'auto',
-        }}
-      />
+      <IonSkeletonText slot="start" animated style={placeholderImgStyle} />
     </IonCardContent>
 
     <IonItem lines="inset">

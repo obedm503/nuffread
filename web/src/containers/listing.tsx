@@ -1,8 +1,10 @@
+import { useIonViewDidEnter } from '@ionic/react';
 import * as React from 'react';
 import { Error } from '../components';
 import { GET_LISTING } from '../queries';
 import { IListing, IQueryListingArgs } from '../schema.gql';
-import { useQuery } from '../state/apollo';
+import { useLazyQuery } from '../state/apollo';
+import { queryLoading } from '../util';
 
 export function withListing<T = undefined>(
   Component: React.FunctionComponent<
@@ -13,15 +15,20 @@ export function withListing<T = undefined>(
   >,
 ): React.FunctionComponent<{ id: string } & T> {
   const WithListing = React.memo<{ id } & T>(({ id, children, ...props }) => {
-    const { loading, error, data } = useQuery<IQueryListingArgs>(GET_LISTING, {
+    const [load, { loading, error, data, called }] = useLazyQuery<
+      IQueryListingArgs
+    >(GET_LISTING, {
       variables: { id },
     });
+    const isLoading = queryLoading({ called, loading });
+    useIonViewDidEnter(load);
+
     if (error) {
       return <Error value={error} />;
     }
     return (
       <Component
-        loading={loading}
+        loading={isLoading}
         data={(data && data.listing) || undefined}
         {...(props as any)}
       />

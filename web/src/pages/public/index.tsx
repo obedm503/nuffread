@@ -15,7 +15,7 @@ import { Nav } from './components/nav';
 import { SearchListings } from './components/search-results';
 import { TopListings } from './components/top-listings';
 
-const Master = () => {
+const Master = memo(function Master() {
   const { onClick, onSearch, searchValue } = useSearch();
   return (
     <IonPage>
@@ -38,17 +38,17 @@ const Master = () => {
       </IonContent>
     </IonPage>
   );
-};
+});
 
 const Detail = (routeProps: RouteComponentProps<{ listingId: string }>) => {
   return <ListingPage id={routeProps.match.params.listingId} base="/" />;
 };
 
-export default () => {
+export default memo(function Public() {
   return (
     <IonRouterOutlet>
-      <Route path="/" exact component={Master} />
+      <Route path="/" exact render={() => <Master />} />
       <Route path="/:listingId" component={Detail} />
     </IonRouterOutlet>
   );
-};
+});

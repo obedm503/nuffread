@@ -70,3 +70,11 @@ export const strongPasswordSchema = passwordSchema
 export function validateStrongPassword(password: string): boolean {
   return strongPasswordSchema.isValidSync(password);
 }
+
+export const queryLoading = ({
+  called,
+  loading,
+}: {
+  called: boolean;
+  loading: boolean;
+}) => (!called ? true : loading);

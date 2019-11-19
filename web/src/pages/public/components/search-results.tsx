@@ -21,58 +21,57 @@ export const SEARCH = gql`
   }
 `;
 
-export const SearchListings: React.FC<{
-  onClick;
-  searchValue: string;
-}> = ({ onClick, searchValue }) => {
-  const { error, data, loading, fetchMore } = useQuery<IQuerySearchArgs>(
-    SEARCH,
-    { variables: { query: searchValue, paginate: { offset: 0 } } },
-  );
-  const currentCount = (data && data.search.items.length) || 0;
+export const SearchListings = React.memo<{ onClick; searchValue: string }>(
+  function SearchListings({ onClick, searchValue }) {
+    const { error, data, loading, fetchMore } = useQuery<IQuerySearchArgs>(
+      SEARCH,
+      { variables: { query: searchValue, paginate: { offset: 0 } } },
+    );
+    const currentCount = (data && data.search.items.length) || 0;
 
-  const getMore = React.useCallback(
-    async e => {
-      await fetchMore({
-        variables: { query: searchValue, paginate: { offset: currentCount } },
-        updateQuery: (prev, { fetchMoreResult }) => {
-          if (!fetchMoreResult) return prev;
-          return {
-            ...prev,
-            search: {
-              __typename: 'PaginatedListings',
-              totalCount: fetchMoreResult.search.totalCount,
-              items: [...prev.search.items, ...fetchMoreResult.search.items],
-            },
-          };
-        },
-      });
-      (e.target! as HTMLIonInfiniteScrollElement).complete();
-    },
-    [currentCount, searchValue, fetchMore],
-  );
+    const getMore = React.useCallback(
+      async e => {
+        await fetchMore({
+          variables: { query: searchValue, paginate: { offset: currentCount } },
+          updateQuery: (prev, { fetchMoreResult }) => {
+            if (!fetchMoreResult) return prev;
+            return {
+              ...prev,
+              search: {
+                __typename: 'PaginatedListings',
+                totalCount: fetchMoreResult.search.totalCount,
+                items: [...prev.search.items, ...fetchMoreResult.search.items],
+              },
+            };
+          },
+        });
+        (e.target! as HTMLIonInfiniteScrollElement).complete();
+      },
+      [currentCount, searchValue, fetchMore],
+    );
 
-  if (error) {
-    return <Error value={error} />;
-  }
+    if (error) {
+      return <Error value={error} />;
+    }
 
-  const totalCount = (data && data.search.totalCount) || 0;
+    const totalCount = (data && data.search.totalCount) || 0;
 
-  return (
-    <>
-      <Listings
-        loading={loading}
-        onClick={onClick}
-        listings={data && data.search.items}
-        title={'Results for: ' + searchValue}
-        component={ListingBasic}
-      />
+    return (
+      <>
+        <Listings
+          loading={loading}
+          onClick={onClick}
+          listings={data && data.search.items}
+          title={'Results for: ' + searchValue}
+          component={ListingBasic}
+        />
 
-      {currentCount < totalCount ? (
-        <IonInfiniteScroll onIonInfinite={getMore}>
-          {ListingBasic.loading}
-        </IonInfiniteScroll>
-      ) : null}
-    </>
-  );
-};
+        {currentCount < totalCount ? (
+          <IonInfiniteScroll onIonInfinite={getMore}>
+            {ListingBasic.loading}
+          </IonInfiniteScroll>
+        ) : null}
+      </>
+    );
+  },
+);
