@@ -2,8 +2,8 @@ import { join } from 'path';
 import { useCallback } from 'react';
 import { useRouter } from './router';
 
-export const useSearch = () => {
-  const { location, history, match } = useRouter();
+export const useSearch = (base: string) => {
+  const { location, history } = useRouter();
 
   const currentSearch = history.location.search;
   const searchValue = new URLSearchParams(currentSearch).get('q') || undefined;
@@ -18,21 +18,21 @@ export const useSearch = () => {
         search = query.toString();
       }
       push({
-        pathname: location.pathname,
+        pathname: base,
         search,
       });
     },
-    [location.search, location.pathname, push],
+    [location.search, base, push],
   );
 
   const onClick = useCallback(
     (id: string) => {
       push({
-        pathname: join(match.url, id),
+        pathname: join(base, id),
         search: currentSearch,
       });
     },
-    [push, match.url, currentSearch],
+    [push, base, currentSearch],
   );
 
   return {

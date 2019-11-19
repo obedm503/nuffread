@@ -16,7 +16,9 @@ import { IQueryListingArgs, IUser } from '../../../schema.gql';
 import { useQuery } from '../../../state/apollo';
 import { useUser } from '../../../state/user';
 
-export const UserInfo = React.memo<{ user: IUser }>(({ user }) => {
+export const UserInfo = React.memo<{ user: IUser }>(function UserInfo({
+  user,
+}) {
   const name = user.name || user.email;
   return (
     <IonCard color="white">

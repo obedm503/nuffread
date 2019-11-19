@@ -18,14 +18,14 @@ import { SafeImg } from './safe-img';
 const badgeStyle = { fontSize: 'inherit', float: 'right' };
 const imgStyle = {
   width: 'auto',
-  maxHeight: '55vh',
+  maxHeight: '70vh',
   minHeight: '35vh',
   margin: '4px auto 4px auto',
 };
 const placeholderImgStyle = {
   // 6:9 aspect ratio
-  width: 'calc(55vh * 6 / 9)',
-  height: '55vh',
+  width: 'calc(70vh * 6 / 9)',
+  height: '70vh',
   margin: '4px auto 4px auto',
 };
 type Props = {

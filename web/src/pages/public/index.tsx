@@ -6,7 +6,7 @@ import {
   IonRouterOutlet,
   IonRow,
 } from '@ionic/react';
-import React from 'react';
+import React, { memo } from 'react';
 import { Route, RouteComponentProps } from 'react-router';
 import { ListingPage } from '../../components/listing-page';
 import { SearchBar } from '../../components/search-bar';
@@ -16,7 +16,7 @@ import { SearchListings } from './components/search-results';
 import { TopListings } from './components/top-listings';
 
 const Master = memo(function Master() {
-  const { onClick, onSearch, searchValue } = useSearch();
+  const { onClick, onSearch, searchValue } = useSearch('/');
   return (
     <IonPage>
       <Nav base="/" />
@@ -25,7 +25,7 @@ const Master = memo(function Master() {
         <IonGrid>
           <IonRow>
             <IonCol size="12" sizeLg="10" offsetLg="1">
-              <SearchBar onSearch={onSearch} searchValue={searchValue} />
+              <SearchBar onChange={onSearch} searchValue={searchValue} />
 
               {searchValue ? (
                 <SearchListings onClick={onClick} searchValue={searchValue} />

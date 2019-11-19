@@ -13,19 +13,20 @@ import {
   IonItem,
   IonLabel,
   IonModal,
+  IonPage,
   IonTextarea,
   IonThumbnail,
 } from '@ionic/react';
 import gql from 'graphql-tag';
 import { close, logoUsd } from 'ionicons/icons';
 import * as React from 'react';
-import { Error, Loading, TopNav } from '../../components';
-import { ListWrapper } from '../../components/list-wrapper';
-import { ListingBasic } from '../../components/listing-basic';
-import { ListingCard } from '../../components/listing-card';
-import { SafeImg } from '../../components/safe-img';
-import { SearchBar } from '../../components/search-bar';
-import { CREATE_LISTING, MY_LISTINGS, SEARCH_GOOGLE } from '../../queries';
+import { Error, Loading, TopNav } from '../../../components';
+import { ListWrapper } from '../../../components/list-wrapper';
+import { ListingBasic } from '../../../components/listing-basic';
+import { ListingCard } from '../../../components/listing-card';
+import { SafeImg } from '../../../components/safe-img';
+import { SearchBar } from '../../../components/search-bar';
+import { CREATE_LISTING, MY_LISTINGS, SEARCH_GOOGLE } from '../../../queries';
 import {
   IGoogleBook,
   IListingInput,
@@ -33,9 +34,10 @@ import {
   IQuery,
   IQueryGoogleBookArgs,
   IQuerySearchGoogleArgs,
-} from '../../schema.gql';
-import { useMutation, useQuery } from '../../state/apollo';
-import { tracker } from '../../state/tracker';
+} from '../../../schema.gql';
+import { useMutation, useQuery } from '../../../state/apollo';
+import { useRouter } from '../../../state/router';
+import { tracker } from '../../../state/tracker';
 
 const Book: React.FC<{ onClick?; book: IGoogleBook; active: boolean }> = ({
   onClick,
@@ -145,7 +147,7 @@ const PickBook = React.memo<{
   return (
     <>
       <SearchBar
-        onSearch={setSearchValue}
+        onChange={setSearchValue}
         searchValue={searchValue}
         onFocus={onFocus}
       />
@@ -192,26 +194,30 @@ const useCreateListing = (listing: IListingInput, closeModal) => {
         if (!newListing) {
           return;
         }
-        const listingsData = client.readQuery<IQuery>({ query: MY_LISTINGS });
-        if (
-          !listingsData ||
-          !listingsData.me ||
-          listingsData.me.__typename !== 'User' ||
-          !listingsData.me.listings
-        ) {
-          return;
-        }
-        const listings = listingsData.me.listings;
-        client.writeQuery({
-          query: MY_LISTINGS,
-          data: {
-            ...listingsData,
-            me: {
-              ...listingsData.me,
-              listings: [newListing, ...listings],
+
+        // best effort update
+        try {
+          const listingsData = client.readQuery<IQuery>({ query: MY_LISTINGS });
+          if (
+            !listingsData ||
+            !listingsData.me ||
+            listingsData.me.__typename !== 'User' ||
+            !listingsData.me.listings
+          ) {
+            return;
+          }
+          const listings = listingsData.me.listings;
+          client.writeQuery({
+            query: MY_LISTINGS,
+            data: {
+              ...listingsData,
+              me: {
+                ...listingsData.me,
+                listings: [newListing, ...listings],
+              },
             },
-          },
-        });
+          });
+        } catch {}
       },
     },
   );
@@ -226,11 +232,11 @@ const useCreateListing = (listing: IListingInput, closeModal) => {
   };
 };
 
-const PreviewListing: React.FC<{
+const PreviewListing = React.memo<{
   googleId: string;
-  price: number;
+  price: string;
   description: string;
-}> = ({ googleId, price, description }) => {
+}>(function PreviewListing({ googleId, price, description }) {
   const { loading, data, error } = useQuery<IQueryGoogleBookArgs>(GOOGLE_BOOK, {
     variables: { id: googleId },
   });
@@ -239,32 +245,32 @@ const PreviewListing: React.FC<{
     return <Error value={error}></Error>;
   }
   if (loading) {
-    return <Loading></Loading>;
+    return <Loading />;
   }
 
   const googleBook = data && data.googleBook;
 
   const listingPreview: any = {
     book: googleBook,
-    price,
+    price: parseFloat(price) * 100,
     createdAt: new Date(),
     description,
   };
 
   return <ListingCard listing={listingPreview} />;
-};
+});
 
 const useListingState = () => {
   const [state, set] = React.useState<{
     searchValue: string;
     googleId: string;
-    price: number;
+    price: string;
     description: string;
     isFocused: boolean;
   }>({
     searchValue: '',
     googleId: '',
-    price: 0,
+    price: '',
     description: '',
     isFocused: false,
   });
@@ -277,7 +283,7 @@ const useListingState = () => {
   const setPrice = React.useCallback(
     ({ detail }) => {
       if (detail.value) {
-        set(state => ({ ...state, price: parseFloat(detail.value) * 100 }));
+        set(state => ({ ...state, price: detail.value }));
       }
     },
     [set],
@@ -302,7 +308,7 @@ const useListingState = () => {
   };
 };
 
-export const CreateListing = React.memo<{ onCancel }>(({ onCancel }) => {
+export const Create = ({ onCancel }) => {
   const {
     state,
     pickBook,
@@ -312,17 +318,15 @@ export const CreateListing = React.memo<{ onCancel }>(({ onCancel }) => {
   } = useListingState();
   const { create, loading, error, listing } = useCreateListing(
     {
-      price: state.price,
+      price: parseFloat(state.price) * 100,
       description: state.description,
       googleId: state.googleId,
     },
     onCancel,
   );
 
-  const price =
-    typeof state.price === 'number' ? (state.price! / 100).toFixed(2) : '';
   return (
-    <IonModal isOpen onDidDismiss={onCancel}>
+    <>
       <TopNav title="New Listing" homeHref={false}>
         <IonButtons slot="secondary">
           <IonButton onClick={onCancel}>
@@ -358,7 +362,7 @@ export const CreateListing = React.memo<{ onCancel }>(({ onCancel }) => {
               <IonIcon icon={logoUsd} size="small"></IonIcon>
               <IonInput
                 type="number"
-                value={price}
+                value={state.price}
                 debounce={500}
                 onIonChange={setPrice}
               ></IonInput>
@@ -384,7 +388,7 @@ export const CreateListing = React.memo<{ onCancel }>(({ onCancel }) => {
           </IonCard> */}
 
         {state.googleId ? (
-          <PreviewListing {...state} price={state.price || 0} />
+          <PreviewListing {...state} price={state.price} />
         ) : null}
 
         {error ? <Error value={error} /> : null}
@@ -393,6 +397,7 @@ export const CreateListing = React.memo<{ onCancel }>(({ onCancel }) => {
       <IonFooter>
         {!listing ? (
           <IonButton
+            className="ion-padding-horizontal"
             expand="block"
             onClick={create}
             disabled={!state.googleId || !state.price || loading}
@@ -401,6 +406,23 @@ export const CreateListing = React.memo<{ onCancel }>(({ onCancel }) => {
           </IonButton>
         ) : null}
       </IonFooter>
+    </>
+  );
+};
+
+export const CreatePage = () => {
+  const { history } = useRouter();
+  return (
+    <IonPage>
+      <Create onCancel={history.goBack} />
+    </IonPage>
+  );
+};
+
+export const CreateModal = ({ closeModal }) => {
+  return (
+    <IonModal isOpen onDidDismiss={closeModal}>
+      <Create onCancel={closeModal} />
     </IonModal>
   );
-});
+};
