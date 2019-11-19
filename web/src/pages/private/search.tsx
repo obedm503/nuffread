@@ -10,7 +10,13 @@ export const Search = memo(function Search() {
   const { onClick, onSearch, searchValue } = useSearch('/search');
   return (
     <IonPage>
-      <TopNav title="Search" homeHref="/explore">
+      <TopNav
+        title="Search"
+        homeHref="/explore"
+        toolbar={
+          <SearchBar onChange={onSearch} searchValue={searchValue} autofocus />
+        }
+      >
         <IonButtons slot="start">
           <IonBackButton defaultHref="/explore" />
         </IonButtons>
@@ -18,8 +24,6 @@ export const Search = memo(function Search() {
 
       <IonContent>
         <Container>
-          <SearchBar onChange={onSearch} searchValue={searchValue} autofocus />
-
           {searchValue ? (
             <SearchListings onClick={onClick} searchValue={searchValue} />
           ) : null}

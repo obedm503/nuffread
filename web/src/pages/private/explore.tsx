@@ -16,12 +16,14 @@ export const Explore = memo(function Explore() {
 
   return (
     <IonPage>
-      <TopNav title="Explore" homeHref="/explore" />
+      <TopNav
+        title="Explore"
+        homeHref="/explore"
+        toolbar={<SearchBar onFocus={toSearch} searchValue="" />}
+      />
 
       <IonContent>
         <Container>
-          <SearchBar onFocus={toSearch} searchValue="" />
-
           <TopListings onClick={onClick} />
         </Container>
       </IonContent>

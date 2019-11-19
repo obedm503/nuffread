@@ -69,7 +69,7 @@ export const Profile = React.memo(function Profile() {
 
   return (
     <IonPage>
-      <TopNav homeHref="/explore">
+      <TopNav homeHref="/explore" title={user.name || user.email}>
         <IonButtons slot="end">
           <Popover>
             <LogoutItem />
