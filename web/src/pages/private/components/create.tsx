@@ -13,7 +13,6 @@ import {
   IonItem,
   IonLabel,
   IonModal,
-  IonPage,
   IonTextarea,
   IonThumbnail,
 } from '@ionic/react';
@@ -36,7 +35,6 @@ import {
   IQuerySearchGoogleArgs,
 } from '../../../schema.gql';
 import { useMutation, useQuery } from '../../../state/apollo';
-import { useRouter } from '../../../state/router';
 import { tracker } from '../../../state/tracker';
 
 const Book: React.FC<{ onClick?; book: IGoogleBook; active: boolean }> = ({
@@ -323,7 +321,7 @@ export const CreateModal = ({ isOpen, onClose: closeModal }) => {
 
   return (
     <IonModal isOpen={isOpen} onDidDismiss={closeModal}>
-      <TopNav title="New Listing" homeHref={false}>
+      <TopNav title="Post Book" homeHref={false}>
         <IonButtons slot="secondary">
           <IonButton onClick={closeModal}>
             <IonIcon slot="icon-only" icon={close}></IonIcon>
