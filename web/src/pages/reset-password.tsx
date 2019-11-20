@@ -9,6 +9,7 @@ import {
   IonIcon,
   IonLabel,
   IonList,
+  IonPage,
   IonRow,
 } from '@ionic/react';
 import { Form, Formik } from 'formik';
@@ -180,7 +181,7 @@ export default memo(function ResetPassword() {
     return <Redirect to="/" />;
   }
   return (
-    <>
+    <IonPage>
       <TopNav homeHref="/" />
 
       <IonContent>
@@ -188,6 +189,6 @@ export default memo(function ResetPassword() {
           <Routes routes={routes} />
         </Container>
       </IonContent>
-    </>
+    </IonPage>
   );
 });

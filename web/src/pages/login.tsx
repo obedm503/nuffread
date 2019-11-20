@@ -10,6 +10,7 @@ import {
   IonIcon,
   IonLabel,
   IonList,
+  IonPage,
   IonRow,
 } from '@ionic/react';
 import { Form, Formik } from 'formik';
@@ -128,7 +129,7 @@ export const UserLogin = React.memo<
     return <Redirect to="/" />;
   }
   return (
-    <>
+    <IonPage>
       <TopNav homeHref="/" />
 
       <IonContent>
@@ -148,7 +149,7 @@ export const UserLogin = React.memo<
           </IonCard>
         </Container>
       </IonContent>
-    </>
+    </IonPage>
   );
 });
 

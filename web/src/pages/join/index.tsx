@@ -1,4 +1,4 @@
-import { IonContent } from '@ionic/react';
+import { IonContent, IonPage } from '@ionic/react';
 import * as React from 'react';
 import { Redirect, RouteProps } from 'react-router';
 import { Routes, TopNav } from '../../components';
@@ -17,12 +17,12 @@ export default React.memo(function Join() {
     return <Redirect to="/" />;
   }
   return (
-    <>
+    <IonPage>
       <TopNav homeHref="/" />
 
       <IonContent>
         <Routes routes={routes} />
       </IonContent>
-    </>
+    </IonPage>
   );
 });
