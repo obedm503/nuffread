@@ -15,7 +15,7 @@ import { Form, Formik } from 'formik';
 import gql from 'graphql-tag';
 import { key } from 'ionicons/icons';
 import React, { FC, memo, useCallback } from 'react';
-import { RouteComponentProps, RouteProps } from 'react-router';
+import { Redirect, RouteComponentProps, RouteProps } from 'react-router';
 import { object } from 'yup';
 import {
   apolloFormErrors,
@@ -34,6 +34,7 @@ import {
 import { useMutation } from '../state/apollo';
 import { useRouter } from '../state/router';
 import { tracker } from '../state/tracker';
+import { useUser } from '../state/user';
 import { emailSchema, strongPasswordSchema } from '../util';
 
 const Card = ({ children }) => (
@@ -174,6 +175,10 @@ const routes: RouteProps[] = [
   },
 ];
 export default memo(function ResetPassword() {
+  const user = useUser();
+  if (user) {
+    return <Redirect to="/" />;
+  }
   return (
     <>
       <TopNav homeHref="/" />

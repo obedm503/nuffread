@@ -85,20 +85,18 @@ const homePage = (user?: ISystemUser) => {
 };
 
 const makeRoutes = memoize((user?: ISystemUser): RouteProps[] => {
-  const routes: RouteProps[] = [];
+  const routes: RouteProps[] = [
+    { path: '/login', exact: true, component: UserLogin },
+    { path: '/admin', exact: true, component: AdminLogin },
+    { path: '/join', component: Join },
+    { path: '/reset', component: ResetPassword },
+    { path: '/', component: homePage(user) },
+  ];
 
   if (user) {
     tracker.login({ email: user.email });
-  } else {
-    routes.push(
-      { path: '/login', exact: true, component: UserLogin },
-      { path: '/admin', exact: true, component: AdminLogin },
-      { path: '/join', component: Join },
-      { path: '/reset', component: ResetPassword },
-    );
   }
 
-  routes.push({ path: '/', component: homePage(user) });
   return routes;
 });
 

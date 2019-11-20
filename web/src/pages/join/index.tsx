@@ -1,7 +1,8 @@
 import { IonContent } from '@ionic/react';
 import * as React from 'react';
-import { RouteProps } from 'react-router';
+import { Redirect, RouteProps } from 'react-router';
 import { Routes, TopNav } from '../../components';
+import { useUser } from '../../state/user';
 import { Confirm } from './confirm';
 import { Register } from './register';
 
@@ -10,12 +11,18 @@ const routes: RouteProps[] = [
   { path: '/:confirmationCode', component: Confirm },
 ];
 
-export default () => (
-  <>
-    <TopNav homeHref="/" />
+export default React.memo(function Join() {
+  const user = useUser();
+  if (user) {
+    return <Redirect to="/" />;
+  }
+  return (
+    <>
+      <TopNav homeHref="/" />
 
-    <IonContent>
-      <Routes routes={routes} />
-    </IonContent>
-  </>
-);
+      <IonContent>
+        <Routes routes={routes} />
+      </IonContent>
+    </>
+  );
+});

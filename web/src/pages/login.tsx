@@ -17,7 +17,7 @@ import gql from 'graphql-tag';
 import { History } from 'history';
 import { logIn } from 'ionicons/icons';
 import * as React from 'react';
-import { RouteComponentProps } from 'react-router';
+import { Redirect, RouteComponentProps } from 'react-router';
 import { Link } from 'react-router-dom';
 import { object } from 'yup';
 import { Email, IonSubmit, Password, TopNav } from '../components';
@@ -26,6 +26,7 @@ import { Container } from '../components/container';
 import { IMutationLoginArgs, SystemUserType } from '../schema.gql';
 import { useMutation } from '../state/apollo';
 import { tracker } from '../state/tracker';
+import { useUser } from '../state/user';
 import { emailSchema, passwordSchema } from '../util';
 
 const LOGIN = gql`
@@ -119,36 +120,37 @@ const userSchema = object().shape({
   password: passwordSchema,
 });
 
-export class UserLogin extends React.PureComponent<
+export const UserLogin = React.memo<
   RouteComponentProps<{}> & { admin?: boolean }
-> {
-  render() {
-    const { history, admin = false } = this.props;
-    return (
-      <>
-        <TopNav homeHref="/" />
-
-        <IonContent>
-          <Container>
-            <IonCard>
-              <IonCardHeader>
-                <IonCardTitle className="ion-text-center">Login</IonCardTitle>
-              </IonCardHeader>
-
-              <IonCardContent>
-                <LoginForm
-                  history={history}
-                  type={admin ? SystemUserType.Admin : SystemUserType.User}
-                  schema={admin ? adminSchema : userSchema}
-                />
-              </IonCardContent>
-            </IonCard>
-          </Container>
-        </IonContent>
-      </>
-    );
+>(function UserLogin({ history, admin = false }) {
+  const user = useUser();
+  if (user) {
+    return <Redirect to="/" />;
   }
-}
+  return (
+    <>
+      <TopNav homeHref="/" />
+
+      <IonContent>
+        <Container>
+          <IonCard>
+            <IonCardHeader>
+              <IonCardTitle className="ion-text-center">Login</IonCardTitle>
+            </IonCardHeader>
+
+            <IonCardContent>
+              <LoginForm
+                history={history}
+                type={admin ? SystemUserType.Admin : SystemUserType.User}
+                schema={admin ? adminSchema : userSchema}
+              />
+            </IonCardContent>
+          </IonCard>
+        </Container>
+      </IonContent>
+    </>
+  );
+});
 
 export class AdminLogin extends React.PureComponent<RouteComponentProps<{}>> {
   render() {
