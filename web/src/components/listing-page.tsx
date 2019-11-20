@@ -8,7 +8,7 @@ import {
 } from '@ionic/react';
 import * as React from 'react';
 import { withListing } from '../containers/listing';
-import { UserDetails } from '../pages/public/components/user-details';
+import { UserDetails } from './user-details';
 import { Container } from './container';
 import { ListingCard } from './listing-card';
 import { TopNav } from './top-nav';

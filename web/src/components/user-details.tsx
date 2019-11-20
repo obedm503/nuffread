@@ -10,11 +10,11 @@ import gql from 'graphql-tag';
 import { call, logoFacebook, mail, person } from 'ionicons/icons';
 import * as React from 'react';
 import { Link } from 'react-router-dom';
-import { Error, IonButtonLink } from '../../../components';
-import { SafeImg } from '../../../components/safe-img';
-import { IQueryListingArgs, IUser } from '../../../schema.gql';
-import { useQuery } from '../../../state/apollo';
-import { useUser } from '../../../state/user';
+import { Error, IonButtonLink } from '.';
+import { IQueryListingArgs, IUser } from '../schema.gql';
+import { useQuery } from '../state/apollo';
+import { useUser } from '../state/user';
+import { SafeImg } from './safe-img';
 
 export const UserInfo = React.memo<{ user: IUser }>(function UserInfo({
   user,
