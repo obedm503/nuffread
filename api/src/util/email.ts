@@ -6,7 +6,40 @@ type SendParameters = {
   subject: string;
   html: string;
 };
-export const send = async ({ email, subject, html }: SendParameters) => {
+export async function send(params: SendParameters): Promise<void> {
+  // await mailgun(params);
+  await sendgrid(params);
+
+  logger.info({ email: params.email }, 'sent email');
+}
+
+async function sendgrid({
+  email,
+  subject,
+  html,
+}: SendParameters): Promise<void> {
+  const headers = new Headers();
+  headers.set('Authorization', `Bearer ${process.env.SENDGRID_API_KEY}`);
+  headers.set('Content-Type', 'application/json');
+
+  const url = 'https://api.sendgrid.com/v3/mail/send';
+  // sendgrid sends back an empty response
+  await fetch(url, {
+    method: 'POST',
+    headers,
+    body: JSON.stringify({
+      content: [{ type: 'text/html', value: html }],
+      from: { email: CONFIG.email, name: CONFIG.name },
+      personalizations: [{ to: [{ email }], subject }],
+    }),
+  });
+}
+
+async function mailgun({
+  email,
+  subject,
+  html,
+}: SendParameters): Promise<void> {
   const headers = new Headers();
   headers.set(
     'Authorization',
@@ -22,11 +55,11 @@ export const send = async ({ email, subject, html }: SendParameters) => {
   body.set('html', html);
 
   const url = `https://api.mailgun.net/v3/${process.env.MAILGUN_DOMAIN}/messages`;
-  await fetch(url, {
+  const res = await fetch(url, {
     method: 'POST',
     headers,
     body: body.toString(),
   });
-
-  logger.info({ email }, 'sent email');
-};
+  const data = await res.json();
+  logger.info({ res: data }, 'mailgun responded with');
+}
