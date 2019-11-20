@@ -7,12 +7,12 @@ export function isUser(me?: User): me is User {
   return me instanceof User && !!me.confirmedAt;
 }
 
-export function ensureUser(me?: UserSession): void {
+export function ensureUser(session?: UserSession): void {
   if (
-    me &&
-    'userType' in me &&
-    typeof me.userType === 'string' &&
-    me.userType === SystemUserType.User
+    session &&
+    'userType' in session &&
+    typeof session.userType === 'string' &&
+    session.userType === SystemUserType.User
   ) {
     return;
   }
@@ -20,12 +20,12 @@ export function ensureUser(me?: UserSession): void {
   throw new AuthorizationError();
 }
 
-export function ensureAdmin(me?: UserSession): void {
+export function ensureAdmin(session?: UserSession): void {
   if (
-    me &&
-    'userType' in me &&
-    typeof me.userType === 'string' &&
-    me.userType === SystemUserType.Admin
+    session &&
+    'userType' in session &&
+    typeof session.userType === 'string' &&
+    session.userType === SystemUserType.Admin
   ) {
     return;
   }
@@ -33,8 +33,15 @@ export function ensureAdmin(me?: UserSession): void {
   throw new AuthorizationError();
 }
 
-export function ensurePublic(me?: UserSession): void {
-  if (me) {
-    throw new AuthenticationError();
+export function ensurePublic(session?: UserSession): void {
+  if (!session) {
+    return;
   }
+  if (!('userId' in session)) {
+    return;
+  }
+  if (!('userType' in session)) {
+    return;
+  }
+  throw new AuthenticationError();
 }
