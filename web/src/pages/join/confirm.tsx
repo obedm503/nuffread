@@ -50,7 +50,11 @@ const ConfirmEmail = React.memo<{
 
 export const Confirm = React.memo<
   RouteComponentProps<{ confirmationCode: string }>
->(({ match: { params: { confirmationCode } } }) => {
+>(function Confirm({
+  match: {
+    params: { confirmationCode },
+  },
+}) {
   return (
     <IonGrid>
       <IonRow>

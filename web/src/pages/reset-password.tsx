@@ -158,24 +158,24 @@ const ResetForm: FC<{ token: string }> = ({ token }) => {
 
 const routes: RouteProps[] = [
   {
-    path: '/:token',
-    render: memo(({ match }: RouteComponentProps<{ token: string }>) => (
-      <Card>
-        <ResetForm token={match.params.token} />
-      </Card>
-    )),
-  },
-  {
     path: '/',
     exact: true,
-    render: memo(() => (
+    render: () => (
       <Card>
         <RequestResetForm />
       </Card>
-    )),
+    ),
+  },
+  {
+    path: '/:token',
+    render: ({ match }: RouteComponentProps<{ token: string }>) => (
+      <Card>
+        <ResetForm token={match.params.token} />
+      </Card>
+    ),
   },
 ];
-export default memo(function ResetPassword() {
+export default memo<RouteComponentProps>(function ResetPassword({ match }) {
   const user = useUser();
   if (user) {
     return <Redirect to="/" />;
@@ -186,7 +186,7 @@ export default memo(function ResetPassword() {
 
       <IonContent>
         <Container>
-          <Routes routes={routes} />
+          <Routes routes={routes} base={match.url} />
         </Container>
       </IonContent>
     </IonPage>

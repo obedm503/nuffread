@@ -1,6 +1,6 @@
 import { IonContent, IonPage } from '@ionic/react';
 import * as React from 'react';
-import { Redirect, RouteProps } from 'react-router';
+import { Redirect, RouteComponentProps, RouteProps } from 'react-router';
 import { Routes, TopNav } from '../../components';
 import { useUser } from '../../state/user';
 import { Confirm } from './confirm';
@@ -11,7 +11,7 @@ const routes: RouteProps[] = [
   { path: '/:confirmationCode', component: Confirm },
 ];
 
-export default React.memo(function Join() {
+export default React.memo<RouteComponentProps>(function Join({ match }) {
   const user = useUser();
   if (user) {
     return <Redirect to="/" />;
@@ -21,7 +21,7 @@ export default React.memo(function Join() {
       <TopNav homeHref="/" />
 
       <IonContent>
-        <Routes routes={routes} />
+        <Routes routes={routes} base={match.url} />
       </IonContent>
     </IonPage>
   );
