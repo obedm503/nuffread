@@ -3,6 +3,7 @@ import { RefresherEventDetail } from '@ionic/core';
 import {
   IonButtons,
   IonContent,
+  IonItem,
   IonPage,
   IonRefresher,
   IonRefresherContent,
@@ -12,38 +13,46 @@ import * as React from 'react';
 import {
   Container,
   Error,
+  ListWrapper,
   LogoutItem,
   Popover,
   TopNav,
+  UserInfo,
 } from '../../components';
 import { MY_LISTINGS } from '../../queries';
 import { IQuery } from '../../schema.gql';
 import { useLazyQuery } from '../../state/apollo';
 import { useUser } from '../../state/user';
 import { queryLoading } from '../../util';
-import { UserInfo } from '../public/components/user-details';
 import { SlidingListing } from './components/sliding-listing';
 
 const Listings = React.memo<
   Pick<QueryResult<IQuery>, 'data' | 'error' | 'loading'>
 >(function Listings({ loading, error, data }) {
   if (loading) {
-    return <>{SlidingListing.loading}</>;
+    return <ListWrapper title="Books">{SlidingListing.loading}</ListWrapper>;
   }
   if (error || !data || !data.me || data.me.__typename !== 'User') {
     return <Error value={error} />;
   }
 
   if (!data.me.listings.length) {
-    return <span>No listings posted</span>;
+    return (
+      <ListWrapper title="Books">
+        <IonItem>
+          No books for sale. To add a book, click the button at the bottom of
+          the screen.
+        </IonItem>
+      </ListWrapper>
+    );
   }
 
   return (
-    <>
+    <ListWrapper title="Books">
       {data.me.listings.map(listing => (
         <SlidingListing key={listing.id} listing={listing}></SlidingListing>
       ))}
-    </>
+    </ListWrapper>
   );
 });
 
