@@ -26,27 +26,24 @@ const validStarts = ['/explore', '/search', '/create', '/profile'];
 export default React.memo(function Private() {
   const { location } = useRouter();
   const route = location.pathname;
-  const [isOpen, setModalOpen] = React.useState(false);
   const createButton = React.useRef<HTMLIonTabButtonElement>(null);
+
+  const [isOpen, setModalOpen] = React.useState(false);
+  const closeModal = React.useCallback(() => setModalOpen(false), [
+    setModalOpen,
+  ]);
 
   React.useEffect(() => {
     const button = createButton.current;
     if (!button) {
       return;
     }
-    const onClick = (e: MouseEvent) => {
-      e.preventDefault();
-      setModalOpen(true);
-    };
+    const onClick = () => setModalOpen(true);
     button.addEventListener('click', onClick);
     return () => {
       button.removeEventListener('click', onClick);
     };
   }, [createButton]);
-
-  const closeModal = React.useCallback(() => setModalOpen(false), [
-    setModalOpen,
-  ]);
 
   if (!validStarts.some(start => route.startsWith(start))) {
     return <Redirect to="/explore"></Redirect>;
@@ -71,8 +68,9 @@ export default React.memo(function Private() {
           <IonIcon icon={search} ariaLabel="Explore" />
         </IonTabButton>
 
-        <IonTabButton tab="create" ref={createButton}>
-          {isOpen ? <CreateModal closeModal={closeModal} /> : null}
+        {/* modal close button does not work without ref */}
+        <IonTabButton ref={createButton}>
+          {isOpen ? <CreateModal isOpen onClose={closeModal} /> : null}
 
           <IonIcon icon={add} ariaLabel="Create" />
         </IonTabButton>

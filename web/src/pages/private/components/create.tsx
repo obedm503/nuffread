@@ -179,15 +179,21 @@ const GOOGLE_BOOK = gql`
   }
 `;
 
+type ListingState = { googleId: string; price: string; description: string };
+
 const onCompleted = ({ createListing }: IMutation) => {
   tracker.event('CREATE_LISTING', { price: createListing.price });
 };
-const useCreateListing = (listing: IListingInput, closeModal) => {
+const useCreateListing = (listing: ListingState, closeModal) => {
   const client = useApolloClient();
   const [create, { loading, data, error }] = useMutation<IListingInput>(
     CREATE_LISTING,
     {
-      variables: listing,
+      variables: {
+        googleId: listing.googleId,
+        price: parseFloat(listing.price) * 100,
+        description: listing.description,
+      },
       onCompleted,
       update: (proxy, { data }) => {
         const newListing = data && data.createListing;
@@ -232,11 +238,11 @@ const useCreateListing = (listing: IListingInput, closeModal) => {
   };
 };
 
-const PreviewListing = React.memo<{
-  googleId: string;
-  price: string;
-  description: string;
-}>(function PreviewListing({ googleId, price, description }) {
+const PreviewListing = React.memo<ListingState>(function PreviewListing({
+  googleId,
+  price,
+  description,
+}) {
   const { loading, data, error } = useQuery<IQueryGoogleBookArgs>(GOOGLE_BOOK, {
     variables: { id: googleId },
   });
@@ -252,7 +258,7 @@ const PreviewListing = React.memo<{
 
   const listingPreview: any = {
     book: googleBook,
-    price: parseFloat(price) * 100,
+    price: price === '' ? '' : parseFloat(price) * 100,
     createdAt: new Date(),
     description,
   };
@@ -260,55 +266,49 @@ const PreviewListing = React.memo<{
   return <ListingCard listing={listingPreview} />;
 });
 
+const initialState = {
+  searchValue: '',
+  googleId: '',
+  price: '',
+  description: '',
+  isFocused: false,
+};
 const useListingState = () => {
-  const [state, set] = React.useState<{
-    searchValue: string;
-    googleId: string;
-    price: string;
-    description: string;
-    isFocused: boolean;
-  }>({
-    searchValue: '',
-    googleId: '',
-    price: '',
-    description: '',
-    isFocused: false,
-  });
+  const [state, set] = React.useState<
+    ListingState & {
+      searchValue: string;
+      isFocused: boolean;
+    }
+  >(initialState);
 
   const pickBook = React.useCallback(
     (book: IGoogleBook) =>
       set(state => ({ ...state, googleId: book.googleId, isFocused: false })),
-    [set],
+    [],
   );
-  const setPrice = React.useCallback(
-    ({ detail }) => {
-      if (detail.value) {
-        set(state => ({ ...state, price: detail.value }));
-      }
-    },
-    [set],
-  );
+  const setPrice = React.useCallback(({ detail }) => {
+    if (detail.value) {
+      set(state => ({ ...state, price: detail.value }));
+    }
+  }, []);
 
   return {
     state,
     pickBook: pickBook,
     onFocus: React.useCallback(
       () => set(state => ({ ...state, isFocused: true })),
-      [set],
+      [],
     ),
     setPrice: setPrice,
-    setDescription: React.useCallback(
-      ({ detail }) => {
-        if (detail.value) {
-          set(state => ({ ...state, description: detail.value }));
-        }
-      },
-      [set],
-    ),
+    setDescription: React.useCallback(({ detail }) => {
+      if (detail.value) {
+        set(state => ({ ...state, description: detail.value }));
+      }
+    }, []),
   };
 };
 
-export const Create = ({ onCancel }) => {
+export const CreateModal = ({ isOpen, onClose: closeModal }) => {
   const {
     state,
     pickBook,
@@ -317,19 +317,15 @@ export const Create = ({ onCancel }) => {
     onFocus,
   } = useListingState();
   const { create, loading, error, listing } = useCreateListing(
-    {
-      price: parseFloat(state.price) * 100,
-      description: state.description,
-      googleId: state.googleId,
-    },
-    onCancel,
+    state,
+    closeModal,
   );
 
   return (
-    <>
+    <IonModal isOpen={isOpen} onDidDismiss={closeModal}>
       <TopNav title="New Listing" homeHref={false}>
         <IonButtons slot="secondary">
-          <IonButton onClick={onCancel}>
+          <IonButton onClick={closeModal}>
             <IonIcon slot="icon-only" icon={close}></IonIcon>
           </IonButton>
         </IonButtons>
@@ -406,23 +402,6 @@ export const Create = ({ onCancel }) => {
           </IonButton>
         ) : null}
       </IonFooter>
-    </>
-  );
-};
-
-export const CreatePage = () => {
-  const { history } = useRouter();
-  return (
-    <IonPage>
-      <Create onCancel={history.goBack} />
-    </IonPage>
-  );
-};
-
-export const CreateModal = ({ closeModal }) => {
-  return (
-    <IonModal isOpen onDidDismiss={closeModal}>
-      <Create onCancel={closeModal} />
     </IonModal>
   );
 };
