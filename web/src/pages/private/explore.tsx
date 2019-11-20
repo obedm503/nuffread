@@ -19,7 +19,11 @@ export const Explore = memo(function Explore() {
       <TopNav
         title="Explore"
         homeHref="/explore"
-        toolbar={<SearchBar onFocus={toSearch} searchValue="" />}
+        toolbar={
+          <Container className="no-v-padding">
+            <SearchBar onFocus={toSearch} searchValue="" />
+          </Container>
+        }
       />
 
       <IonContent>

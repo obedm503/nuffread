@@ -1,9 +1,12 @@
 import { IonCol, IonGrid, IonRow } from '@ionic/react';
 import React, { memo } from 'react';
 
-export const Container = memo(function Container({ children }) {
+export const Container = memo<{
+  className?: string;
+  children: React.ReactNode;
+}>(function Container({ className, children }) {
   return (
-    <IonGrid>
+    <IonGrid className={className}>
       <IonRow>
         <IonCol
           size="12"

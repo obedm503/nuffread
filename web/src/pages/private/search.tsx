@@ -14,7 +14,13 @@ export const Search = memo(function Search() {
         title="Search"
         homeHref="/explore"
         toolbar={
-          <SearchBar onChange={onSearch} searchValue={searchValue} autofocus />
+          <Container className="no-v-padding">
+            <SearchBar
+              onChange={onSearch}
+              searchValue={searchValue}
+              autofocus
+            />
+          </Container>
         }
       >
         <IonButtons slot="start">

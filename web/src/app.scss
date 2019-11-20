@@ -245,3 +245,13 @@ ion-card.listing-card {
 ion-skeleton-text {
   height: 1em; // default to font size
 }
+
+ion-grid.no-v-padding {
+  padding-top: 0;
+  padding-bottom: 0;
+  ion-row,
+  ion-col {
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+}
