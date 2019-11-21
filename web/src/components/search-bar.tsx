@@ -1,17 +1,38 @@
 import { SearchbarChangeEventDetail } from '@ionic/core';
 import {
+  IonButton,
   IonButtons,
+  IonIcon,
   IonSearchbar,
   IonToolbar,
   useIonViewDidEnter,
 } from '@ionic/react';
+import { qrScanner } from 'ionicons/icons';
 import * as React from 'react';
 import { Scanner } from './scanner';
+
+export const DummySearchBar: React.FC<{
+  onFocus?: () => void;
+}> = React.memo(function SearchBar({ onFocus, children }) {
+  return (
+    <IonToolbar color="white">
+      {children}
+
+      <IonSearchbar placeholder="Search" onIonFocus={onFocus} />
+
+      <IonButtons slot="end">
+        <IonButton onClick={onFocus} color="primary">
+          <IonIcon slot="icon-only" icon={qrScanner} />
+        </IonButton>
+      </IonButtons>
+    </IonToolbar>
+  );
+});
 
 type SearchBarProps = {
   onChange?: (search: string) => void;
   searchValue?: string;
-  onFocus?: (event: CustomEvent<void>) => void;
+  onFocus?: () => void;
   autofocus?: boolean;
 };
 export const SearchBar: React.FC<SearchBarProps> = React.memo(

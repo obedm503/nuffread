@@ -10,10 +10,10 @@ import {
 import React, { memo, useCallback } from 'react';
 import {
   Container,
+  DummySearchBar,
   Error,
   ListingCard,
   Listings,
-  SearchBar,
   useTopListings,
 } from '../../components';
 import { useRouter } from '../../state/router';
@@ -45,7 +45,7 @@ export const Explore = memo(function Explore() {
     <IonPage>
       <IonHeader>
         <Container className="no-padding">
-          <SearchBar onFocus={toSearch} searchValue="" />
+          <DummySearchBar onFocus={toSearch} />
         </Container>
       </IonHeader>
 
