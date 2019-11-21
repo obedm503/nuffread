@@ -1,4 +1,4 @@
-import { Admin, Listing, User } from '../entities';
+import { Admin, Listing, RecentListing, User } from '../entities';
 import { ISystemUser, IUser } from '../schema.gql';
 import { ensureAdmin, ensureUser } from '../util/auth';
 import { getSchoolName } from '../util/schools';
@@ -23,6 +23,15 @@ export const UserResolver: IResolver<IUser, User> = {
       relations: ['book'],
     });
     return listings;
+  },
+  async recent(user) {
+    const recents = await RecentListing.find({
+      where: { userId: user.id },
+      relations: ['listing'],
+      order: { updatedAt: 'DESC' },
+    });
+
+    return recents.map(recent => recent.listing);
   },
 };
 

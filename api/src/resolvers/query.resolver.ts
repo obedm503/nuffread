@@ -1,4 +1,5 @@
 import { Invite, Listing } from '../entities';
+import { RecentListing } from '../entities/recent-listing.entity';
 import {
   IQuery,
   IQueryGoogleBookArgs,
@@ -7,9 +8,10 @@ import {
   IQuerySearchGoogleArgs,
   IQueryTopArgs,
 } from '../schema.gql';
-import { ensureAdmin, ensureUser } from '../util/auth';
+import { ensureAdmin, ensureUser, userSession } from '../util/auth';
 import { getBook, searchBooks } from '../util/google-books';
 import { IResolver } from '../util/types';
+import { logger } from '../util';
 
 export const QueryResolver: IResolver<IQuery> = {
   async search(_, { query, paginate }: IQuerySearchArgs) {
@@ -86,8 +88,32 @@ export const QueryResolver: IResolver<IQuery> = {
     return await getMe();
   },
 
-  listing(_, { id }: IQueryListingArgs, { listingLoader }) {
-    return listingLoader.load(id);
+  async listing(_, { id }: IQueryListingArgs, { listingLoader, session }) {
+    const listing = await listingLoader.load(id);
+    if (!listing) {
+      return;
+    }
+    if (!session || !userSession(session)) {
+      return listing;
+    }
+
+    if (listing.userId === session.userId) {
+      // don't record me seeing my own listings
+      return listing;
+    }
+
+    const partial = { listingId: id, userId: session.userId };
+    const saved = await RecentListing.findOne({ where: partial });
+
+    if (saved) {
+      // update updated_at field
+      await RecentListing.update(partial, partial);
+    } else {
+      await RecentListing.create(partial).save();
+    }
+    logger.debug({ partial }, 'recent listing');
+
+    return listing;
   },
 
   async searchGoogle(_, { query }: IQuerySearchGoogleArgs, { session }) {

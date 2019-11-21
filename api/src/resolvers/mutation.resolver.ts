@@ -1,7 +1,7 @@
 import { compare, hash } from 'bcryptjs';
 import { getConnection } from 'typeorm';
 import { CONFIG } from '../config';
-import { Admin, Book, Invite, Listing, User } from '../entities';
+import { Admin, Book, Invite, Listing, RecentListing, User } from '../entities';
 import {
   IMutation,
   IMutationConfirmArgs,
@@ -220,7 +220,10 @@ export const MutationResolver: IResolver<IMutation> = {
       throw new AuthorizationError();
     }
 
-    await Listing.delete({ id });
+    await getConnection().transaction(async manager => {
+      await manager.delete(RecentListing, { listingId: id });
+      await manager.delete(Listing, { id });
+    });
 
     return true;
   },

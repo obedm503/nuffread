@@ -6,6 +6,7 @@ import { makeExecutableSchema } from 'graphql-tools';
 import { resolve } from 'path';
 import * as Stripe from 'stripe';
 import { Admin, Book, Invite, Listing, User } from './entities';
+import { RecentListing } from './entities/recent-listing.entity';
 import {
   DateResolver,
   InviteResolver,
@@ -117,4 +118,11 @@ export async function getContext({
   };
 }
 
-export const getEntities = () => [User, Admin, Listing, Book, Invite];
+export const getEntities = () => [
+  User,
+  Admin,
+  Listing,
+  Book,
+  Invite,
+  RecentListing,
+];

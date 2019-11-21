@@ -66,6 +66,7 @@ type User {
   photo: String
 
   listings: [Listing!]!
+  recent: [Listing!]!
   invite: Invite!
 
   confirmedAt: Date
