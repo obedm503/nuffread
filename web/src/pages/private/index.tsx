@@ -38,7 +38,10 @@ export default React.memo(function Private() {
     if (!button) {
       return;
     }
-    const onClick = () => setModalOpen(true);
+    const onClick = e => {
+      e.preventDefault();
+      setModalOpen(true);
+    };
     button.addEventListener('click', onClick);
     return () => {
       button.removeEventListener('click', onClick);
