@@ -137,6 +137,6 @@ export const QueryResolver: IResolver<IQuery> = {
   async invites(_, args, { session }) {
     ensureAdmin(session);
 
-    return Invite.find();
+    return Invite.find({ order: { createdAt: 'DESC' } });
   },
 };
