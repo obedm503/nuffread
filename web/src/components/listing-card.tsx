@@ -16,18 +16,6 @@ import { RelativeDate } from './relative-date';
 import { SafeImg } from './safe-img';
 
 const badgeStyle = { fontSize: 'inherit', float: 'right' };
-const imgStyle = {
-  width: 'auto',
-  maxHeight: '60vh',
-  minHeight: '35vh',
-  margin: '4px auto 4px auto',
-};
-const placeholderImgStyle = {
-  // 6:9 aspect ratio
-  width: 'calc(60vh * 6 / 9)',
-  height: '60vh',
-  margin: '4px auto 4px auto',
-};
 type Props = {
   onClick?;
   listing: IListing;
@@ -59,7 +47,7 @@ export const ListingCard = memo<Props>(function ListingCard({
           src={listing.book.thumbnail || undefined}
           alt={[listing.book.title, listing.book.subTitle].join(' ')}
           placeholder="/img/book.png"
-          style={imgStyle}
+          className="book-cover"
         />
       </IonCardContent>
 
@@ -116,7 +104,11 @@ const Loading = () => (
     </IonCardHeader>
 
     <IonCardContent>
-      <IonSkeletonText slot="start" animated style={placeholderImgStyle} />
+      <IonSkeletonText
+        slot="start"
+        animated
+        className="book-cover-placeholder"
+      />
     </IonCardContent>
 
     <IonItem lines="inset">

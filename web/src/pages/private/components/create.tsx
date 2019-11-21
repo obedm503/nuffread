@@ -14,16 +14,14 @@ import {
   IonLabel,
   IonModal,
   IonTextarea,
-  IonThumbnail,
 } from '@ionic/react';
 import gql from 'graphql-tag';
 import { close, logoUsd } from 'ionicons/icons';
 import * as React from 'react';
 import { Error, Loading, TopNav } from '../../../components';
 import { ListWrapper } from '../../../components/list-wrapper';
-import { ListingBasic } from '../../../components/listing-basic';
+import { Book, ListingBasic } from '../../../components/listing-basic';
 import { ListingCard } from '../../../components/listing-card';
-import { SafeImg } from '../../../components/safe-img';
 import { SearchBar } from '../../../components/search-bar';
 import { CREATE_LISTING, MY_LISTINGS, SEARCH_GOOGLE } from '../../../queries';
 import {
@@ -37,39 +35,15 @@ import {
 import { useMutation, useQuery } from '../../../state/apollo';
 import { tracker } from '../../../state/tracker';
 
-const Book: React.FC<{ onClick?; book: IGoogleBook; active: boolean }> = ({
-  onClick,
-  book,
-  active,
-}) => (
-  <IonItem
-    button={!!onClick}
-    onClick={onClick}
-    color={active ? 'primary' : undefined}
-  >
-    <IonThumbnail slot="start" style={{ '--size': '100%' }}>
-      <SafeImg
-        src={book.thumbnail || undefined}
-        alt={book.title}
-        placeholder="/img/book.png"
-      />
-    </IonThumbnail>
-    <IonLabel class="ion-text-wrap">
-      {book.title}
-      <br />
-
-      {book.subTitle ? (
-        <>
-          <small>{book.subTitle}</small>
-          <br />
-        </>
-      ) : null}
-
-      <small>{book.authors.join(', ')}</small>
-      <br></br>
-      <small>{book.isbn.join(', ')}</small>
-    </IonLabel>
-  </IonItem>
+const SearchResultBook: React.FC<{
+  book: IGoogleBook;
+  active: boolean;
+  onClick?;
+}> = ({ book, active, onClick }) => (
+  <Book book={book} color={active ? 'primary' : undefined} onClick={onClick}>
+    <br />
+    <small>{book.isbn.join(', ')}</small>
+  </Book>
 );
 
 const SearchResults = React.memo<{
@@ -111,7 +85,7 @@ const SearchResults = React.memo<{
     }
     return (
       <ListWrapper title={title}>
-        <Book book={activeBook} active />
+        <SearchResultBook book={activeBook} active />
       </ListWrapper>
     );
   }
@@ -123,7 +97,7 @@ const SearchResults = React.memo<{
           return null;
         }
         return (
-          <Book
+          <SearchResultBook
             key={book.googleId}
             onClick={() => onClick(book)}
             book={book}

@@ -255,3 +255,58 @@ ion-grid.no-v-padding {
     padding-bottom: 0;
   }
 }
+
+// from https://github.com/ionic-team/ionic/blob/master/core/src/themes/ionic.globals.scss
+$ionic-breakpoints: (
+  xs: 0,
+  sm: 576px,
+  md: 768px,
+  lg: 992px,
+  xl: 1200px,
+) !default;
+
+// from https://github.com/ionic-team/ionic/blob/master/core/src/themes/ionic.mixins.scss
+@function breakpoint-min($name) {
+  $min: map-get($ionic-breakpoints, $name);
+
+  @return if($name != index-to-key($ionic-breakpoints, 1), $min, null);
+}
+@mixin media-breakpoint-up($name) {
+  $min: breakpoint-min($name);
+  @if $min {
+    @media (min-width: $min) {
+      @content;
+    }
+  } @else {
+    @content;
+  }
+}
+
+.book-cover {
+  margin: 4px auto 4px auto;
+  min-width: 100%;
+  min-width: 80%;
+  height: auto;
+}
+
+// with 6:9 aspect ratio
+.book-cover-placeholder {
+  margin: 4px auto 4px auto;
+  width: calc(50vmax * 6 / 9);
+  height: 50vmax;
+
+  @include media-breakpoint-up(md) {
+    width: calc(60vmax * 6 / 9);
+    height: 60vmax;
+  }
+
+  @include media-breakpoint-up(lg) {
+    width: calc(50vmax * 6 / 9);
+    height: 50vmax;
+  }
+
+  @include media-breakpoint-up(xl) {
+    width: calc(55vh * 6 / 9);
+    height: 55vh;
+  }
+}

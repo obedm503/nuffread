@@ -15,8 +15,8 @@ export const Container = memo<{
           offsetMd="1"
           sizeLg="8"
           offsetLg="2"
-          sizeXl="4"
-          offsetXl="4"
+          sizeXl="6"
+          offsetXl="3"
         >
           {children}
         </IonCol>

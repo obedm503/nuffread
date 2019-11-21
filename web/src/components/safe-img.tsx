@@ -32,7 +32,8 @@ export const SafeImg = React.memo<{
   slot?: string;
   placeholder: string | { ios: string; md: string };
   style?: React.CSSProperties;
-}>(function SafeImg({ placeholder, slot, alt, style, ...props }) {
+  className?: string;
+}>(function SafeImg({ placeholder, slot, alt, style, className, ...props }) {
   const { error, loading } = useImage(props.src);
 
   let src = (error ? placeholder : props.src) || placeholder;
@@ -47,6 +48,7 @@ export const SafeImg = React.memo<{
       src={src}
       style={Object.assign({ width: 'auto' }, style)}
       alt={alt}
+      className={className}
     />
   );
 });
