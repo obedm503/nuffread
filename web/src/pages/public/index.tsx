@@ -1,54 +1,30 @@
-import {
-  IonCol,
-  IonContent,
-  IonGrid,
-  IonPage,
-  IonRouterOutlet,
-  IonRow,
-} from '@ionic/react';
+import { IonContent, IonPage } from '@ionic/react';
 import React, { memo } from 'react';
-import { Route, RouteComponentProps } from 'react-router';
-import { ListingPage } from '../../components/listing-page';
-import { SearchBar } from '../../components/search-bar';
-import { useSearch } from '../../state/search';
+import { Container } from '../../components';
 import { Nav } from './components/nav';
-import { SearchListings } from './components/search-results';
-import { TopListings } from './components/top-listings';
 
 const Master = memo(function Master() {
-  const { onClick, onSearch, searchValue } = useSearch('/');
   return (
     <IonPage>
       <Nav base="/" />
 
       <IonContent>
-        <IonGrid>
-          <IonRow>
-            <IonCol size="12" sizeLg="10" offsetLg="1">
-              <SearchBar onChange={onSearch} searchValue={searchValue} />
-
-              {searchValue ? (
-                <SearchListings onClick={onClick} searchValue={searchValue} />
-              ) : (
-                <TopListings onClick={onClick} />
-              )}
-            </IonCol>
-          </IonRow>
-        </IonGrid>
+        <Container>public content goes here</Container>
       </IonContent>
     </IonPage>
   );
 });
 
-const Detail = (routeProps: RouteComponentProps<{ listingId: string }>) => {
-  return <ListingPage id={routeProps.match.params.listingId} base="/" />;
-};
+// const Detail = (routeProps: RouteComponentProps<{ listingId: string }>) => {
+//   return <ListingPage id={routeProps.match.params.listingId} base="/" />;
+// };
 
-export default memo(function Public() {
-  return (
-    <IonRouterOutlet>
-      <Route path="/" exact render={() => <Master />} />
-      <Route path="/:listingId" component={Detail} />
-    </IonRouterOutlet>
-  );
-});
+// export default memo(function Public() {
+//   return (
+//     <IonRouterOutlet>
+//       <Route path="/" exact render={() => <Master />} />
+//       <Route path="/:listingId" component={Detail} />
+//     </IonRouterOutlet>
+//   );
+// });
+export default Master;

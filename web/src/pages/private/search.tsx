@@ -1,10 +1,7 @@
 import { IonBackButton, IonButtons, IonContent, IonPage } from '@ionic/react';
 import React, { memo } from 'react';
-import { TopNav } from '../../components';
-import { Container } from '../../components/container';
-import { SearchBar } from '../../components/search-bar';
+import { Container, SearchBar, SearchListings, TopNav } from '../../components';
 import { useSearch } from '../../state/search';
-import { SearchListings } from '../public/components/search-results';
 
 export const Search = memo(function Search() {
   const { onClick, onSearch, searchValue } = useSearch('/search');

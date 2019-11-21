@@ -1,11 +1,23 @@
-import { IonContent, IonPage } from '@ionic/react';
+import {
+  IonContent,
+  IonInfiniteScroll,
+  IonPage,
+  IonRefresher,
+  IonRefresherContent,
+  useIonViewDidEnter,
+} from '@ionic/react';
 import React, { memo, useCallback } from 'react';
-import { TopNav } from '../../components';
-import { Container } from '../../components/container';
-import { SearchBar } from '../../components/search-bar';
+import {
+  Container,
+  Error,
+  ListingCard,
+  Listings,
+  SearchBar,
+  TopNav,
+  useTopListings,
+} from '../../components';
 import { useRouter } from '../../state/router';
 import { useSearch } from '../../state/search';
-import { TopListings } from '../public/components/top-listings';
 
 export const Explore = memo(function Explore() {
   const { onClick } = useSearch('/search');
@@ -13,6 +25,21 @@ export const Explore = memo(function Explore() {
   const toSearch = useCallback(() => history.push({ pathname: '/search' }), [
     history,
   ]);
+
+  const {
+    load,
+    refresh,
+    error,
+    canFetchMore,
+    fetchMore,
+    loading,
+    data,
+  } = useTopListings();
+  useIonViewDidEnter(load);
+
+  if (error) {
+    return <Error value={error} />;
+  }
 
   return (
     <IonPage>
@@ -27,8 +54,23 @@ export const Explore = memo(function Explore() {
       />
 
       <IonContent>
+        <IonRefresher slot="fixed" onIonRefresh={refresh}>
+          <IonRefresherContent />
+        </IonRefresher>
+
         <Container>
-          <TopListings onClick={onClick} />
+          <Listings
+            loading={loading}
+            onClick={onClick}
+            listings={data}
+            component={ListingCard}
+          />
+
+          {canFetchMore ? (
+            <IonInfiniteScroll onIonInfinite={fetchMore}>
+              {ListingCard.loading}
+            </IonInfiniteScroll>
+          ) : null}
         </Container>
       </IonContent>
     </IonPage>

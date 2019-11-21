@@ -1,7 +1,7 @@
 import { IonItem, IonLabel } from '@ionic/react';
 import * as React from 'react';
-import { ListWrapper } from '../../../components/list-wrapper';
-import { IListing } from '../../../schema.gql';
+import { ListWrapper } from './list-wrapper';
+import { IListing } from '../schema.gql';
 
 type Props = {
   listings?: readonly IListing[];

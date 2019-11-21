@@ -1,11 +1,11 @@
 import { IonInfiniteScroll } from '@ionic/react';
 import gql from 'graphql-tag';
 import * as React from 'react';
-import { Error } from '../../../components';
-import { ListingBasic } from '../../../components/listing-basic';
-import { BASIC_LISTING } from '../../../queries';
-import { IQuerySearchArgs } from '../../../schema.gql';
-import { useQuery } from '../../../state/apollo';
+import { Error } from '.';
+import { ListingBasic } from './listing-basic';
+import { BASIC_LISTING } from '../queries';
+import { IQuerySearchArgs } from '../schema.gql';
+import { useQuery } from '../state/apollo';
 import { Listings } from './listings';
 
 export const SEARCH = gql`
