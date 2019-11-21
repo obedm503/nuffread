@@ -29,6 +29,7 @@ const makeIdLoader = <T extends Base>(Ent: typeof Base) => {
 };
 const makeEmailLoader = <T extends Base>(Ent: typeof Base) => {
   return new DataLoader(async (emails: string[]) => {
+    logger.debug(Ent.name, emails);
     const items = await Ent.find<T>({
       where: { emails: emails.map(email => ({ email })) },
     });
