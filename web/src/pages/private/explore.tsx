@@ -1,5 +1,6 @@
 import {
   IonContent,
+  IonHeader,
   IonInfiniteScroll,
   IonPage,
   IonRefresher,
@@ -13,7 +14,6 @@ import {
   ListingCard,
   Listings,
   SearchBar,
-  TopNav,
   useTopListings,
 } from '../../components';
 import { useRouter } from '../../state/router';
@@ -43,15 +43,11 @@ export const Explore = memo(function Explore() {
 
   return (
     <IonPage>
-      <TopNav
-        title="Explore"
-        homeHref="/explore"
-        toolbar={
-          <Container className="no-v-padding">
-            <SearchBar onFocus={toSearch} searchValue="" />
-          </Container>
-        }
-      />
+      <IonHeader>
+        <Container className="no-padding">
+          <SearchBar onFocus={toSearch} searchValue="" />
+        </Container>
+      </IonHeader>
 
       <IonContent>
         <IonRefresher slot="fixed" onIonRefresh={refresh}>

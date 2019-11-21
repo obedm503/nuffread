@@ -246,11 +246,23 @@ ion-skeleton-text {
   height: 1em; // default to font size
 }
 
-ion-grid.no-v-padding {
-  padding-top: 0;
-  padding-bottom: 0;
+ion-grid.no-padding {
+  padding: 0;
   ion-row,
   ion-col {
+    padding: 0;
+  }
+}
+
+// fix ios searchbar in header
+ion-header .ios.toolbar-searchbar {
+  > * {
+    margin-top: auto;
+    margin-bottom: auto;
+  }
+
+  ion-searchbar {
+    height: var(--min-height);
     padding-top: 0;
     padding-bottom: 0;
   }

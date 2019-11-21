@@ -8,17 +8,19 @@ import {
   IonCardTitle,
   IonContent,
   IonFooter,
+  IonHeader,
   IonIcon,
   IonInput,
   IonItem,
   IonLabel,
   IonModal,
   IonTextarea,
+  IonToolbar,
 } from '@ionic/react';
 import gql from 'graphql-tag';
 import { close, logoUsd } from 'ionicons/icons';
 import * as React from 'react';
-import { Error, Loading, TopNav } from '../../../components';
+import { Error, Loading, Title } from '../../../components';
 import { ListWrapper } from '../../../components/list-wrapper';
 import { Book, ListingBasic } from '../../../components/listing-basic';
 import { ListingCard } from '../../../components/listing-card';
@@ -295,13 +297,17 @@ export const CreateModal = ({ isOpen, onClose: closeModal }) => {
 
   return (
     <IonModal isOpen={isOpen} onDidDismiss={closeModal}>
-      <TopNav title="Post Book" homeHref={false}>
-        <IonButtons slot="secondary">
-          <IonButton onClick={closeModal}>
-            <IonIcon slot="icon-only" icon={close}></IonIcon>
-          </IonButton>
-        </IonButtons>
-      </TopNav>
+      <IonHeader>
+        <IonToolbar color="white">
+          <Title title="Post Book" homeHref={false} />
+
+          <IonButtons slot="secondary">
+            <IonButton onClick={closeModal}>
+              <IonIcon slot="icon-only" icon={close}></IonIcon>
+            </IonButton>
+          </IonButtons>
+        </IonToolbar>
+      </IonHeader>
 
       <IonContent>
         <IonCard>
