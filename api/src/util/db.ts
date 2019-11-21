@@ -48,7 +48,7 @@ export class Base extends BaseEntity {
 
 const pinoLogger: Logger = {
   logQuery(query, params) {
-    logger.info({ query: query.replace(/"/g, ''), params }, 'query db');
+    logger.debug({ query: query.replace(/"/g, ''), params }, 'query db');
   },
   logQueryError(error, query, params) {
     logger.error({ error, query, params }, 'db error');
