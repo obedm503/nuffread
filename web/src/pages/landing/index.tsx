@@ -7,25 +7,21 @@ import {
   IonCol,
   IonContent,
   IonGrid,
+  IonHeader,
   IonItem,
   IonLabel,
   IonList,
   IonPage,
   IonRow,
   IonText,
+  IonToolbar,
 } from '@ionic/react';
 import { Form, Formik } from 'formik';
 import gql from 'graphql-tag';
 import * as React from 'react';
 import { Link } from 'react-router-dom';
 import { object, string } from 'yup';
-import {
-  Email,
-  IonButtonLink,
-  IonSubmit,
-  Text,
-  TopNav,
-} from '../../components';
+import { Email, IonButtonLink, IonSubmit, Text, Title } from '../../components';
 import { apolloFormErrors } from '../../components/apollo-error';
 import { IMutationRequestInviteArgs } from '../../schema.gql';
 import { useMutation } from '../../state/apollo';
@@ -105,11 +101,21 @@ const RequestInvite = React.memo(function RequestInvite() {
 export default React.memo(function Landing() {
   return (
     <IonPage>
-      <TopNav homeHref="/">
-        <IonButtons slot="end">
-          <IonButtonLink href="/login">Login</IonButtonLink>
-        </IonButtons>
-      </TopNav>
+      <IonHeader>
+        <IonGrid className="no-padding">
+          <IonRow>
+            <IonCol sizeMd="10" offsetMd="1">
+              <IonToolbar color="white">
+                <Title homeHref="/" />
+
+                <IonButtons slot="end">
+                  <IonButtonLink href="/login">Login</IonButtonLink>
+                </IonButtons>
+              </IonToolbar>
+            </IonCol>
+          </IonRow>
+        </IonGrid>
+      </IonHeader>
 
       <IonContent>
         <IonGrid>
