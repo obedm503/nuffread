@@ -29,6 +29,7 @@ export const UserResolver: IResolver<IUser, User> = {
       where: { userId: user.id },
       relations: ['listing'],
       order: { updatedAt: 'DESC' },
+      take: 30,
     });
 
     return recents.map(recent => recent.listing);
