@@ -1,14 +1,18 @@
 import { IonItem, IonLabel } from '@ionic/react';
-import { FormikProps } from 'formik';
+import { useFormikContext } from 'formik';
 import * as React from 'react';
 
-export const ControlError = ({ children }) => (
-  <IonItem lines="full">
-    <IonLabel color="danger" class="ion-text-wrap">
-      {children}
-    </IonLabel>
-  </IonItem>
-);
+export const ControlError: React.FC = React.memo(function ControlError({
+  children,
+}) {
+  return (
+    <IonItem lines="full">
+      <IonLabel color="danger" class="ion-text-wrap">
+        {children}
+      </IonLabel>
+    </IonItem>
+  );
+});
 
 export type ControlProps = {
   label: React.ReactNode;
@@ -17,17 +21,19 @@ export type ControlProps = {
   disabled?: boolean;
 };
 
-export const Control: React.FC<ControlProps & { form: FormikProps<any> }> = ({
+export const Control: React.FC<ControlProps> = React.memo(function Control({
   label,
   error,
   name,
   children,
-  form: { touched, errors, submitCount },
-}) => {
+}) {
+  const { touched, errors, submitCount } = useFormikContext<any>();
+
   const isSubmitted = submitCount > 0;
   const isTouched = isSubmitted && !!(touched && touched[name]);
   const showError = isTouched && errors[name];
   const errorMessage = error || (errors[name] ? errors[name] : '');
+
   return (
     <>
       <IonItem
@@ -49,4 +55,4 @@ export const Control: React.FC<ControlProps & { form: FormikProps<any> }> = ({
       {showError ? <ControlError>{errorMessage}</ControlError> : null}
     </>
   );
-};
+});
