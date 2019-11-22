@@ -101,12 +101,8 @@ const makeRoutes = memoize((user?: ISystemUser): RouteProps[] => {
 });
 
 export const App = () => {
-  const { loading, data, error } = useQuery(ME);
+  const { data, error } = useQuery(ME);
 
-  if (loading) {
-    const Home = homePage();
-    return <Home></Home>;
-  }
   if (error) {
     return <Error value={error} />;
   }
