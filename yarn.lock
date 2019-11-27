@@ -1076,27 +1076,27 @@
   dependencies:
     "@hapi/hoek" "^8.3.0"
 
-"@ionic/core@4.11.3", "@ionic/core@^4.11.3":
-  version "4.11.3"
-  resolved "https://registry.yarnpkg.com/@ionic/core/-/core-4.11.3.tgz#1295827ab5d779c00c7befdfcb86148ae7d47eaa"
-  integrity sha512-kmW0TTI3us9uWj3mYWoT12HzhvxCFsZErk6nU0Vaniefm3DCPnHIjr3xtNPVhQ6KevWJ9legmribkEdAuJJmLg==
+"@ionic/core@4.11.5", "@ionic/core@^4.11.3":
+  version "4.11.5"
+  resolved "https://registry.yarnpkg.com/@ionic/core/-/core-4.11.5.tgz#905c53984129cdcad9f9a06f76c8856a59a95ba0"
+  integrity sha512-+TrMpTdya6JBd4RELLVkulXh5dNZNHypsGMKlYCJJcIZwsvObO9+uzxBhGSOX7+F7eMuR341FUcTMb0fib9TNA==
   dependencies:
     ionicons "^4.6.3"
     tslib "^1.10.0"
 
 "@ionic/react-router@^4.11.3":
-  version "4.11.3"
-  resolved "https://registry.yarnpkg.com/@ionic/react-router/-/react-router-4.11.3.tgz#437f7eaeec8209ac3dafb0a3e933cce7149fa26b"
-  integrity sha512-zJXFdZ7ObYfu9CtJcqMDOJM8ZBvuChRvR1eKlvd4Hu9SzEX5C9RAKzjEuts7J1qsHxLBXQf2y/XxHYVOzl6krQ==
+  version "4.11.5"
+  resolved "https://registry.yarnpkg.com/@ionic/react-router/-/react-router-4.11.5.tgz#389d4725d698f6f2ae1378b7bd061fd3a3076b38"
+  integrity sha512-lX70up3+Bh5F1BWzOD/yhB+huKfaik8eHorUaNavByQldhNIDYhEZK6yhkne40wLCyAMLPePRHQLU46cHxVCOw==
   dependencies:
     tslib "*"
 
 "@ionic/react@^4.11.3":
-  version "4.11.3"
-  resolved "https://registry.yarnpkg.com/@ionic/react/-/react-4.11.3.tgz#735927a5d3f2bccb8e3f8aa882f103e07255c181"
-  integrity sha512-R5QX4snxRWWReaS3CAdFxPuH7kFkyLKuIkD3oHeF1yOvsv2i6ml2MZeoTBazq4pgNmgrpBOLiydJ4/o0wrKyUw==
+  version "4.11.5"
+  resolved "https://registry.yarnpkg.com/@ionic/react/-/react-4.11.5.tgz#0341c31245f06aa4f0e146fa2cb234708e79b89e"
+  integrity sha512-U/AdHQLAobk4bCfVsw2MpXV9oZ7yHAMoVBqJHJCQBr6Voap2aDetwj64kpmBkFBJuOtp5JMlA/mEVrVY9ZzanA==
   dependencies:
-    "@ionic/core" "4.11.3"
+    "@ionic/core" "4.11.5"
     tslib "*"
 
 "@jest/console@^24.7.1", "@jest/console@^24.9.0":
@@ -1826,26 +1826,18 @@
     "@types/react" "*"
 
 "@types/react-router-dom@^5.1.1":
-  version "5.1.1"
-  resolved "https://registry.yarnpkg.com/@types/react-router-dom/-/react-router-dom-5.1.1.tgz#77a2dae8ba6ff1df51d27517f7646127a51a1a3e"
-  integrity sha512-yXqWGaehta/cdmjvEQfCbHFX6l1c7QHuE5n2OfhcJ33ufbt55xhAKqQ0BmT24YM3s7OKwrrUUgY3FaSzO7be3Q==
+  version "5.1.3"
+  resolved "https://registry.yarnpkg.com/@types/react-router-dom/-/react-router-dom-5.1.3.tgz#b5d28e7850bd274d944c0fbbe5d57e6b30d71196"
+  integrity sha512-pCq7AkOvjE65jkGS5fQwQhvUp4+4PVD9g39gXLZViP2UqFiFzsEpB3PKf0O6mdbKsewSK8N14/eegisa/0CwnA==
   dependencies:
     "@types/history" "*"
     "@types/react" "*"
     "@types/react-router" "*"
 
-"@types/react-router@*":
-  version "5.0.3"
-  resolved "https://registry.yarnpkg.com/@types/react-router/-/react-router-5.0.3.tgz#855a1606e62de3f4d69ea34fb3c0e50e98e964d5"
-  integrity sha512-j2Gge5cvxca+5lK9wxovmGPgpVJMwjyu5lTA/Cd6fLGoPq7FXcUE1jFkEdxeyqGGz8VfHYSHCn5Lcn24BzaNKA==
-  dependencies:
-    "@types/history" "*"
-    "@types/react" "*"
-
-"@types/react-router@^5.0.2":
-  version "5.1.2"
-  resolved "https://registry.yarnpkg.com/@types/react-router/-/react-router-5.1.2.tgz#41e5e6aa333a7b9a2bfdac753c04e1ca4b3e0d21"
-  integrity sha512-euC3SiwDg3NcjFdNmFL8uVuAFTpZJm0WMFUw+4eXMUnxa7M9RGFEG0szt0z+/Zgk4G2k9JBFhaEnY64RBiFmuw==
+"@types/react-router@*", "@types/react-router@^5.0.2":
+  version "5.1.3"
+  resolved "https://registry.yarnpkg.com/@types/react-router/-/react-router-5.1.3.tgz#7c7ca717399af64d8733d8cb338dd43641b96f2d"
+  integrity sha512-0gGhmerBqN8CzlnDmSgGNun3tuZFXerUclWkqEhozdLaJtfcJRUTGkKaEKk+/MpHd1KDS1+o2zb/3PkBUiv2qQ==
   dependencies:
     "@types/history" "*"
     "@types/react" "*"
