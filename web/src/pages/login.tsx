@@ -15,7 +15,6 @@ import {
 } from '@ionic/react';
 import { Form, Formik } from 'formik';
 import gql from 'graphql-tag';
-import { History } from 'history';
 import { logIn } from 'ionicons/icons';
 import * as React from 'react';
 import { Redirect, RouteComponentProps } from 'react-router';
@@ -58,9 +57,8 @@ const Errors = apolloFormErrors({
 
 const LoginForm = React.memo<{
   type: SystemUserType;
-  history: History;
   schema;
-}>(({ schema, type, history }) => {
+}>(({ schema, type }) => {
   const [mutate, { loading, error }] = useMutation<IMutationLoginArgs>(LOGIN);
   const client = useApolloClient();
 
@@ -70,12 +68,11 @@ const LoginForm = React.memo<{
         variables: { email, password, type },
       });
       if (res && res.data && res.data.login) {
-        await client.resetStore();
         tracker.login({ email: res.data.login.email });
-        history.push('/');
+        await client.resetStore();
       }
     },
-    [client, history, mutate, type],
+    [client, mutate, type],
   );
 
   return (
@@ -123,7 +120,7 @@ const userSchema = object().shape({
 
 export const UserLogin = React.memo<
   RouteComponentProps<{}> & { admin?: boolean }
->(function UserLogin({ history, admin = false }) {
+>(function UserLogin({ admin = false }) {
   const user = useUser();
   if (user) {
     return <Redirect to="/" />;
@@ -141,7 +138,6 @@ export const UserLogin = React.memo<
 
             <IonCardContent>
               <LoginForm
-                history={history}
                 type={admin ? SystemUserType.Admin : SystemUserType.User}
                 schema={admin ? adminSchema : userSchema}
               />
