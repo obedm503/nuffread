@@ -22,14 +22,14 @@ import { Base } from './util/db';
 import { IContext, IResolvers, UserSession } from './util/types';
 
 const makeIdLoader = <T extends Base>(Ent: typeof Base) => {
-  return new DataLoader(async (ids: string[]) => {
+  return new DataLoader(async (ids: readonly string[]) => {
     logger.debug(Ent.name, ids);
-    const items = await Ent.findByIds<T>(ids);
+    const items = await Ent.findByIds<T>(ids as any);
     return ids.map(id => items.find(item => item['id'] === id));
   });
 };
 const makeEmailLoader = <T extends Base>(Ent: typeof Base) => {
-  return new DataLoader(async (emails: string[]) => {
+  return new DataLoader(async (emails: readonly string[]) => {
     logger.debug(Ent.name, emails);
     const items = await Ent.find<T>({
       where: { emails: emails.map(email => ({ email })) },
