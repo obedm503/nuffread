@@ -19,6 +19,9 @@ const pages = {
   profile: () => <Profile />,
   explore: () => <Explore />,
   search: () => <Search />,
+  listing: ({ match }) => (
+    <ListingPage id={match.params.listingId} base="/search" />
+  ),
 };
 
 const validStarts = ['/explore', '/search', '/create', '/profile'];
@@ -26,27 +29,10 @@ const validStarts = ['/explore', '/search', '/create', '/profile'];
 export default React.memo(function Private() {
   const { location } = useRouter();
   const route = location.pathname;
-  const createButton = React.useRef<HTMLIonTabButtonElement>(null);
 
   const [isOpen, setModalOpen] = React.useState(false);
-  const closeModal = React.useCallback(() => setModalOpen(false), [
-    setModalOpen,
-  ]);
-
-  React.useEffect(() => {
-    const button = createButton.current;
-    if (!button) {
-      return;
-    }
-    const onClick = e => {
-      e.preventDefault();
-      setModalOpen(true);
-    };
-    button.addEventListener('click', onClick);
-    return () => {
-      button.removeEventListener('click', onClick);
-    };
-  }, [createButton]);
+  const closeModal = React.useCallback(() => setModalOpen(false), []);
+  const showModal = React.useCallback(() => setModalOpen(true), []);
 
   if (!validStarts.some(start => route.startsWith(start))) {
     return <Redirect to="/explore"></Redirect>;
@@ -58,12 +44,7 @@ export default React.memo(function Private() {
         <Route path="/:tab(profile)" exact render={pages.profile} />
         <Route path="/:tab(explore)" exact render={pages.explore} />
         <Route path="/:tab(search)" exact render={pages.search} />
-        <Route
-          path="/:tab(search)/:listingId"
-          component={({ match }) => (
-            <ListingPage id={match.params.listingId} base="/search" />
-          )}
-        />
+        <Route path="/:tab(search)/:listingId" component={pages.listing} />
       </IonRouterOutlet>
 
       <IonTabBar slot="bottom">
@@ -72,7 +53,7 @@ export default React.memo(function Private() {
         </IonTabButton>
 
         {/* modal close button does not work without ref */}
-        <IonTabButton ref={createButton}>
+        <IonTabButton onClick={showModal}>
           {isOpen ? <CreateModal isOpen onClose={closeModal} /> : null}
 
           <IonIcon icon={add} ariaLabel="Create" />

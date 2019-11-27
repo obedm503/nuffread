@@ -295,14 +295,23 @@ export const CreateModal = ({ isOpen, onClose: closeModal }) => {
     closeModal,
   );
 
+  const onClick = React.useCallback(
+    (e: React.MouseEvent | CustomEvent) => {
+      e.stopPropagation();
+      e.preventDefault();
+      closeModal();
+    },
+    [closeModal],
+  );
+
   return (
-    <IonModal isOpen={isOpen} onDidDismiss={closeModal}>
+    <IonModal isOpen={isOpen} onDidDismiss={onClick}>
       <IonHeader>
         <IonToolbar color="white">
           <Title title="Post Book" homeHref={false} />
 
           <IonButtons slot="secondary">
-            <IonButton onClick={closeModal}>
+            <IonButton onClick={onClick}>
               <IonIcon slot="icon-only" icon={close}></IonIcon>
             </IonButton>
           </IonButtons>
