@@ -1898,10 +1898,10 @@
   resolved "https://registry.yarnpkg.com/@types/stack-utils/-/stack-utils-1.0.1.tgz#0a851d3bd96498fa25c33ab7278ed3bd65f06c3e"
   integrity sha512-l42BggppR6zLmpfU6fq9HEa2oGPEI8yrSPL3GITjfRInppYFahObbIQOQK3UGxEnyQpltZLaPe75046NOZQikw==
 
-"@types/stripe@^6.30.0":
-  version "6.32.13"
-  resolved "https://registry.yarnpkg.com/@types/stripe/-/stripe-6.32.13.tgz#d292ce2e7f4b9530fc144d00d3746a19a2fe9fc8"
-  integrity sha512-qMcM3ecF/4a0dtfMN2rm1w5TjSDzUqIIADI7BwXpkSUdXfekc4JjL2s7oAp9htB44nPsTYw5mxCCz9j1zTAXwA==
+"@types/stripe@^7.13.11":
+  version "7.13.11"
+  resolved "https://registry.yarnpkg.com/@types/stripe/-/stripe-7.13.11.tgz#a17cd1589b347eb3171a3f36e81180998026e195"
+  integrity sha512-YxUClQ7+m9moz1DEMpizIr3+LkJF+nnzdqNOGax416Q9ZyyqX3yZ8oDs+j9RwOHnFQeLympL0bnIzjhIIHcH3A==
   dependencies:
     "@types/node" "*"
 
@@ -6426,7 +6426,7 @@ graphql-upload@^8.0.2:
     http-errors "^1.7.3"
     object-path "^0.11.4"
 
-graphql@14.5.8, graphql@^14.3.0, graphql@^14.5.3, graphql@^14.5.7:
+graphql@^14.3.0, graphql@^14.5.3, graphql@^14.5.7:
   version "14.5.8"
   resolved "https://registry.yarnpkg.com/graphql/-/graphql-14.5.8.tgz#504f3d3114cb9a0a3f359bbbcf38d9e5bf6a6b3c"
   integrity sha512-MMwmi0zlVLQKLdGiMfWkgQD7dY/TUKt4L+zgJ/aR0Howebod3aNgP5JkgvAULiR2HPVZaP2VEElqtdidHweLkg==

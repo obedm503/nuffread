@@ -43,7 +43,7 @@
     "@types/jsonwebtoken": "^8.3.5",
     "@types/node": "^10.12.21",
     "@types/pino": "^5.8.10",
-    "@types/stripe": "^6.30.0",
+    "@types/stripe": "^7.13.11",
     "@types/uuid": "^3.4.4",
     "nodemon": "^1.19.0",
     "pino-pretty": "^3.2.1",
