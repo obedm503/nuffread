@@ -37,7 +37,7 @@
     "@types/bcryptjs": "^2.4.2",
     "@types/btoa": "^1.2.3",
     "@types/connect-pg-simple": "^4.2.0",
-    "@types/dotenv-safe": "^5.0.3",
+    "@types/dotenv-safe": "^8.1.0",
     "@types/express": "^4.16.1",
     "@types/express-session": "^1.15.11",
     "@types/jsonwebtoken": "^8.3.5",
