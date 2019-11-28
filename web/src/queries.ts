@@ -1,20 +1,28 @@
 import gql from 'graphql-tag';
 
+export const BOOK = gql`
+  fragment Book on Book {
+    id
+    googleId
+    isbn
+    thumbnail
+    title
+    subTitle
+    publishedAt
+    authors
+  }
+`;
+
 export const BASIC_LISTING = gql`
+  ${BOOK}
+
   fragment BasicListing on Listing {
     id
     createdAt
     price
     description
     book {
-      id
-      googleId
-      isbn
-      thumbnail
-      title
-      subTitle
-      publishedAt
-      authors
+      ...Book
     }
   }
 `;

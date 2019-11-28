@@ -22,7 +22,7 @@ import { close, logoUsd } from 'ionicons/icons';
 import * as React from 'react';
 import { Error, Loading, Title } from '../../../components';
 import { ListWrapper } from '../../../components/list-wrapper';
-import { Book, ListingBasic } from '../../../components/listing-basic';
+import { BookBasic, ListingBasic } from '../../../components/listing-basic';
 import { ListingCard } from '../../../components/listing-card';
 import { SearchBar } from '../../../components/search-bar';
 import { CREATE_LISTING, MY_LISTINGS, SEARCH_GOOGLE } from '../../../queries';
@@ -42,10 +42,14 @@ const SearchResultBook: React.FC<{
   active: boolean;
   onClick?;
 }> = ({ book, active, onClick }) => (
-  <Book book={book} color={active ? 'primary' : undefined} onClick={onClick}>
+  <BookBasic
+    book={book}
+    color={active ? 'primary' : undefined}
+    onClick={onClick}
+  >
     <br />
     <small>{book.isbn.join(', ')}</small>
-  </Book>
+  </BookBasic>
 );
 
 const SearchResults = React.memo<{

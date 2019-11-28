@@ -4,12 +4,12 @@ import React, { FC, memo, NamedExoticComponent } from 'react';
 import { IBook, IGoogleBook, IListing } from '../schema.gql';
 import { SafeImg } from './safe-img';
 
-export const Book: FC<{
+export const BookBasic: FC<{
   book: IBook | IGoogleBook;
   onClick?;
   disabled?;
   color?: string;
-}> = memo(function Book({ book, onClick, disabled, color, children }) {
+}> = memo(function BookBasic({ book, onClick, disabled, color, children }) {
   return (
     <IonItem
       button={!!onClick}
@@ -55,10 +55,10 @@ export const ListingBasic = memo<Props>(function ListingBasic({
   onClick,
 }) {
   return (
-    <Book book={listing.book} onClick={onClick} disabled={disabled}>
+    <BookBasic book={listing.book} onClick={onClick} disabled={disabled}>
       <br />
       <IonBadge color="secondary">${listing.price / 100}</IonBadge>
-    </Book>
+    </BookBasic>
   );
 }) as NamedExoticComponent<Props> & { loading };
 

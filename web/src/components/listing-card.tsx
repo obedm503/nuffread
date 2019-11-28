@@ -11,10 +11,90 @@ import {
 } from '@ionic/react';
 import range from 'lodash/range';
 import React, { memo, NamedExoticComponent } from 'react';
-import { IListing } from '../schema.gql';
+import { IListing, IBook } from '../schema.gql';
 import { RelativeDate } from './relative-date';
 import { SafeImg } from './safe-img';
 import { UserBasic } from './user-details';
+
+export const BookCard = memo<{
+  book: IBook;
+  onClick?;
+  before?;
+  price?: number;
+  detailed?: boolean;
+  description?;
+  after?;
+}>(function BookCard({
+  onClick,
+  before,
+  book,
+  detailed,
+  description,
+  after,
+  price,
+}) {
+  return (
+    <IonCard color="white" onClick={onClick} button={!!onClick}>
+      {before}
+
+      <IonCardHeader>
+        <IonCardTitle>
+          {book.title}
+
+          {price ? (
+            <IonBadge color="secondary" style={badgeStyle}>
+              ${price / 100}
+            </IonBadge>
+          ) : null}
+        </IonCardTitle>
+
+        {book.subTitle ? (
+          <IonCardSubtitle>{book.subTitle}</IonCardSubtitle>
+        ) : null}
+      </IonCardHeader>
+
+      <IonCardContent>
+        <SafeImg
+          src={book.thumbnail || undefined}
+          alt={[book.title, book.subTitle].join(' ')}
+          placeholder="/img/book.png"
+          className="book-cover"
+        />
+      </IonCardContent>
+
+      <IonItem lines="inset">
+        <IonLabel>
+          <b>{book.authors.join(', ')}</b> {description}
+        </IonLabel>
+      </IonItem>
+
+      {detailed
+        ? book.isbn.map(isbn => (
+            <IonItem lines="inset" key={isbn}>
+              <IonLabel>
+                <small>
+                  <b>ISBN: </b> {isbn}
+                </small>
+              </IonLabel>
+            </IonItem>
+          ))
+        : null}
+
+      {detailed && book.publishedAt ? (
+        <IonItem lines="inset">
+          <IonLabel>
+            <small>
+              <b>Published on: </b>
+              {new Date(book.publishedAt).toLocaleDateString()}
+            </small>
+          </IonLabel>
+        </IonItem>
+      ) : null}
+
+      {after}
+    </IonCard>
+  );
+});
 
 const badgeStyle = { fontSize: 'inherit', float: 'right' };
 type Props = {
@@ -28,69 +108,23 @@ export const ListingCard = memo<Props>(function ListingCard({
   detailed = false,
 }) {
   return (
-    <IonCard color="white" onClick={onClick} button={!!onClick}>
-      {listing.user ? <UserBasic user={listing.user} /> : null}
-
-      <IonCardHeader>
-        <IonCardTitle>
-          {listing.book.title}
-
-          <IonBadge color="secondary" style={badgeStyle}>
-            ${listing.price / 100}
-          </IonBadge>
-        </IonCardTitle>
-
-        {listing.book.subTitle ? (
-          <IonCardSubtitle>{listing.book.subTitle}</IonCardSubtitle>
-        ) : null}
-      </IonCardHeader>
-
-      <IonCardContent>
-        <SafeImg
-          src={listing.book.thumbnail || undefined}
-          alt={[listing.book.title, listing.book.subTitle].join(' ')}
-          placeholder="/img/book.png"
-          className="book-cover"
-        />
-      </IonCardContent>
-
-      <IonItem lines="inset">
-        <IonLabel>
-          <b>{listing.book.authors.join(', ')}</b> {listing.description}
-        </IonLabel>
-      </IonItem>
-
-      {detailed
-        ? listing.book.isbn.map(isbn => (
-            <IonItem lines="inset" key={isbn}>
-              <IonLabel>
-                <small>
-                  <b>ISBN: </b> {isbn}
-                </small>
-              </IonLabel>
-            </IonItem>
-          ))
-        : null}
-
-      {detailed && listing.book.publishedAt ? (
-        <IonItem lines="inset">
+    <BookCard
+      onClick={onClick}
+      book={listing.book}
+      price={listing.price}
+      description={listing.description}
+      detailed={detailed}
+      before={listing.user ? <UserBasic user={listing.user} /> : null}
+      after={
+        <IonItem lines="none">
           <IonLabel>
             <small>
-              <b>Published on: </b>
-              {new Date(listing.book.publishedAt).toLocaleDateString()}
+              <RelativeDate date={listing.createdAt} />
             </small>
           </IonLabel>
         </IonItem>
-      ) : null}
-
-      <IonItem lines="none">
-        <IonLabel>
-          <small>
-            <RelativeDate date={listing.createdAt} />
-          </small>
-        </IonLabel>
-      </IonItem>
-    </IonCard>
+      }
+    />
   );
 }) as NamedExoticComponent<Props> & { loading };
 
