@@ -40,7 +40,7 @@ const makeEmailLoader = <T extends Base>(Ent: typeof Base) => {
 
 function createSchema(): GraphQLSchema {
   const typeDefs = fs.readFileSync(
-    resolve(__dirname, '../schema.gql'),
+    resolve(__dirname, '../../schema.gql'),
     'utf-8',
   );
   const resolvers: IResolvers = {
