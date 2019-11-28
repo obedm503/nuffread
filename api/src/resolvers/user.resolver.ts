@@ -12,9 +12,6 @@ export const UserResolver: IResolver<IUser, User> = {
     ensureAdmin(session);
     return confirmedAt;
   },
-  name(user) {
-    return user.name || user.email;
-  },
   async listings(user, args, { session }) {
     ensureUser(session);
     const listings = await Listing.find({
