@@ -20,7 +20,7 @@ import { useRouter } from '../../state/router';
 import { useSearch } from '../../state/search';
 
 export const Explore = memo(function Explore() {
-  const { onClick } = useSearch('/search');
+  const { onClick } = useSearch();
   const { history } = useRouter();
   const toSearch = useCallback(() => history.push({ pathname: '/search' }), [
     history,

@@ -14,6 +14,7 @@ import React, { memo, NamedExoticComponent } from 'react';
 import { IListing } from '../schema.gql';
 import { RelativeDate } from './relative-date';
 import { SafeImg } from './safe-img';
+import { UserBasic } from './user-details';
 
 const badgeStyle = { fontSize: 'inherit', float: 'right' };
 type Props = {
@@ -28,6 +29,8 @@ export const ListingCard = memo<Props>(function ListingCard({
 }) {
   return (
     <IonCard color="white" onClick={onClick} button={!!onClick}>
+      {listing.user ? <UserBasic user={listing.user} /> : null}
+
       <IonCardHeader>
         <IonCardTitle>
           {listing.book.title}

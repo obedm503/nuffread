@@ -59,7 +59,7 @@ const RecentListings = memo<{ onClick: (id: string) => void }>(
 );
 
 export const Search = memo(function Search() {
-  const { onClick, onSearch, searchValue } = useSearch('/search');
+  const { onClick, onSearch, searchValue } = useSearch();
   return (
     <IonPage>
       <IonHeader>

@@ -11,7 +11,7 @@ import { withListing } from '../containers/listing';
 import { Container } from './container';
 import { ListingCard } from './listing-card';
 import { TopNav } from './top-nav';
-import { UserDetails } from './user-details';
+import { ListingSeller } from './user-details';
 
 const Fab = () => (
   <IonFab vertical="bottom" horizontal="end" slot="fixed">
@@ -36,13 +36,13 @@ const Fab = () => (
 //   </IonSlides>
 // );
 
-export const ListingPage = withListing<{ base: string }>(
-  ({ data: listing, loading, base }) => {
+export const ListingPage = withListing<{ defaultHref: string }>(
+  ({ data: listing, loading, defaultHref }) => {
     return (
       <IonPage>
         <TopNav homeHref={false} title={listing ? listing.book.title : ''}>
           <IonButtons slot="start">
-            <IonBackButton defaultHref={base} />
+            <IonBackButton defaultHref={defaultHref} />
           </IonButtons>
         </TopNav>
 
@@ -56,7 +56,7 @@ export const ListingPage = withListing<{ base: string }>(
               <>
                 <ListingCard listing={listing} detailed></ListingCard>
 
-                <UserDetails listingId={listing.id} />
+                <ListingSeller listingId={listing.id} />
               </>
             )}
           </Container>

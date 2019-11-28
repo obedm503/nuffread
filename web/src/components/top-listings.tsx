@@ -14,6 +14,12 @@ const TOP_LISTINGS = gql`
       totalCount
       items {
         ...BasicListing
+
+        user {
+          id
+          name
+          email
+        }
       }
     }
   }

@@ -17,7 +17,7 @@ import {
   LogoutItem,
   Popover,
   TopNav,
-  UserInfo,
+  UserDetailed,
 } from '../../components';
 import { MY_LISTINGS } from '../../queries';
 import { IQuery } from '../../schema.gql';
@@ -92,7 +92,7 @@ export const Profile = React.memo(function Profile() {
         </IonRefresher>
 
         <Container>
-          <UserInfo user={user}></UserInfo>
+          <UserDetailed user={user}></UserDetailed>
 
           <Listings loading={isLoading} error={error} data={data} />
         </Container>

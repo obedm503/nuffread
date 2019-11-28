@@ -16,7 +16,45 @@ import { useQuery } from '../state/apollo';
 import { useUser } from '../state/user';
 import { SafeImg } from './safe-img';
 
-export const UserInfo = React.memo<{ user: IUser }>(function UserInfo({
+export const UserBasic = React.memo<{ user: IUser }>(function UserBasic({
+  user,
+}) {
+  const isLoggedIn = !!useUser();
+  if (!isLoggedIn) {
+    return null;
+  }
+
+  const name = user.name || user.email;
+  return (
+    <IonItem>
+      <SafeImg
+        style={{
+          fontSize: '2rem',
+          padding: '1rem 0.5rem 0.5rem 0',
+          color: 'var(--ion-color-contrast)',
+        }}
+        slot="start"
+        src={user.photo || undefined}
+        alt={name}
+        placeholder={person}
+      />
+
+      <IonLabel>
+        <b>
+          {user.name ? (
+            <>
+              {user.name} ({user.email})
+            </>
+          ) : (
+            user.email
+          )}
+        </b>
+      </IonLabel>
+    </IonItem>
+  );
+});
+
+export const UserDetailed = React.memo<{ user: IUser }>(function UserDetailed({
   user,
 }) {
   const name = user.name || user.email;
@@ -29,7 +67,7 @@ export const UserInfo = React.memo<{ user: IUser }>(function UserInfo({
           src={user.photo || undefined}
           alt={name}
           placeholder={person}
-        ></SafeImg>
+        />
 
         <IonLabel>
           <p>
@@ -70,18 +108,14 @@ export const UserInfo = React.memo<{ user: IUser }>(function UserInfo({
 const userHidden = (
   <IonCard color="white">
     <IonItem lines="none" color="white">
-      <IonIcon
-        slot="start"
-        icon={person}
-        style={{ fontSize: '8rem' }}
-      ></IonIcon>
+      <IonIcon slot="start" icon={person} style={{ fontSize: '8rem' }} />
 
       <IonLabel class="ion-text-wrap">
-        <IonSkeletonText style={{ background: 'black' }}></IonSkeletonText>
+        <IonSkeletonText style={{ background: 'black' }} />
         <h2>
           <Link to="/login">Login</Link> to see contact information.
         </h2>
-        <IonSkeletonText style={{ background: 'black' }}></IonSkeletonText>
+        <IonSkeletonText style={{ background: 'black' }} />
       </IonLabel>
     </IonItem>
   </IonCard>
@@ -97,8 +131,8 @@ const userLoading = (
       />
 
       <IonLabel class="ion-text-wrap">
-        <IonSkeletonText animated style={{ width: '5rem' }}></IonSkeletonText>
-        <IonSkeletonText animated style={{ width: '6rem' }}></IonSkeletonText>
+        <IonSkeletonText animated style={{ width: '5rem' }} />
+        <IonSkeletonText style={{ width: '6rem' }} />
       </IonLabel>
     </IonItem>
   </IonCard>
@@ -117,7 +151,7 @@ const GET_LISTING_SELLER = gql`
     }
   }
 `;
-const ListingSeller = React.memo<{ listingId: string }>(function ListingSeller({
+const Seller = React.memo<{ listingId: string }>(function ListingSeller({
   listingId,
 }) {
   const { loading, error, data } = useQuery<IQueryListingArgs>(
@@ -131,16 +165,16 @@ const ListingSeller = React.memo<{ listingId: string }>(function ListingSeller({
     return <Error value={error}></Error>;
   }
   const user = data!.listing!.user;
-  return <UserInfo user={user} />;
+  return <UserDetailed user={user} />;
 });
 
-export const UserDetails: React.FC<{
+export const ListingSeller = React.memo<{
   listingId: string;
-}> = ({ listingId }) => {
+}>(function ListingSeller({ listingId }) {
   const user = useUser();
   if (!user) {
     return userHidden;
   }
 
-  return <ListingSeller listingId={listingId}></ListingSeller>;
-};
+  return <Seller listingId={listingId}></Seller>;
+});

@@ -20,11 +20,11 @@ const pages = {
   explore: () => <Explore />,
   search: () => <Search />,
   listing: ({ match }) => (
-    <ListingPage id={match.params.listingId} base="/search" />
+    <ListingPage id={match.params.listingId} defaultHref="/search" />
   ),
 };
 
-const validStarts = ['/explore', '/search', '/create', '/profile'];
+const validStarts = ['/explore', '/search', '/create', '/profile', '/p'];
 
 export default React.memo(function Private() {
   const { location } = useRouter();
@@ -44,7 +44,7 @@ export default React.memo(function Private() {
         <Route path="/:tab(profile)" exact render={pages.profile} />
         <Route path="/:tab(explore)" exact render={pages.explore} />
         <Route path="/:tab(search)" exact render={pages.search} />
-        <Route path="/:tab(search)/:listingId" component={pages.listing} />
+        <Route path="/:tab(p)/:listingId" component={pages.listing} />
       </IonRouterOutlet>
 
       <IonTabBar slot="bottom">
