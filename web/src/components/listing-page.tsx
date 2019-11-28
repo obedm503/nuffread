@@ -7,6 +7,7 @@ import {
   IonPage,
 } from '@ionic/react';
 import * as React from 'react';
+import { Redirect } from 'react-router';
 import { withListing } from '../containers/listing';
 import { Container } from './container';
 import { ListingCard } from './listing-card';
@@ -38,6 +39,10 @@ const Fab = () => (
 
 export const ListingPage = withListing<{ defaultHref: string }>(
   ({ data: listing, loading, defaultHref }) => {
+    if (!loading && !listing) {
+      return <Redirect to={defaultHref} />;
+    }
+
     return (
       <IonPage>
         <TopNav homeHref={false} title={listing ? listing.book.title : ''}>

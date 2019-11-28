@@ -26,6 +26,7 @@ type Query {
   me: SystemUser
 
   listing(id: ID!): Listing
+  book(id: ID!): Book
 
   invites: [Invite!]!
 
@@ -113,6 +114,8 @@ type Book {
   title: String!
   subTitle: String
   thumbnail: String
+
+  listings: [Listing!]!
 }
 
 # book but without id

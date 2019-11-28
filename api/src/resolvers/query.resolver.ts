@@ -2,16 +2,17 @@ import { Invite, Listing } from '../entities';
 import { RecentListing } from '../entities/recent-listing.entity';
 import {
   IQuery,
+  IQueryBookArgs,
   IQueryGoogleBookArgs,
   IQueryListingArgs,
   IQuerySearchArgs,
   IQuerySearchGoogleArgs,
   IQueryTopArgs,
 } from '../schema.gql';
+import { logger } from '../util';
 import { ensureAdmin, ensureUser, userSession } from '../util/auth';
 import { getBook, searchBooks } from '../util/google-books';
 import { IResolver } from '../util/types';
-import { logger } from '../util';
 
 export const QueryResolver: IResolver<IQuery> = {
   async search(_, { query, paginate }: IQuerySearchArgs) {
@@ -114,6 +115,10 @@ export const QueryResolver: IResolver<IQuery> = {
     logger.debug({ partial }, 'recent listing');
 
     return listing;
+  },
+
+  async book(_, { id }: IQueryBookArgs, { bookLoader }) {
+    return await bookLoader.load(id);
   },
 
   async searchGoogle(_, { query }: IQuerySearchGoogleArgs, { session }) {

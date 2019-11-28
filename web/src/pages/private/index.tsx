@@ -10,6 +10,7 @@ import * as React from 'react';
 import { Redirect, Route } from 'react-router';
 import { ListingPage } from '../../components/listing-page';
 import { useRouter } from '../../state/router';
+import { Book } from './book';
 import { CreateModal } from './components/create';
 import { Explore } from './explore';
 import { Profile } from './profile';
@@ -22,9 +23,12 @@ const pages = {
   listing: ({ match }) => (
     <ListingPage id={match.params.listingId} defaultHref="/search" />
   ),
+  book: ({ match }) => (
+    <Book bookId={match.params.bookId} defaultHref="/search" />
+  ),
 };
 
-const validStarts = ['/explore', '/search', '/create', '/profile', '/p'];
+const validStarts = ['/explore', '/search', '/create', '/profile', '/p', '/b'];
 
 export default React.memo(function Private() {
   const { location } = useRouter();
@@ -45,6 +49,7 @@ export default React.memo(function Private() {
         <Route path="/:tab(explore)" exact render={pages.explore} />
         <Route path="/:tab(search)" exact render={pages.search} />
         <Route path="/:tab(p)/:listingId" component={pages.listing} />
+        <Route path="/:tab(b)/:bookId" component={pages.book} />
       </IonRouterOutlet>
 
       <IonTabBar slot="bottom">

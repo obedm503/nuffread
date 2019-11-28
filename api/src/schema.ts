@@ -8,6 +8,7 @@ import * as Stripe from 'stripe';
 import { Admin, Book, Invite, Listing, User } from './entities';
 import { RecentListing } from './entities/recent-listing.entity';
 import {
+  BookResolver,
   DateResolver,
   InviteResolver,
   ListingResolver,
@@ -51,6 +52,7 @@ function createSchema(): GraphQLSchema {
     Mutation: MutationResolver,
     User: UserResolver,
     Invite: InviteResolver,
+    Book: BookResolver,
   };
   return makeExecutableSchema<IContext>({
     typeDefs,

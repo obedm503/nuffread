@@ -1,3 +1,4 @@
+export * from './book.resolver';
 export * from './date.resolver';
 export * from './invite.resolver';
 export * from './listing.resolver';
