@@ -9,12 +9,6 @@
   force = true
 
 [[redirects]]
-  from = "/blog/*"
-  to = "https://nuffread-blog.netlify.com/:splat"
-  status = 200
-  force = true
-
-[[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
