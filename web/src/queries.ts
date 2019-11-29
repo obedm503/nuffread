@@ -62,6 +62,13 @@ export const GET_LISTING = gql`
   query GetListing($id: ID!) {
     listing(id: $id) {
       ...BasicListing
+
+      book {
+        id
+        listings {
+          totalCount
+        }
+      }
     }
   }
 `;

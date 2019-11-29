@@ -21,10 +21,10 @@ const pages = {
   explore: () => <Explore />,
   search: () => <Search />,
   listing: ({ match }) => (
-    <ListingPage id={match.params.listingId} defaultHref="/search" />
+    <ListingPage id={match.params.listingId} defaultHref="/explore" />
   ),
   book: ({ match }) => (
-    <Book bookId={match.params.bookId} defaultHref="/search" />
+    <Book bookId={match.params.bookId} defaultHref="/explore" />
   ),
 };
 

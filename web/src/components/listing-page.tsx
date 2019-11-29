@@ -1,26 +1,20 @@
-import {
-  IonBackButton,
-  IonButtons,
-  IonContent,
-  IonFab,
-  IonFabButton,
-  IonPage,
-} from '@ionic/react';
+import { IonBackButton, IonButtons, IonContent, IonPage } from '@ionic/react';
 import * as React from 'react';
 import { Redirect } from 'react-router';
 import { withListing } from '../containers/listing';
 import { Container } from './container';
+import { IonButtonLink } from './ionic';
 import { ListingCard } from './listing-card';
 import { TopNav } from './top-nav';
 import { ListingSeller } from './user-details';
 
-const Fab = () => (
-  <IonFab vertical="bottom" horizontal="end" slot="fixed">
-    <IonFabButton>
-      <b>Buy</b>
-    </IonFabButton>
-  </IonFab>
-);
+// const Fab = () => (
+//   <IonFab vertical="bottom" horizontal="end" slot="fixed">
+//     <IonFabButton>
+//       <b>Buy</b>
+//     </IonFabButton>
+//   </IonFab>
+// );
 
 // const Slides: React.FC<{ listing: IListing }> = ({ listing }) => (
 //   <IonSlides pager>
@@ -45,14 +39,22 @@ export const ListingPage = withListing<{ defaultHref: string }>(
 
     return (
       <IonPage>
-        <TopNav homeHref={false} title={listing ? listing.book.title : ''}>
+        <TopNav homeHref={false} title="Post">
           <IonButtons slot="start">
             <IonBackButton defaultHref={defaultHref} />
           </IonButtons>
+
+          {listing && listing.book.listings.totalCount > 1 ? (
+            <IonButtons slot="end">
+              <IonButtonLink href={listing ? `/b/${listing.book.id}` : ''}>
+                More Deals
+              </IonButtonLink>
+            </IonButtons>
+          ) : null}
         </TopNav>
 
         <IonContent>
-          {listing ? <Fab /> : null}
+          {/* {listing ? <Fab /> : null} */}
 
           <Container>
             {loading || !listing ? (

@@ -115,7 +115,7 @@ type Book {
   subTitle: String
   thumbnail: String
 
-  listings: [Listing!]!
+  listings(paginate: PaginationInput): PaginatedListings!
 }
 
 # book but without id
