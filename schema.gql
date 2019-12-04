@@ -92,9 +92,7 @@ type Listing {
   price: Int!
   description: String!
 
-  bookId: String!
   book: Book!
-  userId: String!
   user: User!
 }
 
