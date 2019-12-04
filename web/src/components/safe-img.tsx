@@ -43,12 +43,6 @@ export const SafeImg = React.memo<{
     return <IonIcon icon={src} style={style as any}></IonIcon>;
   }
   return (
-    <img
-      slot={slot}
-      src={src}
-      style={Object.assign({ width: 'auto' }, style)}
-      alt={alt}
-      className={className}
-    />
+    <img slot={slot} src={src} style={style} alt={alt} className={className} />
   );
 });

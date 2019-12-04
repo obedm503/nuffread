@@ -294,11 +294,17 @@ $ionic-breakpoints: (
   }
 }
 
-.book-cover {
+img.book-cover {
   margin: 4px auto 4px auto;
-  min-width: 100%;
-  min-width: 80%;
+  width: 100%;
   height: auto;
+
+  @include media-breakpoint-up(sm) {
+    width: 60%;
+  }
+  @include media-breakpoint-up(lg) {
+    width: 40%;
+  }
 }
 
 // with 6:9 aspect ratio

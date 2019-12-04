@@ -47,11 +47,11 @@ const MoreDeals: FC<{ book?: IBook; loading: boolean }> = ({
   );
 };
 
-const GET_BOOK = gql`
+const GET_BOOK_LISTINGS = gql`
   ${BOOK}
   ${BASIC_LISTING}
 
-  query GetBook($id: ID!, $offset: Int!) {
+  query GetBookListings($id: ID!, $offset: Int!) {
     book(id: $id) {
       ...Book
 
@@ -65,11 +65,11 @@ const GET_BOOK = gql`
   }
 `;
 
-const useGetBook = ({ bookId }) => {
+const useGetBookListings = ({ bookId }) => {
   const [
     load,
     { data, loading, error, called, fetchMore, refetch },
-  ] = useLazyQuery<IQueryBookArgs & IPaginationInput>(GET_BOOK, {
+  ] = useLazyQuery<IQueryBookArgs & IPaginationInput>(GET_BOOK_LISTINGS, {
     variables: { id: bookId, offset: 0 },
   });
 
@@ -133,7 +133,7 @@ export const Book = memo<{ bookId: string; defaultHref: string }>(
       refresh,
       canFetchMore,
       fetchMore,
-    } = useGetBook({ bookId });
+    } = useGetBookListings({ bookId });
     useIonViewDidEnter(load);
 
     if (error) {
