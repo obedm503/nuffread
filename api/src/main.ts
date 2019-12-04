@@ -15,6 +15,7 @@ import { promisify } from 'util';
 import { CONFIG } from './config';
 import { getContext, getEntities, getSchema } from './schema';
 import { logger } from './util';
+import { complexityPlugin } from './util/complexity';
 import * as db from './util/db';
 import { BadRequest, InternalError } from './util/error';
 
@@ -54,6 +55,7 @@ if (production) {
 
 const port = Number(process.env.PORT) || 8081;
 
+const schema = getSchema();
 const apollo = new ApolloServer({
   context: ({ req, res }) => {
     const { operationName, query } = req.body;
@@ -64,7 +66,7 @@ const apollo = new ApolloServer({
 
     return getContext({ req, res });
   },
-  schema: getSchema(),
+  schema,
   formatError(e) {
     const { message, path, extensions, originalError } = e;
     logger.error({ message, path });
@@ -83,6 +85,7 @@ const apollo = new ApolloServer({
 
     return new InternalError();
   },
+  plugins: [complexityPlugin(schema)],
 });
 
 apollo.applyMiddleware({
