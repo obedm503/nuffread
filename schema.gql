@@ -93,7 +93,7 @@ type Listing {
   description: String!
 
   book: Book!
-  user: User!
+  user: User
 }
 
 input ListingInput {
