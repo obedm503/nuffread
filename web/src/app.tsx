@@ -1,3 +1,5 @@
+import { IonApp, IonSpinner } from '@ionic/react';
+import { IonReactRouter } from '@ionic/react-router';
 import {
   InMemoryCache,
   IntrospectionFragmentMatcher,
@@ -10,6 +12,7 @@ import { Helmet } from 'react-helmet-async';
 import { RouteProps } from 'react-router';
 import './app.scss';
 import { Error, Routes } from './components';
+import { TrackApp } from './components/track-app';
 import Join from './pages/join';
 import Landing from './pages/landing';
 import { AdminLogin, UserLogin } from './pages/login';
@@ -101,8 +104,17 @@ const makeRoutes = memoize((user?: ISystemUser): RouteProps[] => {
 });
 
 export const App = () => {
-  const { data, error } = useQuery(ME);
+  const { data, error, loading } = useQuery(ME);
 
+  if (loading) {
+    return (
+      <div className="loading-page">
+        <div className="spinner-wrapper">
+          <IonSpinner />
+        </div>
+      </div>
+    );
+  }
   if (error) {
     return <Error value={error} />;
   }
@@ -110,18 +122,24 @@ export const App = () => {
   const me = (data && data.me) || undefined;
   const routes = makeRoutes(me);
   return (
-    <IsDesktopProvider>
-      <UserProvider value={me}>
-        <Helmet>
-          <title>nuffread</title>
-          <meta
-            name="description"
-            content="The book marketplace for students"
-          />
-        </Helmet>
+    <IonApp>
+      <IonReactRouter>
+        <TrackApp>
+          <IsDesktopProvider>
+            <UserProvider value={me}>
+              <Helmet>
+                <title>nuffread</title>
+                <meta
+                  name="description"
+                  content="The book marketplace for students"
+                />
+              </Helmet>
 
-        <Routes routes={routes} />
-      </UserProvider>
-    </IsDesktopProvider>
+              <Routes routes={routes} />
+            </UserProvider>
+          </IsDesktopProvider>
+        </TrackApp>
+      </IonReactRouter>
+    </IonApp>
   );
 };

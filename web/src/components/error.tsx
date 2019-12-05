@@ -5,9 +5,9 @@ export const Error = ({ value }) => {
     throw value;
   }
   return (
-    <div className="container" style={{ overflow: 'hidden' }}>
-      <h2 className="title has-text-danger">Error</h2>
-      <pre className="has-text-danger" style={{ overflowX: 'auto' }}>
+    <div style={{ overflow: 'scroll' }}>
+      <h2>Error</h2>
+      <pre>
         <code>{JSON.stringify(value, null, 2)}</code>
       </pre>
     </div>

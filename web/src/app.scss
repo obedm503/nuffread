@@ -328,3 +328,20 @@ img.book-cover {
     height: 55vh;
   }
 }
+
+.loading-page {
+  width: 100%;
+  height: 100%;
+
+  > .spinner-wrapper {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    > ion-spinner {
+      width: 6em;
+      height: 6em;
+    }
+  }
+}

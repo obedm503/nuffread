@@ -1,6 +1,4 @@
 import { ApolloProvider } from '@apollo/react-hooks';
-import { IonApp } from '@ionic/react';
-import { IonReactRouter } from '@ionic/react-router';
 import { ApolloClient } from 'apollo-client';
 import { onError } from 'apollo-link-error';
 import { createHttpLink } from 'apollo-link-http';
@@ -8,7 +6,6 @@ import React from 'react';
 import { render } from 'react-dom';
 import { HelmetProvider } from 'react-helmet-async';
 import { App, createCache } from './app';
-import { TrackApp } from './components/track-app';
 import * as serviceWorker from './serviceWorker';
 import { tracker } from './state/tracker';
 
@@ -38,13 +35,7 @@ const client = new ApolloClient({
 const main = (
   <HelmetProvider>
     <ApolloProvider client={client}>
-      <IonApp>
-        <IonReactRouter>
-          <TrackApp>
-            <App />
-          </TrackApp>
-        </IonReactRouter>
-      </IonApp>
+      <App />
     </ApolloProvider>
   </HelmetProvider>
 );
