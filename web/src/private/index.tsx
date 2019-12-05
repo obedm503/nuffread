@@ -8,20 +8,20 @@ import {
 import { add, person, search } from 'ionicons/icons';
 import * as React from 'react';
 import { Redirect, Route } from 'react-router';
-import { ListingPage } from '../../components/listing-page';
-import { useRouter } from '../../state/router';
-import { Book } from './book';
+import { Listing } from '../pages/listing';
+import { useRouter } from '../state/router';
+import { Book } from '../pages/book';
+import { Explore } from '../pages/explore';
+import { Search } from '../pages/search';
 import { CreateModal } from './components/create';
-import { Explore } from './explore';
 import { Profile } from './profile';
-import { Search } from './search';
 
 const pages = {
   profile: () => <Profile />,
   explore: () => <Explore />,
   search: () => <Search />,
   listing: ({ match }) => (
-    <ListingPage id={match.params.listingId} defaultHref="/explore" />
+    <Listing id={match.params.listingId} defaultHref="/explore" />
   ),
   book: ({ match }) => (
     <Book bookId={match.params.bookId} defaultHref="/explore" />

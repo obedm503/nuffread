@@ -18,12 +18,12 @@ import {
   Popover,
   TopNav,
   UserDetailed,
-} from '../../components';
-import { MY_LISTINGS } from '../../queries';
-import { IQuery } from '../../schema.gql';
-import { useLazyQuery } from '../../state/apollo';
-import { useUser } from '../../state/user';
-import { queryLoading } from '../../util';
+} from '../components';
+import { MY_LISTINGS } from '../queries';
+import { IQuery } from '../schema.gql';
+import { useLazyQuery } from '../state/apollo';
+import { useUser } from '../state/user';
+import { queryLoading } from '../util';
 import { SlidingListing } from './components/sliding-listing';
 
 const Listings = React.memo<

@@ -1,6 +1,6 @@
 import { IonContent, IonPage } from '@ionic/react';
 import React, { memo } from 'react';
-import { Container } from '../../components';
+import { Container } from '../components';
 import { Nav } from './components/nav';
 
 const Master = memo(function Master() {

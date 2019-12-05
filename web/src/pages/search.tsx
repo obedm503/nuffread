@@ -15,10 +15,10 @@ import {
   ListWrapper,
   SearchBar,
   SearchListings,
-} from '../../components';
-import { BASIC_LISTING } from '../../queries';
-import { useQuery } from '../../state/apollo';
-import { useSearch } from '../../state/search';
+} from '../components';
+import { BASIC_LISTING } from '../queries';
+import { useQuery } from '../state/apollo';
+import { useSearch } from '../state/search';
 
 const GET_RECENT_LISTINGS = gql`
   ${BASIC_LISTING}

@@ -13,7 +13,7 @@ import { Error, Routes } from './components';
 import Join from './pages/join';
 import Landing from './pages/landing';
 import { AdminLogin, UserLogin } from './pages/login';
-import Private from './pages/private';
+import Private from './private';
 import ResetPassword from './pages/reset-password';
 import { ISystemUser } from './schema.gql';
 import { useQuery } from './state/apollo';
@@ -71,7 +71,7 @@ const makeLazy = <T extends React.ComponentType<any>>(
 };
 
 const Admin = makeLazy(() => import('./pages/admin'));
-const Public = makeLazy(() => import('./pages/public'));
+const Public = makeLazy(() => import('./public'));
 
 const isReady = process.env.REACT_APP_MODE === 'ready';
 const homePage = (user?: ISystemUser) => {

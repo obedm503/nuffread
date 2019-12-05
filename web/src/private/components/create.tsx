@@ -20,12 +20,12 @@ import {
 import gql from 'graphql-tag';
 import { close, logoUsd } from 'ionicons/icons';
 import * as React from 'react';
-import { Error, Loading, Title } from '../../../components';
-import { ListWrapper } from '../../../components/list-wrapper';
-import { BookBasic, ListingBasic } from '../../../components/listing-basic';
-import { ListingCard } from '../../../components/listing-card';
-import { SearchBar } from '../../../components/search-bar';
-import { CREATE_LISTING, MY_LISTINGS, SEARCH_GOOGLE } from '../../../queries';
+import { Error, Loading, Title } from '../../components';
+import { ListWrapper } from '../../components/list-wrapper';
+import { BookBasic, ListingBasic } from '../../components/listing-basic';
+import { ListingCard } from '../../components/listing-card';
+import { SearchBar } from '../../components/search-bar';
+import { CREATE_LISTING, MY_LISTINGS, SEARCH_GOOGLE } from '../../queries';
 import {
   IGoogleBook,
   IListingInput,
@@ -33,9 +33,9 @@ import {
   IQuery,
   IQueryGoogleBookArgs,
   IQuerySearchGoogleArgs,
-} from '../../../schema.gql';
-import { useMutation, useQuery } from '../../../state/apollo';
-import { tracker } from '../../../state/tracker';
+} from '../../schema.gql';
+import { useMutation, useQuery } from '../../state/apollo';
+import { tracker } from '../../state/tracker';
 
 const SearchResultBook: React.FC<{
   book: IGoogleBook;

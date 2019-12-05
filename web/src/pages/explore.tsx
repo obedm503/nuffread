@@ -15,9 +15,9 @@ import {
   ListingCard,
   Listings,
   useTopListings,
-} from '../../components';
-import { useRouter } from '../../state/router';
-import { useSearch } from '../../state/search';
+} from '../components';
+import { useRouter } from '../state/router';
+import { useSearch } from '../state/search';
 
 export const Explore = memo(function Explore() {
   const { onClick } = useSearch();

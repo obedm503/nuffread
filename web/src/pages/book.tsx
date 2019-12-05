@@ -18,12 +18,12 @@ import {
   ListingBasic,
   ListWrapper,
   TopNav,
-} from '../../components';
-import { BASIC_LISTING, BOOK } from '../../queries';
-import { IBook, IPaginationInput, IQueryBookArgs } from '../../schema.gql';
-import { useLazyQuery } from '../../state/apollo';
-import { useRouter } from '../../state/router';
-import { queryLoading } from '../../util';
+} from '../components';
+import { BASIC_LISTING, BOOK } from '../queries';
+import { IBook, IPaginationInput, IQueryBookArgs } from '../schema.gql';
+import { useLazyQuery } from '../state/apollo';
+import { useRouter } from '../state/router';
+import { queryLoading } from '../util';
 
 const MoreDeals: FC<{ book?: IBook; loading: boolean }> = ({
   book,

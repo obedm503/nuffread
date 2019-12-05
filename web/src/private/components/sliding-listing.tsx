@@ -3,15 +3,15 @@ import { IonItemOption, IonItemOptions, IonItemSliding } from '@ionic/react';
 import ApolloClient, { MutationUpdaterFn } from 'apollo-client';
 import gql from 'graphql-tag';
 import React, { NamedExoticComponent } from 'react';
-import { ListingBasic } from '../../../components/listing-basic';
-import { MY_LISTINGS } from '../../../queries';
+import { ListingBasic } from '../../components/listing-basic';
+import { MY_LISTINGS } from '../../queries';
 import {
   IListing,
   IMutation,
   IMutationDeleteListingArgs,
   IQuery,
-} from '../../../schema.gql';
-import { useMutation } from '../../../state/apollo';
+} from '../../schema.gql';
+import { useMutation } from '../../state/apollo';
 
 const DELETE_LISTING = gql`
   mutation DeleteListing($id: ID!) {
