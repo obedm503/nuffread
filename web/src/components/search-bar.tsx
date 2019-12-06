@@ -11,13 +11,11 @@ import { qrScanner } from 'ionicons/icons';
 import * as React from 'react';
 import { Scanner } from './scanner';
 
-export const DummySearchBar: React.FC<{
+export const DummySearchBar = React.memo<{
   onFocus?: () => void;
-}> = React.memo(function SearchBar({ onFocus, children }) {
+}>(function SearchBar({ onFocus }) {
   return (
     <IonToolbar color="white">
-      {children}
-
       <IonSearchbar placeholder="Search" onIonFocus={onFocus} />
 
       <IonButtons slot="end">

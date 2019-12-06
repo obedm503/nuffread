@@ -3,7 +3,6 @@ import * as React from 'react';
 import { Redirect } from 'react-router';
 import {
   Container,
-  Error,
   IonButtonLink,
   ListingCard,
   ListingSeller,
