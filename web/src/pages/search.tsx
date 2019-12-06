@@ -41,9 +41,11 @@ const RecentListings = memo<{ onClick: (id: string) => void }>(
     if (error) {
       return <Error value={error} />;
     }
-
-    if (loading || !data || !data.me || data.me.__typename !== 'User') {
+    if (loading || !data) {
       return <ListWrapper title="Recent">{ListingBasic.loading}</ListWrapper>;
+    }
+    if (!data.me || data.me.__typename !== 'User') {
+      return null;
     }
 
     return (

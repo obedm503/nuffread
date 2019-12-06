@@ -165,6 +165,9 @@ const Seller = React.memo<{ listingId: string }>(function ListingSeller({
     return <Error value={error}></Error>;
   }
   const user = data!.listing!.user;
+  if (!user) {
+    return userHidden;
+  }
   return <UserDetailed user={user} />;
 });
 
