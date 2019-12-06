@@ -65,10 +65,13 @@ export const useTopListings = () => {
 
   const totalCount = (data && data.top.totalCount) || 0;
 
+  if (error) {
+    throw error;
+  }
+
   return {
     load,
     data: data && data.top.items,
-    error,
     loading: queryLoading({ called, loading }),
     canFetchMore: currentCount < totalCount,
     fetchMore: getMore,
