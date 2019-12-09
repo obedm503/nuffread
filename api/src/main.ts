@@ -102,7 +102,7 @@ apollo.applyMiddleware({
 
   // await con.undoLastMigration();
   // run pending migrations
-  await con.runMigrations({ transaction: 'each' });
+  await con.runMigrations({ transaction: 'all' });
   // await con.synchronize();
 
   const server = app.listen(port, () => {
