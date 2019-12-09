@@ -2,7 +2,7 @@ import { IonHeader, IonTitle, IonToolbar } from '@ionic/react';
 import * as React from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
-import { Optional } from '../util';
+import { Optional } from '../util.types';
 import { Container } from './container';
 
 type TitleProps = Pick<

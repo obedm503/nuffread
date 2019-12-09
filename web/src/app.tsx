@@ -23,7 +23,7 @@ import { useQuery } from './state/apollo';
 import { IsDesktopProvider } from './state/desktop';
 import { tracker } from './state/tracker';
 import { UserProvider } from './state/user';
-import { RootPageProps } from './util';
+import { RootPageProps } from './util.types';
 
 export const createCache = () =>
   new InMemoryCache({

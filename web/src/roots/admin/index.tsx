@@ -14,7 +14,7 @@ import memoize from 'lodash/memoize';
 import * as React from 'react';
 import { Redirect, Route } from 'react-router';
 import { LogoutButton, Routes, TopNav } from '../../components';
-import { RootPageProps } from '../../util';
+import { RootPageProps } from '../../util.types';
 import Invites from './invites';
 
 const Admin = React.memo(() => {

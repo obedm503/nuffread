@@ -15,7 +15,7 @@ import {
   TopNav,
 } from '../components';
 import { useListing } from '../state/listing';
-import { Optional } from '../util';
+import { Optional } from '../util.types';
 
 // const Fab = () => (
 //   <IonFab vertical="bottom" horizontal="end" slot="fixed">

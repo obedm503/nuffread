@@ -23,7 +23,8 @@ import { BASIC_LISTING, BOOK } from '../queries';
 import { IBook, IPaginationInput, IQueryBookArgs } from '../schema.gql';
 import { useLazyQuery } from '../state/apollo';
 import { useRouter } from '../state/router';
-import { Optional, queryLoading } from '../util';
+import { queryLoading } from '../util';
+import { Optional } from '../util.types';
 
 const MoreDeals: FC<{ book?: IBook; loading: boolean }> = ({
   book,

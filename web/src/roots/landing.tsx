@@ -16,7 +16,7 @@ import * as React from 'react';
 import { IonButtonLink, IonRoutes, RequestInvite, Title } from '../components';
 import { Book } from '../pages/book';
 import { Listing } from '../pages/listing';
-import { RootPageProps } from '../util';
+import { RootPageProps } from '../util.types';
 
 const Landing = React.memo(function Landing() {
   return (

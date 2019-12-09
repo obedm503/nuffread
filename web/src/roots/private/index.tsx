@@ -15,7 +15,7 @@ import { Explore } from '../../pages/explore';
 import { Listing } from '../../pages/listing';
 import { Search } from '../../pages/search';
 import { useRouter } from '../../state/router';
-import { RootPageProps } from '../../util';
+import { RootPageProps } from '../../util.types';
 import { CreateModal } from './components/create';
 import { Profile } from './profile';
 
