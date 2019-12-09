@@ -3,8 +3,9 @@ const { concurrent, series, rimraf } = require('nps-utils');
 const { lightFormat } = require('date-fns');
 
 if (process.env.NODE_ENV !== 'production') {
-  require('dotenv').load({
+  require('dotenv-safe').config({
     path: './api/.env',
+    example: './api/.env.example',
   });
 }
 
