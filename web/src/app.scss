@@ -294,7 +294,7 @@ $ionic-breakpoints: (
   }
 }
 
-img.book-cover {
+img.book-cover-card {
   margin: 4px auto 4px auto;
   width: 100%;
   height: auto;
@@ -308,7 +308,7 @@ img.book-cover {
 }
 
 // with 6:9 aspect ratio
-.book-cover-placeholder {
+ion-skeleton-text.book-cover-card {
   margin: 4px auto 4px auto;
   width: calc(50vmax * 6 / 9);
   height: 50vmax;
@@ -327,6 +327,18 @@ img.book-cover {
     width: calc(55vh * 6 / 9);
     height: 55vh;
   }
+}
+
+// 6:9 aspect ratio
+ion-skeleton-text.book-cover-basic {
+  padding-top: 66%;
+}
+img.book-cover-basic,
+ion-skeleton-text.book-cover-basic {
+  width: 40%;
+  margin-top: 4px;
+  margin-right: 32px;
+  margin-bottom: 4px;
 }
 
 .loading-page {

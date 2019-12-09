@@ -2,13 +2,14 @@ import { IonHeader, IonTitle, IonToolbar } from '@ionic/react';
 import * as React from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
+import { Optional } from '../util';
 import { Container } from './container';
 
 type TitleProps = Pick<
   React.ComponentPropsWithRef<typeof IonTitle>,
   'title' | 'size'
 > & {
-  homeHref: string | false;
+  homeHref: Optional<string>;
 };
 export const Title = React.memo<TitleProps>(function Title({
   homeHref: href,

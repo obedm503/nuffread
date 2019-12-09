@@ -1,4 +1,3 @@
-import { useIonViewDidEnter } from '@ionic/react';
 import { GET_LISTING } from '../queries';
 import { IQueryListingArgs } from '../schema.gql';
 import { queryLoading } from '../util';
@@ -11,13 +10,13 @@ export const useListing = ({ listingId }) => {
     variables: { id: listingId },
   });
   const isLoading = queryLoading({ called, loading });
-  useIonViewDidEnter(load);
 
   if (error) {
     throw error;
   }
 
   return {
+    load,
     loading: isLoading,
     listing: (data && data.listing) || undefined,
   };

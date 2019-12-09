@@ -7,7 +7,7 @@ import {
   IonPage,
   IonRefresher,
   IonRefresherContent,
-  useIonViewDidEnter,
+  useIonViewWillEnter,
 } from '@ionic/react';
 import * as React from 'react';
 import {
@@ -18,12 +18,12 @@ import {
   Popover,
   TopNav,
   UserDetailed,
-} from '../components';
-import { MY_LISTINGS } from '../queries';
-import { IQuery } from '../schema.gql';
-import { useLazyQuery } from '../state/apollo';
-import { useUser } from '../state/user';
-import { queryLoading } from '../util';
+} from '../../components';
+import { MY_LISTINGS } from '../../queries';
+import { IQuery } from '../../schema.gql';
+import { useLazyQuery } from '../../state/apollo';
+import { useUser } from '../../state/user';
+import { queryLoading } from '../../util';
 import { SlidingListing } from './components/sliding-listing';
 
 const Listings = React.memo<
@@ -61,7 +61,7 @@ export const Profile = React.memo(function Profile() {
   const [load, { loading, error, data, refetch, called }] = useLazyQuery(
     MY_LISTINGS,
   );
-  useIonViewDidEnter(load);
+  useIonViewWillEnter(load);
 
   const isLoading = queryLoading({ called, loading });
   const onRefresh = React.useCallback(

@@ -10,12 +10,14 @@ import {
   IonTabs,
 } from '@ionic/react';
 import { personAdd } from 'ionicons/icons';
+import memoize from 'lodash/memoize';
 import * as React from 'react';
 import { Redirect, Route } from 'react-router';
-import { LogoutButton, TopNav } from '../../components';
+import { LogoutButton, Routes, TopNav } from '../../components';
+import { RootPageProps } from '../../util';
 import Invites from './invites';
 
-export default () => {
+const Admin = React.memo(() => {
   return (
     <IonPage>
       <TopNav homeHref="/invites">
@@ -47,4 +49,12 @@ export default () => {
       </IonContent>
     </IonPage>
   );
-};
+});
+
+const getRoutes = memoize(globalRoutes =>
+  globalRoutes.concat({ path: '/', component: Admin }),
+);
+
+export default React.memo<RootPageProps>(function({ globalRoutes }) {
+  return <Routes routes={getRoutes(globalRoutes)} />;
+});

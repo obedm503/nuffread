@@ -1,5 +1,5 @@
+import { IonIcon, IonSkeletonText } from '@ionic/react';
 import * as React from 'react';
-import { IonIcon } from '@ionic/react';
 
 const useImage = (src?: string) => {
   const [error, setError] = React.useState<string | Event | undefined>(
@@ -36,8 +36,11 @@ export const SafeImg = React.memo<{
 }>(function SafeImg({ placeholder, slot, alt, style, className, ...props }) {
   const { error, loading } = useImage(props.src);
 
-  let src = (error ? placeholder : props.src) || placeholder;
-  src = loading ? placeholder : src;
+  if (loading) {
+    return <IonSkeletonText animated className={className} style={style} />;
+  }
+
+  const src = (error ? placeholder : props.src) || placeholder;
 
   if (typeof src !== 'string') {
     return <IonIcon icon={src} style={style as any}></IonIcon>;

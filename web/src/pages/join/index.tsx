@@ -1,4 +1,4 @@
-import { IonContent, IonPage } from '@ionic/react';
+import { IonBackButton, IonButtons, IonContent, IonPage } from '@ionic/react';
 import * as React from 'react';
 import { Redirect, RouteComponentProps, RouteProps } from 'react-router';
 import { Routes, TopNav } from '../../components';
@@ -18,7 +18,11 @@ export default React.memo<RouteComponentProps>(function Join({ match }) {
   }
   return (
     <IonPage>
-      <TopNav homeHref="/" />
+      <TopNav homeHref="/">
+        <IonButtons slot="start">
+          <IonBackButton />
+        </IonButtons>
+      </TopNav>
 
       <IonContent>
         <Routes routes={routes} base={match.url} />

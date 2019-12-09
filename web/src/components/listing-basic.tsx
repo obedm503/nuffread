@@ -22,7 +22,7 @@ export const BookBasic: FC<{
         alt={book.title}
         placeholder="/img/book.png"
         slot="start"
-        style={{ width: '40%', marginTop: '4px', marginBottom: '4px' }}
+        className="book-cover-basic"
       />
 
       <IonLabel class="ion-text-wrap">
@@ -64,17 +64,7 @@ export const ListingBasic = memo<Props>(function ListingBasic({
 
 const Loading = () => (
   <IonItem>
-    <IonSkeletonText
-      slot="start"
-      animated
-      style={{
-        // 6:9 aspect ratio
-        width: '40%',
-        paddingTop: '66%',
-        marginTop: '4px',
-        marginBottom: '4px',
-      }}
-    />
+    <IonSkeletonText slot="start" animated className="book-cover-basic" />
     <IonLabel class="ion-text-wrap">
       <IonSkeletonText animated style={{ width: '90%' }} />
       <small>

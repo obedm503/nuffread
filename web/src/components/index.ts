@@ -15,6 +15,7 @@ export * from './loading';
 export * from './logout';
 export * from './popover';
 export * from './progress-bar';
+export * from './request-invite-card';
 export * from './routes';
 export * from './search-bar';
 export * from './search-results';

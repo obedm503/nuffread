@@ -7,7 +7,7 @@ import {
   IonPage,
   IonRefresher,
   IonRefresherContent,
-  useIonViewDidEnter,
+  useIonViewWillEnter,
 } from '@ionic/react';
 import gql from 'graphql-tag';
 import React, { FC, memo } from 'react';
@@ -23,7 +23,7 @@ import { BASIC_LISTING, BOOK } from '../queries';
 import { IBook, IPaginationInput, IQueryBookArgs } from '../schema.gql';
 import { useLazyQuery } from '../state/apollo';
 import { useRouter } from '../state/router';
-import { queryLoading } from '../util';
+import { Optional, queryLoading } from '../util';
 
 const MoreDeals: FC<{ book?: IBook; loading: boolean }> = ({
   book,
@@ -123,7 +123,7 @@ const useGetBookListings = ({ bookId }) => {
   };
 };
 
-export const Book = memo<{ bookId: string; defaultHref: string }>(
+export const Book = memo<{ bookId: string; defaultHref: Optional<string> }>(
   function Book({ bookId, defaultHref }) {
     const {
       error,
@@ -134,21 +134,21 @@ export const Book = memo<{ bookId: string; defaultHref: string }>(
       canFetchMore,
       fetchMore,
     } = useGetBookListings({ bookId });
-    useIonViewDidEnter(load);
+    useIonViewWillEnter(load);
 
     if (error) {
       return <Error value={error} />;
     }
 
     if (!loading && !book) {
-      return <Redirect to="/" />;
+      return <Redirect to={defaultHref === false ? '/' : defaultHref} />;
     }
 
     return (
       <IonPage>
-        <TopNav homeHref={false} title="Deals">
+        <TopNav homeHref="/" title="Deals">
           <IonButtons slot="start">
-            <IonBackButton defaultHref={defaultHref} />
+            <IonBackButton defaultHref={defaultHref || undefined} />
           </IonButtons>
         </TopNav>
 

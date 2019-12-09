@@ -6,7 +6,7 @@ import {
   IonPage,
   IonRefresher,
   IonRefresherContent,
-  useIonViewDidEnter,
+  useIonViewWillEnter,
 } from '@ionic/react';
 import React, { memo, useCallback } from 'react';
 import {
@@ -38,7 +38,7 @@ export const Explore = memo(function Explore() {
     loading,
     data,
   } = useTopListings();
-  useIonViewDidEnter(load);
+  useIonViewWillEnter(load);
 
   return (
     <IonPage>
@@ -51,7 +51,7 @@ export const Explore = memo(function Explore() {
               <IonButtonLink href="/login" color="primary">
                 Login
               </IonButtonLink>
-              <IonButtonLink href="/join" color="primary" fill="solid">
+              <IonButtonLink href="/invite" color="primary" fill="solid">
                 <b>Join</b>
               </IonButtonLink>
             </IonButtons>

@@ -58,7 +58,7 @@ export const BookCard = memo<{
           src={book.thumbnail || undefined}
           alt={[book.title, book.subTitle].join(' ')}
           placeholder="/img/book.png"
-          className="book-cover"
+          className="book-cover-card"
         />
       </IonCardContent>
 
@@ -141,11 +141,7 @@ const Loading = () => (
     </IonCardHeader>
 
     <IonCardContent>
-      <IonSkeletonText
-        slot="start"
-        animated
-        className="book-cover-placeholder"
-      />
+      <IonSkeletonText slot="start" animated className="book-cover-card" />
     </IonCardContent>
 
     <IonItem lines="inset">

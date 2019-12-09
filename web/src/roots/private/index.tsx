@@ -6,31 +6,40 @@ import {
   IonTabs,
 } from '@ionic/react';
 import { add, person, search } from 'ionicons/icons';
+import memoize from 'lodash/memoize';
 import * as React from 'react';
-import { Redirect, Route } from 'react-router';
-import { Listing } from '../pages/listing';
-import { useRouter } from '../state/router';
-import { Book } from '../pages/book';
-import { Explore } from '../pages/explore';
-import { Search } from '../pages/search';
+import { Redirect, RouteProps } from 'react-router';
+import { mapRoutes, Routes } from '../../components';
+import { Book } from '../../pages/book';
+import { Explore } from '../../pages/explore';
+import { Listing } from '../../pages/listing';
+import { Search } from '../../pages/search';
+import { useRouter } from '../../state/router';
+import { RootPageProps } from '../../util';
 import { CreateModal } from './components/create';
 import { Profile } from './profile';
 
-const pages = {
-  profile: () => <Profile />,
-  explore: () => <Explore />,
-  search: () => <Search />,
-  listing: ({ match }) => (
-    <Listing id={match.params.listingId} defaultHref="/explore" />
-  ),
-  book: ({ match }) => (
-    <Book bookId={match.params.bookId} defaultHref="/explore" />
-  ),
-};
+const routes: RouteProps[] = [
+  { path: '/:tab(profile)', exact: true, render: () => <Profile /> },
+  { path: '/:tab(explore)', exact: true, render: () => <Explore /> },
+  { path: '/search', exact: true, render: () => <Search /> },
+  {
+    path: '/p/:listingId',
+    component: ({ match }) => (
+      <Listing id={match.params.listingId} defaultHref="/explore" />
+    ),
+  },
+  {
+    path: '/b/:bookId',
+    component: ({ match }) => (
+      <Book bookId={match.params.bookId} defaultHref="/explore" />
+    ),
+  },
+];
 
 const validStarts = ['/explore', '/search', '/create', '/profile', '/p', '/b'];
 
-export default React.memo(function Private() {
+const Private = React.memo(function Private() {
   const { location } = useRouter();
   const route = location.pathname;
 
@@ -44,20 +53,13 @@ export default React.memo(function Private() {
 
   return (
     <IonTabs>
-      <IonRouterOutlet>
-        <Route path="/:tab(profile)" exact render={pages.profile} />
-        <Route path="/:tab(explore)" exact render={pages.explore} />
-        <Route path="/:tab(search)" exact render={pages.search} />
-        <Route path="/:tab(p)/:listingId" component={pages.listing} />
-        <Route path="/:tab(b)/:bookId" component={pages.book} />
-      </IonRouterOutlet>
+      <IonRouterOutlet>{mapRoutes({ routes }, true)}</IonRouterOutlet>
 
       <IonTabBar slot="bottom">
         <IonTabButton tab="explore" href="/explore">
           <IonIcon icon={search} ariaLabel="Explore" />
         </IonTabButton>
 
-        {/* modal close button does not work without ref */}
         <IonTabButton onClick={showModal}>
           {isOpen ? <CreateModal isOpen onClose={closeModal} /> : null}
 
@@ -70,4 +72,12 @@ export default React.memo(function Private() {
       </IonTabBar>
     </IonTabs>
   );
+});
+
+const getRoutes = memoize(globalRoutes =>
+  globalRoutes.concat({ path: '/', component: Private }),
+);
+
+export default React.memo<RootPageProps>(function({ globalRoutes }) {
+  return <Routes routes={getRoutes(globalRoutes)} />;
 });

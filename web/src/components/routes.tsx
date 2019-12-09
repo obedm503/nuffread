@@ -8,14 +8,17 @@ type Props = {
   base?: string;
 };
 
-const mapRoutes = ({ routes, base }: Props) => {
+export const mapRoutes = (
+  { routes, base }: Props,
+  isIonic: boolean = false,
+) => {
   return routes.map(({ path, ...route }: RouteProps, i) => {
     let fullPath = path;
     if (base) {
       fullPath = normalizeUrl([base].concat(path!));
     }
 
-    if (fullPath === '/' || fullPath === '.') {
+    if (!isIonic && (fullPath === '/' || fullPath === '.')) {
       fullPath = undefined;
     }
 
@@ -33,6 +36,6 @@ export class Routes extends React.PureComponent<Props> {
 
 export class IonRoutes extends React.PureComponent<Props> {
   render() {
-    return <IonRouterOutlet>{mapRoutes(this.props)}</IonRouterOutlet>;
+    return <IonRouterOutlet>{mapRoutes(this.props, true)}</IonRouterOutlet>;
   }
 }

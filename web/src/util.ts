@@ -1,4 +1,5 @@
 import { join, normalize } from 'path';
+import { RouteProps } from 'react-router';
 import * as yup from 'yup';
 
 const ensureString = str => (typeof str === 'string' ? str : '');
@@ -78,3 +79,8 @@ export const queryLoading = ({
   called: boolean;
   loading: boolean;
 }) => (!called ? true : loading);
+
+export type RootPageProps = { globalRoutes: readonly RouteProps[] };
+
+/** @param {T} T cannot of type boolean */
+export type Optional<T> = T extends boolean ? unknown : T | false;

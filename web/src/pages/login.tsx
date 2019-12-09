@@ -12,6 +12,8 @@ import {
   IonList,
   IonPage,
   IonRow,
+  IonButtons,
+  IonBackButton,
 } from '@ionic/react';
 import { Form, Formik } from 'formik';
 import gql from 'graphql-tag';
@@ -127,7 +129,11 @@ export const UserLogin = React.memo<
   }
   return (
     <IonPage>
-      <TopNav homeHref="/" />
+      <TopNav homeHref="/">
+        <IonButtons slot="start">
+          <IonBackButton />
+        </IonButtons>
+      </TopNav>
 
       <IonContent>
         <Container>
