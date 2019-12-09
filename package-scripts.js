@@ -1,5 +1,5 @@
 // @ts-check
-const { concurrent, series, rimraf } = require('nps-utils');
+const { concurrent, series, rimraf, crossEnv } = require('nps-utils');
 const { lightFormat } = require('date-fns');
 
 if (process.env.NODE_ENV !== 'production') {
@@ -15,6 +15,10 @@ process.env.REACT_APP_VERSION = lightFormat(new Date(), 'yyyyMMddHHmmss');
 
 module.exports.scripts = {
   default: 'nps dev',
+  deploy: {
+    web: series.nps('clean', 'build.types', 'build.web'),
+    api: series.nps('clean', 'build.types', 'build.api'),
+  },
   dev: {
     default: series(
       'nps clean',

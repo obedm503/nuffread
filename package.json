@@ -6,9 +6,9 @@
   ],
   "scripts": {
     "dev": "nps dev",
-    "build:api": "NODE_ENV=production nps clean && nps build.types && nps build.api",
+    "build:api": "NODE_ENV=production nps deploy.api",
     "heroku-postbuild": "npm run build:api",
-    "build:web": "NODE_ENV=production nps clean && nps build.types && nps build.web",
+    "build:web": "NODE_ENV=production nps deploy.web",
     "build": "nps build",
     "start": "nps start"
   },
