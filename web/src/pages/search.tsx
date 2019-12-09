@@ -52,7 +52,7 @@ const RecentListings = memo<{ onClick: (id: string) => void }>(
       <Listings
         title="Recent"
         loading={loading}
-        listings={data.me && data.me.recent}
+        listings={data.me.recent}
         component={ListingBasic}
         onClick={onClick}
       />

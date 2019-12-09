@@ -100,7 +100,7 @@ const rootPage = memoize(function(
 export const App = () => {
   const { data, error, loading } = useQuery(ME);
 
-  const me = (data && data.me) || undefined;
+  const me = data?.me || undefined;
   React.useEffect(() => {
     if (me) {
       tracker.login({ email: me.email });

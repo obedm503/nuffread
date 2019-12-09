@@ -18,6 +18,6 @@ export const useListing = ({ listingId }) => {
   return {
     load,
     loading: isLoading,
-    listing: (data && data.listing) || undefined,
+    listing: data?.listing || undefined,
   };
 };

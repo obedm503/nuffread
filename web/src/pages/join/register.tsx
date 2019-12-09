@@ -66,7 +66,7 @@ const RegisterForm: React.FC = () => {
     { onCompleted: onRegister },
   );
 
-  if (data && data.register) {
+  if (data?.register) {
     return <RegisterSuccess />;
   }
 

@@ -12,10 +12,10 @@ const LOGOUT = gql`
   }
 `;
 
-const onCompleted = (data: IMutation) => {
+const onCompleted = (data?: IMutation) => {
   tracker.logout();
 
-  if (data && data.logout && typeof window !== 'undefined' && window.location) {
+  if (data?.logout && window?.location) {
     window.location.href = '/';
   }
 };

@@ -9,7 +9,7 @@ export const apolloFormErrors = (handlers: {
     | React.FunctionComponent<{ error: GraphQLError }>;
 }) =>
   React.memo<{ error?: ApolloError }>(function ApolloFormErrors({ error }) {
-    const errors = error && error.graphQLErrors;
+    const errors = error?.graphQLErrors;
     if (!errors) {
       return null;
     }

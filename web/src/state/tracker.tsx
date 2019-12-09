@@ -103,7 +103,7 @@ window.onerror = (
       lineno,
       colno,
       error,
-      stack: error && error.stack,
+      stack: error?.stack,
     });
   }
   return false;

@@ -75,7 +75,7 @@ const apollo = new ApolloServer({
       return e;
     }
 
-    if (extensions && extensions.code === 'BAD_USER_INPUT') {
+    if (extensions?.code === 'BAD_USER_INPUT') {
       return new BadRequest();
     }
 

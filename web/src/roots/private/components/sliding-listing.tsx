@@ -23,7 +23,7 @@ const update: (
   id: string,
   client: ApolloClient<object>,
 ) => MutationUpdaterFn<IMutation> = (id, client) => (cache, { data }) => {
-  const success = data && data.deleteListing;
+  const success = data?.deleteListing;
   if (!success) {
     return;
   }

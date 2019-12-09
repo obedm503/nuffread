@@ -8,5 +8,5 @@ export const schools: {
 export const getSchoolName = (email: string): string | undefined => {
   const [user, domain] = email.split('@');
   const school = schools[domain];
-  return school && school.displayName;
+  return school?.displayName;
 };

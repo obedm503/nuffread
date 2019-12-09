@@ -76,7 +76,7 @@ const RequestResetForm: FC = () => {
       const res = await mutate({
         variables: { email },
       });
-      if (res && res.data && res.data.requestResetPassword) {
+      if (res.data?.requestResetPassword) {
         tracker.event('REQUEST_RESET_PASSWORD', { email });
       }
     },
@@ -87,7 +87,7 @@ const RequestResetForm: FC = () => {
     return <Error value={error} />;
   }
 
-  if (data && data.requestResetPassword) {
+  if (data?.requestResetPassword) {
     return <p>Click the link in your email to reset your passphrase.</p>;
   }
 
@@ -129,7 +129,7 @@ const ResetForm: FC<{ token: string }> = ({ token }) => {
       const res = await mutate({
         variables: { password, token },
       });
-      if (res && res.data && res.data.resetPassword) {
+      if (res?.data?.resetPassword) {
         tracker.event('RESET_PASSWORD', {});
         history.push('/login');
       }

@@ -152,7 +152,7 @@ export default () => {
     invite.user ? 'signedUp' : 'notSignedUp',
   );
   const { confirmed, notConfirmed } = groupBy(signedUp, invite =>
-    invite.user && invite.user.confirmedAt ? 'confirmed' : 'notConfirmed',
+    invite.user?.confirmedAt ? 'confirmed' : 'notConfirmed',
   );
 
   return (

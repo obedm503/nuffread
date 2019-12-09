@@ -16,14 +16,12 @@ import { IResolver } from '../util/types';
 
 export const QueryResolver: IResolver<IQuery> = {
   async search(_, { query, paginate }: IQuerySearchArgs) {
-    const segments =
-      query &&
-      query
-        .toLowerCase()
-        .trim()
-        .split(' ')
-        .map(s => s.trim())
-        .filter(Boolean); // eliminate spaces
+    const segments = query
+      ?.toLowerCase()
+      .trim()
+      .split(' ')
+      .map(s => s.trim())
+      .filter(Boolean); // eliminate spaces
 
     if (!segments || !segments.length) {
       return { items: [], totalCount: 0 };
@@ -38,8 +36,8 @@ export const QueryResolver: IResolver<IQuery> = {
     // mastering full text search
     // https://compose.com/articles/mastering-postgresql-tools-full-text-search-and-phrase-search/
 
-    const limit = (paginate && paginate.limit) || 10;
-    const offset = paginate && paginate.offset;
+    const limit = paginate?.limit || 10;
+    const offset = paginate?.offset;
 
     const builder = Listing.createQueryBuilder('listing')
       .innerJoinAndSelect('listing.book', 'book')
@@ -77,8 +75,8 @@ export const QueryResolver: IResolver<IQuery> = {
 
   async top(_, { paginate }: IQueryTopArgs) {
     const [items, totalCount] = await Listing.findAndCount({
-      take: (paginate && paginate.limit) || 10,
-      skip: paginate && paginate.offset,
+      take: paginate?.limit || 10,
+      skip: paginate?.offset,
       order: { createdAt: 'DESC' },
       relations: ['book'],
     });

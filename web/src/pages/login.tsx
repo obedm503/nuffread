@@ -69,7 +69,7 @@ const LoginForm = React.memo<{
       const res = await mutate({
         variables: { email, password, type },
       });
-      if (res && res.data && res.data.login) {
+      if (res?.data?.login) {
         tracker.login({ email: res.data.login.email });
         await client.resetStore();
       }

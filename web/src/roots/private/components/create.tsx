@@ -68,7 +68,7 @@ const SearchResults = React.memo<{
   }
 
   const title = 'Results for: ' + searchValue;
-  const books = data && data.searchGoogle;
+  const books = data?.searchGoogle;
 
   if (loading || !Array.isArray(books)) {
     return <ListWrapper title={title}>{ListingBasic.loading}</ListWrapper>;
@@ -174,7 +174,7 @@ const useCreateListing = (listing: ListingState, closeModal) => {
       },
       onCompleted,
       update: (proxy, { data }) => {
-        const newListing = data && data.createListing;
+        const newListing = data?.createListing;
         if (!newListing) {
           return;
         }
@@ -212,7 +212,7 @@ const useCreateListing = (listing: ListingState, closeModal) => {
     }, [create, closeModal]),
     loading,
     error,
-    listing: data && data.createListing,
+    listing: data?.createListing,
   };
 };
 
@@ -232,7 +232,7 @@ const PreviewListing = React.memo<ListingState>(function PreviewListing({
     return <Loading />;
   }
 
-  const googleBook = data && data.googleBook;
+  const googleBook = data?.googleBook;
 
   const listingPreview: any = {
     book: googleBook,

@@ -49,7 +49,7 @@ export function IsInstance(getter: () => Class, options?: ValidationOptions) {
       validator: {
         validate(value: any) {
           const Type = getter();
-          return Type && typeof Type === 'function' && value instanceof Type;
+          return typeof Type === 'function' && value instanceof Type;
         },
       },
     });

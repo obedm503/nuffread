@@ -74,9 +74,9 @@ const useGetBookListings = ({ bookId }) => {
     variables: { id: bookId, offset: 0 },
   });
 
-  const book = (data && data.book) || undefined;
-  const currentCount = (book && book.listings.items.length) || 0;
-  const totalCount = (book && book.listings.totalCount) || 0;
+  const book = data?.book || undefined;
+  const currentCount = book?.listings.items.length || 0;
+  const totalCount = book?.listings.totalCount || 0;
 
   const getMore = React.useCallback(
     async e => {

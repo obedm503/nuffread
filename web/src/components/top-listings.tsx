@@ -32,7 +32,7 @@ export const useTopListings = () => {
   ] = useLazyQuery<IPaginationInput>(TOP_LISTINGS, {
     variables: { offset: 0 },
   });
-  const currentCount = (data && data.top.items.length) || 0;
+  const currentCount = (data?.top.items.length) || 0;
 
   const getMore = React.useCallback(
     async e => {
@@ -63,7 +63,7 @@ export const useTopListings = () => {
     [refetch],
   );
 
-  const totalCount = (data && data.top.totalCount) || 0;
+  const totalCount = (data?.top.totalCount) || 0;
 
   if (error) {
     throw error;
@@ -71,7 +71,7 @@ export const useTopListings = () => {
 
   return {
     load,
-    data: data && data.top.items,
+    data: data?.top.items,
     loading: queryLoading({ called, loading }),
     canFetchMore: currentCount < totalCount,
     fetchMore: getMore,

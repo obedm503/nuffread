@@ -27,7 +27,7 @@ export const SearchListings = React.memo<{ onClick; searchValue: string }>(
       SEARCH,
       { variables: { query: searchValue, paginate: { offset: 0 } } },
     );
-    const currentCount = (data && data.search.items.length) || 0;
+    const currentCount = (data?.search.items.length) || 0;
 
     const getMore = React.useCallback(
       async e => {
@@ -54,14 +54,14 @@ export const SearchListings = React.memo<{ onClick; searchValue: string }>(
       return <Error value={error} />;
     }
 
-    const totalCount = (data && data.search.totalCount) || 0;
+    const totalCount = (data?.search.totalCount) || 0;
 
     return (
       <>
         <Listings
           loading={loading}
           onClick={onClick}
-          listings={data && data.search.items}
+          listings={data?.search.items}
           title={'Results for: ' + searchValue}
           component={ListingBasic}
         />

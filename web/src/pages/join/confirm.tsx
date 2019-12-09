@@ -30,7 +30,7 @@ const ConfirmEmail = React.memo<{
     CONFIRM_EMAIL,
     {
       onCompleted: data => {
-        if (data && data.confirm) {
+        if (data.confirm) {
           history.push('/login');
         }
       },

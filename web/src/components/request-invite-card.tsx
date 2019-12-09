@@ -56,7 +56,7 @@ const RequestInviteForm = React.memo(function RequestInvite() {
     [mutate],
   );
 
-  if (data && data.requestInvite) {
+  if (data?.requestInvite) {
     return (
       <p>We got your request. We will send you an email when it's approved.</p>
     );
