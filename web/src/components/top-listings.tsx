@@ -4,7 +4,7 @@ import * as React from 'react';
 import { BASIC_LISTING } from '../queries';
 import { IPaginationInput } from '../schema.gql';
 import { useLazyQuery } from '../state/apollo';
-import { queryLoading } from '../util';
+import { paginated, queryLoading } from '../util';
 
 const TOP_LISTINGS = gql`
   ${BASIC_LISTING}
@@ -32,7 +32,7 @@ export const useTopListings = () => {
   ] = useLazyQuery<IPaginationInput>(TOP_LISTINGS, {
     variables: { offset: 0 },
   });
-  const currentCount = (data?.top.items.length) || 0;
+  const { totalCount, currentCount } = paginated(data?.top);
 
   const getMore = React.useCallback(
     async e => {
@@ -62,8 +62,6 @@ export const useTopListings = () => {
     },
     [refetch],
   );
-
-  const totalCount = (data?.top.totalCount) || 0;
 
   if (error) {
     throw error;

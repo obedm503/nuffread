@@ -23,7 +23,7 @@ import { BASIC_LISTING, BOOK } from '../queries';
 import { IBook, IPaginationInput, IQueryBookArgs } from '../schema.gql';
 import { useLazyQuery } from '../state/apollo';
 import { useRouter } from '../state/router';
-import { queryLoading } from '../util';
+import { paginated, queryLoading } from '../util';
 import { Optional } from '../util.types';
 
 const MoreDeals: FC<{ book?: IBook; loading: boolean }> = ({
@@ -75,8 +75,7 @@ const useGetBookListings = ({ bookId }) => {
   });
 
   const book = data?.book || undefined;
-  const currentCount = book?.listings.items.length || 0;
-  const totalCount = book?.listings.totalCount || 0;
+  const { currentCount, totalCount } = paginated(book?.listings);
 
   const getMore = React.useCallback(
     async e => {

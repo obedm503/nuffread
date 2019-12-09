@@ -2,10 +2,11 @@ import { IonInfiniteScroll } from '@ionic/react';
 import gql from 'graphql-tag';
 import * as React from 'react';
 import { Error } from '.';
-import { ListingBasic } from './listing-basic';
 import { BASIC_LISTING } from '../queries';
 import { IQuerySearchArgs } from '../schema.gql';
 import { useQuery } from '../state/apollo';
+import { paginated } from '../util';
+import { ListingBasic } from './listing-basic';
 import { Listings } from './listings';
 
 export const SEARCH = gql`
@@ -27,7 +28,7 @@ export const SearchListings = React.memo<{ onClick; searchValue: string }>(
       SEARCH,
       { variables: { query: searchValue, paginate: { offset: 0 } } },
     );
-    const currentCount = (data?.search.items.length) || 0;
+    const { totalCount, currentCount } = paginated(data?.search);
 
     const getMore = React.useCallback(
       async e => {
@@ -53,8 +54,6 @@ export const SearchListings = React.memo<{ onClick; searchValue: string }>(
     if (error) {
       return <Error value={error} />;
     }
-
-    const totalCount = (data?.search.totalCount) || 0;
 
     return (
       <>

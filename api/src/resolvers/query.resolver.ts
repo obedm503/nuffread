@@ -9,7 +9,7 @@ import {
   IQuerySearchGoogleArgs,
   IQueryTopArgs,
 } from '../schema.gql';
-import { logger } from '../util';
+import { logger, paginationOptions } from '../util';
 import { ensureAdmin, ensureUser, userSession } from '../util/auth';
 import { getBook, searchBooks } from '../util/google-books';
 import { IResolver } from '../util/types';
@@ -36,8 +36,7 @@ export const QueryResolver: IResolver<IQuery> = {
     // mastering full text search
     // https://compose.com/articles/mastering-postgresql-tools-full-text-search-and-phrase-search/
 
-    const limit = paginate?.limit || 10;
-    const offset = paginate?.offset;
+    const { limit, offset } = paginationOptions(paginate);
 
     const builder = Listing.createQueryBuilder('listing')
       .innerJoinAndSelect('listing.book', 'book')
@@ -74,9 +73,10 @@ export const QueryResolver: IResolver<IQuery> = {
   },
 
   async top(_, { paginate }: IQueryTopArgs) {
+    const { limit, offset } = paginationOptions(paginate);
     const [items, totalCount] = await Listing.findAndCount({
-      take: paginate?.limit || 10,
-      skip: paginate?.offset,
+      take: limit,
+      skip: offset,
       order: { createdAt: 'DESC' },
       relations: ['book'],
     });

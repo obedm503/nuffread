@@ -3,6 +3,7 @@ import { Request } from 'express';
 import { sign, SignOptions, verify, VerifyOptions } from 'jsonwebtoken';
 import * as pino from 'pino';
 import { FindOneOptions } from 'typeorm';
+import { IPaginationInput } from '../schema.gql';
 import { Base } from './db';
 
 export async function findOne<T extends Base>(
@@ -87,3 +88,9 @@ export const jwt = {
     });
   },
 };
+
+export function paginationOptions(
+  paginate?: IPaginationInput,
+): { limit: number; offset?: number } {
+  return { limit: paginate?.limit || 10, offset: paginate?.offset };
+}
