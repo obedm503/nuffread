@@ -2,10 +2,10 @@ import { IonIcon, IonSkeletonText } from '@ionic/react';
 import * as React from 'react';
 
 const useImage = (src?: string) => {
-  const [error, setError] = React.useState<string | Event | undefined>(
-    undefined,
-  );
-  const [loading, setLoading] = React.useState(true);
+  const [{ error, loading }, setState] = React.useState<{
+    error: string | Event | undefined;
+    loading: boolean;
+  }>({ error: undefined, loading: false });
 
   React.useEffect(() => {
     if (!src) {
@@ -14,8 +14,8 @@ const useImage = (src?: string) => {
     const img = new Image();
 
     img.src = src;
-    img.onload = e => setLoading(false);
-    img.onerror = e => setError(e);
+    img.onload = e => setState({ error: undefined, loading: false });
+    img.onerror = e => setState({ loading: false, error: e });
 
     return () => {
       img.onload = null;

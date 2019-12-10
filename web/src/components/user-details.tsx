@@ -62,7 +62,12 @@ export const UserDetailed = React.memo<{ user: IUser }>(function UserDetailed({
     <IonCard color="white">
       <IonItem lines="none">
         <SafeImg
-          style={{ fontSize: '8rem', color: 'var(--ion-color-contrast)' }}
+          style={{
+            fontSize: '8rem',
+            width: '8rem',
+            marginRight: '1rem',
+            color: 'var(--ion-color-contrast)',
+          }}
           slot="start"
           src={user.photo || undefined}
           alt={name}
