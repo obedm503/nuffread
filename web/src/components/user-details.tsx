@@ -77,15 +77,15 @@ export const UserDetailed = React.memo<{ user: IUser }>(function UserDetailed({
         <IonLabel>
           <p>
             <strong>{name}</strong>
-            {user.schoolName ? (
+            {user.school?.name ? (
               <>
                 <br />
-                <small>{user.schoolName}</small>
+                <small>{user.school.name}</small>
               </>
             ) : null}
             <br />
             <small>
-              <a href={`mailto: ${user.email}`}>{user.email}</a>
+              <a href={`mailto:${user.email}`}>{user.email}</a>
             </small>
             {/* <br />
           <small>
@@ -151,7 +151,10 @@ const GET_LISTING_SELLER = gql`
         id
         name
         email
-        schoolName
+        school {
+          id
+          name
+        }
       }
     }
   }
