@@ -43,7 +43,7 @@ export const SafeImg = React.memo<{
   const src = (error ? placeholder : props.src) || placeholder;
 
   if (typeof src !== 'string') {
-    return <IonIcon icon={src} style={style as any}></IonIcon>;
+    return <IonIcon icon={src} style={style as any} />;
   }
   return (
     <img slot={slot} src={src} style={style} alt={alt} className={className} />

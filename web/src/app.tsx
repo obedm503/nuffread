@@ -69,7 +69,7 @@ const makeLazy = <T extends React.ComponentType<any>>(
   const Comp = React.lazy(factory);
   return props => (
     <React.Suspense fallback={loading}>
-      <Comp {...props}></Comp>
+      <Comp {...props} />
     </React.Suspense>
   );
 };

@@ -86,7 +86,7 @@ const RegisterForm: React.FC = () => {
           <Email name="email" label="Email" disabled={loading} />
           <Password name="password" label="Passphrase" disabled={loading} />
 
-          <Errors error={error}></Errors>
+          <Errors error={error} />
         </IonList>
 
         <IonGrid>

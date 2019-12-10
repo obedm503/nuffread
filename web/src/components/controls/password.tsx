@@ -21,7 +21,7 @@ export const Password: React.FC<ControlProps & {
   return (
     <Text {...props} type={type} autocomplete="on" required>
       <IonButton slot="end" style={buttonStyle} fill="clear" onClick={toggle}>
-        <IonIcon slot="icon-only" color="medium" icon={icon}></IonIcon>
+        <IonIcon slot="icon-only" color="medium" icon={icon} />
       </IonButton>
     </Text>
   );

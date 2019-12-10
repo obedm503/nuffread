@@ -226,7 +226,7 @@ const PreviewListing = React.memo<ListingState>(function PreviewListing({
   });
 
   if (error) {
-    return <Error value={error}></Error>;
+    return <Error value={error} />;
   }
   if (loading) {
     return <Loading />;
@@ -316,7 +316,7 @@ export const CreateModal = ({ isOpen, onClose: closeModal }) => {
 
           <IonButtons slot="secondary">
             <IonButton onClick={onClick}>
-              <IonIcon slot="icon-only" icon={close}></IonIcon>
+              <IonIcon slot="icon-only" icon={close} />
             </IonButton>
           </IonButtons>
         </IonToolbar>
@@ -346,13 +346,13 @@ export const CreateModal = ({ isOpen, onClose: closeModal }) => {
           <IonCardContent>
             <IonItem>
               <IonLabel>Price</IonLabel>
-              <IonIcon icon={logoUsd} size="small"></IonIcon>
+              <IonIcon icon={logoUsd} size="small" />
               <IonInput
                 type="number"
                 value={state.price}
                 debounce={500}
                 onIonChange={setPrice}
-              ></IonInput>
+               />
             </IonItem>
 
             <IonItem>
@@ -361,7 +361,7 @@ export const CreateModal = ({ isOpen, onClose: closeModal }) => {
                 value={state.description}
                 debounce={500}
                 onIonChange={setDescription}
-              ></IonTextarea>
+               />
             </IonItem>
           </IonCardContent>
         </IonCard>

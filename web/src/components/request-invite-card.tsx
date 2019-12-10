@@ -76,7 +76,7 @@ const RequestInviteForm = React.memo(function RequestInvite() {
           <Text name="name" label="Name" disabled={loading} />
           <Email name="email" label="Email" disabled={loading} />
 
-          <Errors error={error}></Errors>
+          <Errors error={error} />
         </IonList>
 
         <IonGrid>

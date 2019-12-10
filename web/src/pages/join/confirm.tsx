@@ -38,7 +38,7 @@ const ConfirmEmail = React.memo<{
   );
 
   if (error) {
-    return <Errors error={error}></Errors>;
+    return <Errors error={error} />;
   }
 
   if (!called) {

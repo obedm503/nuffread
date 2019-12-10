@@ -50,7 +50,7 @@ const Listings = React.memo<
   return (
     <ListWrapper title="Books">
       {data.me.listings.map(listing => (
-        <SlidingListing key={listing.id} listing={listing}></SlidingListing>
+        <SlidingListing key={listing.id} listing={listing} />
       ))}
     </ListWrapper>
   );
@@ -88,11 +88,11 @@ export const Profile = React.memo(function Profile() {
 
       <IonContent>
         <IonRefresher slot="fixed" onIonRefresh={onRefresh}>
-          <IonRefresherContent></IonRefresherContent>
+          <IonRefresherContent />
         </IonRefresher>
 
         <Container>
-          <UserDetailed user={user}></UserDetailed>
+          <UserDetailed user={user} />
 
           <Listings loading={isLoading} error={error} data={data} />
         </Container>

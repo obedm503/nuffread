@@ -69,9 +69,9 @@ const Invites: React.FC<{
           {invite.name} ({invite.email})
         </IonLabel>
         {!onClick ? null : loading ? (
-          <IonSpinner slot="end"></IonSpinner>
+          <IonSpinner slot="end" />
         ) : (
-          <IonIcon slot="end" icon={send}></IonIcon>
+          <IonIcon slot="end" icon={send} />
         )}
       </IonItem>
     ))}
@@ -100,7 +100,7 @@ const SignedUp: FC<{ invites: IInvite[]; refetch }> = ({
   );
 
   if (error) {
-    return <Error value={error}></Error>;
+    return <Error value={error} />;
   }
 
   return (
@@ -137,12 +137,12 @@ export default () => {
   if (loadingInvites) {
     return (
       <Wrapper>
-        <Loading></Loading>
+        <Loading />
       </Wrapper>
     );
   }
   if (errorInvites || errorEmail) {
-    return <Error value={errorInvites || errorEmail}></Error>;
+    return <Error value={errorInvites || errorEmail} />;
   }
   const invites = data!.invites;
   const { notInvited, users } = groupBy(invites, invite =>
@@ -169,7 +169,7 @@ export default () => {
             await sendInvite({ variables: { email: invite.email } });
             await refetch();
           }}
-        ></Invites>
+         />
       </IonCard>
 
       <IonCard>
@@ -184,17 +184,17 @@ export default () => {
             await sendInvite({ variables: { email: invite.email } });
             await refetch();
           }}
-        ></Invites>
+         />
       </IonCard>
 
-      <SignedUp invites={notConfirmed} refetch={refetch}></SignedUp>
+      <SignedUp invites={notConfirmed} refetch={refetch} />
 
       <IonCard>
         <IonCardHeader>
           <IonCardTitle>Confirmed Email</IonCardTitle>
         </IonCardHeader>
 
-        <Invites invites={confirmed}></Invites>
+        <Invites invites={confirmed} />
       </IonCard>
     </Wrapper>
   );

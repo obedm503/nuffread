@@ -38,7 +38,7 @@ const Admin = React.memo(() => {
 
           <IonTabBar slot="bottom">
             <IonTabButton tab="invites" href="/invites">
-              <IonIcon icon={personAdd}></IonIcon>
+              <IonIcon icon={personAdd} />
               <IonLabel>Invites</IonLabel>
             </IonTabButton>
             <IonTabButton tab="other" href="/other">

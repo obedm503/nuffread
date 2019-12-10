@@ -48,7 +48,7 @@ const Private = React.memo(function Private() {
   const showModal = React.useCallback(() => setModalOpen(true), []);
 
   if (!validStarts.some(start => route.startsWith(start))) {
-    return <Redirect to="/explore"></Redirect>;
+    return <Redirect to="/explore" />;
   }
 
   return (

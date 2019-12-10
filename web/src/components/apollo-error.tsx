@@ -24,7 +24,7 @@ export const apolloFormErrors = (handlers: {
           return (
             <ControlError key={e.message}>
               {typeof Render === 'function' ? (
-                <Render error={e}></Render>
+                <Render error={e} />
               ) : (
                 Render
               )}
