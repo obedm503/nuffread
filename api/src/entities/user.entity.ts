@@ -3,15 +3,17 @@ import {
   Column,
   Entity,
   JoinColumn,
+  ManyToOne,
   OneToMany,
   OneToOne,
   Unique,
 } from 'typeorm';
-import { IsEdu } from '../util';
+import { IsEdu, IsInstance } from '../util';
 import { Base, Created, PrimaryKey, Updated } from '../util/db';
 import { Invite } from './invite.entity';
 import { Listing } from './listing.entity';
 import { RecentListing } from './recent-listing.entity';
+import { School } from './school.entity';
 
 @Entity()
 @Unique(['email'])
@@ -71,4 +73,17 @@ export class User extends Base {
     recent => recent.user,
   )
   recent: RecentListing[];
+
+  @Column()
+  @IsString()
+  schoolId: string;
+
+  @ManyToOne(
+    () => School,
+    school => school.users,
+  )
+  @JoinColumn({ name: 'school_id' })
+  @IsNotEmpty()
+  @IsInstance(() => School)
+  school: School;
 }

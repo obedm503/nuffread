@@ -5,7 +5,7 @@ import { GraphQLSchema } from 'graphql';
 import { makeExecutableSchema } from 'graphql-tools';
 import { resolve } from 'path';
 import * as Stripe from 'stripe';
-import { Admin, Book, Invite, Listing, User } from './entities';
+import { Admin, Book, Invite, Listing, School, User } from './entities';
 import { RecentListing } from './entities/recent-listing.entity';
 import {
   BookResolver,
@@ -117,6 +117,7 @@ export async function getContext({
     bookLoader: makeIdLoader(Book),
     inviteLoader: makeEmailLoader(Invite),
     userEmailLoader: makeEmailLoader(User),
+    schoolLoader: makeIdLoader(School),
   };
 }
 
@@ -127,4 +128,5 @@ export const getEntities = () => [
   Book,
   Invite,
   RecentListing,
+  School,
 ];
