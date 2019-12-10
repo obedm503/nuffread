@@ -1,15 +1,6 @@
 import { SearchbarChangeEventDetail } from '@ionic/core';
-import {
-  IonButton,
-  IonButtons,
-  IonIcon,
-  IonSearchbar,
-  IonToolbar,
-  useIonViewDidEnter,
-} from '@ionic/react';
-import { qrScanner } from 'ionicons/icons';
+import { IonSearchbar, IonToolbar, useIonViewDidEnter } from '@ionic/react';
 import * as React from 'react';
-import { Scanner } from './scanner';
 
 export const DummySearchBar = React.memo<{
   onFocus?: () => void;
@@ -18,11 +9,11 @@ export const DummySearchBar = React.memo<{
     <IonToolbar color="white">
       <IonSearchbar placeholder="Search" onIonFocus={onFocus} />
 
-      <IonButtons slot="end">
+      {/* <IonButtons slot="end">
         <IonButton onClick={onFocus} color="primary">
           <IonIcon slot="icon-only" icon={qrScanner} />
         </IonButton>
-      </IonButtons>
+      </IonButtons> */}
     </IonToolbar>
   );
 });
@@ -49,10 +40,10 @@ export const SearchBar: React.FC<SearchBarProps> = React.memo(
       }
     });
 
-    const onScan = React.useCallback(
-      (value: string) => onChange && onChange(value),
-      [onChange],
-    );
+    // const onScan = React.useCallback(
+    //   (value: string) => onChange && onChange(value),
+    //   [onChange],
+    // );
 
     const onIonChange = React.useCallback(
       (e: CustomEvent<SearchbarChangeEventDetail>) => {
@@ -80,9 +71,9 @@ export const SearchBar: React.FC<SearchBarProps> = React.memo(
           onIonFocus={onFocus}
         />
 
-        <IonButtons slot="end">
+        {/* <IonButtons slot="end">
           <Scanner onScanned={onScan} />
-        </IonButtons>
+        </IonButtons> */}
       </IonToolbar>
     );
   },
