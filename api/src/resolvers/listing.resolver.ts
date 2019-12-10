@@ -10,6 +10,14 @@ export const ListingResolver: IResolver<IListing, Listing> = {
     }
     return user || (await userLoader.load(userId));
   },
+  async school(
+    { userId, user: loadedUser },
+    args,
+    { userLoader, schoolLoader },
+  ) {
+    const user = loadedUser || (await userLoader.load(userId));
+    return user && (user.school || (await schoolLoader.load(user.schoolId)));
+  },
   async book({ bookId, book }, args, { bookLoader }) {
     return book || (await bookLoader.load(bookId));
   },

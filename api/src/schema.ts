@@ -14,6 +14,7 @@ import {
   ListingResolver,
   MutationResolver,
   QueryResolver,
+  SchoolResolver,
   SystemUserResolver,
   UserResolver,
 } from './resolvers';
@@ -53,6 +54,7 @@ function createSchema(): GraphQLSchema {
     User: UserResolver,
     Invite: InviteResolver,
     Book: BookResolver,
+    School: SchoolResolver,
   };
   return makeExecutableSchema<IContext>({
     typeDefs,

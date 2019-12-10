@@ -1,6 +1,7 @@
 import { Invite, Listing } from '../entities';
 import { RecentListing } from '../entities/recent-listing.entity';
 import {
+  IListing,
   IQuery,
   IQueryBookArgs,
   IQueryGoogleBookArgs,
@@ -93,12 +94,12 @@ export const QueryResolver: IResolver<IQuery> = {
       return;
     }
     if (!session || !userSession(session)) {
-      return listing;
+      return (listing as any) as IListing;
     }
 
     if (listing.userId === session.userId) {
       // don't record me seeing my own listings
-      return listing;
+      return (listing as any) as IListing;
     }
 
     const partial = { listingId: id, userId: session.userId };
@@ -112,7 +113,7 @@ export const QueryResolver: IResolver<IQuery> = {
     }
     logger.debug({ partial }, 'recent listing');
 
-    return listing;
+    return (listing as any) as IListing;
   },
 
   async book(_, { id }: IQueryBookArgs, { bookLoader }) {

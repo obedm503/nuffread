@@ -71,7 +71,8 @@ type User {
   invite: Invite!
 
   confirmedAt: Date
-  schoolName: String
+  schoolName: String @deprecated(reason: "use school.name instead")
+  school: School!
 }
 
 input UserInput {
@@ -94,6 +95,8 @@ type Listing {
 
   book: Book!
   user: User
+  # references user.school without revealing much user information
+  school: School!
 }
 
 input ListingInput {
@@ -126,4 +129,11 @@ type GoogleBook {
   title: String!
   subTitle: String
   thumbnail: String
+}
+
+type School {
+  id: ID!
+  name: String!
+  # only accessible to administrators
+  domain: String!
 }

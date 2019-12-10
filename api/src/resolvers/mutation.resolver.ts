@@ -3,6 +3,7 @@ import { getConnection } from 'typeorm';
 import { CONFIG } from '../config';
 import { Admin, Book, Invite, Listing, RecentListing, User } from '../entities';
 import {
+  IListing,
   IMutation,
   IMutationConfirmArgs,
   IMutationCreateListingArgs,
@@ -205,7 +206,7 @@ export const MutationResolver: IResolver<IMutation> = {
           description,
         }),
       );
-      return listing;
+      return (listing as any) as IListing;
     });
   },
   async deleteListing(

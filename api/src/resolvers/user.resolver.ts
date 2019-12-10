@@ -1,12 +1,16 @@
 import { Admin, Listing, RecentListing, User } from '../entities';
-import { ISystemUser, IUser } from '../schema.gql';
+import { IListing, ISystemUser, IUser } from '../schema.gql';
 import { ensureAdmin, ensureUser } from '../util/auth';
 import { getSchoolName } from '../util/schools';
 import { IResolver } from '../util/types';
 
 export const UserResolver: IResolver<IUser, User> = {
+  // deprecated
   schoolName({ email }) {
     return getSchoolName(email);
+  },
+  async school({ school, schoolId }, args, { schoolLoader }) {
+    return school || (await schoolLoader.load(schoolId));
   },
   confirmedAt({ confirmedAt }, args, { session }) {
     ensureAdmin(session);
@@ -19,7 +23,7 @@ export const UserResolver: IResolver<IUser, User> = {
       order: { createdAt: 'DESC' },
       relations: ['book'],
     });
-    return listings;
+    return (listings as any) as IListing[];
   },
   async recent(user) {
     const recents = await RecentListing.find({
@@ -29,7 +33,7 @@ export const UserResolver: IResolver<IUser, User> = {
       take: 30,
     });
 
-    return recents.map(recent => recent.listing);
+    return (recents.map(recent => recent.listing) as any) as IListing[];
   },
 };
 
