@@ -16,7 +16,6 @@ export class School extends Base {
   readonly updatedAt: Date;
 
   @Column()
-  @IsNotEmpty()
   @IsString()
   name: string;
 

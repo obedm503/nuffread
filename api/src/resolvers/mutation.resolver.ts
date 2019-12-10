@@ -1,7 +1,15 @@
 import { compare, hash } from 'bcryptjs';
 import { getConnection } from 'typeorm';
 import { CONFIG } from '../config';
-import { Admin, Book, Invite, Listing, RecentListing, User } from '../entities';
+import {
+  Admin,
+  Book,
+  Invite,
+  Listing,
+  RecentListing,
+  School,
+  User,
+} from '../entities';
 import {
   IListing,
   IMutation,
@@ -77,7 +85,14 @@ export const MutationResolver: IResolver<IMutation> = {
 
     const passwordHash = await hash(password, 12);
 
-    const user = await User.save(User.create({ email, passwordHash }));
+    const domain = email.split('@')[1];
+    let school = await School.findOne({ where: { domain } });
+    if (!school) {
+      // school doesn't yet exist
+      // create it and default name to ''
+      school = await School.create({ domain, name: '' }).save();
+    }
+    const user = await User.save(User.create({ email, passwordHash, school }));
 
     await sendConfirmationEmail({
       email: user.email,
