@@ -4,8 +4,6 @@ import * as React from 'react';
 import { ControlProps } from './control';
 import { Text } from './text';
 
-const buttonStyle = { marginTop: 'auto' };
-
 export const Password: React.FC<ControlProps & {
   autoComplete?: 'current' | 'new';
 }> = React.memo(function Password({ autoComplete = 'current', ...props }) {
@@ -20,7 +18,7 @@ export const Password: React.FC<ControlProps & {
 
   return (
     <Text {...props} type={type} autocomplete="on" required>
-      <IonButton slot="end" style={buttonStyle} fill="clear" onClick={toggle}>
+      <IonButton slot="end" fill="clear" onClick={toggle}>
         <IonIcon slot="icon-only" color="medium" icon={icon} />
       </IonButton>
     </Text>
