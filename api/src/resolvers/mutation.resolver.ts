@@ -337,11 +337,12 @@ export const MutationResolver: IResolver<IMutation> = {
     try {
       await jwt.verify(token); // verify token is not expired
     } catch (e) {
+      logger.error(e, { email: user.email });
+
       // token is expired, delete it
       user.passwordResetToken = undefined;
       await user.save();
 
-      logger.error(e, { email: user.email });
       throw new WrongCredentials();
     }
 
