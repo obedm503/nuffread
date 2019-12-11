@@ -9,13 +9,14 @@ import {
   IonTabButton,
   IonTabs,
 } from '@ionic/react';
-import { personAdd } from 'ionicons/icons';
+import { personAdd, school } from 'ionicons/icons';
 import memoize from 'lodash/memoize';
 import * as React from 'react';
 import { Redirect, Route } from 'react-router';
 import { LogoutButton, Routes, TopNav } from '../../components';
 import { RootPageProps } from '../../util.types';
 import Invites from './invites';
+import Schools from './schools';
 
 const Admin = React.memo(() => {
   return (
@@ -31,9 +32,7 @@ const Admin = React.memo(() => {
           <IonRouterOutlet>
             <Redirect from="/" exact to="/invites" />
             <Route path="/:tab(invites)" exact component={Invites} />
-            <Route path="/:tab(other)" exact>
-              <div>other page</div>
-            </Route>
+            <Route path="/:tab(schools)" exact component={Schools} />
           </IonRouterOutlet>
 
           <IonTabBar slot="bottom">
@@ -41,8 +40,9 @@ const Admin = React.memo(() => {
               <IonIcon icon={personAdd} />
               <IonLabel>Invites</IonLabel>
             </IonTabButton>
-            <IonTabButton tab="other" href="/other">
-              <IonLabel>Other</IonLabel>
+            <IonTabButton tab="schools" href="/schools">
+              <IonIcon icon={school} />
+              <IonLabel>Schools</IonLabel>
             </IonTabButton>
           </IonTabBar>
         </IonTabs>

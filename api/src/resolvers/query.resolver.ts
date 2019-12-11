@@ -1,4 +1,4 @@
-import { Invite, Listing } from '../entities';
+import { Invite, Listing, School } from '../entities';
 import { RecentListing } from '../entities/recent-listing.entity';
 import {
   IListing,
@@ -141,6 +141,11 @@ export const QueryResolver: IResolver<IQuery> = {
   async invites(_, args, { session }) {
     ensureAdmin(session);
 
-    return Invite.find({ order: { createdAt: 'DESC' } });
+    return await Invite.find({ order: { createdAt: 'DESC' } });
+  },
+  async schools(_, __, { session }) {
+    ensureAdmin(session);
+
+    return await School.find({ order: { domain: 'ASC' } });
   },
 };

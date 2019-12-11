@@ -23,6 +23,7 @@ import {
   IMutationResendConfirmEmailArgs,
   IMutationResetPasswordArgs,
   IMutationSendInviteArgs,
+  IMutationSetSchoolNameArgs,
 } from '../schema.gql';
 import { jwt, logger } from '../util';
 import { ensureAdmin, ensurePublic, ensureUser, isUser } from '../util/auth';
@@ -351,5 +352,17 @@ export const MutationResolver: IResolver<IMutation> = {
     await user.save();
 
     return true;
+  },
+
+  async setSchoolName(
+    _,
+    { id, name }: IMutationSetSchoolNameArgs,
+    { session },
+  ) {
+    ensureAdmin(session);
+
+    const school = await School.findOneOrFail({ where: { id } });
+    school.name = name;
+    return await school.save();
   },
 };

@@ -29,6 +29,7 @@ type Query {
   book(id: ID!): Book
 
   invites: [Invite!]!
+  schools: [School!]!
 
   searchGoogle(query: String!): [GoogleBook!]
   googleBook(id: ID!): GoogleBook!
@@ -50,6 +51,8 @@ type Mutation {
 
   createListing(listing: ListingInput!): Listing!
   deleteListing(id: ID!): Boolean
+
+  setSchoolName(id: ID!, name: String!): School!
 }
 
 type Invite {
