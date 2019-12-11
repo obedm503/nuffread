@@ -2,8 +2,7 @@
 const { concurrent, series, rimraf } = require('nps-utils');
 const { lightFormat } = require('date-fns');
 
-const env = process.env.NODE_ENV;
-if (env !== 'production') {
+if (process.env.NODE_ENV !== 'production') {
   require('dotenv-safe').config({
     path: './api/.env',
     example: './api/.env.example',
@@ -55,6 +54,9 @@ module.exports.scripts = {
     migrate: series('cd api', 'npm run migrate'),
   },
   heroku: {
-    release: `echo "${env}"`,
+    release:
+      process.env.RELEASE_ENV === 'staging'
+        ? `echo "is heroku-cli available? $(which heroku)"`
+        : '',
   },
 };
