@@ -5,16 +5,17 @@ const useImage = (src?: string) => {
   const [{ error, loading }, setState] = React.useState<{
     error: string | Event | undefined;
     loading: boolean;
-  }>({ error: undefined, loading: false });
+  }>({ error: undefined, loading: true });
 
   React.useEffect(() => {
     if (!src) {
+      setState({ loading: false, error: undefined });
       return;
     }
     const img = new Image();
 
     img.src = src;
-    img.onload = e => setState({ error: undefined, loading: false });
+    img.onload = e => setState({ loading: false, error: undefined });
     img.onerror = e => setState({ loading: false, error: e });
 
     return () => {
