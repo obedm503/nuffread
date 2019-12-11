@@ -88,12 +88,15 @@ export const MutationResolver: IResolver<IMutation> = {
 
     const domain = email.split('@')[1];
     let school = await School.findOne({ where: { domain } });
-    if (!school) {
-      // school doesn't yet exist
-      // create it and default name to ''
-      school = await School.create({ domain, name: '' }).save();
-    }
-    const user = await User.save(User.create({ email, passwordHash, school }));
+
+    const user: User = await getConnection().transaction(async manager => {
+      if (!school) {
+        // school doesn't yet exist
+        // create it and default name to ''
+        school = await manager.save(School.create({ domain, name: '' }));
+      }
+      return await manager.save(User.create({ email, passwordHash, school }));
+    });
 
     await sendConfirmationEmail({
       email: user.email,
