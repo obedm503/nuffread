@@ -44,7 +44,9 @@ export const Explore = memo(function Explore() {
     <IonPage>
       <IonHeader>
         {isLoggedIn ? (
-          <DummySearchBar onFocus={toSearch} />
+          <Container className="no-padding">
+            <DummySearchBar onFocus={toSearch} />
+          </Container>
         ) : (
           <TopNav homeHref={false}>
             <IonButtons slot="end">
