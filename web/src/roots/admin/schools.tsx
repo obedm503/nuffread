@@ -141,7 +141,7 @@ const Page = ({ children }) => (
 );
 
 export default () => {
-  const { loading, error, data } = useQuery(SCHOOLS, { pollInterval: 60000 });
+  const { loading, error, data } = useQuery(SCHOOLS);
 
   if (loading) {
     return (
