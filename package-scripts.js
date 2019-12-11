@@ -1,8 +1,9 @@
 // @ts-check
-const { concurrent, series, rimraf, crossEnv } = require('nps-utils');
+const { concurrent, series, rimraf } = require('nps-utils');
 const { lightFormat } = require('date-fns');
 
-if (process.env.NODE_ENV !== 'production') {
+const env = process.env.NODE_ENV;
+if (env !== 'production') {
   require('dotenv-safe').config({
     path: './api/.env',
     example: './api/.env.example',
@@ -52,5 +53,8 @@ module.exports.scripts = {
     ].join(' '),
     cli: `psql ${process.env.DATABASE_URL}`,
     migrate: series('cd api', 'npm run migrate'),
+  },
+  heroku: {
+    release: `echo "${env}"`,
   },
 };
