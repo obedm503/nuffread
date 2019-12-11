@@ -8,8 +8,20 @@ import { SystemUserType } from '../schema.gql';
 
 export type UserSession = Express.Session & {
   userId: string;
-  userType: SystemUserType;
+  userType: SystemUserType.User;
 };
+export type AdminSession = Express.Session & {
+  userId: string;
+  userType: SystemUserType.Admin;
+};
+export type PublicSession =
+  | undefined
+  | (Express.Session & {
+      userId: undefined;
+      userType: undefined;
+    });
+export type Session = UserSession | AdminSession | PublicSession;
+
 export type IContext = {
   req: Request;
   res: Response;

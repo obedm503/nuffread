@@ -57,14 +57,14 @@ export const sendConfirmationEmail = async ({
   });
 };
 
-const isInvited = (invite?: Invite) => {
+function ensureInvited(invite?: Invite): asserts invite is Invite {
   if (!invite) {
     throw new NoInvite();
   }
   if (!invite.invitedAt) {
     throw new NoApprovedInvite();
   }
-};
+}
 
 export const MutationResolver: IResolver<IMutation> = {
   async register(
@@ -82,7 +82,7 @@ export const MutationResolver: IResolver<IMutation> = {
 
     const invite = await inviteLoader.load(email);
     // only invited users can register
-    isInvited(invite);
+    ensureInvited(invite);
 
     const passwordHash = await hash(password, 12);
 
@@ -96,13 +96,13 @@ export const MutationResolver: IResolver<IMutation> = {
         school = await manager.save(School.create({ domain, name: '' }));
       }
       return await manager.save(
-        User.create({ name: invite!.name, email, passwordHash, school }),
+        User.create({ name: invite.name, email, passwordHash, school }),
       );
     });
 
     await sendConfirmationEmail({
       email: user.email,
-      confirmCode: invite!.code,
+      confirmCode: invite.code,
     });
 
     return user;
@@ -145,8 +145,9 @@ export const MutationResolver: IResolver<IMutation> = {
     return me;
   },
   async logout(_, args, { req, res }) {
-    if (req.session) {
-      await new Promise(done => req.session!.destroy(done));
+    const session = req.session;
+    if (session) {
+      await new Promise(done => session.destroy(done));
     }
     res.clearCookie('session');
 
@@ -159,10 +160,10 @@ export const MutationResolver: IResolver<IMutation> = {
       const invite = await manager.findOne(Invite, {
         where: { code },
       });
-      isInvited(invite);
+      ensureInvited(invite);
 
       const user = await manager.findOne(User, {
-        where: { email: invite!.email },
+        where: { email: invite.email },
       });
       if (!user) {
         throw new WrongCredentials();
@@ -188,7 +189,7 @@ export const MutationResolver: IResolver<IMutation> = {
     const email = emailInput.toLowerCase();
 
     const invite = await inviteLoader.load(email);
-    isInvited(invite);
+    ensureInvited(invite);
 
     const user = await userEmailLoader.load(email);
     if (!user) {
@@ -199,7 +200,7 @@ export const MutationResolver: IResolver<IMutation> = {
       return true; // user is already confirmed
     }
 
-    await sendConfirmationEmail({ email, confirmCode: invite!.code });
+    await sendConfirmationEmail({ email, confirmCode: invite.code });
 
     return true;
   },

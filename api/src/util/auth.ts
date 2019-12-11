@@ -1,13 +1,13 @@
 import { User } from '../entities';
 import { SystemUserType } from '../schema.gql';
 import { AuthenticationError, AuthorizationError } from './error';
-import { UserSession } from './types';
+import { AdminSession, PublicSession, Session, UserSession } from './types';
 
 export function isUser(me?: User): me is User {
   return me instanceof User && !!me.confirmedAt;
 }
 
-export function userSession(session?: UserSession): boolean {
+export function userSession(session?: Session): session is UserSession {
   return (
     !!session &&
     'userType' in session &&
@@ -15,7 +15,7 @@ export function userSession(session?: UserSession): boolean {
     session.userType === SystemUserType.User
   );
 }
-export function ensureUser(session?: UserSession): void {
+export function ensureUser(session?: Session): asserts session is UserSession {
   if (userSession(session)) {
     return;
   }
@@ -23,7 +23,7 @@ export function ensureUser(session?: UserSession): void {
   throw new AuthorizationError();
 }
 
-export function adminSession(session?: UserSession): boolean {
+export function adminSession(session?: Session): session is AdminSession {
   return (
     !!session &&
     'userType' in session &&
@@ -31,7 +31,9 @@ export function adminSession(session?: UserSession): boolean {
     session.userType === SystemUserType.Admin
   );
 }
-export function ensureAdmin(session?: UserSession): void {
+export function ensureAdmin(
+  session?: Session,
+): asserts session is AdminSession {
   if (adminSession(session)) {
     return;
   }
@@ -39,7 +41,9 @@ export function ensureAdmin(session?: UserSession): void {
   throw new AuthorizationError();
 }
 
-export function ensurePublic(session?: UserSession): void {
+export function ensurePublic(
+  session?: Session,
+): asserts session is PublicSession {
   if (!session) {
     return;
   }
