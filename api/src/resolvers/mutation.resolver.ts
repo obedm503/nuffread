@@ -95,7 +95,9 @@ export const MutationResolver: IResolver<IMutation> = {
         // create it and default name to ''
         school = await manager.save(School.create({ domain, name: '' }));
       }
-      return await manager.save(User.create({ email, passwordHash, school }));
+      return await manager.save(
+        User.create({ name: invite!.name, email, passwordHash, school }),
+      );
     });
 
     await sendConfirmationEmail({
