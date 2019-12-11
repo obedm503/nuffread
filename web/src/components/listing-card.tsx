@@ -16,7 +16,7 @@ import { RelativeDate } from './relative-date';
 import { SafeImg } from './safe-img';
 import { UserBasic } from './user-details';
 
-export const BookCard = memo<{
+type BookCardProps = {
   book: IBook;
   onClick?;
   before?;
@@ -24,7 +24,8 @@ export const BookCard = memo<{
   detailed?: boolean;
   description?;
   after?;
-}>(function BookCard({
+};
+export const BookCard = memo<BookCardProps>(function BookCard({
   onClick,
   before,
   book,
