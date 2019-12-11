@@ -114,7 +114,7 @@ const SignedUp: FC<{ invites: IInvite[]; refetch }> = ({
   );
 };
 
-const Wrapper = ({ children }) => (
+const Page = ({ children }) => (
   <IonPage>
     <IonContent>
       <Container>{children}</Container>
@@ -136,9 +136,9 @@ export default () => {
 
   if (loadingInvites) {
     return (
-      <Wrapper>
+      <Page>
         <Loading />
-      </Wrapper>
+      </Page>
     );
   }
   if (errorInvites || errorEmail) {
@@ -156,7 +156,7 @@ export default () => {
   );
 
   return (
-    <Wrapper>
+    <Page>
       <IonCard>
         <IonCardHeader>
           <IonCardTitle>Requested</IonCardTitle>
@@ -169,7 +169,7 @@ export default () => {
             await sendInvite({ variables: { email: invite.email } });
             await refetch();
           }}
-         />
+        />
       </IonCard>
 
       <IonCard>
@@ -184,7 +184,7 @@ export default () => {
             await sendInvite({ variables: { email: invite.email } });
             await refetch();
           }}
-         />
+        />
       </IonCard>
 
       <SignedUp invites={notConfirmed} refetch={refetch} />
@@ -196,6 +196,6 @@ export default () => {
 
         <Invites invites={confirmed} />
       </IonCard>
-    </Wrapper>
+    </Page>
   );
 };
