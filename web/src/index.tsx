@@ -45,24 +45,25 @@ render(main, document.getElementById('root'));
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
 // Learn more about service workers: https://bit.ly/CRA-PWA
-serviceWorker.register({
-  async onUpdate() {
-    const toast = document.createElement('ion-toast');
-    toast.message = 'A new version of nuffread is available';
-    toast.position = 'bottom';
-    toast.buttons = [
-      {
-        text: 'Refresh',
-        role: 'destructive',
-        handler: () => {
-          window.location.reload();
-        },
-      },
-    ];
-    document.body.appendChild(toast);
-    toast.present && toast.present();
-  },
-});
+// serviceWorker.register({
+//   async onUpdate() {
+//     const toast = document.createElement('ion-toast');
+//     toast.message = 'A new version of nuffread is available';
+//     toast.position = 'bottom';
+//     toast.buttons = [
+//       {
+//         text: 'Refresh',
+//         role: 'destructive',
+//         handler: () => {
+//           window.location.reload();
+//         },
+//       },
+//     ];
+//     document.body.appendChild(toast);
+//     toast.present && toast.present();
+//   },
+// });
+serviceWorker.unregister();
 
 if (module['hot']) {
   module['hot'].accept();
