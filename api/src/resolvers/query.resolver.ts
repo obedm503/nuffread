@@ -54,9 +54,13 @@ export const QueryResolver: IResolver<IQuery> = {
       builder.setParameter(`segment_${i}`, segment);
 
       if (i === 0) {
-        builder.where(`book.search_text ~* :segment_${i}`);
+        builder
+          .where(`listing.search_text ~* :segment_${i}`)
+          .orWhere(`book.search_text ~* :segment_${i}`);
       } else {
-        builder.orWhere(`book.search_text ~* :segment_${i}`);
+        builder
+          .orWhere(`listing.search_text ~* :segment_${i}`)
+          .orWhere(`book.search_text ~* :segment_${i}`);
       }
     }
 
