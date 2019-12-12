@@ -7,6 +7,7 @@ import { apolloFormErrors } from '../../components/apollo-error';
 import { IMutationConfirmArgs } from '../../schema.gql';
 import { useMutation } from '../../state/apollo';
 import { useRouter } from '../../state/router';
+import { tracker } from '../../state/tracker';
 
 const Errors = apolloFormErrors({
   NO_INVITE: (
@@ -31,6 +32,7 @@ const ConfirmEmail = React.memo<{
     {
       onCompleted: data => {
         if (data.confirm) {
+          tracker.event('CONFIRM_EMAIL', {});
           history.push('/login');
         }
       },

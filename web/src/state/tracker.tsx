@@ -40,6 +40,7 @@ type AppEvents = {
   CREATE_LISTING: { price: number };
   REQUEST_RESET_PASSWORD: { email: string };
   RESET_PASSWORD: {};
+  CONFIRM_EMAIL: {};
 };
 type EventsMap = ErrorEventsMap & AppEvents;
 
