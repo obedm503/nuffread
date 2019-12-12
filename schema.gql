@@ -30,6 +30,7 @@ type Query {
 
   invites: [Invite!]!
   schools: [School!]!
+  sessions: [Session!]!
 
   searchGoogle(query: String!): [GoogleBook!]
   googleBook(id: ID!): GoogleBook!
@@ -139,4 +140,11 @@ type School {
   name: String!
   # only accessible to administrators
   domain: String!
+}
+
+type Session {
+  id: ID!
+  expiresAt: Date!
+
+  user: SystemUser!
 }

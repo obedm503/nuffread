@@ -1,3 +1,4 @@
+import { getConnection } from 'typeorm';
 import { Invite, Listing, School } from '../entities';
 import { RecentListing } from '../entities/recent-listing.entity';
 import {
@@ -9,9 +10,12 @@ import {
   IQuerySearchArgs,
   IQuerySearchGoogleArgs,
   IQueryTopArgs,
+  ISession,
+  SystemUserType,
 } from '../schema.gql';
 import { logger, paginationOptions } from '../util';
 import { ensureAdmin, ensureUser, userSession } from '../util/auth';
+import { InternalError } from '../util/error';
 import { getBook, searchBooks } from '../util/google-books';
 import { IResolver } from '../util/types';
 
@@ -147,5 +151,40 @@ export const QueryResolver: IResolver<IQuery> = {
     ensureAdmin(session);
 
     return await School.find({ order: { domain: 'ASC' } });
+  },
+  async sessions(_, __, { session, adminLoader, userLoader }) {
+    ensureAdmin(session);
+
+    const con = getConnection();
+    type DBSession = {
+      id: string;
+      expires_at: Date;
+      user_id: string;
+      user_type: SystemUserType;
+    };
+    const dbSessions: DBSession[] = await con.query(
+      `SELECT sid AS id, expire as expires_at, sess->>'userId' AS user_id, sess->>'userType' AS user_type FROM session`,
+    );
+
+    const sessions = await Promise.all(
+      dbSessions.map<Promise<ISession>>(async s => {
+        const user =
+          s.user_type === SystemUserType.Admin
+            ? await adminLoader.load(s.user_id)
+            : await userLoader.load(s.user_id);
+
+        if (!user) {
+          logger.error({ id: s.user_id, type: s.user_type }, 'user not found');
+          throw new InternalError();
+        }
+
+        return {
+          id: s.id,
+          expiresAt: s.expires_at,
+          user,
+        };
+      }),
+    );
+    return sessions;
   },
 };
