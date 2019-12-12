@@ -1,12 +1,14 @@
 import {
   IonButton,
   IonCard,
+  IonCardContent,
   IonCardHeader,
   IonCardTitle,
   IonContent,
   IonIcon,
   IonItem,
   IonLabel,
+  IonList,
   IonPage,
   IonSpinner,
 } from '@ionic/react';
@@ -83,10 +85,9 @@ const School = memo<{ school: ISchool }>(({ school }) => {
             >
               <IonButton
                 slot="end"
+                color="success"
                 disabled={loading}
                 onClick={() => handleSubmit()}
-                fill="outline"
-                color="success"
               >
                 {loading ? (
                   <IonSpinner slot="icon-only" />
@@ -106,7 +107,7 @@ const School = memo<{ school: ISchool }>(({ school }) => {
       <IonLabel>
         <b>{school.name}</b> {school.domain}
       </IonLabel>
-      <IonButton slot="end" onClick={onClick} fill="outline">
+      <IonButton slot="end" color="primary" onClick={onClick}>
         <IonIcon slot="icon-only" icon={create} />
       </IonButton>
     </IonItem>
@@ -122,13 +123,17 @@ const Schools: React.FC<{
         <IonCardTitle>{title}</IonCardTitle>
       </IonCardHeader>
 
-      {!schools.length ? (
-        <IonItem>
-          <IonLabel>No items</IonLabel>
-        </IonItem>
-      ) : (
-        schools.map(school => <School key={school.id} school={school} />)
-      )}
+      <IonCardContent>
+        <IonList>
+          {!schools.length ? (
+            <IonItem>
+              <IonLabel>No items</IonLabel>
+            </IonItem>
+          ) : (
+            schools.map(school => <School key={school.id} school={school} />)
+          )}
+        </IonList>
+      </IonCardContent>
     </IonCard>
   );
 };

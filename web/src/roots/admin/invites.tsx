@@ -1,11 +1,14 @@
 import {
+  IonButton,
   IonCard,
+  IonCardContent,
   IonCardHeader,
   IonCardTitle,
   IonContent,
   IonIcon,
   IonItem,
   IonLabel,
+  IonList,
   IonPage,
   IonSpinner,
 } from '@ionic/react';
@@ -57,25 +60,31 @@ const Invites: React.FC<{
   loading?: boolean;
   onClick?: (invite: IInvite) => any;
 }> = ({ invites = [], loading = false, onClick }) => (
-  <>
-    {invites.map(invite => (
-      <IonItem
-        button={!!onClick}
-        disabled={loading}
-        key={invite.email}
-        onClick={onClick && (() => onClick(invite))}
-      >
-        <IonLabel>
-          {invite.name} ({invite.email})
-        </IonLabel>
-        {!onClick ? null : loading ? (
-          <IonSpinner slot="end" />
-        ) : (
-          <IonIcon slot="end" icon={send} />
-        )}
-      </IonItem>
-    ))}
-  </>
+  <IonCardContent>
+    <IonList>
+      {invites.map(invite => (
+        <IonItem key={invite.email}>
+          <IonLabel>
+            {invite.name} ({invite.email})
+          </IonLabel>
+          {!onClick ? null : (
+            <IonButton
+              slot="end"
+              color="primary"
+              disabled={loading}
+              onClick={() => onClick(invite)}
+            >
+              {loading ? (
+                <IonSpinner slot="icon-only" />
+              ) : (
+                <IonIcon slot="icon-only" icon={send} />
+              )}
+            </IonButton>
+          )}
+        </IonItem>
+      ))}
+    </IonList>
+  </IonCardContent>
 );
 
 const RESEND_CONFIRMATION_EMAIL = gql`
