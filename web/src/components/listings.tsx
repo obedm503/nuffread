@@ -20,11 +20,11 @@ export class Listings extends React.PureComponent<Props> {
   render() {
     const { listings, loading, title, component: Listing } = this.props;
 
-    if (loading || !Array.isArray(listings)) {
+    if (loading) {
       return <ListWrapper title={title}>{Listing.loading}</ListWrapper>;
     }
 
-    if (!listings.length) {
+    if (!Array.isArray(listings) || !listings.length) {
       return (
         <ListWrapper title={title}>
           <IonItem color="white">
