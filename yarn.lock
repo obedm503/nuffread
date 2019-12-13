@@ -1891,27 +1891,27 @@
   dependencies:
     "@hapi/hoek" "^8.3.0"
 
-"@ionic/core@4.11.5":
-  version "4.11.5"
-  resolved "https://registry.yarnpkg.com/@ionic/core/-/core-4.11.5.tgz#905c53984129cdcad9f9a06f76c8856a59a95ba0"
-  integrity sha512-+TrMpTdya6JBd4RELLVkulXh5dNZNHypsGMKlYCJJcIZwsvObO9+uzxBhGSOX7+F7eMuR341FUcTMb0fib9TNA==
+"@ionic/core@4.11.7", "@ionic/core@^4.11.7":
+  version "4.11.7"
+  resolved "https://registry.yarnpkg.com/@ionic/core/-/core-4.11.7.tgz#8241c462a2917367e07a30fe66ce9a4be67bf60a"
+  integrity sha512-cYHFO703o51JvDqbYoCK1Ifd6M6wr+sFn38R5jTlkAYGueltq+GjsvQXzPqc7x2mx+yhTbo+Lf20XdpM+4mpVA==
   dependencies:
     ionicons "^4.6.3"
     tslib "^1.10.0"
 
-"@ionic/react-router@4.11.5":
-  version "4.11.5"
-  resolved "https://registry.yarnpkg.com/@ionic/react-router/-/react-router-4.11.5.tgz#389d4725d698f6f2ae1378b7bd061fd3a3076b38"
-  integrity sha512-lX70up3+Bh5F1BWzOD/yhB+huKfaik8eHorUaNavByQldhNIDYhEZK6yhkne40wLCyAMLPePRHQLU46cHxVCOw==
+"@ionic/react-router@^4.11.7":
+  version "4.11.7"
+  resolved "https://registry.yarnpkg.com/@ionic/react-router/-/react-router-4.11.7.tgz#a779ae07a255fcca480d31175bd6629e07918fd2"
+  integrity sha512-8dl2y0xdTZOLBjOrEJD24g1Q+mQWXC1eIwmpghziqub+z3K4VkfyZ1eLpxjK69IhkoW8ebdT0hrDsfYJnK009g==
   dependencies:
     tslib "*"
 
-"@ionic/react@4.11.5":
-  version "4.11.5"
-  resolved "https://registry.yarnpkg.com/@ionic/react/-/react-4.11.5.tgz#0341c31245f06aa4f0e146fa2cb234708e79b89e"
-  integrity sha512-U/AdHQLAobk4bCfVsw2MpXV9oZ7yHAMoVBqJHJCQBr6Voap2aDetwj64kpmBkFBJuOtp5JMlA/mEVrVY9ZzanA==
+"@ionic/react@^4.11.7":
+  version "4.11.7"
+  resolved "https://registry.yarnpkg.com/@ionic/react/-/react-4.11.7.tgz#1bb778c767980c0c7f8188bc1f0f12f1f68e66bd"
+  integrity sha512-rZv72oCGc/uO15KZXMr24qC3jaMrlIbAbfxyiIOxwtE4ura3ZybiHQRjGAiS75OcSRxvwpNG2BqWz6s/13yDlQ==
   dependencies:
-    "@ionic/core" "4.11.5"
+    "@ionic/core" "4.11.7"
     tslib "*"
 
 "@jest/console@^24.7.1", "@jest/console@^24.9.0":
@@ -6776,10 +6776,10 @@ form-data@~2.3.2:
     combined-stream "^1.0.6"
     mime-types "^2.1.12"
 
-formik@^2.0.7:
-  version "2.0.7"
-  resolved "https://registry.yarnpkg.com/formik/-/formik-2.0.7.tgz#774c33e01e02b1cd241d65a9e86844d9b4793562"
-  integrity sha512-gaDMCsbSu/foYTH/4sS4YkMzpqB5fFzR8BF9klio+ZV+FcM/8g+0HmpMCs5A8EJvpm/fj6Q5tpxxgcU5q9FELw==
+formik@^2.0.8:
+  version "2.0.8"
+  resolved "https://registry.yarnpkg.com/formik/-/formik-2.0.8.tgz#a17740007a9a1394360142c128bb686acb5dbc7c"
+  integrity sha512-PxC9G6EvLdJzMv7z+bsvpI/Euplv2vVgTQebD5yNza4t3fiMBB+iD90VOVTLCyH5Pnv3bljsZiKsIqGp/UNKKg==
   dependencies:
     deepmerge "^2.1.1"
     hoist-non-react-statics "^3.3.0"
@@ -7282,7 +7282,7 @@ graphql-upload@^8.0.2:
     http-errors "^1.7.3"
     object-path "^0.11.4"
 
-graphql@14.5.8, graphql@^14.3.0, graphql@^14.5.3, graphql@^14.5.7:
+graphql@^14.3.0, graphql@^14.5.3, graphql@^14.5.8:
   version "14.5.8"
   resolved "https://registry.yarnpkg.com/graphql/-/graphql-14.5.8.tgz#504f3d3114cb9a0a3f359bbbcf38d9e5bf6a6b3c"
   integrity sha512-MMwmi0zlVLQKLdGiMfWkgQD7dY/TUKt4L+zgJ/aR0Howebod3aNgP5JkgvAULiR2HPVZaP2VEElqtdidHweLkg==
