@@ -129,35 +129,41 @@ export const ListingCard = memo<Props>(function ListingCard({
   );
 }) as NamedExoticComponent<Props> & { loading };
 
-const Loading = () => (
+export const LoadingListingCard = ({ animated = true }) => (
   <IonCard color="white">
     <IonCardHeader>
       <IonCardTitle>
-        <IonSkeletonText animated style={{ width: '90%' }} />
+        <IonSkeletonText animated={animated} style={{ width: '90%' }} />
       </IonCardTitle>
 
       <IonCardSubtitle>
-        <IonSkeletonText animated style={{ width: '45%' }} />
+        <IonSkeletonText animated={animated} style={{ width: '45%' }} />
       </IonCardSubtitle>
     </IonCardHeader>
 
     <IonCardContent>
-      <IonSkeletonText slot="start" animated className="book-cover-card" />
+      <IonSkeletonText
+        slot="start"
+        animated={animated}
+        className="book-cover-card"
+      />
     </IonCardContent>
 
     <IonItem lines="inset">
       <IonLabel>
-        <IonSkeletonText animated style={{ width: '100%' }} />
+        <IonSkeletonText animated={animated} style={{ width: '100%' }} />
       </IonLabel>
     </IonItem>
     <IonItem lines="none">
       <IonLabel>
         <small>
-          <IonSkeletonText animated style={{ width: '20%' }} />
+          <IonSkeletonText animated={animated} style={{ width: '20%' }} />
         </small>
       </IonLabel>
     </IonItem>
   </IonCard>
 );
 
-ListingCard.loading = range(10).map(n => <Loading key={n} />);
+ListingCard.loading = range(10).map(n => (
+  <LoadingListingCard key={n} animated />
+));

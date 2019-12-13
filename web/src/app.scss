@@ -289,10 +289,10 @@ $ionic-breakpoints: (
 
   @return if($name != index-to-key($ionic-breakpoints, 1), $min, null);
 }
-@mixin media-breakpoint-up($name) {
+@mixin from($name) {
   $min: breakpoint-min($name);
   @if $min {
-    @media (min-width: $min) {
+    @media screen and (min-width: $min) {
       @content;
     }
   } @else {
@@ -305,10 +305,10 @@ img.book-cover-card {
   width: 100%;
   height: auto;
 
-  @include media-breakpoint-up(sm) {
+  @include from(sm) {
     width: 60%;
   }
-  @include media-breakpoint-up(lg) {
+  @include from(lg) {
     width: 50%;
   }
 }
@@ -319,17 +319,17 @@ ion-skeleton-text.book-cover-card {
   width: calc(50vmax * 6 / 9);
   height: 50vmax;
 
-  @include media-breakpoint-up(md) {
+  @include from(md) {
     width: calc(60vmax * 6 / 9);
     height: 60vmax;
   }
 
-  @include media-breakpoint-up(lg) {
+  @include from(lg) {
     width: calc(50vmax * 6 / 9);
     height: 50vmax;
   }
 
-  @include media-breakpoint-up(xl) {
+  @include from(xl) {
     width: calc(55vh * 6 / 9);
     height: 55vh;
   }
@@ -361,5 +361,15 @@ ion-skeleton-text.book-cover-basic {
       width: 6em;
       height: 6em;
     }
+  }
+}
+
+ion-modal {
+  @include from(lg) {
+    --width: 70% !important;
+    --height: 90% !important;
+  }
+  @include from(xl) {
+    --width: 50% !important;
   }
 }

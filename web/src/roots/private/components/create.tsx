@@ -23,7 +23,10 @@ import * as React from 'react';
 import { Error, Loading, Title } from '../../../components';
 import { ListWrapper } from '../../../components/list-wrapper';
 import { BookBasic, ListingBasic } from '../../../components/listing-basic';
-import { ListingCard } from '../../../components/listing-card';
+import {
+  ListingCard,
+  LoadingListingCard,
+} from '../../../components/listing-card';
 import { SearchBar } from '../../../components/search-bar';
 import { CREATE_LISTING, MY_LISTINGS, SEARCH_GOOGLE } from '../../../queries';
 import {
@@ -352,7 +355,7 @@ export const CreateModal = ({ isOpen, onClose: closeModal }) => {
                 value={state.price}
                 debounce={500}
                 onIonChange={setPrice}
-               />
+              />
             </IonItem>
 
             <IonItem>
@@ -361,7 +364,7 @@ export const CreateModal = ({ isOpen, onClose: closeModal }) => {
                 value={state.description}
                 debounce={500}
                 onIonChange={setDescription}
-               />
+              />
             </IonItem>
           </IonCardContent>
         </IonCard>
@@ -376,23 +379,26 @@ export const CreateModal = ({ isOpen, onClose: closeModal }) => {
 
         {state.googleId ? (
           <PreviewListing {...state} price={state.price} />
-        ) : null}
+        ) : (
+          <LoadingListingCard animated={false} />
+        )}
 
         {error ? <Error value={error} /> : null}
       </IonContent>
 
-      <IonFooter>
-        {!listing ? (
+      {!listing ? (
+        <IonFooter>
           <IonButton
-            className="ion-padding-horizontal"
+            className="ion-margin"
             expand="block"
             onClick={create}
             disabled={!state.googleId || !state.price || loading}
+            size="default"
           >
-            Create
+            Post
           </IonButton>
-        ) : null}
-      </IonFooter>
+        </IonFooter>
+      ) : null}
     </IonModal>
   );
 };
