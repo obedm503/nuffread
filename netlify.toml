@@ -1,5 +1,5 @@
 [build.environment]
-  YARN_VERSION = "1.19.2"
+  YARN_VERSION = "1.21.1"
   NODE_VERSION = "10.16.2"
 
 [[redirects]]
