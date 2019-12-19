@@ -8,7 +8,7 @@ export const useSearch = () => {
   const currentSearch = history.location.search;
   const searchValue = new URLSearchParams(currentSearch).get('q') || undefined;
 
-  const push = history.push;
+  const { replace, push } = history;
   const onSearch = useCallback(
     (value: string | undefined) => {
       let search: string | undefined;
@@ -17,12 +17,12 @@ export const useSearch = () => {
         query.set('q', value);
         search = query.toString();
       }
-      push({
+      replace({
         pathname: '/search',
         search,
       });
     },
-    [location.search, push],
+    [location.search, replace],
   );
 
   const onClick = useCallback(

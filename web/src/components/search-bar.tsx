@@ -64,7 +64,7 @@ export const SearchBar: React.FC<SearchBarProps> = React.memo(
 
         <IonSearchbar
           placeholder="Search"
-          debounce={500}
+          debounce={800}
           ref={searchBar}
           onIonChange={onIonChange}
           value={searchValue}
