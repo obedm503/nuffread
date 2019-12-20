@@ -1,5 +1,5 @@
 [build]
-  ignore = "git diff --quiet HEAD^ HEAD !(api)"
+  ignore = "git diff --quiet HEAD^ HEAD !(api/)"
 
 [build.environment]
   YARN_VERSION = "1.21.1"

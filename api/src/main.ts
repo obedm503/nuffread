@@ -106,7 +106,7 @@ apollo.applyMiddleware({
   // await con.synchronize();
 
   const server = app.listen(port, () => {
-    logger.info('start server');
+    logger.info('started server');
     logger.debug(`listening on port ${port}`);
   });
 
