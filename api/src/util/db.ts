@@ -94,7 +94,7 @@ export async function connect(
       // cache: true,
       namingStrategy: new SnakeNamingStrategy(),
     };
-    logger.info('connect db');
+    logger.info('connected db');
     connection = await createConnection(connectionOptions);
   }
 
@@ -102,7 +102,7 @@ export async function connect(
 }
 export async function close() {
   if (connection) {
-    logger.info('close db');
+    logger.info('closed db');
     await connection.close();
   }
 }
