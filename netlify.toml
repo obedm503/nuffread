@@ -1,5 +1,6 @@
 [build]
   # ignore exclusive changes in api/
+  # based on https://stackoverflow.com/questions/4380945/exclude-a-directory-from-git-diff
   ignore = "git diff --quiet HEAD^ HEAD -- . ':!api/'"
 
 [build.environment]
