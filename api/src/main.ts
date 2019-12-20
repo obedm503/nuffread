@@ -112,7 +112,7 @@ apollo.applyMiddleware({
 
   const close = async () => {
     await db.close();
-    logger.info('close server');
+    logger.info('closed server');
     await promisify(server.close).call(server);
   };
   process.once('exit', close);
