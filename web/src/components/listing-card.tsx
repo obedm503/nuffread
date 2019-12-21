@@ -1,31 +1,96 @@
 import {
   IonBadge,
+  IonButton,
+  IonButtons,
   IonCard,
   IonCardContent,
   IonCardHeader,
   IonCardSubtitle,
   IonCardTitle,
+  IonIcon,
   IonItem,
   IonLabel,
   IonSkeletonText,
+  IonToast,
 } from '@ionic/react';
+import gql from 'graphql-tag';
 import range from 'lodash/range';
-import React, { memo, NamedExoticComponent } from 'react';
-import { IListing, IBook } from '../schema.gql';
+import React from 'react';
+// TODO: using ionicons version 5 icons before release, update when v5 releases
+import bookmarkOutline from '../icons/bookmark-outline.svg';
+import bookmark from '../icons/bookmark.svg';
+import { IListing, IMutationSaveListingArgs } from '../schema.gql';
+import { useMutation } from '../state/apollo';
 import { RelativeDate } from './relative-date';
 import { SafeImg } from './safe-img';
 import { UserBasic } from './user-details';
 
+const SAVE_LISTING = gql`
+  mutation SaveListing($listingId: ID!, $saved: Boolean!) {
+    saveListing(listingId: $listingId, saved: $saved) {
+      id
+      saved
+    }
+  }
+`;
+
+const SaveListingButton = React.memo<{
+  saved: IListing['saved'];
+  listingId: IListing['id'];
+}>(function SaveListingButton({ saved, listingId }) {
+  const [isOpen, setShowToast] = React.useState(false);
+  const hide = React.useCallback(() => setShowToast(false), [setShowToast]);
+
+  const [save, { loading }] = useMutation<IMutationSaveListingArgs>(
+    SAVE_LISTING,
+  );
+  const onClick = React.useCallback(
+    async (e: React.MouseEvent<HTMLIonButtonElement, MouseEvent>) => {
+      e.stopPropagation();
+      await save({
+        variables: { listingId, saved: !saved },
+        optimisticResponse: {
+          __typename: 'Mutation',
+          saveListing: { __typename: 'Listing', id: listingId, saved: !saved },
+        } as any,
+      });
+      setShowToast(true);
+    },
+    [save, saved, listingId],
+  );
+
+  if (typeof saved !== 'boolean') {
+    return null;
+  }
+
+  return (
+    <IonButtons slot="end">
+      <IonButton onClick={onClick} color={loading ? 'medium' : 'dark'}>
+        <IonIcon
+          slot="icon-only"
+          icon={saved ? bookmark : bookmarkOutline}
+          size="large"
+        />
+
+        <IonToast
+          color="primary"
+          isOpen={isOpen}
+          onDidDismiss={hide}
+          message={saved ? 'Saved post.' : 'Unsaved post.'}
+          duration={400}
+        />
+      </IonButton>
+    </IonButtons>
+  );
+});
+
 type BookCardProps = {
-  book: IBook;
   onClick?;
   before?;
-  price?: number;
   detailed?: boolean;
-  description?;
   after?;
-};
-export const BookCard = memo<BookCardProps>(function BookCard({
+} & Pick<IListing, 'saved' | 'book' | 'description' | 'id' | 'price'>;
+export const BookCard = React.memo<BookCardProps>(function BookCard({
   onClick,
   before,
   book,
@@ -33,6 +98,8 @@ export const BookCard = memo<BookCardProps>(function BookCard({
   description,
   after,
   price,
+  saved,
+  id,
 }) {
   return (
     <IonCard
@@ -69,6 +136,8 @@ export const BookCard = memo<BookCardProps>(function BookCard({
       </IonCardContent>
 
       <IonItem lines="inset">
+        <SaveListingButton saved={saved} listingId={id} />
+
         <IonLabel className="ion-text-wrap">
           <b>{book.authors.join(', ')}</b>
         </IonLabel>
@@ -114,7 +183,7 @@ type Props = {
   listing: IListing;
   detailed?: boolean;
 };
-export const ListingCard = memo<Props>(function ListingCard({
+export const ListingCard = React.memo<Props>(function ListingCard({
   onClick,
   listing,
   detailed = false,
@@ -122,9 +191,11 @@ export const ListingCard = memo<Props>(function ListingCard({
   return (
     <BookCard
       onClick={onClick}
+      id={listing.id}
+      description={listing.description}
       book={listing.book}
       price={listing.price}
-      description={listing.description}
+      saved={listing.saved}
       detailed={detailed}
       before={listing.user ? <UserBasic user={listing.user} /> : null}
       after={
@@ -138,7 +209,7 @@ export const ListingCard = memo<Props>(function ListingCard({
       }
     />
   );
-}) as NamedExoticComponent<Props> & { loading };
+}) as React.NamedExoticComponent<Props> & { loading };
 
 export const LoadingListingCard = ({ animated = true }) => (
   <IonCard color="white" className="book-card">
@@ -168,7 +239,7 @@ export const LoadingListingCard = ({ animated = true }) => (
     <IonItem lines="none">
       <IonLabel>
         <small>
-          <IonSkeletonText animated={animated} style={{ width: '20%' }} />
+          <IonSkeletonText animated={animated} style={{ width: '40%' }} />
         </small>
       </IonLabel>
     </IonItem>
