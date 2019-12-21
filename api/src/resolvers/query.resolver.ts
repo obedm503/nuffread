@@ -41,13 +41,13 @@ export const QueryResolver: IResolver<IQuery> = {
     // mastering full text search
     // https://compose.com/articles/mastering-postgresql-tools-full-text-search-and-phrase-search/
 
-    const { limit, offset } = paginationOptions(paginate);
+    const { take, skip } = paginationOptions(paginate);
 
     const builder = Listing.createQueryBuilder('listing')
       .innerJoinAndSelect('listing.book', 'book')
       // skip and take break with custom ORDER BY expression
-      .limit(limit)
-      .offset(offset);
+      .limit(take)
+      .offset(skip);
 
     for (let i = 0; i < segments.length; i++) {
       const segment = segments[i];
@@ -82,10 +82,10 @@ export const QueryResolver: IResolver<IQuery> = {
   },
 
   async top(_, { paginate }: IQueryTopArgs) {
-    const { limit, offset } = paginationOptions(paginate);
+    const { take, skip } = paginationOptions(paginate);
     const [items, totalCount] = await Listing.findAndCount({
-      take: limit,
-      skip: offset,
+      take,
+      skip,
       order: { createdAt: 'DESC' },
       relations: ['book'],
     });

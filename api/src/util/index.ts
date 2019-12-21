@@ -91,6 +91,6 @@ export const jwt = {
 
 export function paginationOptions(
   paginate?: IPaginationInput,
-): { limit: number; offset?: number } {
-  return { limit: paginate?.limit || 10, offset: paginate?.offset };
+): { take: number; skip?: number } {
+  return { take: paginate?.limit || 10, skip: paginate?.offset };
 }
