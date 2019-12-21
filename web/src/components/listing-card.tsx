@@ -35,7 +35,12 @@ export const BookCard = memo<BookCardProps>(function BookCard({
   price,
 }) {
   return (
-    <IonCard color="white" onClick={onClick} button={!!onClick}>
+    <IonCard
+      color="white"
+      className="book-card"
+      onClick={onClick}
+      button={!!onClick}
+    >
       {before}
 
       <IonCardHeader>
@@ -130,7 +135,7 @@ export const ListingCard = memo<Props>(function ListingCard({
 }) as NamedExoticComponent<Props> & { loading };
 
 export const LoadingListingCard = ({ animated = true }) => (
-  <IonCard color="white">
+  <IonCard color="white" className="book-card">
     <IonCardHeader>
       <IonCardTitle>
         <IonSkeletonText animated={animated} style={{ width: '90%' }} />
