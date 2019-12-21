@@ -7,6 +7,7 @@ import { resolve } from 'path';
 import * as Stripe from 'stripe';
 import { Admin, Book, Invite, Listing, School, User } from './entities';
 import { RecentListing } from './entities/recent-listing.entity';
+import { SavedListing } from './entities/saved-listing.entity';
 import {
   BookResolver,
   DateResolver,
@@ -130,5 +131,6 @@ export const getEntities = () => [
   Book,
   Invite,
   RecentListing,
+  SavedListing,
   School,
 ];

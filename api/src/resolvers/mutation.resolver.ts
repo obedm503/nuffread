@@ -10,6 +10,7 @@ import {
   School,
   User,
 } from '../entities';
+import { SavedListing } from '../entities/saved-listing.entity';
 import {
   IListing,
   IMutation,
@@ -22,6 +23,7 @@ import {
   IMutationRequestResetPasswordArgs,
   IMutationResendConfirmEmailArgs,
   IMutationResetPasswordArgs,
+  IMutationSaveListingArgs,
   IMutationSendInviteArgs,
   IMutationSetSchoolNameArgs,
 } from '../schema.gql';
@@ -370,5 +372,24 @@ export const MutationResolver: IResolver<IMutation> = {
     const school = await School.findOneOrFail({ where: { id } });
     school.name = name;
     return await school.save();
+  },
+
+  async saveListing(
+    _,
+    { listingId, saved }: IMutationSaveListingArgs,
+    { session, listingLoader },
+  ) {
+    ensureUser(session);
+
+    if (saved) {
+      await SavedListing.create({
+        listingId,
+        userId: session.userId,
+      }).save();
+    } else {
+      await SavedListing.delete({ listingId, userId: session.userId });
+    }
+
+    return ((await listingLoader.load(listingId)) as any) as IListing;
   },
 };

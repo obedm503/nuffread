@@ -13,6 +13,7 @@ import { Base, Created, PrimaryKey, Updated } from '../util/db';
 import { Invite } from './invite.entity';
 import { Listing } from './listing.entity';
 import { RecentListing } from './recent-listing.entity';
+import { SavedListing } from './saved-listing.entity';
 import { School } from './school.entity';
 
 @Entity()
@@ -73,6 +74,12 @@ export class User extends Base {
     recent => recent.user,
   )
   recent: RecentListing[];
+
+  @OneToMany(
+    () => SavedListing,
+    saved => saved.user,
+  )
+  saved: SavedListing[];
 
   @Column()
   @IsString()

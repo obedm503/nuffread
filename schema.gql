@@ -54,6 +54,8 @@ type Mutation {
   deleteListing(id: ID!): Boolean
 
   setSchoolName(id: ID!, name: String!): School!
+
+  saveListing(listingId: ID!, saved: Boolean!): Listing!
 }
 
 type Invite {
@@ -101,6 +103,8 @@ type Listing {
   user: User
   # references user.school without revealing much user information
   school: School!
+
+  saved: Boolean
 }
 
 input ListingInput {
