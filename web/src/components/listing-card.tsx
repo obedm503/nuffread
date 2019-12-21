@@ -69,10 +69,16 @@ export const BookCard = memo<BookCardProps>(function BookCard({
       </IonCardContent>
 
       <IonItem lines="inset">
-        <IonLabel>
-          <b>{book.authors.join(', ')}</b> {description}
+        <IonLabel className="ion-text-wrap">
+          <b>{book.authors.join(', ')}</b>
         </IonLabel>
       </IonItem>
+
+      {description ? (
+        <IonItem lines="inset">
+          <IonLabel className="ion-text-wrap">{description}</IonLabel>
+        </IonItem>
+      ) : null}
 
       {detailed
         ? book.isbn.map(isbn => (
