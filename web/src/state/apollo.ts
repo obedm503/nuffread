@@ -7,7 +7,7 @@ import {
   useQuery as apolloQuery,
 } from '@apollo/react-hooks';
 import { DataProxy } from 'apollo-cache';
-import ApolloClient, { OperationVariables } from 'apollo-client';
+import ApolloClient from 'apollo-client';
 import { DocumentNode } from 'graphql';
 import { IMutation, IQuery } from '../schema.gql';
 
@@ -31,7 +31,7 @@ export const useMutation = <TVariables = never>(
  * https://github.com/apollographql/apollo-feature-requests/issues/1
  * https://github.com/apollographql/apollo-client/issues/1542
  */
-export function readQuery<T = any, TVariables = OperationVariables>(
+export function readQuery<T = any, TVariables = never>(
   client: ApolloClient<any>,
   options: DataProxy.Query<TVariables>,
   optimistic?: boolean,
