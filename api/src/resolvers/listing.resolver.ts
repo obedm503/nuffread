@@ -1,5 +1,4 @@
 import { Listing } from '../entities';
-import { SavedListing } from '../entities/saved-listing.entity';
 import { IListing } from '../schema.gql';
 import { userSession } from '../util/auth';
 import { IResolver } from '../util/types';
@@ -22,13 +21,15 @@ export const ListingResolver: IResolver<IListing, Listing> = {
   async book({ bookId, book }, args, { bookLoader }) {
     return book || (await bookLoader.load(bookId));
   },
-  async saved({ userId, id }, args, { session }) {
+  async saved(listing, args, { session, savedListingLoader }) {
     if (!userSession(session)) {
       return undefined;
     }
-    const saved = await SavedListing.findOne({
-      where: { listingId: id, userId },
-    });
+
+    // in format listingId::userId
+    const saved = await savedListingLoader.load(
+      [listing.id, session.userId].join('::'),
+    );
     return !!saved;
   },
 };
