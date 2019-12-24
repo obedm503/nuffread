@@ -2,9 +2,10 @@ import { RefresherEventDetail } from '@ionic/core';
 import gql from 'graphql-tag';
 import * as React from 'react';
 import { BASIC_LISTING } from '../queries';
-import { IPaginationInput } from '../schema.gql';
+import { IListing, IPaginationInput } from '../schema.gql';
 import { useLazyQuery } from '../state/apollo';
 import { paginated, queryLoading } from '../util';
+import { PaginatedRefresh } from '../util.types';
 
 const TOP_LISTINGS = gql`
   ${BASIC_LISTING}
@@ -25,7 +26,7 @@ const TOP_LISTINGS = gql`
   }
 `;
 
-export const useTopListings = () => {
+export const useTopListings = (): PaginatedRefresh<readonly IListing[]> => {
   const [
     load,
     { error, data, loading, fetchMore, called, refetch },
