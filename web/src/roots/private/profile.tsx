@@ -30,15 +30,15 @@ const Listings = React.memo<
   Pick<QueryResult<IQuery>, 'data' | 'error' | 'loading'>
 >(function Listings({ loading, error, data }) {
   if (loading) {
-    return <ListWrapper title="Books">{SlidingListing.loading}</ListWrapper>;
+    return <ListWrapper title="My Books">{SlidingListing.loading}</ListWrapper>;
   }
-  if (error || !data || !data.me || data.me.__typename !== 'User') {
+  if (error || !(data?.me?.__typename === 'User')) {
     return <Error value={error} />;
   }
 
   if (!data.me.listings.length) {
     return (
-      <ListWrapper title="Books">
+      <ListWrapper title="My Books">
         <IonItem>
           No books for sale. To add a book, click the button at the bottom of
           the screen.
@@ -48,7 +48,7 @@ const Listings = React.memo<
   }
 
   return (
-    <ListWrapper title="Books">
+    <ListWrapper title="My Books">
       {data.me.listings.map(listing => (
         <SlidingListing key={listing.id} listing={listing} />
       ))}

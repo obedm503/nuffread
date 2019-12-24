@@ -185,10 +185,8 @@ const useCreateListing = (listing: ListingState, closeModal) => {
         // best effort update
         const listingsData = readQuery<IQuery>(client, { query: MY_LISTINGS });
         if (
-          !listingsData ||
-          !listingsData.me ||
-          listingsData.me.__typename !== 'User' ||
-          !listingsData.me.listings
+          !(listingsData?.me?.__typename === 'User') ||
+          !listingsData?.me?.listings
         ) {
           return;
         }
