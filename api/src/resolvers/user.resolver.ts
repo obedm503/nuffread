@@ -1,5 +1,7 @@
 import { Admin, Listing, RecentListing, User } from '../entities';
-import { IListing, ISystemUser, IUser } from '../schema.gql';
+import { SavedListing } from '../entities/saved-listing.entity';
+import { IListing, ISystemUser, IUser, IUserSavedArgs } from '../schema.gql';
+import { paginationOptions } from '../util';
 import { ensureAdmin, ensureUser } from '../util/auth';
 import { getSchoolName } from '../util/schools';
 import { IResolver } from '../util/types';
@@ -36,6 +38,21 @@ export const UserResolver: IResolver<IUser, User> = {
       recents.map(r => r.listingId),
     );
     return (listings as any) as IListing[];
+  },
+  async saved(user, { paginate }: IUserSavedArgs, { listingLoader }) {
+    const { take, skip } = paginationOptions(paginate);
+    const [saved, totalCount] = await SavedListing.findAndCount({
+      where: { userId: user.id },
+      order: { updatedAt: 'DESC' },
+      take,
+      skip,
+    });
+
+    const listings = await listingLoader.loadMany(saved.map(s => s.listingId));
+    return {
+      items: (listings as any) as IListing[],
+      totalCount,
+    };
   },
 };
 

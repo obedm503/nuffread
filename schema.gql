@@ -74,6 +74,8 @@ type User {
 
   listings: [Listing!]!
   recent: [Listing!]!
+  saved(paginate: PaginationInput): PaginatedListings!
+
   invite: Invite!
 
   confirmedAt: Date
