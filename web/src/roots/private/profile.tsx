@@ -4,6 +4,7 @@ import {
   IonButtons,
   IonContent,
   IonItem,
+  IonLabel,
   IonPage,
   IonRefresher,
   IonRefresherContent,
@@ -40,8 +41,10 @@ const Listings = React.memo<
     return (
       <ListWrapper title="My Books">
         <IonItem>
-          No books for sale. To add a book, click the button at the bottom of
-          the screen.
+          <IonLabel className="ion-text-wrap">
+            No books for sale. To add a book, click the button at the bottom of
+            the screen.
+          </IonLabel>
         </IonItem>
       </ListWrapper>
     );
