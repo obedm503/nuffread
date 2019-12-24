@@ -1,7 +1,6 @@
 import { QueryResult } from '@apollo/react-common';
 import { RefresherEventDetail } from '@ionic/core';
 import {
-  IonButtons,
   IonContent,
   IonInfiniteScroll,
   IonItem,
@@ -13,14 +12,7 @@ import {
 } from '@ionic/react';
 import { join } from 'path';
 import * as React from 'react';
-import {
-  Container,
-  ListingCard,
-  ListWrapper,
-  LogoutItem,
-  Popover,
-  TopNav,
-} from '../../components';
+import { Container, ListingCard, ListWrapper, TopNav } from '../../components';
 import { SAVED_LISTINGS } from '../../queries';
 import { IPaginationInput, IQuery } from '../../schema.gql';
 import { useLazyQuery } from '../../state/apollo';
@@ -138,13 +130,7 @@ export const Saved = React.memo(function Saved() {
 
   return (
     <IonPage>
-      <TopNav homeHref="/explore" title="Saved Books">
-        <IonButtons slot="end">
-          <Popover>
-            <LogoutItem />
-          </Popover>
-        </IonButtons>
-      </TopNav>
+      <TopNav homeHref="/explore" title="Saved Books" />
 
       <IonContent>
         <IonRefresher slot="fixed" onIonRefresh={refresh}>
