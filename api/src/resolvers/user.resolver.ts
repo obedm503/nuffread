@@ -25,15 +25,17 @@ export const UserResolver: IResolver<IUser, User> = {
     });
     return (listings as any) as IListing[];
   },
-  async recent(user) {
+  async recent(user, args, { listingLoader }) {
     const recents = await RecentListing.find({
       where: { userId: user.id },
-      relations: ['listing'],
       order: { updatedAt: 'DESC' },
       take: 30,
     });
 
-    return (recents.map(recent => recent.listing) as any) as IListing[];
+    const listings = await listingLoader.loadMany(
+      recents.map(r => r.listingId),
+    );
+    return (listings as any) as IListing[];
   },
 };
 
