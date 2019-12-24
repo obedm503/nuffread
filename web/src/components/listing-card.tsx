@@ -28,6 +28,7 @@ import {
   IQuery,
 } from '../schema.gql';
 import { readQuery, useMutation } from '../state/apollo';
+import { tracker } from '../state/tracker';
 import { RelativeDate } from './relative-date';
 import { SafeImg } from './safe-img';
 import { UserBasic } from './user-details';
@@ -53,6 +54,7 @@ const SaveListingButton = React.memo<{
   const [save, { loading }] = useMutation<IMutationSaveListingArgs>(
     SAVE_LISTING,
   );
+
   const onClick = React.useCallback(
     async (e: React.MouseEvent<HTMLIonButtonElement, MouseEvent>) => {
       e.stopPropagation();
@@ -68,6 +70,12 @@ const SaveListingButton = React.memo<{
       const updatedListing = data?.saveListing;
       if (!updatedListing) {
         return;
+      }
+
+      if (updatedListing.saved) {
+        tracker.event('SAVE_POST', { listingId: updatedListing.id });
+      } else {
+        tracker.event('UNSAVE_POST', { listingId: updatedListing.id });
       }
 
       const listingsData = readQuery<IQuery, IPaginationInput>(client, {

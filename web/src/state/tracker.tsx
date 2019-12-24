@@ -41,6 +41,8 @@ type AppEvents = {
   REQUEST_RESET_PASSWORD: { email: string };
   RESET_PASSWORD: {};
   CONFIRM_EMAIL: {};
+  SAVE_POST: { listingId: string };
+  UNSAVE_POST: { listingId: string };
 };
 type EventsMap = ErrorEventsMap & AppEvents;
 
