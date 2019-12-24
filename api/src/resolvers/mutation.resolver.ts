@@ -247,6 +247,7 @@ export const MutationResolver: IResolver<IMutation> = {
 
     await getConnection().transaction(async manager => {
       await manager.delete(RecentListing, { listingId: id });
+      await manager.delete(SavedListing, { listingId: id });
       await manager.delete(Listing, { id });
     });
 
