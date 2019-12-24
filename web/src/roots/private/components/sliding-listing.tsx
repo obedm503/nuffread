@@ -11,7 +11,7 @@ import {
   IMutationDeleteListingArgs,
   IQuery,
 } from '../../../schema.gql';
-import { useMutation } from '../../../state/apollo';
+import { readQuery, useMutation } from '../../../state/apollo';
 
 const DELETE_LISTING = gql`
   mutation DeleteListing($id: ID!) {
@@ -27,7 +27,7 @@ const update: (
   if (!success) {
     return;
   }
-  const listingsData = client.readQuery<IQuery>({ query: MY_LISTINGS });
+  const listingsData = readQuery<IQuery>(client, { query: MY_LISTINGS });
   if (
     !listingsData ||
     !listingsData.me ||

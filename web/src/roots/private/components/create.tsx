@@ -37,7 +37,7 @@ import {
   IQueryGoogleBookArgs,
   IQuerySearchGoogleArgs,
 } from '../../../schema.gql';
-import { useMutation, useQuery } from '../../../state/apollo';
+import { readQuery, useMutation, useQuery } from '../../../state/apollo';
 import { tracker } from '../../../state/tracker';
 
 const SearchResultBook: React.FC<{
@@ -183,28 +183,26 @@ const useCreateListing = (listing: ListingState, closeModal) => {
         }
 
         // best effort update
-        try {
-          const listingsData = client.readQuery<IQuery>({ query: MY_LISTINGS });
-          if (
-            !listingsData ||
-            !listingsData.me ||
-            listingsData.me.__typename !== 'User' ||
-            !listingsData.me.listings
-          ) {
-            return;
-          }
-          const listings = listingsData.me.listings;
-          client.writeQuery({
-            query: MY_LISTINGS,
-            data: {
-              ...listingsData,
-              me: {
-                ...listingsData.me,
-                listings: [newListing, ...listings],
-              },
+        const listingsData = readQuery<IQuery>(client, { query: MY_LISTINGS });
+        if (
+          !listingsData ||
+          !listingsData.me ||
+          listingsData.me.__typename !== 'User' ||
+          !listingsData.me.listings
+        ) {
+          return;
+        }
+        const listings = listingsData.me.listings;
+        client.writeQuery({
+          query: MY_LISTINGS,
+          data: {
+            ...listingsData,
+            me: {
+              ...listingsData.me,
+              listings: [newListing, ...listings],
             },
-          });
-        } catch {}
+          },
+        });
       },
     },
   );
