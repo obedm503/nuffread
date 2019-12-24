@@ -10,6 +10,7 @@ import memoize from 'lodash/memoize';
 import * as React from 'react';
 import { Redirect, RouteProps } from 'react-router';
 import { mapRoutes, Routes } from '../../components';
+import bookmarkOutline from '../../icons/bookmark-outline.svg';
 import { Book } from '../../pages/book';
 import { Explore } from '../../pages/explore';
 import { Listing } from '../../pages/listing';
@@ -18,11 +19,13 @@ import { useRouter } from '../../state/router';
 import { RootPageProps } from '../../util.types';
 import { CreateModal } from './components/create';
 import { Profile } from './profile';
+import { Saved } from './saved';
 
 const routes: RouteProps[] = [
-  { path: '/:tab(profile)', exact: true, render: () => <Profile /> },
   { path: '/:tab(explore)', exact: true, render: () => <Explore /> },
   { path: '/search', exact: true, render: () => <Search /> },
+  { path: '/:tab(saved)', exact: true, render: () => <Saved /> },
+  { path: '/:tab(profile)', exact: true, render: () => <Profile /> },
   {
     path: '/p/:listingId',
     component: ({ match }) => (
@@ -37,7 +40,15 @@ const routes: RouteProps[] = [
   },
 ];
 
-const validStarts = ['/explore', '/search', '/create', '/profile', '/p', '/b'];
+const validStarts = [
+  '/explore',
+  '/search',
+  '/create',
+  '/saved',
+  '/profile',
+  '/p',
+  '/b',
+];
 
 const Private = React.memo(function Private() {
   const { location } = useRouter();
@@ -64,6 +75,10 @@ const Private = React.memo(function Private() {
           {isOpen ? <CreateModal isOpen onClose={closeModal} /> : null}
 
           <IonIcon icon={add} ariaLabel="Create" />
+        </IonTabButton>
+
+        <IonTabButton tab="saved" href="/saved">
+          <IonIcon icon={bookmarkOutline} ariaLabel="Saved" />
         </IonTabButton>
 
         <IonTabButton tab="profile" href="/profile">

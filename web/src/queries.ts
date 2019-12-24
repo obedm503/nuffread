@@ -28,6 +28,24 @@ export const BASIC_LISTING = gql`
   }
 `;
 
+export const SAVED_LISTINGS = gql`
+  ${BASIC_LISTING}
+
+  query GetSavedListings($offset: Int!) {
+    me {
+      ... on User {
+        id
+        saved(paginate: { offset: $offset }) {
+          totalCount
+          items {
+            ...BasicListing
+          }
+        }
+      }
+    }
+  }
+`;
+
 export const MY_LISTINGS = gql`
   ${BASIC_LISTING}
 

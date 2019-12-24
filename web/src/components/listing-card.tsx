@@ -1,3 +1,4 @@
+import { useApolloClient } from '@apollo/react-hooks';
 import {
   IonBadge,
   IonButton,
@@ -19,27 +20,35 @@ import React from 'react';
 // TODO: using ionicons version 5 icons before release, update when v5 releases
 import bookmarkOutline from '../icons/bookmark-outline.svg';
 import bookmark from '../icons/bookmark.svg';
-import { IListing, IMutationSaveListingArgs } from '../schema.gql';
-import { useMutation } from '../state/apollo';
+import { BASIC_LISTING, SAVED_LISTINGS } from '../queries';
+import {
+  IListing,
+  IMutationSaveListingArgs,
+  IPaginationInput,
+  IQuery,
+} from '../schema.gql';
+import { readQuery, useMutation } from '../state/apollo';
 import { RelativeDate } from './relative-date';
 import { SafeImg } from './safe-img';
 import { UserBasic } from './user-details';
 
 const SAVE_LISTING = gql`
+  ${BASIC_LISTING}
+
   mutation SaveListing($listingId: ID!, $saved: Boolean!) {
     saveListing(listingId: $listingId, saved: $saved) {
-      id
-      saved
+      ...BasicListing
     }
   }
 `;
 
 const SaveListingButton = React.memo<{
-  saved: IListing['saved'];
-  listingId: IListing['id'];
-}>(function SaveListingButton({ saved, listingId }) {
+  listing: IListing;
+}>(function SaveListingButton({ listing }) {
   const [isOpen, setShowToast] = React.useState(false);
   const hide = React.useCallback(() => setShowToast(false), [setShowToast]);
+
+  const client = useApolloClient();
 
   const [save, { loading }] = useMutation<IMutationSaveListingArgs>(
     SAVE_LISTING,
@@ -47,19 +56,62 @@ const SaveListingButton = React.memo<{
   const onClick = React.useCallback(
     async (e: React.MouseEvent<HTMLIonButtonElement, MouseEvent>) => {
       e.stopPropagation();
-      await save({
-        variables: { listingId, saved: !saved },
+      const { data } = await save({
+        variables: { listingId: listing.id, saved: !listing.saved },
         optimisticResponse: {
           __typename: 'Mutation',
-          saveListing: { __typename: 'Listing', id: listingId, saved: !saved },
+          saveListing: { ...listing, saved: !listing.saved },
         } as any,
       });
       setShowToast(true);
+
+      const updatedListing = data?.saveListing;
+      if (!updatedListing) {
+        return;
+      }
+
+      const listingsData = readQuery<IQuery, IPaginationInput>(client, {
+        query: SAVED_LISTINGS,
+        variables: { offset: 0 },
+      });
+
+      if (
+        !(listingsData?.me?.__typename === 'User') ||
+        !listingsData?.me?.saved
+      ) {
+        return;
+      }
+
+      let totalCount = listingsData.me.saved.totalCount;
+      let listings = listingsData.me.saved.items;
+      if (updatedListing.saved) {
+        listings = [updatedListing, ...listings];
+        totalCount += 1;
+      } else {
+        listings = listings.filter(item => item.id !== updatedListing.id);
+        totalCount -= 1;
+      }
+
+      client.writeQuery({
+        query: SAVED_LISTINGS,
+        data: {
+          ...listingsData,
+          me: {
+            ...listingsData.me,
+            saved: {
+              ...listingsData.me.saved,
+              totalCount,
+              items: listings,
+            },
+          },
+        },
+        variables: { offset: 0 },
+      });
     },
-    [save, saved, listingId],
+    [save, listing, client],
   );
 
-  if (typeof saved !== 'boolean') {
+  if (typeof listing.saved !== 'boolean') {
     return null;
   }
 
@@ -68,7 +120,7 @@ const SaveListingButton = React.memo<{
       <IonButton onClick={onClick} color={loading ? 'medium' : 'dark'}>
         <IonIcon
           slot="icon-only"
-          icon={saved ? bookmark : bookmarkOutline}
+          icon={listing.saved ? bookmark : bookmarkOutline}
           size="large"
         />
 
@@ -76,7 +128,7 @@ const SaveListingButton = React.memo<{
           color="primary"
           isOpen={isOpen}
           onDidDismiss={hide}
-          message={saved ? 'Saved post.' : 'Unsaved post.'}
+          message={listing.saved ? 'Saved post.' : 'Unsaved post.'}
           duration={400}
         />
       </IonButton>
@@ -85,27 +137,28 @@ const SaveListingButton = React.memo<{
 });
 
 type BookCardProps = {
-  onClick?;
+  onClick?: (id: string) => void;
   before?;
   detailed?: boolean;
   after?;
-} & Pick<IListing, 'saved' | 'book' | 'description' | 'id' | 'price'>;
+  listing: IListing;
+};
 export const BookCard = React.memo<BookCardProps>(function BookCard({
   onClick,
   before,
-  book,
   detailed,
-  description,
   after,
-  price,
-  saved,
-  id,
+  listing,
 }) {
+  const handleClick = React.useCallback(() => {
+    onClick && onClick(listing.id);
+  }, [onClick, listing]);
+  const { book, description, price } = listing;
   return (
     <IonCard
       color="white"
       className="book-card"
-      onClick={onClick}
+      onClick={handleClick}
       button={!!onClick}
     >
       {before}
@@ -136,7 +189,7 @@ export const BookCard = React.memo<BookCardProps>(function BookCard({
       </IonCardContent>
 
       <IonItem lines="inset">
-        <SaveListingButton saved={saved} listingId={id} />
+        <SaveListingButton listing={listing} />
 
         <IonLabel className="ion-text-wrap">
           <b>{book.authors.join(', ')}</b>
@@ -179,7 +232,7 @@ export const BookCard = React.memo<BookCardProps>(function BookCard({
 
 const badgeStyle = { fontSize: 'inherit', float: 'right' };
 type Props = {
-  onClick?;
+  onClick?: (id: string) => void;
   listing: IListing;
   detailed?: boolean;
 };
@@ -191,11 +244,7 @@ export const ListingCard = React.memo<Props>(function ListingCard({
   return (
     <BookCard
       onClick={onClick}
-      id={listing.id}
-      description={listing.description}
-      book={listing.book}
-      price={listing.price}
-      saved={listing.saved}
+      listing={listing}
       detailed={detailed}
       before={listing.user ? <UserBasic user={listing.user} /> : null}
       after={
