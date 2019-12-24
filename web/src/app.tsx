@@ -106,7 +106,7 @@ export const App = () => {
   const me = data?.me || undefined;
   React.useEffect(() => {
     if (me) {
-      tracker.login({ email: me.email });
+      tracker.identify({ email: me.email });
     }
   }, [me]);
 

@@ -47,11 +47,16 @@ type EventsMap = ErrorEventsMap & AppEvents;
 const log: typeof console.log = isProd ? () => {} : console.log;
 
 export const tracker = {
-  login({ email }: { email: string }) {
+  identify({ email }: { email: string }) {
     log('identify', email);
     if (track) {
       mixpanel.identify(email);
       mixpanel.people.set({ $last_login: new Date(), $email: email });
+    }
+  },
+  login({ email }: { email: string }) {
+    log('login', { email });
+    if (track) {
       mixpanel.track('LOGIN', { email, version });
     }
   },
