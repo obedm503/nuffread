@@ -24,22 +24,22 @@ import { logger } from './util';
 import { Base } from './util/db';
 import { IContext, IResolvers, UserSession } from './util/types';
 
-const makeIdLoader = <T extends Base>(Ent: typeof Base) => {
+function makeIdLoader<T extends Base & { id: string }>(Ent: typeof Base) {
   return new DataLoader(async (ids: readonly string[]) => {
     logger.debug(Ent.name, ids);
     const items = await Ent.findByIds<T>(ids as any);
-    return ids.map(id => items.find(item => item['id'] === id));
+    return ids.map(id => items.find(item => item.id === id));
   });
-};
-const makeEmailLoader = <T extends Base>(Ent: typeof Base) => {
+}
+function makeEmailLoader<T extends Base & { email: string }>(Ent: typeof Base) {
   return new DataLoader(async (emails: readonly string[]) => {
     logger.debug(Ent.name, emails);
     const items = await Ent.find<T>({
-      where: { emails: emails.map(email => ({ email })) },
+      where: emails.map(email => ({ email })),
     });
-    return emails.map(email => items.find(item => item['email'] === email));
+    return emails.map(email => items.find(item => item.email === email));
   });
-};
+}
 
 function createSchema(): GraphQLSchema {
   const typeDefs = fs.readFileSync(
