@@ -5,9 +5,16 @@ import { GraphQLSchema } from 'graphql';
 import { makeExecutableSchema } from 'graphql-tools';
 import { resolve } from 'path';
 import * as Stripe from 'stripe';
-import { Admin, Book, Invite, Listing, School, User } from './entities';
-import { RecentListing } from './entities/recent-listing.entity';
-import { SavedListing } from './entities/saved-listing.entity';
+import {
+  Admin,
+  Book,
+  Invite,
+  Listing,
+  RecentListing,
+  SavedListing,
+  School,
+  User,
+} from './entities';
 import {
   BookResolver,
   DateResolver,
@@ -121,6 +128,25 @@ export async function getContext({
     inviteLoader: makeEmailLoader(Invite),
     userEmailLoader: makeEmailLoader(User),
     schoolLoader: makeIdLoader(School),
+    savedListingLoader: new DataLoader(async (ids: readonly string[]) => {
+      // in format listingId::userId
+      logger.debug(SavedListing.name, ids);
+
+      const items = await SavedListing.find({
+        where: ids.map(id => {
+          const [listingId, userId] = id.split('::');
+          return { listingId, userId };
+        }),
+      });
+
+      return ids.map(id => {
+        const [listingId, userId] = id.split('::');
+
+        return items.find(
+          item => item.listingId === listingId && item.userId === userId,
+        );
+      });
+    }),
   };
 }
 

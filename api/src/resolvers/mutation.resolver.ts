@@ -7,10 +7,10 @@ import {
   Invite,
   Listing,
   RecentListing,
+  SavedListing,
   School,
   User,
 } from '../entities';
-import { SavedListing } from '../entities/saved-listing.entity';
 import {
   IListing,
   IMutation,

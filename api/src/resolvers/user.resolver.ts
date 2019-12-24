@@ -1,5 +1,4 @@
-import { Admin, Listing, RecentListing, User } from '../entities';
-import { SavedListing } from '../entities/saved-listing.entity';
+import { Admin, Listing, RecentListing, SavedListing, User } from '../entities';
 import { IListing, ISystemUser, IUser, IUserSavedArgs } from '../schema.gql';
 import { paginationOptions } from '../util';
 import { ensureAdmin, ensureUser } from '../util/auth';

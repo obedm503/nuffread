@@ -3,7 +3,15 @@ import { Request, Response } from 'express';
 import { GraphQLResolveInfo, GraphQLScalarType } from 'graphql';
 import { IEnumResolver, IResolverOptions, MergeInfo } from 'graphql-tools';
 import Stripe from 'stripe';
-import { Admin, Book, Invite, Listing, School, User } from '../entities';
+import {
+  Admin,
+  Book,
+  Invite,
+  Listing,
+  SavedListing,
+  School,
+  User,
+} from '../entities';
 import { SystemUserType } from '../schema.gql';
 
 export type UserSession = Express.Session & {
@@ -35,6 +43,7 @@ export type IContext = {
   bookLoader: DataLoader<string, Book | undefined>;
   inviteLoader: DataLoader<string, Invite | undefined>;
   schoolLoader: DataLoader<string, School | undefined>;
+  savedListingLoader: DataLoader<string, SavedListing | undefined>;
 };
 
 // these types are based on graphql-tools types
