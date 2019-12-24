@@ -83,10 +83,6 @@ export const UserDetailed = React.memo<{ user: IUser }>(function UserDetailed({
                 <small>{user.school.name}</small>
               </>
             ) : null}
-            <br />
-            <small>
-              <a href={`mailto:${user.email}`}>{user.email}</a>
-            </small>
             {/* <br />
           <small>
             <a href="tel: +123456789">+123456789</a>
@@ -94,14 +90,14 @@ export const UserDetailed = React.memo<{ user: IUser }>(function UserDetailed({
           </p>
 
           <IonButtons>
-            <IonButtonLink href="#">
+            <IonButtonLink href={`mailto:${user.email}`}>
+              <IonIcon slot="icon-only" size="small" icon={mail} />
+            </IonButtonLink>
+            <IonButtonLink href="#" disabled>
               <IonIcon slot="icon-only" size="small" icon={call} />
             </IonButtonLink>
-            <IonButtonLink href="#">
+            <IonButtonLink href="#" disabled>
               <IonIcon slot="icon-only" size="small" icon={logoFacebook} />
-            </IonButtonLink>
-            <IonButtonLink href={`mailto: ${user.email}`}>
-              <IonIcon slot="icon-only" size="small" icon={mail} />
             </IonButtonLink>
           </IonButtons>
         </IonLabel>
