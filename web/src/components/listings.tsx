@@ -6,17 +6,17 @@ import { IListing } from '../schema.gql';
 type Props = {
   listings?: readonly IListing[];
   loading: boolean;
-  onClick;
+  onClick: (id: string) => void;
   title?: string;
-  component: React.ComponentType<{ onClick; listing: IListing }> & {
+  component: React.ComponentType<{
+    onClick?: (id: string) => void;
+    listing: IListing;
+  }> & {
     loading: JSX.Element[];
   };
 };
 
 export class Listings extends React.PureComponent<Props> {
-  onClick = id => () => {
-    this.props.onClick(id);
-  };
   render() {
     const { listings, loading, title, component: Listing } = this.props;
 
@@ -43,7 +43,7 @@ export class Listings extends React.PureComponent<Props> {
           return (
             <Listing
               key={listing.id}
-              onClick={this.onClick(listing.id)}
+              onClick={this.props.onClick}
               listing={listing}
             />
           );

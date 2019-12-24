@@ -10,6 +10,7 @@ import {
   IonRefresherContent,
   useIonViewWillEnter,
 } from '@ionic/react';
+import { join } from 'path';
 import * as React from 'react';
 import {
   Container,
@@ -23,6 +24,7 @@ import {
 import { MY_LISTINGS } from '../../queries';
 import { IQuery } from '../../schema.gql';
 import { useLazyQuery } from '../../state/apollo';
+import { useRouter } from '../../state/router';
 import { useUser } from '../../state/user';
 import { queryLoading } from '../../util';
 import { SlidingListing } from './components/sliding-listing';
@@ -30,6 +32,12 @@ import { SlidingListing } from './components/sliding-listing';
 const Listings = React.memo<
   Pick<QueryResult<IQuery>, 'data' | 'error' | 'loading'>
 >(function Listings({ loading, error, data }) {
+  const { history } = useRouter();
+  const onClick = React.useCallback(
+    (id: string) => history.push(join('/p', id)),
+    [history],
+  );
+
   if (loading) {
     return <ListWrapper title="My Books">{SlidingListing.loading}</ListWrapper>;
   }
@@ -53,7 +61,7 @@ const Listings = React.memo<
   return (
     <ListWrapper title="My Books">
       {data.me.listings.map(listing => (
-        <SlidingListing key={listing.id} listing={listing} />
+        <SlidingListing key={listing.id} listing={listing} onClick={onClick} />
       ))}
     </ListWrapper>
   );

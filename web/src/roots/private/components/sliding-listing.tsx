@@ -65,14 +65,17 @@ const useDelete = (id: string) => {
   };
 };
 
-type Props = { listing: IListing };
+type Props = { listing: IListing; onClick?: (id: string) => void };
 export const SlidingListing = React.memo<Props>(function SlidingListing({
   listing,
+  onClick,
 }) {
   const { del, loading } = useDelete(listing.id);
 
-  const onClick = React.useCallback(
+  const onDelete = React.useCallback(
     (e: React.MouseEvent<HTMLIonItemOptionElement, MouseEvent>) => {
+      e.stopPropagation();
+
       if (!e.currentTarget) {
         return;
       }
@@ -86,12 +89,17 @@ export const SlidingListing = React.memo<Props>(function SlidingListing({
     [del],
   );
 
+  const handleClick = React.useCallback(() => onClick && onClick(listing.id), [
+    onClick,
+    listing,
+  ]);
+
   return (
-    <IonItemSliding>
+    <IonItemSliding onClick={handleClick}>
       <ListingBasic listing={listing} disabled={loading} />
 
       <IonItemOptions side="end">
-        <IonItemOption color="danger" onClick={onClick}>
+        <IonItemOption color="danger" onClick={onDelete}>
           Delete
         </IonItemOption>
       </IonItemOptions>
