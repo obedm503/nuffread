@@ -57,6 +57,7 @@ const port = Number(process.env.PORT) || 8081;
 
 const schema = getSchema();
 const apollo = new ApolloServer({
+  tracing: !production,
   context: ({ req, res }) => {
     const { operationName, query } = req.body;
     if (production || operationName !== 'IntrospectionQuery') {
