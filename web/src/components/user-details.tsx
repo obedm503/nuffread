@@ -1,4 +1,5 @@
 import {
+  IonButton,
   IonButtons,
   IonCard,
   IonIcon,
@@ -10,10 +11,10 @@ import gql from 'graphql-tag';
 import { call, logoFacebook, mail, person } from 'ionicons/icons';
 import * as React from 'react';
 import { Link } from 'react-router-dom';
-import { Error, IonButtonLink } from '.';
 import { IQueryListingArgs, IUser } from '../schema.gql';
 import { useQuery } from '../state/apollo';
 import { useUser } from '../state/user';
+import { Error } from './error';
 import { SafeImg } from './safe-img';
 
 export const UserBasic = React.memo<{ user: IUser }>(function UserBasic({
@@ -90,15 +91,15 @@ export const UserDetailed = React.memo<{ user: IUser }>(function UserDetailed({
           </p>
 
           <IonButtons>
-            <IonButtonLink href={`mailto:${user.email}`}>
+            <IonButton href={`mailto:${user.email}`}>
               <IonIcon slot="icon-only" size="small" icon={mail} />
-            </IonButtonLink>
-            <IonButtonLink href="#" disabled>
+            </IonButton>
+            <IonButton href="#" disabled>
               <IonIcon slot="icon-only" size="small" icon={call} />
-            </IonButtonLink>
-            <IonButtonLink href="#" disabled>
+            </IonButton>
+            <IonButton href="#" disabled>
               <IonIcon slot="icon-only" size="small" icon={logoFacebook} />
-            </IonButtonLink>
+            </IonButton>
           </IonButtons>
         </IonLabel>
       </IonItem>
