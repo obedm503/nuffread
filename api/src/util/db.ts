@@ -1,5 +1,3 @@
-import { UserInputError } from 'apollo-server-express';
-import { validate } from 'class-validator';
 import { resolve } from 'path';
 import {
   BaseEntity,
@@ -13,7 +11,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { PostgresConnectionOptions } from 'typeorm/driver/postgres/PostgresConnectionOptions';
-import { logger } from '.';
+import { logger, validate } from '.';
 import { SnakeNamingStrategy } from './snake-case';
 
 export const PrimaryKey = () => PrimaryGeneratedColumn('uuid');
@@ -29,20 +27,8 @@ export const Updated = () =>
 export class Base extends BaseEntity {
   @BeforeInsert()
   @BeforeUpdate()
-  async validate() {
-    const errors = await validate(this, {
-      skipMissingProperties: true,
-      forbidUnknownValues: true,
-    });
-    if (errors.length > 0) {
-      const msg = errors
-        .map(err => {
-          const constraints = Object.values(err.constraints).join(', ');
-          return `${err.property}: ${constraints} got '${this[err.property]}'`;
-        })
-        .join(';\n');
-      throw new UserInputError(msg);
-    }
+  validate(): Promise<void> {
+    return validate(this);
   }
 }
 

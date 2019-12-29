@@ -1,4 +1,11 @@
-import { IsDate, IsEmail, IsNotEmpty, IsString } from 'class-validator';
+import {
+  IsDate,
+  IsEmail,
+  IsNotEmpty,
+  IsString,
+  Matches,
+  MinLength,
+} from 'class-validator';
 import {
   Column,
   Entity,
@@ -8,13 +15,30 @@ import {
   OneToOne,
   Unique,
 } from 'typeorm';
-import { IsEdu, IsInstance } from '../util';
+import { IsEdu, IsInstance, validate } from '../util';
 import { Base, Created, PrimaryKey, Updated } from '../util/db';
 import { Invite } from './invite.entity';
 import { Listing } from './listing.entity';
 import { RecentListing } from './recent-listing.entity';
 import { SavedListing } from './saved-listing.entity';
 import { School } from './school.entity';
+
+class EmailPassword {
+  @IsNotEmpty()
+  @IsEmail(undefined, { message: 'must be valid school email' })
+  @IsEdu({ message: 'must be valid school email' })
+  email: string;
+
+  @IsNotEmpty()
+  @Matches(/\d+/, { message: 'must contain at least 1 number' })
+  @MinLength(8, { message: 'must be at least 8 characters long' })
+  password: string;
+
+  constructor({ email, password }: { email: string; password: string }) {
+    this.email = email;
+    this.password = password;
+  }
+}
 
 @Entity()
 @Unique(['email'])
@@ -93,4 +117,14 @@ export class User extends Base {
   @IsNotEmpty()
   @IsInstance(() => School)
   school: School;
+
+  static validateEmailPassword({
+    email,
+    password,
+  }: {
+    email: string;
+    password: string;
+  }): Promise<void> {
+    return validate(new EmailPassword({ email, password }));
+  }
 }

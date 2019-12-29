@@ -3,5 +3,5 @@ import { ControlProps } from './control';
 import { Text } from './text';
 
 export const Email: React.FC<ControlProps> = React.memo(function Email(props) {
-  return <Text {...props} type="email" autocomplete="on" required />;
+  return <Text {...props} autocomplete="on" />;
 });

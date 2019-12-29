@@ -77,6 +77,9 @@ export const MutationResolver: IResolver<IMutation> = {
     ensurePublic(session);
     const email = emailInput.toLowerCase();
 
+    // validate email and password
+    await User.validateEmailPassword({ email, password });
+
     // email already exists
     if (await userEmailLoader.load(email)) {
       throw new DuplicateUser();

@@ -47,26 +47,17 @@ export const classes = (
 export const emailSchema = yup
   .string()
   .required('Email is required')
-  .email('Must be a valid email');
+  .email('Email must be valid');
 export const studentEmailSchema = emailSchema.test(
   'edu',
-  'Must be student email',
+  'Email must be a student email',
   value => !!value && value.endsWith('.edu'),
 );
 export const passwordSchema = yup.string().required('Passphrase is required');
 export const strongPasswordSchema = passwordSchema
-  .min(10, 'Must be at least 8 characters long')
-  .test('uppercase', 'Must contain at least one uppercase letter', value => {
-    return !!value && value.split('').some(char => char === char.toUpperCase());
-  })
-  .test('lowercase', 'Must contain at least one lowercase letter', value => {
-    return !!value && value.split('').some(char => char === char.toLowerCase());
-  })
-  .test('number', 'Must contain at least one digit', value => {
+  .min(8, 'Passphrase must be at least 8 characters long')
+  .test('number', 'Passphrase must contain at least 1 number', value => {
     return !!value && /\d+/.test(value);
-  })
-  .test('special', 'Must contain at least one special character', value => {
-    return !!value && /[ !@#$%^&*~?<>_+-]+/.test(value);
   });
 export function validateStrongPassword(password: string): boolean {
   return strongPasswordSchema.isValidSync(password);

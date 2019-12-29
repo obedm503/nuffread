@@ -1,4 +1,9 @@
-import { registerDecorator, ValidationOptions } from 'class-validator';
+import { UserInputError } from 'apollo-server-express';
+import {
+  registerDecorator,
+  validate as validator,
+  ValidationOptions,
+} from 'class-validator';
 import { Request } from 'express';
 import { sign, SignOptions, verify, VerifyOptions } from 'jsonwebtoken';
 import * as pino from 'pino';
@@ -93,4 +98,20 @@ export function paginationOptions(
   paginate?: IPaginationInput,
 ): { take: number; skip?: number } {
   return { take: paginate?.limit || 10, skip: paginate?.offset };
+}
+
+export async function validate(obj: object) {
+  const errors = await validator(obj, {
+    skipMissingProperties: true,
+    forbidUnknownValues: true,
+  });
+  if (errors.length > 0) {
+    const msg = errors
+      .map(err => {
+        const constraints = Object.values(err.constraints).join(', ');
+        return `${err.property}: ${constraints} got '${obj[err.property]}'`;
+      })
+      .join(';\n');
+    throw new UserInputError(msg);
+  }
 }

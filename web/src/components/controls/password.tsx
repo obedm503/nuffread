@@ -17,7 +17,7 @@ export const Password: React.FC<ControlProps & {
   const icon = isVisible ? eye : eyeOff;
 
   return (
-    <Text {...props} type={type} autocomplete="on" required>
+    <Text {...props} type={type} autocomplete="on">
       <IonButton slot="end" fill="clear" onClick={toggle}>
         <IonIcon slot="icon-only" color="medium" icon={icon} />
       </IonButton>
