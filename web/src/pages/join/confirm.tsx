@@ -12,7 +12,7 @@ import { tracker } from '../../state/tracker';
 const Errors = apolloFormErrors({
   NO_INVITE: (
     <>
-      You need an invite first. <Link to="/">Get your invite.</Link>
+      You need an invite first. <Link to="/invite">Get your invite.</Link>
     </>
   ),
   NO_APPROVED_INVITE: 'Your invite has not been approved yet.',
