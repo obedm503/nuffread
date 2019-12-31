@@ -51,6 +51,7 @@ const ME = gql`
         email
         name
         photo
+        isTrackable
         school {
           id
           name
@@ -107,6 +108,10 @@ export const App = () => {
   React.useEffect(() => {
     if (me) {
       tracker.identify({ email: me.email });
+
+      if (me.__typename === 'User') {
+        tracker.enable(me.isTrackable);
+      }
     }
   }, [me]);
 

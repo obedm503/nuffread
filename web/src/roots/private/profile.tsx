@@ -27,6 +27,11 @@ import { useLazyQuery } from '../../state/apollo';
 import { useRouter } from '../../state/router';
 import { useUser } from '../../state/user';
 import { queryLoading } from '../../util';
+import {
+  SettingsButton,
+  SettingsModal,
+  useSettingsModal,
+} from './components/settings';
 import { SlidingListing } from './components/sliding-listing';
 
 const Listings = React.memo<
@@ -83,16 +88,21 @@ export const Profile = React.memo(function Profile() {
     [refetch],
   );
 
+  const { isOpen, handleClose, handleOpen } = useSettingsModal();
+
   if (!user || user.__typename !== 'User') {
     return null;
   }
 
   return (
     <IonPage>
+      <SettingsModal isOpen={isOpen} onClose={handleClose} />
+
       <TopNav homeHref="/explore" title={user.name || user.email}>
         <IonButtons slot="end">
           <Popover>
             <LogoutItem />
+            <SettingsButton onClick={handleOpen} />
           </Popover>
         </IonButtons>
       </TopNav>

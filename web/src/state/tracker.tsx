@@ -12,6 +12,7 @@ console.info('App version: ' + version);
 if (track) {
   mixpanel.init(process.env.REACT_APP_MIXPANEL_TOKEN!, {
     api_host: isProd ? 'https://api.mixpanel.com' : 'http://api.mixpanel.com',
+    opt_out_tracking_persistence_type: 'localStorage',
   });
 }
 
@@ -49,6 +50,16 @@ type EventsMap = ErrorEventsMap & AppEvents;
 const log: typeof console.log = isProd ? () => {} : console.log;
 
 export const tracker = {
+  enable(canTrack: boolean): void {
+    if (!track) {
+      return;
+    }
+    if (canTrack) {
+      mixpanel.opt_in_tracking();
+    } else {
+      mixpanel.opt_out_tracking();
+    }
+  },
   identify({ email }: { email: string }) {
     log('identify', email);
     if (track) {
