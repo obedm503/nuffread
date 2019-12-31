@@ -127,4 +127,7 @@ export class User extends Base {
   }): Promise<void> {
     return validate(new EmailPassword({ email, password }));
   }
+
+  @Column({ default: true })
+  isTrackable: boolean = true;
 }

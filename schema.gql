@@ -38,6 +38,7 @@ type Query {
 
 type Mutation {
   createUser(user: UserInput!): User!
+  toggleUserTrackable: User!
 
   requestInvite(email: String!, name: String!): Boolean!
   sendInvite(email: String!): Invite!
@@ -71,6 +72,7 @@ type User {
   email: String!
   name: String
   photo: String
+  isTrackable: Boolean!
 
   listings: [Listing!]!
   recent: [Listing!]!

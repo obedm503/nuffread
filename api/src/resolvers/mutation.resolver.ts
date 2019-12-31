@@ -396,4 +396,15 @@ export const MutationResolver: IResolver<IMutation> = {
 
     return ((await listingLoader.load(listingId)) as any) as IListing;
   },
+
+  async toggleUserTrackable(_, __, { session, userLoader }) {
+    ensureUser(session);
+
+    const user = await userLoader.load(session.userId);
+    if (!user) {
+      throw new WrongCredentials();
+    }
+    user.isTrackable = !user.isTrackable;
+    return await user.save();
+  },
 };
