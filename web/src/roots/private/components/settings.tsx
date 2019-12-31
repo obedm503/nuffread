@@ -48,7 +48,12 @@ const ToggleTracking = React.memo(() => {
   const user = useUser();
   const checked = user?.__typename === 'User' && user.isTrackable;
 
-  const [mutate, { loading }] = useMutation(TOGGLE_TRACKING);
+  const [mutate, { loading }] = useMutation(TOGGLE_TRACKING, {
+    optimisticResponse: {
+      __typename: 'Mutation',
+      toggleUserTrackable: { ...user, isTrackable: !checked },
+    } as any,
+  });
   const onChange = React.useCallback(
     ({ detail }) => {
       // this check is necessary because ionic dispatches change event even
@@ -66,6 +71,7 @@ const ToggleTracking = React.memo(() => {
     <IonToggle
       slot="end"
       color="danger"
+      disabled={loading}
       checked={checked}
       onIonChange={onChange}
     />
