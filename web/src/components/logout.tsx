@@ -21,7 +21,7 @@ const onCompleted = (data?: IMutation) => {
 };
 const useLogout = () => {
   const [mutate] = useMutation(LOGOUT, { onCompleted });
-  return () => mutate();
+  return React.useCallback(() => mutate(), [mutate]);
 };
 
 export const LogoutItem = () => {
