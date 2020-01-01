@@ -56,20 +56,18 @@ const pinoLogger: Logger = {
     logger.info({ migration: msg }, 'db migration');
   },
   logSchemaBuild(msg) {
-    logger.debug({ schema: msg }, 'db build schema');
+    logger.info(msg);
   },
 };
 
 let connection: Connection | undefined;
 
-export async function connect(
-  entities: Array<typeof Base>,
-): Promise<Connection> {
+export async function connect(): Promise<Connection> {
   if (!connection) {
     const connectionOptions: PostgresConnectionOptions = {
       type: 'postgres',
       url: process.env.DATABASE_URL,
-      entities,
+      entities: [resolve(__dirname, '../entities/*')],
       migrations: [resolve(__dirname, '../migrations/*')],
       // subscribers: ['./subscriber/**/*.ts'],
       logger: pinoLogger,

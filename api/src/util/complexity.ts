@@ -14,19 +14,25 @@ export const complexityPlugin = (
 ): ApolloServerPlugin => ({
   requestDidStart: () => ({
     didResolveOperation({ request, document }) {
+      const { operationName, query, variables } = request;
       try {
         const complexity = getComplexity({
           schema,
-          query: request.operationName
-            ? separateOperations(document)[request.operationName]
+          query: operationName
+            ? separateOperations(document)[operationName]
             : document,
-          variables: request.variables,
+          variables,
           estimators: [
             fieldExtensionsEstimator(),
             simpleEstimator({ defaultComplexity: 1 }),
           ],
         });
-        logger.info({ complexity }, 'query complexity');
+
+        logger.info({ complexity, operationName }, 'query complexity');
+        if (operationName !== 'IntrospectionQuery') {
+          logger.debug({ variables, operationName }, query);
+        }
+
         // if (complexity >= 30) {
         //   throw new Error('query is too complex');
         // }

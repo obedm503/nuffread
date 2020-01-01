@@ -33,14 +33,14 @@ import { IContext, IResolvers, UserSession } from './util/types';
 
 function makeIdLoader<T extends Base & { id: string }>(Ent: typeof Base) {
   return new DataLoader(async (ids: readonly string[]) => {
-    logger.debug(Ent.name, ids);
+    logger.debug(`data-loader ${Ent.name}`, ids);
     const items = await Ent.findByIds<T>(ids as any);
     return ids.map(id => items.find(item => item.id === id));
   });
 }
 function makeEmailLoader<T extends Base & { email: string }>(Ent: typeof Base) {
   return new DataLoader(async (emails: readonly string[]) => {
-    logger.debug(Ent.name, emails);
+    logger.debug(`data-loader ${Ent.name}`, emails);
     const items = await Ent.find<T>({
       where: emails.map(email => ({ email })),
     });
@@ -93,13 +93,13 @@ export const getSchema = () => {
   return schema;
 };
 
-let stripe;
-const getStripe = (): Stripe => {
-  if (!stripe) {
-    stripe = new Stripe(process.env.STRIPE_API_KEY!);
-  }
-  return stripe;
-};
+// let stripe;
+// const getStripe = (): Stripe => {
+//   if (!stripe) {
+//     stripe = new Stripe(process.env.STRIPE_API_KEY!);
+//   }
+//   return stripe;
+// };
 
 export async function getContext({
   req,
@@ -120,7 +120,7 @@ export async function getContext({
     req,
     res,
     session,
-    stripe: getStripe(),
+    // stripe: getStripe(),
     userLoader: makeIdLoader(User),
     adminLoader: makeIdLoader(Admin),
     listingLoader: makeIdLoader(Listing),
@@ -130,7 +130,7 @@ export async function getContext({
     schoolLoader: makeIdLoader(School),
     savedListingLoader: new DataLoader(async (ids: readonly string[]) => {
       // in format listingId::userId
-      logger.debug(SavedListing.name, ids);
+      logger.debug(`data-loader ${SavedListing.name}`, ids);
 
       const items = await SavedListing.find({
         where: ids.map(id => {
@@ -149,14 +149,3 @@ export async function getContext({
     }),
   };
 }
-
-export const getEntities = () => [
-  User,
-  Admin,
-  Listing,
-  Book,
-  Invite,
-  RecentListing,
-  SavedListing,
-  School,
-];

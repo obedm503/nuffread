@@ -2,7 +2,6 @@ import DataLoader from 'dataloader';
 import { Request, Response } from 'express';
 import { GraphQLResolveInfo, GraphQLScalarType } from 'graphql';
 import { IEnumResolver, IResolverOptions, MergeInfo } from 'graphql-tools';
-import Stripe from 'stripe';
 import {
   Admin,
   Book,
@@ -35,7 +34,7 @@ export type IContext = {
   res: Response;
   session?: UserSession;
   getMe: () => Promise<User | Admin | undefined>;
-  stripe: Stripe;
+  // stripe: Stripe;
   userLoader: DataLoader<string, User | undefined>;
   userEmailLoader: DataLoader<string, User | undefined>;
   adminLoader: DataLoader<string, Admin | undefined>;

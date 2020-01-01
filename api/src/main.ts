@@ -13,11 +13,12 @@ import * as express from 'express';
 import * as session from 'express-session';
 import { promisify } from 'util';
 import { CONFIG } from './config';
-import { getContext, getEntities, getSchema } from './schema';
+import { getContext, getSchema } from './schema';
 import { logger } from './util';
 import { complexityPlugin } from './util/complexity';
 import * as db from './util/db';
 import { BadRequest, InternalError } from './util/error';
+import { Server } from 'http';
 
 const Store = pgSession(session);
 
@@ -58,15 +59,7 @@ const port = Number(process.env.PORT) || 8081;
 const schema = getSchema();
 const apollo = new ApolloServer({
   tracing: !production,
-  context: ({ req, res }) => {
-    const { operationName, query } = req.body;
-    if (production || operationName !== 'IntrospectionQuery') {
-      logger.info({ operationName });
-      logger.debug(query);
-    }
-
-    return getContext({ req, res });
-  },
+  context: ({ req, res }) => getContext({ req, res }),
   schema,
   formatError(e) {
     const { message, path, extensions, originalError } = e;
@@ -99,7 +92,7 @@ apollo.applyMiddleware({
 });
 
 (async () => {
-  const con = await db.connect(getEntities());
+  const con = await db.connect();
 
   // await con.undoLastMigration();
   // run pending migrations
@@ -108,7 +101,6 @@ apollo.applyMiddleware({
 
   const server = app.listen(port, () => {
     logger.info('started server');
-    logger.debug(`listening on port ${port}`);
   });
 
   const close = async () => {
