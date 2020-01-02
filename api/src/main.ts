@@ -39,7 +39,8 @@ const app = express()
         },
       }),
     }),
-  );
+  )
+  .get('/_health', (req, res) => res.status(200).send('ok'));
 
 if (production) {
   // force ssl
