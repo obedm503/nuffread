@@ -2,8 +2,8 @@ import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 import { Column, Entity, Index, JoinColumn, ManyToOne } from 'typeorm';
 import { IsInstance } from '../util';
 import { Base, Created, PrimaryKey, Updated } from '../util/db';
-import { Book } from './book.entity';
-import { User } from './user.entity';
+import { Book } from './book';
+import { User } from './user';
 
 @Entity()
 @Index('listing_search_text_idx', { synchronize: false }) // handled by migration
@@ -21,7 +21,10 @@ export class Listing extends Base {
   @IsString()
   bookId: string;
 
-  @ManyToOne(() => Book, book => book.listings)
+  @ManyToOne(
+    () => Book,
+    book => book.listings,
+  )
   @JoinColumn({ name: 'book_id' })
   @IsNotEmpty()
   @IsInstance(() => Book)
@@ -35,7 +38,10 @@ export class Listing extends Base {
   @IsString()
   userId: string;
 
-  @ManyToOne(() => User, user => user.listings)
+  @ManyToOne(
+    () => User,
+    user => user.listings,
+  )
   @JoinColumn({ name: 'user_id' })
   @IsNotEmpty()
   @IsInstance(() => User)

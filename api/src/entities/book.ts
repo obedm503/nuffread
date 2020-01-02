@@ -2,7 +2,7 @@ import { IsISBN, IsNotEmpty, IsString, IsUrl } from 'class-validator';
 import { Column, Entity, Index, OneToMany } from 'typeorm';
 import { IsInstance } from '../util';
 import { Base, Created, PrimaryKey, Updated } from '../util/db';
-import { Listing } from './listing.entity';
+import { Listing } from './listing';
 
 @Entity()
 @Index('book_search_text_idx', { synchronize: false }) // handled by migration
@@ -54,7 +54,10 @@ export class Book extends Base {
   @IsInstance(() => Date)
   publishedAt?: Date;
 
-  @OneToMany(() => Listing, listing => listing.book)
+  @OneToMany(
+    () => Listing,
+    listing => listing.book,
+  )
   listings: Listing[];
 
   // for full-text search

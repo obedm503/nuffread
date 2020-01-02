@@ -1,6 +1,5 @@
 import { getConnection } from 'typeorm';
-import { Invite, Listing, School } from '../entities';
-import { RecentListing } from '../entities/recent-listing.entity';
+import { Invite, Listing, RecentListing, School } from '../entities';
 import { IQueryResolvers, ISession, SystemUserType } from '../schema.gql';
 import { logger, paginationOptions } from '../util';
 import { ensureAdmin, ensureUser, userSession } from '../util/auth';

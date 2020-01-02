@@ -11,7 +11,7 @@ import {
 import { promisify } from 'util';
 import { IsEdu } from '../util';
 import { Base, Created } from '../util/db';
-import { User } from './user.entity';
+import { User } from './user';
 
 const randomBytes = promisify(crypto.randomBytes);
 
@@ -28,7 +28,11 @@ export class Invite extends Base {
   @IsEdu()
   email: string;
 
-  @OneToOne(() => User, user => user.invite, { nullable: true })
+  @OneToOne(
+    () => User,
+    user => user.invite,
+    { nullable: true },
+  )
   user?: User;
 
   @Column()

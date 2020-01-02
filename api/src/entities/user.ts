@@ -17,11 +17,11 @@ import {
 } from 'typeorm';
 import { IsEdu, IsInstance, validate } from '../util';
 import { Base, Created, PrimaryKey, Updated } from '../util/db';
-import { Invite } from './invite.entity';
-import { Listing } from './listing.entity';
-import { RecentListing } from './recent-listing.entity';
-import { SavedListing } from './saved-listing.entity';
-import { School } from './school.entity';
+import { Invite } from './invite';
+import { Listing } from './listing';
+import { RecentListing } from './recent-listing';
+import { SavedListing } from './saved-listing';
+import { School } from './school';
 
 class EmailPassword {
   @IsNotEmpty()

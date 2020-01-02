@@ -2,11 +2,11 @@ import { IsNotEmpty, IsString } from 'class-validator';
 import { Entity, ManyToOne, PrimaryColumn } from 'typeorm';
 import { IsInstance } from '../util';
 import { Base, Created, Updated } from '../util/db';
-import { Listing } from './listing.entity';
-import { User } from './user.entity';
+import { Listing } from './listing';
+import { User } from './user';
 
 @Entity()
-export class RecentListing extends Base {
+export class SavedListing extends Base {
   @Created()
   readonly createdAt: Date;
 
