@@ -7,6 +7,7 @@ import { Book } from '../../pages/book';
 import { Explore } from '../../pages/explore';
 import { Listing } from '../../pages/listing';
 import { Search } from '../../pages/search';
+import { useRootValidator } from '../../state/router';
 import { useUser } from '../../state/user';
 import { RootPageProps } from '../../util.types';
 
@@ -54,6 +55,22 @@ const getRoutes = memoize(globalRoutes => {
   return globalRoutes.concat(routes);
 });
 
+const validRoots = [
+  'explore',
+  'search',
+  'p',
+  'b',
+  'invite',
+  'login',
+  'admin',
+  'join',
+  'reset',
+];
+
 export default React.memo<RootPageProps>(function({ globalRoutes }) {
+  if (!useRootValidator({ validRoots })) {
+    return <Redirect to="/explore" />;
+  }
+
   return <IonRoutes routes={getRoutes(globalRoutes)} />;
 });

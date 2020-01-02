@@ -15,7 +15,7 @@ import { Book } from '../../pages/book';
 import { Explore } from '../../pages/explore';
 import { Listing } from '../../pages/listing';
 import { Search } from '../../pages/search';
-import { useRouter } from '../../state/router';
+import { useRootValidator } from '../../state/router';
 import { RootPageProps } from '../../util.types';
 import { CreateModal } from './components/create';
 import { Profile } from './profile';
@@ -40,25 +40,22 @@ const routes: RouteProps[] = [
   },
 ];
 
-const validStarts = [
-  '/explore',
-  '/search',
-  '/create',
-  '/saved',
-  '/profile',
-  '/p',
-  '/b',
+const validRoots = [
+  'explore',
+  'search',
+  'create',
+  'saved',
+  'profile',
+  'p',
+  'b',
 ];
 
 const Private = React.memo(function Private() {
-  const { location } = useRouter();
-  const route = location.pathname;
-
   const [isOpen, setModalOpen] = React.useState(false);
   const closeModal = React.useCallback(() => setModalOpen(false), []);
   const showModal = React.useCallback(() => setModalOpen(true), []);
 
-  if (!validStarts.some(start => route.startsWith(start))) {
+  if (!useRootValidator({ validRoots })) {
     return <Redirect to="/explore" />;
   }
 
