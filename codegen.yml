@@ -37,9 +37,9 @@ generates:
         GoogleBook: IGoogleBook
 
         PaginatedListings: ./util/types#PaginatedListings
-        Admin: ./entities/admin.entity#Admin
-        Listing: ./entities/listing.entity#Listing
-        Book: ./entities/book.entity#Book
-        User: ./entities/user.entity#User
-        School: ./entities/school.entity#School
-        Invite: ./entities/invite.entity#Invite
+        Admin: ./entities#Admin
+        Listing: ./entities#Listing
+        Book: ./entities#Book
+        User: ./entities#User
+        School: ./entities#School
+        Invite: ./entities#Invite
