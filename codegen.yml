@@ -18,9 +18,28 @@ generates:
   api/src/schema.gql.ts:
     plugins:
       - typescript
+      - typescript-resolvers
     config:
-      maybeValue: T
+      maybeValue: T | undefined
       skipTypename: true
       immutableTypes: false
       scalars:
         Date: Date
+
+      # resolvers config
+      contextType: ./util/types#IContext
+      rootValueType: never
+      mappers:
+        PaginationInput: IPaginationInput
+        Session: ISession
+        UserInput: IUserInput
+        ListingInput: IListingInput
+        GoogleBook: IGoogleBook
+
+        PaginatedListings: ./util/types#PaginatedListings
+        Admin: ./entities/admin.entity#Admin
+        Listing: ./entities/listing.entity#Listing
+        Book: ./entities/book.entity#Book
+        User: ./entities/user.entity#User
+        School: ./entities/school.entity#School
+        Invite: ./entities/invite.entity#Invite

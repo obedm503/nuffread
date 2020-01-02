@@ -1,26 +1,14 @@
 import { getConnection } from 'typeorm';
 import { Invite, Listing, School } from '../entities';
 import { RecentListing } from '../entities/recent-listing.entity';
-import {
-  IListing,
-  IQuery,
-  IQueryBookArgs,
-  IQueryGoogleBookArgs,
-  IQueryListingArgs,
-  IQuerySearchArgs,
-  IQuerySearchGoogleArgs,
-  IQueryTopArgs,
-  ISession,
-  SystemUserType,
-} from '../schema.gql';
+import { IQueryResolvers, ISession, SystemUserType } from '../schema.gql';
 import { logger, paginationOptions } from '../util';
 import { ensureAdmin, ensureUser, userSession } from '../util/auth';
 import { InternalError } from '../util/error';
 import { getBook, searchBooks } from '../util/google-books';
-import { IResolver } from '../util/types';
 
-export const QueryResolver: IResolver<IQuery> = {
-  async search(_, { query, paginate }: IQuerySearchArgs) {
+export const QueryResolver: IQueryResolvers = {
+  async search(_, { query, paginate }) {
     const segments = query
       ?.toLowerCase()
       .trim()
@@ -81,7 +69,7 @@ export const QueryResolver: IResolver<IQuery> = {
     };
   },
 
-  async top(_, { paginate }: IQueryTopArgs) {
+  async top(_, { paginate }) {
     const { take, skip } = paginationOptions(paginate);
     const [items, totalCount] = await Listing.findAndCount({
       take,
@@ -92,22 +80,22 @@ export const QueryResolver: IResolver<IQuery> = {
     return { items, totalCount };
   },
 
-  async me(_, args, { getMe }) {
+  async me(_, {}, { getMe }) {
     return await getMe();
   },
 
-  async listing(_, { id }: IQueryListingArgs, { listingLoader, session }) {
+  async listing(_, { id }, { listingLoader, session }) {
     const listing = await listingLoader.load(id);
     if (!listing) {
       return;
     }
     if (!session || !userSession(session)) {
-      return (listing as any) as IListing;
+      return listing;
     }
 
     if (listing.userId === session.userId) {
       // don't record me seeing my own listings
-      return (listing as any) as IListing;
+      return listing;
     }
 
     const partial = { listingId: id, userId: session.userId };
@@ -121,14 +109,14 @@ export const QueryResolver: IResolver<IQuery> = {
     }
     logger.debug({ partial }, 'recent listing');
 
-    return (listing as any) as IListing;
+    return listing;
   },
 
-  async book(_, { id }: IQueryBookArgs, { bookLoader }) {
+  async book(_, { id }, { bookLoader }) {
     return await bookLoader.load(id);
   },
 
-  async searchGoogle(_, { query }: IQuerySearchGoogleArgs, { session }) {
+  async searchGoogle(_, { query }, { session }) {
     ensureUser(session);
 
     if (!query) {
@@ -136,7 +124,7 @@ export const QueryResolver: IResolver<IQuery> = {
     }
     return await searchBooks(query);
   },
-  async googleBook(_, { id }: IQueryGoogleBookArgs, { session }) {
+  async googleBook(_, { id }, { session }) {
     ensureUser(session);
 
     const book = await getBook(id);
@@ -146,17 +134,17 @@ export const QueryResolver: IResolver<IQuery> = {
     return book;
   },
 
-  async invites(_, args, { session }) {
+  async invites(_, {}, { session }) {
     ensureAdmin(session);
 
     return await Invite.find({ order: { createdAt: 'DESC' } });
   },
-  async schools(_, __, { session }) {
+  async schools(_, {}, { session }) {
     ensureAdmin(session);
 
     return await School.find({ order: { domain: 'ASC' } });
   },
-  async sessions(_, __, { session, adminLoader, userLoader }) {
+  async sessions(_, {}, { session, adminLoader, userLoader }) {
     ensureAdmin(session);
 
     const con = getConnection();

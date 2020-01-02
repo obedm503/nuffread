@@ -4,13 +4,11 @@ import * as fs from 'fs';
 import { GraphQLSchema } from 'graphql';
 import { makeExecutableSchema } from 'graphql-tools';
 import { resolve } from 'path';
-import * as Stripe from 'stripe';
 import {
   Admin,
   Book,
   Invite,
   Listing,
-  RecentListing,
   SavedListing,
   School,
   User,
@@ -26,10 +24,10 @@ import {
   SystemUserResolver,
   UserResolver,
 } from './resolvers';
-import { SystemUserType } from './schema.gql';
+import { IResolvers, SystemUserType } from './schema.gql';
 import { logger } from './util';
 import { Base } from './util/db';
-import { IContext, IResolvers, UserSession } from './util/types';
+import { IContext, UserSession } from './util/types';
 
 function makeIdLoader<T extends Base & { id: string }>(Ent: typeof Base) {
   return new DataLoader(async (ids: readonly string[]) => {
@@ -64,9 +62,10 @@ function createSchema(): GraphQLSchema {
     Book: BookResolver,
     School: SchoolResolver,
   };
+
   return makeExecutableSchema<IContext>({
     typeDefs,
-    resolvers,
+    resolvers: resolvers as any,
   });
 }
 

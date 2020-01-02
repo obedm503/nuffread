@@ -1,27 +1,21 @@
-import { Listing } from '../entities';
-import { IListing } from '../schema.gql';
+import { IListingResolvers } from '../schema.gql';
 import { userSession } from '../util/auth';
-import { IResolver } from '../util/types';
 
-export const ListingResolver: IResolver<IListing, Listing> = {
-  async user({ userId, user }, args, { userLoader, session }) {
+export const ListingResolver: IListingResolvers = {
+  async user({ userId, user }, {}, { userLoader, session }) {
     if (!userSession(session)) {
       return;
     }
     return user || (await userLoader.load(userId));
   },
-  async school(
-    { userId, user: loadedUser },
-    args,
-    { userLoader, schoolLoader },
-  ) {
+  async school({ userId, user: loadedUser }, {}, { userLoader, schoolLoader }) {
     const user = loadedUser || (await userLoader.load(userId));
     return user && (user.school || (await schoolLoader.load(user.schoolId)));
   },
-  async book({ bookId, book }, args, { bookLoader }) {
+  async book({ bookId, book }, {}, { bookLoader }) {
     return book || (await bookLoader.load(bookId));
   },
-  async saved(listing, args, { session, savedListingLoader }) {
+  async saved(listing, {}, { session, savedListingLoader }) {
     if (!userSession(session)) {
       return undefined;
     }

@@ -1,32 +1,42 @@
 import { Admin, Listing, RecentListing, SavedListing, User } from '../entities';
-import { IListing, ISystemUser, IUser, IUserSavedArgs } from '../schema.gql';
+import { ISystemUserResolvers, IUserResolvers } from '../schema.gql';
 import { paginationOptions } from '../util';
 import { ensureAdmin, ensureUser } from '../util/auth';
 import { getSchoolName } from '../util/schools';
-import { IResolver } from '../util/types';
 
-export const UserResolver: IResolver<IUser, User> = {
+const justListings = (listings: (Listing | Error | undefined)[]) =>
+  listings.filter((listing): listing is Listing => {
+    if (listing instanceof Listing) {
+      return true;
+    }
+    if (listing instanceof Error) {
+      throw listing;
+    }
+    return false;
+  });
+
+export const UserResolver: IUserResolvers = {
   // deprecated
   schoolName({ email }) {
     return getSchoolName(email);
   },
-  async school({ school, schoolId }, args, { schoolLoader }) {
+  async school({ school, schoolId }, {}, { schoolLoader }) {
     return school || (await schoolLoader.load(schoolId));
   },
-  confirmedAt({ confirmedAt }, args, { session }) {
+  confirmedAt({ confirmedAt }, {}, { session }) {
     ensureAdmin(session);
     return confirmedAt;
   },
-  async listings(user, args, { session }) {
+  async listings(user, {}, { session }) {
     ensureUser(session);
     const listings = await Listing.find({
       where: { userId: user.id },
       order: { createdAt: 'DESC' },
       relations: ['book'],
     });
-    return (listings as any) as IListing[];
+    return listings;
   },
-  async recent(user, args, { listingLoader }) {
+  async recent(user, {}, { listingLoader }) {
     const recents = await RecentListing.find({
       where: { userId: user.id },
       order: { updatedAt: 'DESC' },
@@ -36,9 +46,9 @@ export const UserResolver: IResolver<IUser, User> = {
     const listings = await listingLoader.loadMany(
       recents.map(r => r.listingId),
     );
-    return (listings as any) as IListing[];
+    return justListings(listings);
   },
-  async saved(user, { paginate }: IUserSavedArgs, { listingLoader }) {
+  async saved(user, { paginate }, { listingLoader }) {
     const { take, skip } = paginationOptions(paginate);
     const [saved, totalCount] = await SavedListing.findAndCount({
       where: { userId: user.id },
@@ -49,13 +59,13 @@ export const UserResolver: IResolver<IUser, User> = {
 
     const listings = await listingLoader.loadMany(saved.map(s => s.listingId));
     return {
-      items: (listings as any) as IListing[],
+      items: justListings(listings),
       totalCount,
     };
   },
 };
 
-export const SystemUserResolver: IResolver<ISystemUser, Admin | User> = {
+export const SystemUserResolver: ISystemUserResolvers = {
   __resolveType(me) {
     if (me instanceof User) {
       return 'User';

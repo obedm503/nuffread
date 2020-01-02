@@ -11,22 +11,7 @@ import {
   School,
   User,
 } from '../entities';
-import {
-  IListing,
-  IMutation,
-  IMutationConfirmArgs,
-  IMutationCreateListingArgs,
-  IMutationDeleteListingArgs,
-  IMutationLoginArgs,
-  IMutationRegisterArgs,
-  IMutationRequestInviteArgs,
-  IMutationRequestResetPasswordArgs,
-  IMutationResendConfirmEmailArgs,
-  IMutationResetPasswordArgs,
-  IMutationSaveListingArgs,
-  IMutationSendInviteArgs,
-  IMutationSetSchoolNameArgs,
-} from '../schema.gql';
+import { IMutationResolvers } from '../schema.gql';
 import { jwt, logger } from '../util';
 import { ensureAdmin, ensurePublic, ensureUser, isUser } from '../util/auth';
 import { send } from '../util/email';
@@ -42,7 +27,6 @@ import {
   WrongCredentials,
 } from '../util/error';
 import { getBook } from '../util/google-books';
-import { IResolver } from '../util/types';
 
 export const sendConfirmationEmail = async ({
   email,
@@ -68,10 +52,10 @@ function ensureInvited(invite?: Invite): asserts invite is Invite {
   }
 }
 
-export const MutationResolver: IResolver<IMutation> = {
+export const MutationResolver: IMutationResolvers = {
   async register(
     _,
-    { email: emailInput, password }: IMutationRegisterArgs,
+    { email: emailInput, password },
     { inviteLoader, userEmailLoader, session },
   ) {
     ensurePublic(session);
@@ -113,11 +97,7 @@ export const MutationResolver: IResolver<IMutation> = {
     return user;
   },
 
-  async login(
-    _,
-    { email: emailInput, password, type }: IMutationLoginArgs,
-    { req },
-  ) {
+  async login(_, { email: emailInput, password, type }, { req }) {
     let Ent: typeof Admin | typeof User;
     if (type === 'USER') {
       Ent = User;
@@ -149,7 +129,7 @@ export const MutationResolver: IResolver<IMutation> = {
 
     return me;
   },
-  async logout(_, args, { req, res }) {
+  async logout(_, {}, { req, res }) {
     const session = req.session;
     if (session) {
       await new Promise(done => session.destroy(done));
@@ -158,7 +138,7 @@ export const MutationResolver: IResolver<IMutation> = {
 
     return true;
   },
-  async confirm(_, { code }: IMutationConfirmArgs, { session }) {
+  async confirm(_, { code }, { session }) {
     ensurePublic(session);
 
     return await getConnection().transaction(async manager => {
@@ -186,7 +166,7 @@ export const MutationResolver: IResolver<IMutation> = {
   },
   async resendConfirmEmail(
     _,
-    { email: emailInput }: IMutationResendConfirmEmailArgs,
+    { email: emailInput },
     { session, inviteLoader, userEmailLoader },
   ) {
     ensureAdmin(session);
@@ -211,7 +191,7 @@ export const MutationResolver: IResolver<IMutation> = {
   },
   async createListing(
     _,
-    { listing: { googleId, price, description } }: IMutationCreateListingArgs,
+    { listing: { googleId, price, description } },
     { getMe, session },
   ) {
     ensureUser(session);
@@ -233,14 +213,10 @@ export const MutationResolver: IResolver<IMutation> = {
           description,
         }),
       );
-      return (listing as any) as IListing;
+      return listing;
     });
   },
-  async deleteListing(
-    _,
-    { id }: IMutationDeleteListingArgs,
-    { getMe, listingLoader, session },
-  ) {
+  async deleteListing(_, { id }, { getMe, listingLoader, session }) {
     ensureUser(session);
 
     const [me, listing] = await Promise.all([getMe(), listingLoader.load(id)]);
@@ -258,7 +234,7 @@ export const MutationResolver: IResolver<IMutation> = {
   },
   async requestInvite(
     _,
-    { email: emailInput, name }: IMutationRequestInviteArgs,
+    { email: emailInput, name },
     { session, inviteLoader },
   ) {
     ensurePublic(session);
@@ -281,11 +257,7 @@ export const MutationResolver: IResolver<IMutation> = {
 
     return true;
   },
-  async sendInvite(
-    _,
-    { email: emailInput }: IMutationSendInviteArgs,
-    { session, inviteLoader },
-  ) {
+  async sendInvite(_, { email: emailInput }, { session, inviteLoader }) {
     ensureAdmin(session);
 
     const email = emailInput.toLowerCase();
@@ -306,7 +278,7 @@ export const MutationResolver: IResolver<IMutation> = {
 
   async requestResetPassword(
     _,
-    { email: emailInput }: IMutationRequestResetPasswordArgs,
+    { email: emailInput },
     { session, userEmailLoader },
   ) {
     ensurePublic(session);
@@ -335,11 +307,7 @@ export const MutationResolver: IResolver<IMutation> = {
 
     return true;
   },
-  async resetPassword(
-    _,
-    { token, password }: IMutationResetPasswordArgs,
-    { session },
-  ) {
+  async resetPassword(_, { token, password }, { session }) {
     ensurePublic(session);
 
     const user = await User.findOne({ where: { passwordResetToken: token } });
@@ -366,11 +334,7 @@ export const MutationResolver: IResolver<IMutation> = {
     return true;
   },
 
-  async setSchoolName(
-    _,
-    { id, name }: IMutationSetSchoolNameArgs,
-    { session },
-  ) {
+  async setSchoolName(_, { id, name }, { session }) {
     ensureAdmin(session);
 
     const school = await School.findOneOrFail({ where: { id } });
@@ -378,11 +342,7 @@ export const MutationResolver: IResolver<IMutation> = {
     return await school.save();
   },
 
-  async saveListing(
-    _,
-    { listingId, saved }: IMutationSaveListingArgs,
-    { session, listingLoader },
-  ) {
+  async saveListing(_, { listingId, saved }, { session, listingLoader }) {
     ensureUser(session);
 
     if (saved) {
@@ -394,10 +354,10 @@ export const MutationResolver: IResolver<IMutation> = {
       await SavedListing.delete({ listingId, userId: session.userId });
     }
 
-    return ((await listingLoader.load(listingId)) as any) as IListing;
+    return (await listingLoader.load(listingId))!;
   },
 
-  async toggleUserTrackable(_, __, { session, userLoader }) {
+  async toggleUserTrackable(_, {}, { session, userLoader }) {
     ensureUser(session);
 
     const user = await userLoader.load(session.userId);
