@@ -8,14 +8,16 @@ config:
 generates:
   web/src/schema.gql.ts:
     plugins:
-      - 'typescript'
+      - typescript
     config:
+      skipTypename: false
       immutableTypes: true
       scalars:
         Date: string
+
   api/src/schema.gql.ts:
     plugins:
-      - 'typescript'
+      - typescript
     config:
       maybeValue: T
       skipTypename: true
