@@ -13,14 +13,14 @@ import * as React from 'react';
 import { Link } from 'react-router-dom';
 import { IQueryListingArgs, IUser } from '../schema.gql';
 import { useQuery } from '../state/apollo';
-import { useUser } from '../state/user';
+import { useLoggedIn, useUser } from '../state/user';
 import { Error } from './error';
 import { SafeImg } from './safe-img';
 
 export const UserBasic = React.memo<{ user: IUser }>(function UserBasic({
   user,
 }) {
-  const isLoggedIn = !!useUser();
+  const isLoggedIn = useLoggedIn();
   if (!isLoggedIn) {
     return null;
   }
@@ -40,7 +40,7 @@ export const UserBasic = React.memo<{ user: IUser }>(function UserBasic({
         placeholder={person}
       />
 
-      <IonLabel>
+      <IonLabel className="ion-text-wrap">
         <b>
           {user.name ? (
             <>
@@ -50,6 +50,8 @@ export const UserBasic = React.memo<{ user: IUser }>(function UserBasic({
             user.email
           )}
         </b>
+        <br />
+        {user.school.name}
       </IonLabel>
     </IonItem>
   );

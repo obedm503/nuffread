@@ -25,6 +25,10 @@ export const BASIC_LISTING = gql`
     book {
       ...Book
     }
+    school {
+      id
+      name
+    }
   }
 `;
 

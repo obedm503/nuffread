@@ -20,6 +20,10 @@ const TOP_LISTINGS = gql`
           id
           name
           email
+          school {
+            id
+            name
+          }
         }
       }
     }

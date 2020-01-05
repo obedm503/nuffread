@@ -15,6 +15,7 @@ import {
   IonToast,
 } from '@ionic/react';
 import gql from 'graphql-tag';
+import { person } from 'ionicons/icons';
 import range from 'lodash/range';
 import React from 'react';
 // TODO: using ionicons version 5 icons before release, update when v5 releases
@@ -26,6 +27,7 @@ import {
   IMutationSaveListingArgs,
   IPaginationInput,
   IQuery,
+  ISchool,
 } from '../schema.gql';
 import { readQuery, useMutation } from '../state/apollo';
 import { tracker } from '../state/tracker';
@@ -238,6 +240,17 @@ export const BookCard = React.memo<BookCardProps>(function BookCard({
   );
 });
 
+const SchoolItem = React.memo<{ school: ISchool }>(function SchoolItem({
+  school,
+}) {
+  return (
+    <IonItem lines="full">
+      <IonIcon slot="start" icon={person} />
+      <IonLabel>{school.name}</IonLabel>
+    </IonItem>
+  );
+});
+
 const badgeStyle = { fontSize: 'inherit', float: 'right' };
 type Props = {
   onClick?: (id: string) => void;
@@ -254,7 +267,13 @@ export const ListingCard = React.memo<Props>(function ListingCard({
       onClick={onClick}
       listing={listing}
       detailed={detailed}
-      before={listing.user ? <UserBasic user={listing.user} /> : null}
+      before={
+        listing.user ? (
+          <UserBasic user={listing.user} />
+        ) : (
+          <SchoolItem school={listing.school} />
+        )
+      }
       after={
         <IonItem lines="none">
           <IonLabel>
