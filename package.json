@@ -23,9 +23,9 @@
     "nps-utils": "^1.5.0"
   },
   "devDependencies": {
-    "@graphql-codegen/cli": "^1.9.1",
-    "@graphql-codegen/typescript": "^1.9.1",
-    "@graphql-codegen/typescript-resolvers": "^1.9.1",
+    "@graphql-codegen/cli": "^1.10.0",
+    "@graphql-codegen/typescript": "^1.10.0",
+    "@graphql-codegen/typescript-resolvers": "^1.10.0",
     "husky": "^3.0.5"
   },
   "engines": {
