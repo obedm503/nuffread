@@ -245,7 +245,12 @@ const SchoolItem = React.memo<{ school: ISchool }>(function SchoolItem({
 }) {
   return (
     <IonItem lines="full">
-      <IonIcon slot="start" icon={person} />
+      <IonIcon
+        slot="start"
+        style={{ fontSize: '2rem' }}
+        color="dark"
+        icon={person}
+      />
       <IonLabel>{school.name}</IonLabel>
     </IonItem>
   );

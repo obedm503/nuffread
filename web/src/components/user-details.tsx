@@ -27,14 +27,14 @@ export const UserBasic = React.memo<{ user: IUser }>(function UserBasic({
 
   const name = user.name || user.email;
   return (
-    <IonItem>
+    <IonItem lines="full">
       <SafeImg
+        slot="start"
         style={{
           fontSize: '2rem',
-          padding: '1rem 0.5rem 0.5rem 0',
-          color: 'var(--ion-color-contrast)',
+          paddingRight: '1rem',
+          color: 'var(--ion-color-dark)',
         }}
-        slot="start"
         src={user.photo || undefined}
         alt={name}
         placeholder={person}
