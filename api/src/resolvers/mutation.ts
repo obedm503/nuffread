@@ -245,14 +245,19 @@ export const MutationResolver: IMutationResolvers = {
     }
 
     const invite = Invite.create({ email, name });
-    const sentEmail = send({
-      email: 'obedm503@gmail.com',
-      subject: 'New invite request',
-      html: [
-        `${name} (${email}) has requested an invite.`,
-        `Go to <a href="${CONFIG.origin}/admin">https://www.nuffread.com/admin</a> to authorize it.`,
-      ].join(' '),
-    });
+    const admins = await Admin.find();
+    const sentEmail = Promise.all(
+      admins.map(admin =>
+        send({
+          email: admin.email,
+          subject: 'New invite request',
+          html: [
+            `${name} (${email}) has requested an invite.`,
+            `Go to <a href="${CONFIG.origin}/admin">https://www.nuffread.com/admin</a> to authorize it.`,
+          ].join(' '),
+        }),
+      ),
+    );
     await Promise.all([invite.save(), sentEmail]);
 
     return true;
