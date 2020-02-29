@@ -1,7 +1,7 @@
 import { QueryLazyOptions } from '@apollo/react-hooks';
 import { RefresherEventDetail } from '@ionic/core';
 import { RouteProps } from 'react-router';
-import { IPaginationInput } from './schema.gql';
+import { IGoogleBook, IListing, IPaginationInput } from './schema.gql';
 
 export type RootPageProps = { globalRoutes: readonly RouteProps[] };
 
@@ -16,3 +16,8 @@ export type PaginatedRefresh<T> = {
   fetchMore: (e: CustomEvent<void>) => Promise<void>;
   refresh: (event: CustomEvent<RefresherEventDetail>) => Promise<void>;
 };
+
+export type IListingPreview = Pick<
+  IListing,
+  'price' | 'createdAt' | 'description'
+> & { book: IGoogleBook; __typename: 'ListingPreview' };

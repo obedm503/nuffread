@@ -39,6 +39,7 @@ import {
 } from '../../../schema.gql';
 import { readQuery, useMutation, useQuery } from '../../../state/apollo';
 import { tracker } from '../../../state/tracker';
+import { IListingPreview } from '../../../util.types';
 
 const SearchResultBook: React.FC<{
   book: IGoogleBook;
@@ -233,10 +234,15 @@ const PreviewListing = React.memo<ListingState>(function PreviewListing({
 
   const googleBook = data?.googleBook;
 
-  const listingPreview: any = {
+  if (!googleBook) {
+    return null;
+  }
+
+  const listingPreview: IListingPreview = {
+    __typename: 'ListingPreview',
     book: googleBook,
-    price: price === '' ? '' : parseFloat(price) * 100,
-    createdAt: new Date(),
+    price: price === '' ? 0 : parseFloat(price) * 100,
+    createdAt: new Date().toISOString(),
     description,
   };
 

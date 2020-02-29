@@ -28,6 +28,7 @@ import {
 } from '../schema.gql';
 import { readQuery, useMutation } from '../state/apollo';
 import { tracker } from '../state/tracker';
+import { IListingPreview } from '../util.types';
 import { RelativeDate } from './relative-date';
 import { SafeImg } from './safe-img';
 import { UserBasic } from './user-details';
@@ -148,7 +149,7 @@ type BookCardProps = {
   before?;
   detailed?: boolean;
   after?;
-  listing: IListing;
+  listing: IListing | IListingPreview;
 };
 export const BookCard = React.memo<BookCardProps>(function BookCard({
   onClick,
@@ -158,7 +159,7 @@ export const BookCard = React.memo<BookCardProps>(function BookCard({
   listing,
 }) {
   const handleClick = React.useCallback(() => {
-    onClick && onClick(listing.id);
+    onClick && listing.__typename === 'Listing' && onClick(listing.id);
   }, [onClick, listing]);
   const { book, description, price } = listing;
   return (
@@ -196,7 +197,9 @@ export const BookCard = React.memo<BookCardProps>(function BookCard({
       </IonCardContent>
 
       <IonItem lines="inset">
-        <SaveListingButton listing={listing} />
+        {listing.__typename === 'Listing' ? (
+          <SaveListingButton listing={listing} />
+        ) : null}
 
         <IonLabel className="ion-text-wrap">
           <b>{book.authors.join(', ')}</b>
@@ -240,6 +243,7 @@ export const BookCard = React.memo<BookCardProps>(function BookCard({
 const SchoolItem = React.memo<{ school: ISchool }>(function SchoolItem({
   school,
 }) {
+  console.log('SchoolItem', { school });
   return (
     <IonItem lines="full">
       <IonIcon slot="start" color="dark" ios={person} md={person} />
@@ -251,7 +255,7 @@ const SchoolItem = React.memo<{ school: ISchool }>(function SchoolItem({
 const badgeStyle = { fontSize: 'inherit', float: 'right' };
 type Props = {
   onClick?: (id: string) => void;
-  listing: IListing;
+  listing: IListing | IListingPreview;
   detailed?: boolean;
 };
 export const ListingCard = React.memo<Props>(function ListingCard({
@@ -265,7 +269,7 @@ export const ListingCard = React.memo<Props>(function ListingCard({
       listing={listing}
       detailed={detailed}
       before={
-        listing.user ? (
+        listing.__typename !== 'Listing' ? null : listing.user ? (
           <UserBasic user={listing.user} />
         ) : (
           <SchoolItem school={listing.school} />
