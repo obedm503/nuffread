@@ -95,8 +95,12 @@ export const SlidingListing = React.memo<Props>(function SlidingListing({
   ]);
 
   return (
-    <IonItemSliding onClick={handleClick}>
-      <ListingBasic listing={listing} disabled={loading} />
+    <IonItemSliding>
+      <ListingBasic
+        listing={listing}
+        disabled={loading}
+        onClick={handleClick}
+      />
 
       <IonItemOptions side="end">
         <IonItemOption color="danger" onClick={onDelete}>

@@ -5,12 +5,11 @@ import {
   IonTabButton,
   IonTabs,
 } from '@ionic/react';
-import { add, person, search } from 'ionicons/icons';
+import { add, bookmarkOutline, person, search } from 'ionicons/icons';
 import memoize from 'lodash/memoize';
 import * as React from 'react';
 import { Redirect, RouteProps } from 'react-router';
 import { mapRoutes, Routes } from '../../components';
-import bookmarkOutline from '../../icons/bookmark-outline.svg';
 import { Book } from '../../pages/book';
 import { Explore } from '../../pages/explore';
 import { Listing } from '../../pages/listing';

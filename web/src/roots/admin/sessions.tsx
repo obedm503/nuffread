@@ -12,7 +12,7 @@ import {
   IonPage,
 } from '@ionic/react';
 import gql from 'graphql-tag';
-import { trash } from 'ionicons/icons';
+import { trashOutline } from 'ionicons/icons';
 import React from 'react';
 import { Container, Error, Loading } from '../../components';
 import { RelativeDate } from '../../components/relative-date';
@@ -88,7 +88,7 @@ export default () => {
                     Expires <RelativeDate date={expiresAt} />
                   </IonLabel>
                   <IonButton slot="end" color="primary">
-                    <IonIcon slot="icon-only" icon={trash} />
+                    <IonIcon slot="icon-only" icon={trashOutline} />
                   </IonButton>
                 </IonItem>
               ))

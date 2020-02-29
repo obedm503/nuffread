@@ -30,11 +30,7 @@ export const UserBasic = React.memo<{ user: IUser }>(function UserBasic({
     <IonItem lines="full">
       <SafeImg
         slot="start"
-        style={{
-          fontSize: '2rem',
-          paddingRight: '1rem',
-          color: 'var(--ion-color-dark)',
-        }}
+        style={{ height: '2rem' }}
         src={user.photo || undefined}
         alt={name}
         placeholder={person}
@@ -65,12 +61,7 @@ export const UserDetailed = React.memo<{ user: IUser }>(function UserDetailed({
     <IonCard color="white">
       <IonItem lines="none">
         <SafeImg
-          style={{
-            fontSize: '8rem',
-            width: '8rem',
-            marginRight: '1rem',
-            color: 'var(--ion-color-contrast)',
-          }}
+          style={{ height: '8rem' }}
           slot="start"
           src={user.photo || undefined}
           alt={name}
@@ -112,7 +103,7 @@ export const UserDetailed = React.memo<{ user: IUser }>(function UserDetailed({
 const userHidden = (
   <IonCard color="white">
     <IonItem lines="none" color="white">
-      <IonIcon slot="start" icon={person} style={{ fontSize: '8rem' }} />
+      <IonIcon slot="start" icon={person} style={{ width: '8rem' }} />
 
       <IonLabel class="ion-text-wrap">
         <IonSkeletonText style={{ background: 'black' }} />

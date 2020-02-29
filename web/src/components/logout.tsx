@@ -1,6 +1,6 @@
 import { IonButton, IonIcon, IonItem, IonLabel } from '@ionic/react';
 import gql from 'graphql-tag';
-import { logOut } from 'ionicons/icons';
+import { logOutOutline } from 'ionicons/icons';
 import * as React from 'react';
 import { IMutation } from '../schema.gql';
 import { useMutation } from '../state/apollo';
@@ -24,11 +24,13 @@ const useLogout = () => {
   return React.useCallback(() => mutate(), [mutate]);
 };
 
+const LogoutIcon = () => <IonIcon slot="start" icon={logOutOutline} />;
+
 export const LogoutItem = () => {
   const onClick = useLogout();
   return (
     <IonItem button onClick={onClick}>
-      <IonIcon slot="start" icon={logOut} />
+      <LogoutIcon />
       <IonLabel>Logout</IonLabel>
     </IonItem>
   );
@@ -38,7 +40,7 @@ export const LogoutButton = () => {
   const onClick = useLogout();
   return (
     <IonButton onClick={onClick}>
-      <IonIcon slot="start" icon={logOut} />
+      <LogoutIcon />
       <IonLabel>Logout</IonLabel>
     </IonButton>
   );

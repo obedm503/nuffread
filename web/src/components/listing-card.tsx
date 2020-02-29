@@ -15,12 +15,9 @@ import {
   IonToast,
 } from '@ionic/react';
 import gql from 'graphql-tag';
-import { person } from 'ionicons/icons';
+import { bookmark, bookmarkOutline, person } from 'ionicons/icons';
 import range from 'lodash/range';
 import React from 'react';
-// TODO: using ionicons version 5 icons before release, update when v5 releases
-import bookmarkOutline from '../icons/bookmark-outline.svg';
-import bookmark from '../icons/bookmark.svg';
 import { BASIC_LISTING, SAVED_LISTINGS } from '../queries';
 import {
   IListing,
@@ -245,12 +242,7 @@ const SchoolItem = React.memo<{ school: ISchool }>(function SchoolItem({
 }) {
   return (
     <IonItem lines="full">
-      <IonIcon
-        slot="start"
-        style={{ fontSize: '2rem' }}
-        color="dark"
-        icon={person}
-      />
+      <IonIcon slot="start" color="dark" ios={person} md={person} />
       <IonLabel>{school.name}</IonLabel>
     </IonItem>
   );

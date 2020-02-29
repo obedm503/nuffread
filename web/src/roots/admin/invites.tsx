@@ -64,7 +64,7 @@ const Invites: React.FC<{
     <IonList>
       {invites.map(invite => (
         <IonItem key={invite.email}>
-          <IonLabel>
+          <IonLabel class="ion-text-wrap">
             {invite.name} ({invite.email})
           </IonLabel>
           {!onClick ? null : (

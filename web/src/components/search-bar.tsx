@@ -7,7 +7,11 @@ export const DummySearchBar = React.memo<{
 }>(function SearchBar({ onFocus }) {
   return (
     <IonToolbar color="white">
-      <IonSearchbar placeholder="Search" onIonFocus={onFocus} />
+      <IonSearchbar
+        placeholder="Search"
+        onIonFocus={onFocus}
+        inputMode="search"
+      />
 
       {/* <IonButtons slot="end">
         <IonButton onClick={onFocus} color="primary">
@@ -69,6 +73,7 @@ export const SearchBar: React.FC<SearchBarProps> = React.memo(
           onIonChange={onIonChange}
           value={searchValue}
           onIonFocus={onFocus}
+          inputMode="search"
         />
 
         {/* <IonButtons slot="end">

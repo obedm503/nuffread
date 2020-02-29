@@ -1,5 +1,7 @@
 import { useApolloClient } from '@apollo/react-hooks';
 import {
+  IonBackButton,
+  IonButtons,
   IonCard,
   IonCardContent,
   IonCardHeader,
@@ -12,12 +14,10 @@ import {
   IonList,
   IonPage,
   IonRow,
-  IonButtons,
-  IonBackButton,
 } from '@ionic/react';
 import { Form, Formik } from 'formik';
 import gql from 'graphql-tag';
-import { logIn } from 'ionicons/icons';
+import { logInOutline } from 'ionicons/icons';
 import * as React from 'react';
 import { Redirect, RouteComponentProps } from 'react-router';
 import { Link } from 'react-router-dom';
@@ -95,8 +95,8 @@ const LoginForm = React.memo<{
           <IonRow>
             <IonCol>
               <IonSubmit expand="block" disabled={loading}>
-                <IonIcon slot="start" icon={logIn} />
                 <IonLabel>Login</IonLabel>
+                <IonIcon slot="end" icon={logInOutline} />
               </IonSubmit>
             </IonCol>
           </IonRow>

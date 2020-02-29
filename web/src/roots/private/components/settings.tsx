@@ -6,19 +6,18 @@ import {
   IonIcon,
   IonItem,
   IonLabel,
+  IonList,
+  IonListHeader,
   IonModal,
   IonToggle,
   IonToolbar,
-  IonList,
-  IonListHeader,
-  IonText,
 } from '@ionic/react';
+import gql from 'graphql-tag';
 import { close, settings } from 'ionicons/icons';
 import React from 'react';
 import { Title } from '../../../components';
-import { useUser } from '../../../state/user';
 import { useMutation } from '../../../state/apollo';
-import gql from 'graphql-tag';
+import { useUser } from '../../../state/user';
 
 export const useSettingsModal = () => {
   const [isOpen, setIsOpen] = React.useState(false);
@@ -29,7 +28,7 @@ export const useSettingsModal = () => {
 
 export const SettingsButton = React.memo<{ onClick }>(
   ({ onClick: handleClick }) => (
-    <IonItem onClick={handleClick} button>
+    <IonItem onClick={handleClick} button lines="none">
       <IonIcon slot="start" icon={settings} />
       <IonLabel>Settings</IonLabel>
     </IonItem>
@@ -96,7 +95,7 @@ export const SettingsModal = React.memo<{ isOpen: boolean; onClose }>(
       <IonContent>
         <IonList>
           <IonListHeader>
-            <IonText color="primary">Privacy</IonText>
+            <IonLabel color="primary">Privacy</IonLabel>
           </IonListHeader>
 
           <IonItem>

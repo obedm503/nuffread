@@ -14,7 +14,7 @@ import {
 } from '@ionic/react';
 import { Form, Formik } from 'formik';
 import gql from 'graphql-tag';
-import { create, save } from 'ionicons/icons';
+import { createOutline, saveOutline } from 'ionicons/icons';
 import groupBy from 'lodash/groupBy';
 import React, { memo, useCallback, useState } from 'react';
 import { object, string } from 'yup';
@@ -92,7 +92,7 @@ const School = memo<{ school: ISchool }>(({ school }) => {
                 {loading ? (
                   <IonSpinner slot="icon-only" />
                 ) : (
-                  <IonIcon slot="icon-only" icon={save} />
+                  <IonIcon slot="icon-only" icon={saveOutline} />
                 )}
               </IonButton>
             </Text>
@@ -104,11 +104,11 @@ const School = memo<{ school: ISchool }>(({ school }) => {
 
   return (
     <IonItem lines="full">
-      <IonLabel>
+      <IonLabel class="ion-text-wrap">
         <b>{school.name}</b> {school.domain}
       </IonLabel>
       <IonButton slot="end" color="primary" onClick={onClick}>
-        <IonIcon slot="icon-only" icon={create} />
+        <IonIcon slot="icon-only" icon={createOutline} />
       </IonButton>
     </IonItem>
   );
