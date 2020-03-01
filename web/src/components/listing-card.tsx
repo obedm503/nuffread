@@ -203,34 +203,33 @@ export const BookCard = React.memo<BookCardProps>(function BookCard({
 
         <IonLabel className="ion-text-wrap">
           <b>{book.authors.join(', ')}</b>
+
+          {description ? (
+            <>
+              <br />
+              {description}
+            </>
+          ) : null}
         </IonLabel>
       </IonItem>
 
-      {description ? (
+      {detailed ? (
         <IonItem lines="inset">
-          <IonLabel className="ion-text-wrap">{description}</IonLabel>
-        </IonItem>
-      ) : null}
+          <IonLabel className="ion-text-wrap">
+            {book.isbn.map(isbn => (
+              <small key={isbn}>
+                <b>ISBN: </b> {isbn}
+                <br />
+              </small>
+            ))}
 
-      {detailed
-        ? book.isbn.map(isbn => (
-            <IonItem lines="inset" key={isbn}>
-              <IonLabel>
-                <small>
-                  <b>ISBN: </b> {isbn}
-                </small>
-              </IonLabel>
-            </IonItem>
-          ))
-        : null}
-
-      {detailed && book.publishedAt ? (
-        <IonItem lines="inset">
-          <IonLabel>
-            <small>
-              <b>Published on: </b>
-              {new Date(book.publishedAt).toLocaleDateString()}
-            </small>
+            {book.publishedAt ? (
+              <small>
+                <b>Published on: </b>
+                {new Date(book.publishedAt).toLocaleDateString()}
+                <br />
+              </small>
+            ) : null}
           </IonLabel>
         </IonItem>
       ) : null}
