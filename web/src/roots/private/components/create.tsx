@@ -44,12 +44,12 @@ import { IListingPreview } from '../../../util.types';
 const SearchResultBook: React.FC<{
   book: IGoogleBook;
   active: boolean;
-  onClick?;
-}> = ({ book, active, onClick }) => (
+  onClick?: () => void;
+}> = ({ book, active, onClick: handleClick }) => (
   <BookBasic
     book={book}
     color={active ? 'primary' : undefined}
-    onClick={onClick}
+    onClick={handleClick}
   >
     <br />
     <small>{book.isbn.join(', ')}</small>

@@ -6,14 +6,20 @@ import { SafeImg } from './safe-img';
 
 export const BookBasic: FC<{
   book: IBook | IGoogleBook;
-  onClick?;
-  disabled?;
+  onClick?: () => void;
+  disabled?: boolean;
   color?: string;
-}> = memo(function BookBasic({ book, onClick, disabled, color, children }) {
+}> = memo(function BookBasic({
+  book,
+  onClick: handleClick,
+  disabled = false,
+  color,
+  children,
+}) {
   return (
     <IonItem
-      button={!!onClick}
-      onClick={onClick}
+      button={!!handleClick}
+      onClick={handleClick}
       disabled={disabled}
       color={color}
     >
@@ -47,15 +53,19 @@ export const BookBasic: FC<{
 type Props = {
   listing: IListing;
   disabled?: boolean;
-  onClick?;
+  onClick?: (id: string) => void;
 };
 export const ListingBasic = memo<Props>(function ListingBasic({
   listing,
   disabled = false,
   onClick,
 }) {
+  const handleClick = React.useCallback(() => onClick && onClick(listing.id), [
+    onClick,
+    listing,
+  ]);
   return (
-    <BookBasic book={listing.book} onClick={onClick} disabled={disabled}>
+    <BookBasic book={listing.book} onClick={handleClick} disabled={disabled}>
       <br />
       <IonBadge color="secondary">${listing.price / 100}</IonBadge>
     </BookBasic>

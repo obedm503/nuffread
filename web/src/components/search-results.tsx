@@ -22,8 +22,12 @@ export const SEARCH = gql`
   }
 `;
 
-export const SearchListings = React.memo<{ onClick; searchValue: string }>(
-  function SearchListings({ onClick, searchValue }) {
+type SearchListingsProps = {
+  onClick: (id: string) => void;
+  searchValue: string;
+};
+export const SearchListings = React.memo<SearchListingsProps>(
+  function SearchListings({ onClick: handleClick, searchValue }) {
     const { error, data, loading, fetchMore } = useQuery<IQuerySearchArgs>(
       SEARCH,
       { variables: { query: searchValue, paginate: { offset: 0 } } },
@@ -59,7 +63,7 @@ export const SearchListings = React.memo<{ onClick; searchValue: string }>(
       <>
         <Listings
           loading={loading}
-          onClick={onClick}
+          onClick={handleClick}
           listings={data?.search.items}
           title={'Results for: ' + searchValue}
           component={ListingBasic}

@@ -18,7 +18,13 @@ type Props = {
 
 export class Listings extends React.PureComponent<Props> {
   render() {
-    const { listings, loading, title, component: Listing } = this.props;
+    const {
+      listings,
+      loading,
+      title,
+      component: Listing,
+      onClick: handleClick,
+    } = this.props;
 
     if (loading) {
       return <ListWrapper title={title}>{Listing.loading}</ListWrapper>;
@@ -41,11 +47,7 @@ export class Listings extends React.PureComponent<Props> {
             return null;
           }
           return (
-            <Listing
-              key={listing.id}
-              onClick={this.props.onClick}
-              listing={listing}
-            />
+            <Listing key={listing.id} onClick={handleClick} listing={listing} />
           );
         })}
       </ListWrapper>

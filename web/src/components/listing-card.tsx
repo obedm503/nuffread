@@ -243,7 +243,6 @@ export const BookCard = React.memo<BookCardProps>(function BookCard({
 const SchoolItem = React.memo<{ school: ISchool }>(function SchoolItem({
   school,
 }) {
-  console.log('SchoolItem', { school });
   return (
     <IonItem lines="full">
       <IonIcon slot="start" color="dark" ios={person} md={person} />
