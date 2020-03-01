@@ -23,10 +23,7 @@ import * as React from 'react';
 import { Error, Loading, Title } from '../../../components';
 import { ListWrapper } from '../../../components/list-wrapper';
 import { BookBasic, ListingBasic } from '../../../components/listing-basic';
-import {
-  ListingCard,
-  LoadingListingCard,
-} from '../../../components/listing-card';
+import { ListingCard } from '../../../components/listing-card';
 import { SearchBar } from '../../../components/search-bar';
 import { CREATE_LISTING, MY_LISTINGS, SEARCH_GOOGLE } from '../../../queries';
 import {
@@ -381,9 +378,7 @@ export const CreateModal = ({ isOpen, onClose: closeModal }) => {
 
         {state.googleId ? (
           <PreviewListing {...state} price={state.price} />
-        ) : (
-          <LoadingListingCard animated={false} />
-        )}
+        ) : null}
 
         {error ? <Error value={error} /> : null}
       </IonContent>
