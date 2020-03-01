@@ -75,7 +75,7 @@ export const Listing = React.memo<{
             ListingCard.loading[0]
           ) : (
             <>
-              <ListingCard listing={listing} detailed />
+              <ListingCard listing={listing} detailed showUser={false} />
 
               <ListingSeller listingId={listing.id} />
             </>

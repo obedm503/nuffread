@@ -256,11 +256,13 @@ type Props = {
   onClick?: (id: string) => void;
   listing: IListing | IListingPreview;
   detailed?: boolean;
+  showUser?: boolean;
 };
 export const ListingCard = React.memo<Props>(function ListingCard({
   onClick,
   listing,
   detailed = false,
+  showUser = true,
 }) {
   return (
     <BookCard
@@ -268,11 +270,12 @@ export const ListingCard = React.memo<Props>(function ListingCard({
       listing={listing}
       detailed={detailed}
       before={
-        listing.__typename !== 'Listing' ? null : listing.user ? (
+        showUser &&
+        (listing.__typename !== 'Listing' ? null : listing.user ? (
           <UserBasic user={listing.user} />
         ) : (
           <SchoolItem school={listing.school} />
-        )
+        ))
       }
       after={
         <IonItem lines="none">
