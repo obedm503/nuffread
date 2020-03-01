@@ -52,7 +52,10 @@ const validRoots = [
 const Private = React.memo(function Private() {
   const [isOpen, setModalOpen] = React.useState(false);
   const closeModal = React.useCallback(() => setModalOpen(false), []);
-  const showModal = React.useCallback(() => setModalOpen(true), []);
+  const showModal = React.useCallback(e => {
+    e.preventDefault();
+    setModalOpen(true);
+  }, []);
 
   if (!useRootValidator({ validRoots })) {
     return <Redirect to="/explore" />;
