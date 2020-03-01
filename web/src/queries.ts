@@ -43,6 +43,16 @@ export const SAVED_LISTINGS = gql`
           totalCount
           items {
             ...BasicListing
+
+            user {
+              id
+              name
+              email
+              school {
+                id
+                name
+              }
+            }
           }
         }
       }
