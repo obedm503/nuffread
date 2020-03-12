@@ -32,7 +32,6 @@ export type IContext = {
   res: Response;
   session?: UserSession;
   getMe: () => Promise<User | Admin | undefined>;
-  // stripe: Stripe;
   userLoader: DataLoader<string, User | undefined>;
   userEmailLoader: DataLoader<string, User | undefined>;
   adminLoader: DataLoader<string, Admin | undefined>;

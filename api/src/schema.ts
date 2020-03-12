@@ -92,14 +92,6 @@ export const getSchema = () => {
   return schema;
 };
 
-// let stripe;
-// const getStripe = (): Stripe => {
-//   if (!stripe) {
-//     stripe = new Stripe(process.env.STRIPE_API_KEY!);
-//   }
-//   return stripe;
-// };
-
 export async function getContext({
   req,
   res,
@@ -119,7 +111,6 @@ export async function getContext({
     req,
     res,
     session,
-    // stripe: getStripe(),
     userLoader: makeIdLoader(User),
     adminLoader: makeIdLoader(Admin),
     listingLoader: makeIdLoader(Listing),
