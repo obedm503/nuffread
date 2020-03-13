@@ -342,3 +342,26 @@ ion-modal {
     --width: 50% !important;
   }
 }
+
+.cover-picker {
+  > .pager {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    flex: 0 0 auto;
+    margin-top: 0.8rem;
+
+    > .pager-item {
+      display: block;
+      padding: 0;
+      border: 0.2rem solid;
+      border-color: white;
+
+      .image {
+        width: 6rem;
+        padding: 0;
+        margin: 0;
+      }
+    }
+  }
+}

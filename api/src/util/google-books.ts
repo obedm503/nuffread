@@ -1,3 +1,4 @@
+import { uniq } from 'lodash';
 import { logger } from '.';
 import { IGoogleBook } from '../schema.gql';
 
@@ -69,32 +70,30 @@ type GoogleBook = {
   };
 };
 
-const getLargestImage = (book: GoogleBook): string | undefined => {
+function getImages(book: GoogleBook): string[] {
   const images = book.volumeInfo.imageLinks;
   if (!images) {
-    return;
+    return [];
   }
-  if (images.extraLarge) {
-    return images.extraLarge;
-  }
-  if (images.large) {
-    return images.large;
-  }
-  if (images.medium) {
-    return images.medium;
-  }
-  if (images.small) {
-    return images.small;
-  }
-  if (images.thumbnail) {
-    return images.thumbnail;
-  }
-  return images.smallThumbnail;
-};
+  return uniq(
+    ([
+      images.extraLarge,
+      images.large,
+      images.medium,
+      images.small,
+      images.thumbnail,
+      images.smallThumbnail,
+    ] as any[]).filter(link => typeof link === 'string' && !!link),
+  );
+}
 
 const formatBook = (book: GoogleBook): IGoogleBook | undefined => {
   try {
-    if (!book.volumeInfo.industryIdentifiers || !book.volumeInfo.authors) {
+    if (
+      !book.volumeInfo ||
+      !book.volumeInfo.industryIdentifiers ||
+      !book.volumeInfo.authors
+    ) {
       return;
     }
 
@@ -106,6 +105,7 @@ const formatBook = (book: GoogleBook): IGoogleBook | undefined => {
       return;
     }
 
+    const possibleCovers = getImages(book);
     return {
       googleId: book.id,
       etag: book.etag,
@@ -117,7 +117,8 @@ const formatBook = (book: GoogleBook): IGoogleBook | undefined => {
         ? new Date(book.volumeInfo.publishedDate)
         : undefined,
       // publisher: book.volumeInfo.publisher,
-      thumbnail: getLargestImage(book),
+      thumbnail: possibleCovers[0],
+      possibleCovers,
     };
   } catch (e) {
     logger.error(e);

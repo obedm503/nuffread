@@ -115,6 +115,7 @@ input ListingInput {
   googleId: String!
   price: Int!
   description: String!
+  coverIndex: Int # optional for backwards compat reasons
 }
 
 type Book {
@@ -141,6 +142,7 @@ type GoogleBook {
   title: String!
   subTitle: String
   thumbnail: String
+  possibleCovers: [String!]!
 }
 
 type School {

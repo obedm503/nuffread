@@ -113,9 +113,15 @@ export const CREATE_LISTING = gql`
     $googleId: String!
     $price: Int!
     $description: String!
+    $coverIndex: Int!
   ) {
     createListing(
-      listing: { googleId: $googleId, price: $price, description: $description }
+      listing: {
+        googleId: $googleId
+        price: $price
+        description: $description
+        coverIndex: $coverIndex
+      }
     ) {
       ...BasicListing
     }

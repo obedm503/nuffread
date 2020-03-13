@@ -19,129 +19,21 @@ import {
 } from '@ionic/react';
 import gql from 'graphql-tag';
 import { close, logoUsd } from 'ionicons/icons';
-import * as React from 'react';
-import { Error, Loading, Title } from '../../../components';
-import { ListWrapper } from '../../../components/list-wrapper';
-import { BookBasic, ListingBasic } from '../../../components/listing-basic';
-import { ListingCard } from '../../../components/listing-card';
-import { SearchBar } from '../../../components/search-bar';
-import { CREATE_LISTING, MY_LISTINGS, SEARCH_GOOGLE } from '../../../queries';
+import React from 'react';
+import { Error, Title } from '../../../components';
+import { CREATE_LISTING, MY_LISTINGS } from '../../../queries';
 import {
   IGoogleBook,
   IListingInput,
   IMutation,
   IQuery,
   IQueryGoogleBookArgs,
-  IQuerySearchGoogleArgs,
 } from '../../../schema.gql';
 import { readQuery, useMutation, useQuery } from '../../../state/apollo';
 import { tracker } from '../../../state/tracker';
-import { IListingPreview } from '../../../util.types';
-
-const SearchResultBook: React.FC<{
-  book: IGoogleBook;
-  active: boolean;
-  onClick?: () => void;
-}> = ({ book, active, onClick: handleClick }) => (
-  <BookBasic
-    book={book}
-    color={active ? 'primary' : undefined}
-    onClick={handleClick}
-  >
-    <br />
-    <small>{book.isbn.join(', ')}</small>
-  </BookBasic>
-);
-
-const SearchResults = React.memo<{
-  onClick: (book: IGoogleBook) => void;
-  searchValue: string;
-  activeId?: string;
-  isFocused: boolean;
-}>(({ onClick, searchValue, activeId, isFocused }) => {
-  const { error, data, loading } = useQuery<IQuerySearchGoogleArgs>(
-    SEARCH_GOOGLE,
-    { fetchPolicy: 'no-cache', variables: { query: searchValue } },
-  );
-
-  if (error) {
-    return <Error value={error} />;
-  }
-
-  const title = 'Results for: ' + searchValue;
-  const books = data?.searchGoogle;
-
-  if (loading || !Array.isArray(books)) {
-    return <ListWrapper title={title}>{ListingBasic.loading}</ListWrapper>;
-  }
-
-  if (!books.length) {
-    return (
-      <ListWrapper title={title}>
-        <IonItem color="white">
-          <IonLabel>Found nothing...</IonLabel>
-        </IonItem>
-      </ListWrapper>
-    );
-  }
-
-  if (activeId && !isFocused) {
-    const activeBook = books.find(book => book.googleId === activeId);
-    if (!activeBook) {
-      return null;
-    }
-    return (
-      <ListWrapper title={title}>
-        <SearchResultBook book={activeBook} active />
-      </ListWrapper>
-    );
-  }
-
-  return (
-    <ListWrapper title={title}>
-      {books.map(book => {
-        if (!book) {
-          return null;
-        }
-        return (
-          <SearchResultBook
-            key={book.googleId}
-            onClick={() => onClick(book)}
-            book={book}
-            active={activeId === book.googleId}
-          />
-        );
-      })}
-    </ListWrapper>
-  );
-});
-
-const PickBook = React.memo<{
-  onClick: (book: IGoogleBook) => void;
-  onFocus;
-  activeId?: string;
-  isFocused: boolean;
-}>(({ onClick, onFocus, activeId, isFocused }) => {
-  const [searchValue, setSearchValue] = React.useState('');
-  return (
-    <>
-      <SearchBar
-        onChange={setSearchValue}
-        searchValue={searchValue}
-        onFocus={onFocus}
-      />
-
-      {searchValue ? (
-        <SearchResults
-          onClick={onClick}
-          searchValue={searchValue}
-          activeId={activeId}
-          isFocused={isFocused}
-        />
-      ) : null}
-    </>
-  );
-});
+import { CoverPicker } from './cover-picker';
+import { PickBook } from './pick-book';
+import { ListingState, PreviewListing } from './preview';
 
 const GOOGLE_BOOK = gql`
   query GoogleBook($id: ID!) {
@@ -153,12 +45,10 @@ const GOOGLE_BOOK = gql`
       publishedAt
       title
       subTitle
-      thumbnail
+      possibleCovers
     }
   }
 `;
-
-type ListingState = { googleId: string; price: string; description: string };
 
 const onCompleted = ({ createListing }: IMutation) => {
   tracker.event('CREATE_LISTING', { price: createListing.price });
@@ -172,6 +62,7 @@ const useCreateListing = (listing: ListingState, closeModal) => {
         googleId: listing.googleId,
         price: parseFloat(listing.price) * 100,
         description: listing.description,
+        coverIndex: listing.coverIndex,
       },
       onCompleted,
       update: (proxy, { data }) => {
@@ -213,45 +104,14 @@ const useCreateListing = (listing: ListingState, closeModal) => {
   };
 };
 
-const PreviewListing = React.memo<ListingState>(function PreviewListing({
-  googleId,
-  price,
-  description,
-}) {
-  const { loading, data, error } = useQuery<IQueryGoogleBookArgs>(GOOGLE_BOOK, {
-    variables: { id: googleId },
-  });
-
-  if (error) {
-    return <Error value={error} />;
-  }
-  if (loading) {
-    return <Loading />;
-  }
-
-  const googleBook = data?.googleBook;
-
-  if (!googleBook) {
-    return null;
-  }
-
-  const listingPreview: IListingPreview = {
-    __typename: 'ListingPreview',
-    book: googleBook,
-    price: price === '' ? 0 : parseFloat(price) * 100,
-    createdAt: new Date().toISOString(),
-    description,
-  };
-
-  return <ListingCard listing={listingPreview} />;
-});
-
 const initialState = {
   searchValue: '',
   googleId: '',
   price: '',
   description: '',
   isFocused: false,
+  book: {} as any,
+  coverIndex: 0,
 };
 const useListingState = () => {
   const [state, set] = React.useState<
@@ -263,7 +123,12 @@ const useListingState = () => {
 
   const pickBook = React.useCallback(
     (book: IGoogleBook) =>
-      set(state => ({ ...state, googleId: book.googleId, isFocused: false })),
+      set(state => ({
+        ...state,
+        googleId: book.googleId,
+        isFocused: false,
+        coverIndex: 0,
+      })),
     [],
   );
   const setPrice = React.useCallback(({ detail }) => {
@@ -285,6 +150,10 @@ const useListingState = () => {
         set(state => ({ ...state, description: detail.value }));
       }
     }, []),
+    setCoverIndex: React.useCallback(
+      index => set(state => ({ ...state, coverIndex: index })),
+      [],
+    ),
   };
 };
 
@@ -294,9 +163,10 @@ export const CreateModal = ({ isOpen, onClose: closeModal }) => {
     pickBook,
     setDescription,
     setPrice,
+    setCoverIndex,
     onFocus,
   } = useListingState();
-  const { create, loading, error, listing } = useCreateListing(
+  const { create, loading: createLoading, error, listing } = useCreateListing(
     state,
     closeModal,
   );
@@ -309,6 +179,16 @@ export const CreateModal = ({ isOpen, onClose: closeModal }) => {
     },
     [closeModal],
   );
+
+  const { loading: bookLoading, data } = useQuery<IQueryGoogleBookArgs>(
+    GOOGLE_BOOK,
+    { variables: { id: state.googleId }, skip: !state.googleId },
+  );
+
+  const loading = createLoading || bookLoading;
+
+  const googleBook = data?.googleBook;
+  const possibleCovers = googleBook?.possibleCovers;
 
   return (
     <IonModal isOpen={isOpen} onDidDismiss={onClick}>
@@ -368,6 +248,25 @@ export const CreateModal = ({ isOpen, onClose: closeModal }) => {
           </IonCardContent>
         </IonCard>
 
+        {googleBook &&
+        Array.isArray(possibleCovers) &&
+        possibleCovers.length > 1 ? (
+          <IonCard>
+            <IonCardHeader>
+              <IonCardTitle>Cover Image</IonCardTitle>
+            </IonCardHeader>
+
+            <IonCardContent>
+              <CoverPicker
+                book={googleBook}
+                possibleCovers={possibleCovers}
+                coverIndex={state.coverIndex}
+                setCoverIndex={setCoverIndex}
+              />
+            </IonCardContent>
+          </IonCard>
+        ) : null}
+
         {/* <IonCard>
             <IonCardHeader>
               <IonCardTitle>Upload pictures</IonCardTitle>
@@ -376,8 +275,13 @@ export const CreateModal = ({ isOpen, onClose: closeModal }) => {
             <IonCardContent>upload pictures</IonCardContent>
           </IonCard> */}
 
-        {state.googleId ? (
-          <PreviewListing {...state} price={state.price} />
+        {googleBook ? (
+          <PreviewListing
+            {...state}
+            book={googleBook}
+            coverIndex={state.coverIndex}
+            price={state.price}
+          />
         ) : null}
 
         {error ? <Error value={error} /> : null}

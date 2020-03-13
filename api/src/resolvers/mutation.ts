@@ -11,7 +11,7 @@ import {
   School,
   User,
 } from '../entities';
-import { IMutationResolvers } from '../schema.gql';
+import { IGoogleBook, IMutationResolvers } from '../schema.gql';
 import { jwt, logger } from '../util';
 import { ensureAdmin, ensurePublic, ensureUser, isUser } from '../util/auth';
 import { send } from '../util/email';
@@ -50,6 +50,13 @@ function ensureInvited(invite?: Invite): asserts invite is Invite {
   if (!invite.invitedAt) {
     throw new NoApprovedInvite();
   }
+}
+function getThumbnail(gBook: IGoogleBook, coverIndex: number): string {
+  const cover = gBook.possibleCovers[coverIndex];
+  if (!cover) {
+    throw new BadRequest();
+  }
+  return cover;
 }
 
 export const MutationResolver: IMutationResolvers = {
@@ -191,20 +198,41 @@ export const MutationResolver: IMutationResolvers = {
   },
   async createListing(
     _,
-    { listing: { googleId, price, description } },
+    { listing: { googleId, price, description, coverIndex } },
     { getMe, session },
   ) {
     ensureUser(session);
 
     return await getConnection().transaction(async manager => {
-      let book = await manager.findOne(Book, { where: { googleId } });
-      if (!book) {
-        const gBook = await getBook(googleId);
+      let [book, gBook] = await Promise.all([
+        manager.findOne(Book, { where: { googleId } }),
+        getBook(googleId),
+      ]);
+
+      // allow users to pick cover image
+      // it does modify the shared Book amongst all the listings
+      // client sends an index, it cannot be trusted to send the correct url
+      if (typeof coverIndex !== 'number') {
+        // coverIndex is optional for backwards compat reasons
+        logger.info('createListing: user did not provide coverIndex');
+        coverIndex = 0;
+      }
+
+      if (book) {
+        const cover = gBook && getThumbnail(gBook, coverIndex);
+        if (cover && book.thumbnail !== cover) {
+          // cover image changed
+          book.thumbnail = cover;
+          book = await manager.save(book);
+        }
+      } else {
         if (!gBook) {
           throw new BookNotFound();
         }
-        book = await manager.save(Book.create(gBook));
+        const cover = getThumbnail(gBook, coverIndex);
+        book = await manager.save(Book.create({ ...gBook, thumbnail: cover }));
       }
+
       const listing = await manager.save(
         Listing.create({
           book,
