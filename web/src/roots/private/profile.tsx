@@ -98,7 +98,7 @@ export const Profile = React.memo(function Profile() {
     <IonPage>
       <SettingsModal isOpen={isOpen} onClose={handleClose} />
 
-      <TopNav homeHref="/explore" title={user.name || user.email}>
+      <TopNav homeHref="/explore" title="Account">
         <IonButtons slot="end">
           <Popover>
             <LogoutItem />
