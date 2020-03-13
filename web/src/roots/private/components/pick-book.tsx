@@ -21,6 +21,12 @@ const SearchResultBook: React.FC<{
     color={active ? 'primary' : undefined}
     onClick={handleClick}
   >
+    {book.publishedAt ? (
+      <>
+        <br />
+        <small>{new Date(book.publishedAt).toLocaleDateString()}</small>
+      </>
+    ) : null}
     <br />
     <small>{book.isbn.join(', ')}</small>
   </BookBasic>

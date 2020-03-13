@@ -220,6 +220,25 @@ export const CreateModal = ({ isOpen, onClose: closeModal }) => {
           </IonCardContent>
         </IonCard>
 
+        {googleBook &&
+        Array.isArray(possibleCovers) &&
+        possibleCovers.length > 1 ? (
+          <IonCard>
+            <IonCardHeader>
+              <IonCardTitle>Pick Cover Image</IonCardTitle>
+            </IonCardHeader>
+
+            <IonCardContent>
+              <CoverPicker
+                book={googleBook}
+                possibleCovers={possibleCovers}
+                coverIndex={state.coverIndex}
+                setCoverIndex={setCoverIndex}
+              />
+            </IonCardContent>
+          </IonCard>
+        ) : null}
+
         <IonCard>
           <IonCardHeader>
             <IonCardTitle>Details</IonCardTitle>
@@ -247,25 +266,6 @@ export const CreateModal = ({ isOpen, onClose: closeModal }) => {
             </IonItem>
           </IonCardContent>
         </IonCard>
-
-        {googleBook &&
-        Array.isArray(possibleCovers) &&
-        possibleCovers.length > 1 ? (
-          <IonCard>
-            <IonCardHeader>
-              <IonCardTitle>Cover Image</IonCardTitle>
-            </IonCardHeader>
-
-            <IonCardContent>
-              <CoverPicker
-                book={googleBook}
-                possibleCovers={possibleCovers}
-                coverIndex={state.coverIndex}
-                setCoverIndex={setCoverIndex}
-              />
-            </IonCardContent>
-          </IonCard>
-        ) : null}
 
         {/* <IonCard>
             <IonCardHeader>
