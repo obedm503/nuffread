@@ -18,7 +18,6 @@ import { logger } from './util';
 import { complexityPlugin } from './util/complexity';
 import * as db from './util/db';
 import { BadRequest, InternalError } from './util/error';
-import { Server } from 'http';
 
 const Store = pgSession(session);
 
