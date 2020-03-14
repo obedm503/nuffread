@@ -130,7 +130,7 @@ export const Saved = React.memo(function Saved() {
 
   return (
     <IonPage>
-      <TopNav homeHref="/explore" title="Saved Books" />
+      <TopNav homeHref={false} title="Saved Books" />
 
       <IonContent>
         <IonRefresher slot="fixed" onIonRefresh={refresh}>
