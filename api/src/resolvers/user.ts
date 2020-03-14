@@ -1,6 +1,6 @@
 import { Admin, Listing, RecentListing, SavedListing, User } from '../entities';
 import { ISystemUserResolvers, IUserResolvers } from '../schema.gql';
-import { paginationOptions } from '../util';
+import { logger, paginationOptions } from '../util';
 import { ensureAdmin, ensureUser } from '../util/auth';
 import { getSchoolName } from '../util/schools';
 
@@ -18,6 +18,7 @@ const justListings = (listings: (Listing | Error | undefined)[]) =>
 export const UserResolver: IUserResolvers = {
   // deprecated
   schoolName({ email }) {
+    logger.info('User.schoolName is deprecated', { email });
     return getSchoolName(email);
   },
   async school({ school, schoolId }, {}, { schoolLoader }) {
