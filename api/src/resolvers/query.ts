@@ -1,13 +1,13 @@
 import { getConnection } from 'typeorm';
-import { Invite, Listing, RecentListing, School } from '../entities';
+import { Invite, RecentListing, School } from '../entities';
 import { IQueryResolvers, ISession, SystemUserType } from '../schema.gql';
-import { logger, paginationOptions } from '../util';
+import { logger, paginationOptions, sameSchoolListings } from '../util';
 import { ensureAdmin, ensureUser, userSession } from '../util/auth';
 import { InternalError } from '../util/error';
 import { getBook, searchBooks } from '../util/google-books';
 
 export const QueryResolver: IQueryResolvers = {
-  async search(_, { query, paginate }) {
+  async search(_, { query, paginate }, { session, getMe }) {
     const segments = query
       ?.toLowerCase()
       .trim()
@@ -30,7 +30,7 @@ export const QueryResolver: IQueryResolvers = {
 
     const { take, skip } = paginationOptions(paginate);
 
-    const builder = Listing.createQueryBuilder('listing')
+    const builder = (await sameSchoolListings({ session, getMe }))
       .innerJoinAndSelect('listing.book', 'book')
       // skip and take break with custom ORDER BY expression
       .limit(take)
@@ -61,21 +61,23 @@ export const QueryResolver: IQueryResolvers = {
     );
 
     const [items, totalCount] = await builder.getManyAndCount();
-
     return {
       totalCount,
       items,
     };
   },
 
-  async top(_, { paginate }) {
+  async top(_, { paginate }, { session, getMe }) {
     const { take, skip } = paginationOptions(paginate);
-    const [items, totalCount] = await Listing.findAndCount({
-      take,
-      skip,
-      order: { createdAt: 'DESC' },
-      relations: ['book'],
-    });
+
+    const query = await sameSchoolListings({ session, getMe });
+    const [items, totalCount] = await query
+      .orderBy('listing.created_at', 'DESC')
+      .innerJoinAndSelect('listing.book', 'book')
+      .limit(take)
+      .offset(skip)
+      .getManyAndCount();
+
     return { items, totalCount };
   },
 

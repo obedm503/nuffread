@@ -7,9 +7,12 @@ import {
 import { Request } from 'express';
 import { sign, SignOptions, verify, VerifyOptions } from 'jsonwebtoken';
 import * as pino from 'pino';
-import { FindOneOptions } from 'typeorm';
+import { FindOneOptions, SelectQueryBuilder } from 'typeorm';
+import { Listing, User } from '../entities';
 import { IPaginationInput } from '../schema.gql';
+import { userSession } from './auth';
 import { Base } from './db';
+import { GetMe, UserSession } from './types';
 
 export async function findOne<T extends Base>(
   Ent: typeof Base,
@@ -114,4 +117,25 @@ export async function validate(obj: object) {
       .join(';\n');
     throw new UserInputError(msg);
   }
+}
+
+export async function sameSchoolListings({
+  session,
+  getMe,
+}: {
+  session?: UserSession;
+  getMe: GetMe;
+}): Promise<SelectQueryBuilder<Listing>> {
+  const query = Listing.createQueryBuilder('listing');
+
+  if (userSession(session)) {
+    const me = await getMe();
+    if (me instanceof User) {
+      query.innerJoin('listing.user', 'user', 'user.schoolId = :schoolId', {
+        schoolId: me.schoolId,
+      });
+    }
+  }
+
+  return query;
 }

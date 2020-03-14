@@ -27,11 +27,12 @@ export type PublicSession =
     });
 export type Session = UserSession | AdminSession | PublicSession;
 
+export type GetMe = () => Promise<User | Admin | undefined>;
 export type IContext = {
   req: Request;
   res: Response;
   session?: UserSession;
-  getMe: () => Promise<User | Admin | undefined>;
+  getMe: GetMe;
   userLoader: DataLoader<string, User | undefined>;
   userEmailLoader: DataLoader<string, User | undefined>;
   adminLoader: DataLoader<string, Admin | undefined>;
