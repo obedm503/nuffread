@@ -70,6 +70,12 @@ type GoogleBook = {
   };
 };
 
+export function processImageLink(urlString: string) {
+  const url = new URL(urlString);
+  url.protocol = 'https:';
+  return url.toString();
+}
+
 function getImages(book: GoogleBook): string[] {
   const images = book.volumeInfo.imageLinks;
   if (!images) {
@@ -83,7 +89,9 @@ function getImages(book: GoogleBook): string[] {
       images.small,
       images.thumbnail,
       images.smallThumbnail,
-    ] as any[]).filter(link => typeof link === 'string' && !!link),
+    ] as any[])
+      .filter(link => typeof link === 'string' && !!link)
+      .map(processImageLink),
   );
 }
 
@@ -125,20 +133,18 @@ const formatBook = (book: GoogleBook): IGoogleBook | undefined => {
   }
 };
 
-export const getBook = async (
+export async function getBook(
   googleId: string,
-): Promise<IGoogleBook | undefined> => {
-  const res = await fetch(
-    `https://www.googleapis.com/books/v1/volumes/${googleId}`,
-  );
+): Promise<IGoogleBook | undefined> {
+  const url = `https://www.googleapis.com/books/v1/volumes/${googleId}?key=${process.env.GOOGLE_API_KEY}`;
+  const res = await fetch(url);
   const book: GoogleBook = await res.json();
   return formatBook(book);
-};
+}
 
-export const searchBooks = async (query: string): Promise<IGoogleBook[]> => {
-  const res = await fetch(
-    `https://www.googleapis.com/books/v1/volumes?maxResults=20&q=${query}`,
-  );
+export async function searchBooks(query: string): Promise<IGoogleBook[]> {
+  const url = `https://www.googleapis.com/books/v1/volumes?maxResults=20&q=${query}&key=${process.env.GOOGLE_API_KEY}`;
+  const res = await fetch(url);
   const json: {
     kind: string;
     totalItems: number;
@@ -148,4 +154,4 @@ export const searchBooks = async (query: string): Promise<IGoogleBook[]> => {
     return [];
   }
   return json.items.map(item => formatBook(item)!).filter(b => !!b);
-};
+}
