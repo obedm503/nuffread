@@ -15,6 +15,7 @@ export const BookResolver: IBookResolvers = {
     const query = await sameSchoolListings({ session, getMe });
     const [items, totalCount] = await query
       .where('listing.bookId = :bookId', { bookId: id })
+      .andWhere('listing.soldAt IS NULL')
       .orderBy('listing.createdAt', 'DESC')
       .limit(take)
       .offset(skip)
