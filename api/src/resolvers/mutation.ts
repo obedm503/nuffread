@@ -21,6 +21,7 @@ import {
   BookNotFound,
   DuplicateInvite,
   DuplicateUser,
+  ListingNotFound,
   NoApprovedInvite,
   NoInvite,
   NotConfirmed,
@@ -388,6 +389,23 @@ export const MutationResolver: IMutationResolvers = {
     }
 
     return (await listingLoader.load(listingId))!;
+  },
+
+  async sellListing(_, { listingId, price }, { session, listingLoader }) {
+    ensureUser(session);
+
+    const listing = await Listing.findOne({ where: { id: listingId } });
+    if (!listing) {
+      throw new ListingNotFound();
+    }
+    if (listing.soldAt) {
+      return listing;
+    }
+
+    listing.soldAt = new Date();
+    listing.soldPrice = price;
+
+    return await listing.save();
   },
 
   async toggleUserTrackable(_, {}, { session, userLoader }) {

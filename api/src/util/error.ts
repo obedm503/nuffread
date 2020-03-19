@@ -24,6 +24,12 @@ export class BookNotFound extends ApolloError {
   }
 }
 
+export class ListingNotFound extends ApolloError {
+  constructor() {
+    super('LISTING_NOT_FOUND');
+  }
+}
+
 export class DuplicateUser extends ApolloError {
   constructor() {
     super('DUPLICATE_USER');
