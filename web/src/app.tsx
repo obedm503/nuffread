@@ -12,7 +12,7 @@ import { Helmet } from 'react-helmet-async';
 import { RouteProps } from 'react-router';
 import './app.scss';
 import { Error } from './components';
-import { TrackApp } from './components/track-app';
+import { TrackApp } from './components';
 import Join from './pages/join';
 import { AdminLogin, UserLogin } from './pages/login';
 import ResetPassword from './pages/reset-password';

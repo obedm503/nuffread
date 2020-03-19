@@ -14,8 +14,7 @@ import {
 import gql from 'graphql-tag';
 import { trashOutline } from 'ionicons/icons';
 import React from 'react';
-import { Container, Error, Loading } from '../../components';
-import { RelativeDate } from '../../components/relative-date';
+import { Container, Error, Loading, RelativeDate } from '../../components';
 import { useQuery } from '../../state/apollo';
 
 const SESSIONS = gql`
