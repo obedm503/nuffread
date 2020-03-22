@@ -17,8 +17,10 @@ import { useLoggedIn, useUser } from '../state/user';
 import { Error } from './error';
 import { SafeImg } from './safe-img';
 
-export const UserBasic = React.memo<{ user: IUser }>(function UserBasic({
+type UBProps = { user: IUser; children?: React.ReactNode };
+export const UserBasic = React.memo<UBProps>(function UserBasic({
   user,
+  children,
 }) {
   const isLoggedIn = useLoggedIn();
   if (!isLoggedIn) {
@@ -49,6 +51,8 @@ export const UserBasic = React.memo<{ user: IUser }>(function UserBasic({
         <br />
         {user.school.name}
       </IonLabel>
+
+      {children}
     </IonItem>
   );
 });

@@ -22,6 +22,8 @@ export const BASIC_LISTING = gql`
     price
     description
     saved
+    soldAt
+    soldPrice
     book {
       ...Book
     }

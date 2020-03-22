@@ -306,11 +306,13 @@ ion-card.book-card {
   }
 }
 
-img.book-cover-card {
+.book-cover-card.--has-ribbon {
   display: block;
+  position: relative;
+  overflow: hidden;
   margin: 4px auto 4px auto;
-  width: 100%;
   height: auto;
+  width: 100%;
 
   @include from(sm) {
     width: 60%;
@@ -318,10 +320,33 @@ img.book-cover-card {
   @include from(lg) {
     width: 50%;
   }
+
+  img {
+    width: 100%;
+  }
+
+  p {
+    display: inline;
+
+    > span {
+      color: white;
+      font-size: 2rem;
+      font-weight: bold;
+
+      position: absolute;
+      left: -100px;
+      text-align: center;
+      text-transform: uppercase;
+      top: 30px;
+      background: var(--ion-color-success);
+      width: 300px;
+      transform: rotate(-45deg);
+    }
+  }
 }
 
 // with 6:9 aspect ratio
-ion-skeleton-text.book-cover-card {
+.book-cover-card ion-skeleton-text {
   margin: 4px auto 4px auto;
   width: 100%;
   height: 50vmax;

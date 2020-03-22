@@ -165,7 +165,12 @@ export const BookCard = React.memo<BookCardProps>(function BookCard({
   const handleClick = React.useCallback(() => {
     onClick && listing.__typename === 'Listing' && onClick(listing.id);
   }, [onClick, listing]);
-  const { book, description, price } = listing;
+  const { book, description } = listing;
+
+  const sold = !!('soldPrice' in listing && listing.soldPrice);
+  // @ts-ignore
+  const price = sold ? listing.soldPrice : listing.price;
+
   return (
     <IonCard
       color="white"
@@ -177,13 +182,13 @@ export const BookCard = React.memo<BookCardProps>(function BookCard({
 
       <IonCardHeader>
         <IonCardTitle>
-          {book.title}
-
           {price ? (
-            <IonBadge color="secondary" style={badgeStyle}>
+            <IonBadge color={sold ? 'success' : 'secondary'} style={badgeStyle}>
               ${price / 100}
             </IonBadge>
           ) : null}
+
+          {book.title}
         </IonCardTitle>
 
         {book.subTitle ? (
@@ -192,12 +197,19 @@ export const BookCard = React.memo<BookCardProps>(function BookCard({
       </IonCardHeader>
 
       <IonCardContent>
-        <SafeImg
-          src={book.thumbnail || undefined}
-          alt={[book.title, book.subTitle].join(' ')}
-          placeholder="/img/book.png"
-          className="book-cover-card"
-        />
+        <div className="book-cover-card --has-ribbon">
+          <SafeImg
+            src={book.thumbnail || undefined}
+            alt={[book.title, book.subTitle].join(' ')}
+            placeholder="/img/book.png"
+          />
+
+          {sold ? (
+            <p>
+              <span>Sold</span>
+            </p>
+          ) : null}
+        </div>
       </IonCardContent>
 
       <IonItem lines="inset">
@@ -307,11 +319,9 @@ export const LoadingListingCard = ({ animated = true }) => (
     </IonCardHeader>
 
     <IonCardContent>
-      <IonSkeletonText
-        slot="start"
-        animated={animated}
-        className="book-cover-card"
-      />
+      <div className="book-cover-card">
+        <IonSkeletonText animated={animated} />
+      </div>
     </IonCardContent>
 
     <IonItem lines="inset">
