@@ -1,4 +1,10 @@
-import { IsDate, IsInt, IsNotEmpty, IsString } from 'class-validator';
+import {
+  IsDate,
+  IsInt,
+  IsNotEmpty,
+  IsPositive,
+  IsString,
+} from 'class-validator';
 import { Column, Entity, Index, JoinColumn, ManyToOne } from 'typeorm';
 import { IsInstance } from '../util';
 import { Base, Created, PrimaryKey, Updated } from '../util/db';
@@ -32,6 +38,8 @@ export class Listing extends Base {
 
   @Column()
   @IsInt()
+  @IsPositive()
+  @IsNotEmpty()
   price: number;
 
   @Column()
@@ -65,5 +73,6 @@ export class Listing extends Base {
 
   @Column({ nullable: true })
   @IsInt()
+  @IsPositive()
   soldPrice?: number;
 }
