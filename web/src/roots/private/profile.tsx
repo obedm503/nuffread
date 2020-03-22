@@ -19,6 +19,7 @@ import {
   close,
   ellipsisHorizontal,
   ellipsisVertical,
+  logoUsd,
   trashOutline,
 } from 'ionicons/icons';
 import { join } from 'path';
@@ -42,6 +43,10 @@ import { useLazyQuery, useRouter, useUser } from '../../state';
 import { queryLoading } from '../../util';
 import { DeleteModal, useDeleteModal } from './components/delete-listing';
 import { SellModal, useSellModal } from './components/sell-listing';
+import {
+  SetPriceModal,
+  useSetPriceModal,
+} from './components/set-listing-price';
 import {
   SettingsButton,
   SettingsModal,
@@ -121,8 +126,17 @@ const Options: React.FC<{
   options: { event?; listing?: IListing; handleClose: () => void };
   sell: (listing: IListing) => void;
   del: (listing: IListing) => void;
-}> = ({ options, sell, del }) => {
+  setPrice: (listing: IListing) => void;
+}> = ({ options, setPrice, sell, del }) => {
   const handleClose = options.handleClose;
+  const onSetPrice = React.useCallback(() => {
+    if (!options.listing) {
+      return;
+    }
+    handleClose();
+    setPrice(options.listing);
+  }, [setPrice, handleClose, options]);
+
   const onSell = React.useCallback(() => {
     if (!options.listing) {
       return;
@@ -140,7 +154,13 @@ const Options: React.FC<{
   }, [del, handleClose, options]);
 
   const buttons = React.useMemo<ActionSheetButton[]>(() => {
-    const buttons: ActionSheetButton[] = [];
+    const buttons: ActionSheetButton[] = [
+      {
+        text: 'Change Price',
+        icon: logoUsd,
+        handler: onSetPrice,
+      },
+    ];
     if (options.listing && !options.listing.soldAt) {
       buttons.push({
         text: 'Sell',
@@ -162,7 +182,7 @@ const Options: React.FC<{
       },
     );
     return buttons;
-  }, [onSell, onDel, options.listing]);
+  }, [onSetPrice, onSell, onDel, options.listing]);
 
   if (!options.event) {
     return null;
@@ -189,6 +209,7 @@ const Listings = React.memo<
   const options = useOptions();
   const sell = useSellModal();
   const del = useDeleteModal();
+  const setPrice = useSetPriceModal();
 
   if (loading) {
     return <List>{ListingCard.loading}</List>;
@@ -215,7 +236,19 @@ const Listings = React.memo<
 
   return (
     <>
-      <Options options={options} sell={sell.open} del={del.open} />
+      <Options
+        options={options}
+        sell={sell.open}
+        del={del.open}
+        setPrice={setPrice.open}
+      />
+
+      {setPrice.listing ? (
+        <SetPriceModal
+          listing={setPrice.listing}
+          handleClose={setPrice.handleClose}
+        />
+      ) : null}
 
       {sell.listing ? (
         <SellModal listing={sell.listing} handleClose={sell.handleClose} />
