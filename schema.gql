@@ -57,6 +57,7 @@ type Mutation {
   setSchoolName(id: ID!, name: String!): School!
 
   saveListing(listingId: ID!, saved: Boolean!): Listing!
+  sellListing(listingId: ID!, price: Int!): Listing!
 }
 
 type Invite {
@@ -109,6 +110,8 @@ type Listing {
   school: School!
 
   saved: Boolean
+  soldAt: Date
+  soldPrice: Int
 }
 
 input ListingInput {

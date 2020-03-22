@@ -1,4 +1,4 @@
-import { getConnection } from 'typeorm';
+import { Brackets, getConnection } from 'typeorm';
 import { Invite, RecentListing, School } from '../entities';
 import { IQueryResolvers, ISession, SystemUserType } from '../schema.gql';
 import { logger, paginationOptions, sameSchoolListings } from '../util';
@@ -32,24 +32,29 @@ export const QueryResolver: IQueryResolvers = {
 
     const builder = (await sameSchoolListings({ session, getMe }))
       .innerJoinAndSelect('listing.book', 'book')
+      .where('listing.soldAt IS NULL')
       // skip and take break with custom ORDER BY expression
       .limit(take)
       .offset(skip);
 
-    for (let i = 0; i < segments.length; i++) {
-      const segment = segments[i];
-      builder.setParameter(`segment_${i}`, segment);
+    builder.andWhere(
+      new Brackets(subQuery => {
+        for (let i = 0; i < segments.length; i++) {
+          const segment = segments[i];
+          builder.setParameter(`segment_${i}`, segment);
 
-      if (i === 0) {
-        builder
-          .where(`listing.search_text ~* :segment_${i}`)
-          .orWhere(`book.search_text ~* :segment_${i}`);
-      } else {
-        builder
-          .orWhere(`listing.search_text ~* :segment_${i}`)
-          .orWhere(`book.search_text ~* :segment_${i}`);
-      }
-    }
+          if (i === 0) {
+            subQuery
+              .where(`listing.search_text ~* :segment_${i}`)
+              .orWhere(`book.search_text ~* :segment_${i}`);
+          } else {
+            subQuery
+              .orWhere(`listing.search_text ~* :segment_${i}`)
+              .orWhere(`book.search_text ~* :segment_${i}`);
+          }
+        }
+      }),
+    );
 
     builder.orderBy(
       `GREATEST(${segments
@@ -72,6 +77,7 @@ export const QueryResolver: IQueryResolvers = {
 
     const query = await sameSchoolListings({ session, getMe });
     const [items, totalCount] = await query
+      .where('listing.soldAt IS NULL')
       .orderBy('listing.created_at', 'DESC')
       .innerJoinAndSelect('listing.book', 'book')
       .limit(take)

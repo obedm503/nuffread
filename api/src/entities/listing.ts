@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { IsDate, IsInt, IsNotEmpty, IsString } from 'class-validator';
 import { Column, Entity, Index, JoinColumn, ManyToOne } from 'typeorm';
 import { IsInstance } from '../util';
 import { Base, Created, PrimaryKey, Updated } from '../util/db';
@@ -31,7 +31,7 @@ export class Listing extends Base {
   book: Book;
 
   @Column()
-  @IsNumber()
+  @IsInt()
   price: number;
 
   @Column()
@@ -58,4 +58,12 @@ export class Listing extends Base {
   // for full-text search
   @Column({ type: 'text', select: false, default: '' })
   private search_text: string;
+
+  @Column({ type: 'timestamp with time zone', nullable: true })
+  @IsDate()
+  soldAt?: Date;
+
+  @Column({ nullable: true })
+  @IsInt()
+  soldPrice?: number;
 }
