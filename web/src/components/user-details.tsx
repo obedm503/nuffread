@@ -12,13 +12,14 @@ import { call, logoFacebook, mail, person } from 'ionicons/icons';
 import * as React from 'react';
 import { Link } from 'react-router-dom';
 import { IQueryListingArgs, IUser } from '../schema.gql';
-import { useQuery } from '../state/apollo';
-import { useLoggedIn, useUser } from '../state/user';
+import { useLoggedIn, useQuery, useUser } from '../state';
 import { Error } from './error';
 import { SafeImg } from './safe-img';
 
-export const UserBasic = React.memo<{ user: IUser }>(function UserBasic({
+type UBProps = { user: IUser; children?: React.ReactNode };
+export const UserBasic = React.memo<UBProps>(function UserBasic({
   user,
+  children,
 }) {
   const isLoggedIn = useLoggedIn();
   if (!isLoggedIn) {
@@ -27,7 +28,7 @@ export const UserBasic = React.memo<{ user: IUser }>(function UserBasic({
 
   const name = user.name || user.email;
   return (
-    <IonItem lines="full">
+    <IonItem lines="none">
       <SafeImg
         slot="start"
         style={{ height: '2rem' }}
@@ -49,6 +50,8 @@ export const UserBasic = React.memo<{ user: IUser }>(function UserBasic({
         <br />
         {user.school.name}
       </IonLabel>
+
+      {children}
     </IonItem>
   );
 });

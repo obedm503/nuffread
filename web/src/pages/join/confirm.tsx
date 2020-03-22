@@ -3,11 +3,9 @@ import gql from 'graphql-tag';
 import * as React from 'react';
 import { RouteComponentProps } from 'react-router';
 import { Link } from 'react-router-dom';
-import { apolloFormErrors } from '../../components/apollo-error';
+import { apolloFormErrors } from '../../components';
 import { IMutationConfirmArgs } from '../../schema.gql';
-import { useMutation } from '../../state/apollo';
-import { useRouter } from '../../state/router';
-import { tracker } from '../../state/tracker';
+import { tracker, useMutation, useRouter } from '../../state';
 
 const Errors = apolloFormErrors({
   NO_INVITE: (

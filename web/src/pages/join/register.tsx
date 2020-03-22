@@ -16,11 +16,9 @@ import { add } from 'ionicons/icons';
 import * as React from 'react';
 import { Link } from 'react-router-dom';
 import { object } from 'yup';
-import { Email, IonSubmit, Password } from '../../components';
-import { apolloFormErrors } from '../../components/apollo-error';
+import { apolloFormErrors, Email, IonSubmit, Password } from '../../components';
 import { IMutation, IMutationRegisterArgs } from '../../schema.gql';
-import { useMutation } from '../../state/apollo';
-import { tracker } from '../../state/tracker';
+import { tracker, useMutation } from '../../state';
 import { strongPasswordSchema, studentEmailSchema } from '../../util';
 
 const REGISTER = gql`

@@ -3,7 +3,7 @@ import gql from 'graphql-tag';
 import * as React from 'react';
 import { BASIC_LISTING } from '../queries';
 import { IListing, IPaginationInput } from '../schema.gql';
-import { useLazyQuery } from '../state/apollo';
+import { useLazyQuery } from '../state';
 import { paginated, queryLoading } from '../util';
 import { PaginatedRefresh } from '../util.types';
 

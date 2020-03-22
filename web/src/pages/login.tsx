@@ -22,13 +22,16 @@ import * as React from 'react';
 import { Redirect, RouteComponentProps } from 'react-router';
 import { Link } from 'react-router-dom';
 import { object } from 'yup';
-import { Email, IonSubmit, Password, TopNav } from '../components';
-import { apolloFormErrors } from '../components/apollo-error';
-import { Container } from '../components/container';
+import {
+  apolloFormErrors,
+  Container,
+  Email,
+  IonSubmit,
+  Password,
+  TopNav,
+} from '../components';
 import { IMutationLoginArgs, SystemUserType } from '../schema.gql';
-import { useMutation } from '../state/apollo';
-import { tracker } from '../state/tracker';
-import { useUser } from '../state/user';
+import { tracker, useMutation, useUser } from '../state';
 import { emailSchema, passwordSchema } from '../util';
 
 const LOGIN = gql`

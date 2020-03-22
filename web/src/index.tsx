@@ -7,7 +7,7 @@ import { render } from 'react-dom';
 import { HelmetProvider } from 'react-helmet-async';
 import { App, createCache } from './app';
 import * as serviceWorker from './serviceWorker';
-import { tracker } from './state/tracker';
+import { tracker } from './state';
 
 const errorLink = onError(({ graphQLErrors, networkError }) => {
   if (graphQLErrors) {

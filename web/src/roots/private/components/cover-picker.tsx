@@ -1,6 +1,6 @@
 import { IonSlide, IonSlides } from '@ionic/react';
 import React from 'react';
-import { SafeImg } from '../../../components/safe-img';
+import { SafeImg } from '../../../components';
 import { IGoogleBook } from '../../../schema.gql';
 
 export const CoverPicker: React.FC<{

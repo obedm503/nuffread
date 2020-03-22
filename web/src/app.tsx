@@ -11,18 +11,14 @@ import * as React from 'react';
 import { Helmet } from 'react-helmet-async';
 import { RouteProps } from 'react-router';
 import './app.scss';
-import { Error } from './components';
-import { TrackApp } from './components/track-app';
+import { Error, TrackApp } from './components';
 import Join from './pages/join';
 import { AdminLogin, UserLogin } from './pages/login';
 import ResetPassword from './pages/reset-password';
 import Landing from './roots/landing';
 import Private from './roots/private';
 import { ISystemUser } from './schema.gql';
-import { useQuery } from './state/apollo';
-import { IsDesktopProvider } from './state/desktop';
-import { tracker } from './state/tracker';
-import { UserProvider } from './state/user';
+import { IsDesktopProvider, tracker, useQuery, UserProvider } from './state';
 import { RootPageProps } from './util.types';
 
 export const createCache = () =>

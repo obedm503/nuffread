@@ -408,6 +408,25 @@ export const MutationResolver: IMutationResolvers = {
     return await listing.save();
   },
 
+  async setPrice(_, { listingId, price }, { session, listingLoader }) {
+    ensureUser(session);
+
+    const listing = await Listing.findOne({ where: { id: listingId } });
+    if (!listing) {
+      throw new ListingNotFound();
+    }
+    if (listing.soldAt) {
+      throw new BadRequest();
+    }
+    if (listing.price === price) {
+      return listing;
+    }
+
+    listing.price = price;
+
+    return await listing.save();
+  },
+
   async toggleUserTrackable(_, {}, { session, userLoader }) {
     ensureUser(session);
 

@@ -2,7 +2,7 @@ import { IonBackButton, IonButtons, IonContent, IonPage } from '@ionic/react';
 import * as React from 'react';
 import { Redirect, RouteComponentProps, RouteProps } from 'react-router';
 import { Routes, TopNav } from '../../components';
-import { useUser } from '../../state/user';
+import { useUser } from '../../state';
 import { Confirm } from './confirm';
 import { Register } from './register';
 

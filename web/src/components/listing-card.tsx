@@ -26,8 +26,7 @@ import {
   IQuery,
   ISchool,
 } from '../schema.gql';
-import { readQuery, useMutation } from '../state/apollo';
-import { tracker } from '../state/tracker';
+import { readQuery, tracker, useMutation } from '../state';
 import { IListingPreview } from '../util.types';
 import { RelativeDate } from './relative-date';
 import { SafeImg } from './safe-img';
@@ -124,26 +123,30 @@ const SaveListingButton = React.memo<{
   }
 
   return (
-    <IonButtons slot="end">
-      <IonButton onClick={onClick} color={loading ? 'medium' : 'dark'}>
-        <IonIcon
-          slot="icon-only"
-          icon={listing.saved ? bookmark : bookmarkOutline}
-          size="large"
-        />
+    <IonButton onClick={onClick} color={loading ? 'medium' : 'dark'}>
+      <IonIcon
+        slot="icon-only"
+        icon={listing.saved ? bookmark : bookmarkOutline}
+        size="large"
+      />
 
-        <IonToast
-          color="primary"
-          isOpen={isOpen}
-          onDidDismiss={hide}
-          message={listing.saved ? 'Saved post.' : 'Unsaved post.'}
-          duration={400}
-        />
-      </IonButton>
-    </IonButtons>
+      <IonToast
+        color="primary"
+        isOpen={isOpen}
+        onDidDismiss={hide}
+        message={listing.saved ? 'Saved post.' : 'Unsaved post.'}
+        duration={400}
+      />
+    </IonButton>
   );
 });
 
+const badgeStyle = {
+  fontSize: 'inherit',
+  display: 'inline-block',
+  verticalAlign: 'text-bottom',
+  marginRight: '1rem',
+};
 type BookCardProps = {
   onClick?: (id: string) => void;
   before?;
@@ -161,7 +164,12 @@ export const BookCard = React.memo<BookCardProps>(function BookCard({
   const handleClick = React.useCallback(() => {
     onClick && listing.__typename === 'Listing' && onClick(listing.id);
   }, [onClick, listing]);
-  const { book, description, price } = listing;
+  const { book, description } = listing;
+
+  const sold = !!('soldPrice' in listing && listing.soldPrice);
+  // @ts-ignore
+  const price = sold ? listing.soldPrice : listing.price;
+
   return (
     <IonCard
       color="white"
@@ -173,13 +181,13 @@ export const BookCard = React.memo<BookCardProps>(function BookCard({
 
       <IonCardHeader>
         <IonCardTitle>
-          {book.title}
-
           {price ? (
-            <IonBadge color="secondary" style={badgeStyle}>
+            <IonBadge color={sold ? 'success' : 'secondary'} style={badgeStyle}>
               ${price / 100}
             </IonBadge>
           ) : null}
+
+          {book.title}
         </IonCardTitle>
 
         {book.subTitle ? (
@@ -188,17 +196,26 @@ export const BookCard = React.memo<BookCardProps>(function BookCard({
       </IonCardHeader>
 
       <IonCardContent>
-        <SafeImg
-          src={book.thumbnail || undefined}
-          alt={[book.title, book.subTitle].join(' ')}
-          placeholder="/img/book.png"
-          className="book-cover-card"
-        />
+        <div className="book-cover-card --has-ribbon">
+          <SafeImg
+            src={book.thumbnail || undefined}
+            alt={[book.title, book.subTitle].join(' ')}
+            placeholder="/img/book.png"
+          />
+
+          {sold ? (
+            <p>
+              <span>Sold</span>
+            </p>
+          ) : null}
+        </div>
       </IonCardContent>
 
       <IonItem lines="inset">
         {listing.__typename === 'Listing' ? (
-          <SaveListingButton listing={listing} />
+          <IonButtons slot="end">
+            <SaveListingButton listing={listing} />
+          </IonButtons>
         ) : null}
 
         <IonLabel className="ion-text-wrap">
@@ -243,14 +260,13 @@ const SchoolItem = React.memo<{ school: ISchool }>(function SchoolItem({
   school,
 }) {
   return (
-    <IonItem lines="full">
+    <IonItem lines="none">
       <IonIcon slot="start" color="dark" ios={person} md={person} />
       <IonLabel>{school.name}</IonLabel>
     </IonItem>
   );
 });
 
-const badgeStyle = { fontSize: 'inherit', float: 'right' };
 type Props = {
   onClick?: (id: string) => void;
   listing: IListing | IListingPreview;
@@ -302,11 +318,9 @@ export const LoadingListingCard = ({ animated = true }) => (
     </IonCardHeader>
 
     <IonCardContent>
-      <IonSkeletonText
-        slot="start"
-        animated={animated}
-        className="book-cover-card"
-      />
+      <div className="book-cover-card">
+        <IonSkeletonText animated={animated} />
+      </div>
     </IonCardContent>
 
     <IonItem lines="inset">

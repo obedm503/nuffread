@@ -4,7 +4,7 @@ import * as React from 'react';
 import { Error } from '.';
 import { BASIC_LISTING } from '../queries';
 import { IQuerySearchArgs } from '../schema.gql';
-import { useQuery } from '../state/apollo';
+import { useQuery } from '../state';
 import { paginated } from '../util';
 import { ListingBasic } from './listing-basic';
 import { Listings } from './listings';

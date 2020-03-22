@@ -58,6 +58,7 @@ type Mutation {
 
   saveListing(listingId: ID!, saved: Boolean!): Listing!
   sellListing(listingId: ID!, price: Int!): Listing!
+  setPrice(listingId: ID!, price: Int!): Listing!
 }
 
 type Invite {
