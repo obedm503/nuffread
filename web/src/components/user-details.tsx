@@ -27,7 +27,7 @@ export const UserBasic = React.memo<{ user: IUser }>(function UserBasic({
 
   const name = user.name || user.email;
   return (
-    <IonItem lines="full">
+    <IonItem lines="none">
       <SafeImg
         slot="start"
         style={{ height: '2rem' }}

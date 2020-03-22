@@ -124,26 +124,30 @@ const SaveListingButton = React.memo<{
   }
 
   return (
-    <IonButtons slot="end">
-      <IonButton onClick={onClick} color={loading ? 'medium' : 'dark'}>
-        <IonIcon
-          slot="icon-only"
-          icon={listing.saved ? bookmark : bookmarkOutline}
-          size="large"
-        />
+    <IonButton onClick={onClick} color={loading ? 'medium' : 'dark'}>
+      <IonIcon
+        slot="icon-only"
+        icon={listing.saved ? bookmark : bookmarkOutline}
+        size="large"
+      />
 
-        <IonToast
-          color="primary"
-          isOpen={isOpen}
-          onDidDismiss={hide}
-          message={listing.saved ? 'Saved post.' : 'Unsaved post.'}
-          duration={400}
-        />
-      </IonButton>
-    </IonButtons>
+      <IonToast
+        color="primary"
+        isOpen={isOpen}
+        onDidDismiss={hide}
+        message={listing.saved ? 'Saved post.' : 'Unsaved post.'}
+        duration={400}
+      />
+    </IonButton>
   );
 });
 
+const badgeStyle = {
+  fontSize: 'inherit',
+  display: 'inline-block',
+  verticalAlign: 'text-bottom',
+  marginRight: '1rem',
+};
 type BookCardProps = {
   onClick?: (id: string) => void;
   before?;
@@ -198,7 +202,9 @@ export const BookCard = React.memo<BookCardProps>(function BookCard({
 
       <IonItem lines="inset">
         {listing.__typename === 'Listing' ? (
-          <SaveListingButton listing={listing} />
+          <IonButtons slot="end">
+            <SaveListingButton listing={listing} />
+          </IonButtons>
         ) : null}
 
         <IonLabel className="ion-text-wrap">
@@ -243,14 +249,13 @@ const SchoolItem = React.memo<{ school: ISchool }>(function SchoolItem({
   school,
 }) {
   return (
-    <IonItem lines="full">
+    <IonItem lines="none">
       <IonIcon slot="start" color="dark" ios={person} md={person} />
       <IonLabel>{school.name}</IonLabel>
     </IonItem>
   );
 });
 
-const badgeStyle = { fontSize: 'inherit', float: 'right' };
 type Props = {
   onClick?: (id: string) => void;
   listing: IListing | IListingPreview;

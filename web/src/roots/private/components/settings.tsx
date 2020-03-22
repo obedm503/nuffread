@@ -28,7 +28,7 @@ export const useSettingsModal = () => {
 
 export const SettingsButton = React.memo<{ onClick }>(
   ({ onClick: handleClick }) => (
-    <IonItem onClick={handleClick} button lines="none">
+    <IonItem onClick={handleClick} button lines="none" detail={false}>
       <IonIcon slot="start" icon={settings} />
       <IonLabel>Settings</IonLabel>
     </IonItem>
