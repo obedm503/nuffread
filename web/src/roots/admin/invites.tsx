@@ -22,7 +22,7 @@ import {
   IMutationResendConfirmEmailArgs,
   IMutationSendInviteArgs,
 } from '../../schema.gql';
-import { useMutation, useQuery } from '../../state/apollo';
+import { useMutation, useQuery } from '../../state';
 
 const INVITES = gql`
   query GetInvites {

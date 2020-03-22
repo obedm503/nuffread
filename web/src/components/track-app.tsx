@@ -13,7 +13,7 @@ import {
 import { UnregisterCallback } from 'history';
 import React, { Component, ErrorInfo } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router';
-import { tracker } from '../state/tracker';
+import { tracker } from '../state';
 import { TopNav } from './top-nav';
 
 export const TrackApp = withRouter(

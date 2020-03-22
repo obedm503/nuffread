@@ -14,7 +14,7 @@ import {
   ListingSeller,
   TopNav,
 } from '../components';
-import { useListing } from '../state/listing';
+import { useListing } from '../state';
 import { Optional } from '../util.types';
 
 // const Fab = () => (

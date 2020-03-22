@@ -26,8 +26,7 @@ import {
   IQuery,
   ISchool,
 } from '../schema.gql';
-import { readQuery, useMutation } from '../state/apollo';
-import { tracker } from '../state/tracker';
+import { readQuery, tracker, useMutation } from '../state';
 import { IListingPreview } from '../util.types';
 import { RelativeDate } from './relative-date';
 import { SafeImg } from './safe-img';

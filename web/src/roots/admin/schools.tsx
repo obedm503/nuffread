@@ -20,7 +20,7 @@ import React, { memo, useCallback, useState } from 'react';
 import { object, string } from 'yup';
 import { Container, Error, Loading, Text } from '../../components';
 import { IMutationSetSchoolNameArgs, ISchool } from '../../schema.gql';
-import { useMutation, useQuery } from '../../state/apollo';
+import { useMutation, useQuery } from '../../state';
 
 const SCHOOLS = gql`
   query GetSchools {
