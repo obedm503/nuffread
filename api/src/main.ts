@@ -34,7 +34,7 @@ const app = express()
       store: new Store({
         conObject: {
           connectionString: process.env.DATABASE_URL,
-          ssl: true,
+          ssl: { rejectUnauthorized: false },
         },
       }),
     }),

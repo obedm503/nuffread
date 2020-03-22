@@ -72,9 +72,7 @@ export async function connect(): Promise<Connection> {
       // subscribers: ['./subscriber/**/*.ts'],
       logger: pinoLogger,
       maxQueryExecutionTime: 300,
-      extra: {
-        ssl: true,
-      },
+      ssl: { rejectUnauthorized: false },
       // cache: true,
       namingStrategy: new SnakeNamingStrategy(),
     };
