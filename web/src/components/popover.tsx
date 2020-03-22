@@ -2,12 +2,19 @@ import { IonButton, IonIcon, IonPopover } from '@ionic/react';
 import { ellipsisHorizontal, ellipsisVertical } from 'ionicons/icons';
 import * as React from 'react';
 
-export class Popover extends React.PureComponent {
-  state = { open: false };
-  toggle = () => this.setState({ open: !this.state.open });
-  close = () => this.setState({ open: false });
+export class Popover extends React.PureComponent<{
+  attached?: boolean;
+}> {
+  state = { event: undefined };
+  toggle = (e: React.MouseEvent<HTMLIonButtonElement, MouseEvent>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    this.setState({ event: e.nativeEvent });
+  };
+  close = () => this.setState({ event: undefined });
 
   render() {
+    const isOpen = !!this.state.event;
     return (
       <IonButton onClick={this.toggle}>
         <IonIcon
@@ -16,8 +23,12 @@ export class Popover extends React.PureComponent {
           ios={ellipsisHorizontal}
         />
 
-        <IonPopover isOpen={this.state.open} onDidDismiss={this.close}>
-          {this.state.open ? this.props.children : null}
+        <IonPopover
+          isOpen={isOpen}
+          event={this.props.attached ? this.state.event : undefined}
+          onDidDismiss={this.close}
+        >
+          {this.props.children}
         </IonPopover>
       </IonButton>
     );
