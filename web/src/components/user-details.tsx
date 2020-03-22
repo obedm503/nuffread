@@ -12,8 +12,7 @@ import { call, logoFacebook, mail, person } from 'ionicons/icons';
 import * as React from 'react';
 import { Link } from 'react-router-dom';
 import { IQueryListingArgs, IUser } from '../schema.gql';
-import { useQuery } from '../state/apollo';
-import { useLoggedIn, useUser } from '../state/user';
+import { useLoggedIn, useQuery, useUser } from '../state';
 import { Error } from './error';
 import { SafeImg } from './safe-img';
 

@@ -3,8 +3,7 @@ import gql from 'graphql-tag';
 import { logOutOutline } from 'ionicons/icons';
 import * as React from 'react';
 import { IMutation } from '../schema.gql';
-import { useMutation } from '../state/apollo';
-import { tracker } from '../state/tracker';
+import { tracker, useMutation } from '../state';
 
 const LOGOUT = gql`
   mutation Logout {

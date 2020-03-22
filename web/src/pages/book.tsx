@@ -21,8 +21,7 @@ import {
 } from '../components';
 import { BASIC_LISTING, BOOK } from '../queries';
 import { IBook, IPaginationInput, IQueryBookArgs } from '../schema.gql';
-import { useLazyQuery } from '../state/apollo';
-import { useRouter } from '../state/router';
+import { useLazyQuery, useRouter } from '../state';
 import { paginated, queryLoading } from '../util';
 import { Optional } from '../util.types';
 

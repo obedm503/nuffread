@@ -15,7 +15,7 @@ import gql from 'graphql-tag';
 import { trashOutline } from 'ionicons/icons';
 import React from 'react';
 import { Container, Error, Loading, RelativeDate } from '../../components';
-import { useQuery } from '../../state/apollo';
+import { useQuery } from '../../state';
 
 const SESSIONS = gql`
   query GetSessions {

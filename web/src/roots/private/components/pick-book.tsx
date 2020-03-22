@@ -9,7 +9,7 @@ import {
 } from '../../../components';
 import { SEARCH_GOOGLE } from '../../../queries';
 import { IGoogleBook, IQuerySearchGoogleArgs } from '../../../schema.gql';
-import { useQuery } from '../../../state/apollo';
+import { useQuery } from '../../../state';
 
 const SearchResultBook: React.FC<{
   book: IGoogleBook;

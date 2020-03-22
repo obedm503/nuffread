@@ -3,7 +3,7 @@ import gql from 'graphql-tag';
 import React from 'react';
 import { BASIC_LISTING } from '../../../queries';
 import { IListing, IMutationSellListingArgs } from '../../../schema.gql';
-import { useMutation } from '../../../state/apollo';
+import { useMutation } from '../../../state';
 
 export const useSellModal = () => {
   const [listing, setListing] = React.useState<IListing | undefined>(undefined);

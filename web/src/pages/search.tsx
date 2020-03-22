@@ -17,8 +17,7 @@ import {
   SearchListings,
 } from '../components';
 import { BASIC_LISTING } from '../queries';
-import { useQuery } from '../state/apollo';
-import { useSearch } from '../state/search';
+import { useQuery, useSearch } from '../state';
 
 const GET_RECENT_LISTINGS = gql`
   ${BASIC_LISTING}

@@ -18,9 +18,7 @@ import {
   TopNav,
   useTopListings,
 } from '../components';
-import { useRouter } from '../state/router';
-import { useSearch } from '../state/search';
-import { useLoggedIn } from '../state/user';
+import { useLoggedIn, useRouter, useSearch } from '../state';
 
 export const Explore = memo(function Explore() {
   const { onClick } = useSearch();

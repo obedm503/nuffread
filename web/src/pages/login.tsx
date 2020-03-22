@@ -31,9 +31,7 @@ import {
   TopNav,
 } from '../components';
 import { IMutationLoginArgs, SystemUserType } from '../schema.gql';
-import { useMutation } from '../state/apollo';
-import { tracker } from '../state/tracker';
-import { useUser } from '../state/user';
+import { tracker, useMutation, useUser } from '../state';
 import { emailSchema, passwordSchema } from '../util';
 
 const LOGIN = gql`

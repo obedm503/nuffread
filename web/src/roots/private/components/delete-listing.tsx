@@ -10,7 +10,7 @@ import {
   IMutationDeleteListingArgs,
   IQuery,
 } from '../../../schema.gql';
-import { readQuery, useMutation } from '../../../state/apollo';
+import { readQuery, useMutation } from '../../../state';
 
 const update: (
   id: string,

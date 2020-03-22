@@ -32,10 +32,7 @@ import {
   IMutationRequestResetPasswordArgs,
   IMutationResetPasswordArgs,
 } from '../schema.gql';
-import { useMutation } from '../state/apollo';
-import { useRouter } from '../state/router';
-import { tracker } from '../state/tracker';
-import { useUser } from '../state/user';
+import { tracker, useMutation, useRouter, useUser } from '../state';
 import { emailSchema, strongPasswordSchema } from '../util';
 
 const Card = ({ children }) => (

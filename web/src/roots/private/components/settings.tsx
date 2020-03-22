@@ -16,8 +16,7 @@ import gql from 'graphql-tag';
 import { close, settings } from 'ionicons/icons';
 import React from 'react';
 import { Title } from '../../../components';
-import { useMutation } from '../../../state/apollo';
-import { useUser } from '../../../state/user';
+import { useMutation, useUser } from '../../../state';
 
 export const useSettingsModal = () => {
   const [isOpen, setIsOpen] = React.useState(false);
