@@ -154,19 +154,20 @@ const Options: React.FC<{
   }, [del, handleClose, options]);
 
   const buttons = React.useMemo<ActionSheetButton[]>(() => {
-    const buttons: ActionSheetButton[] = [
-      {
-        text: 'Change Price',
-        icon: logoUsd,
-        handler: onSetPrice,
-      },
-    ];
+    const buttons: ActionSheetButton[] = [];
     if (options.listing && !options.listing.soldAt) {
-      buttons.push({
-        text: 'Sell',
-        icon: cashOutline,
-        handler: onSell,
-      });
+      buttons.push(
+        {
+          text: 'Change Price',
+          icon: logoUsd,
+          handler: onSetPrice,
+        },
+        {
+          text: 'Sell',
+          icon: cashOutline,
+          handler: onSell,
+        },
+      );
     }
     buttons.push(
       {
