@@ -163,7 +163,7 @@ const Options: React.FC<{
           handler: onSetPrice,
         },
         {
-          text: 'Sell',
+          text: 'Sold',
           icon: cashOutline,
           handler: onSell,
         },
