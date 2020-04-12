@@ -20,4 +20,4 @@ const ormconfig: ConnectionOptions = {
   },
   namingStrategy: new SnakeNamingStrategy(),
 };
-export default ormconfig;
+module.exports = ormconfig;
