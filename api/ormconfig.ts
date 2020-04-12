@@ -1,5 +1,6 @@
 import { config } from 'dotenv-safe';
 import { resolve } from 'path';
+import { ConnectionOptions } from 'typeorm';
 import * as entities from './src/entities';
 import { SnakeNamingStrategy } from './src/util/snake-case';
 
@@ -8,8 +9,7 @@ config({
   sample: resolve('.env.example'),
 });
 
-/** @type {import('typeorm').ConnectionOptions} */
-module.exports = {
+const ormconfig: ConnectionOptions = {
   type: 'postgres',
   entities: Object.values(entities),
   migrations: ['src/migrations/*'],
@@ -20,3 +20,4 @@ module.exports = {
   },
   namingStrategy: new SnakeNamingStrategy(),
 };
+export default ormconfig;
