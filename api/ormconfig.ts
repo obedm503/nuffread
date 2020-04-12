@@ -1,18 +1,19 @@
-// @ts-check
-const { resolve } = require('path');
-require('dotenv-safe').config({
+import { config } from 'dotenv-safe';
+import { resolve } from 'path';
+import * as entities from './src/entities';
+import { SnakeNamingStrategy } from './src/util/snake-case';
+
+config({
   path: resolve('.env'),
   sample: resolve('.env.example'),
 });
-const { SnakeNamingStrategy } = require('./dist/util/snake-case.js');
 
 /** @type {import('typeorm').ConnectionOptions} */
 module.exports = {
   type: 'postgres',
-  entities: ['src/**/*.entity.ts'],
-  migrations: ['src/migrations/*.ts'],
+  entities: Object.values(entities),
+  migrations: ['src/migrations/*'],
   url: process.env.DATABASE_URL,
-  ssl: { rejectUnauthorized: false },
   cli: {
     subscribersDir: 'src/subscribers',
     migrationsDir: 'src/migrations',

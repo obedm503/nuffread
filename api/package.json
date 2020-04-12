@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "typeorm": "ts-node ../node_modules/typeorm/cli.js",
+    "migrate": "yarn typeorm migration:generate --config ormconfig.ts --name",
     "dev": "nodemon --watch src --ext ts --exec 'ts-node --project tsconfig.json --pretty --files src/main'",
     "build": "NODE_ENV=production tsc --project tsconfig.json",
     "start": "NODE_ENV=production node --optimize_for_size --max_old_space_size=512 --gc_interval=100 dist/main.js"
