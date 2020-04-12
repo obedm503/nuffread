@@ -6,14 +6,13 @@ require('dotenv-safe').config({
 });
 const { SnakeNamingStrategy } = require('./dist/util/snake-case.js');
 
+/** @type {import('typeorm').ConnectionOptions} */
 module.exports = {
   type: 'postgres',
   entities: ['src/**/*.entity.ts'],
   migrations: ['src/migrations/*.ts'],
   url: process.env.DATABASE_URL,
-  extra: {
-    ssl: true,
-  },
+  ssl: { rejectUnauthorized: false },
   cli: {
     subscribersDir: 'src/subscribers',
     migrationsDir: 'src/migrations',
