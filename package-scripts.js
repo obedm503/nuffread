@@ -51,7 +51,6 @@ module.exports.scripts = {
       process.env.DATABASE_URL,
     ].join(' '),
     cli: `psql ${process.env.DATABASE_URL}`,
-    migrate: series('cd api', 'npm run migrate'),
     // based on https://stackoverflow.com/questions/10673630/how-do-i-transfer-production-database-to-staging-on-heroku-using-pgbackups-gett/24005476#30495448
     prepare: series(
       'heroku maintenance:on --app nuffread-staging',
