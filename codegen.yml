@@ -42,4 +42,3 @@ generates:
         Book: ./entities#Book
         User: ./entities#User
         School: ./entities#School
-        Invite: ./entities#Invite

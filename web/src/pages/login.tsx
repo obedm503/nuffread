@@ -51,12 +51,8 @@ const LOGIN = gql`
 
 const Errors = apolloFormErrors({
   DUPLICATE_USER: 'Email is already registered.',
-  NOT_CONFIRMED: (
-    <>
-      Email is not yet confirmed. To confirm your email{' '}
-      <Link to="/join">click here</Link>.
-    </>
-  ),
+  NOT_CONFIRMED:
+    'Email is not yet confirmed. Click the link on the email we sent you to confirm it.',
   WRONG_CREDENTIALS: 'Wrong email or passphrase.',
 });
 

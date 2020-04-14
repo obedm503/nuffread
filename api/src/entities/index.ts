@@ -1,6 +1,5 @@
 export * from './admin';
 export * from './book';
-export * from './invite';
 export * from './listing';
 export * from './recent-listing';
 export * from './saved-listing';

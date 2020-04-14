@@ -1,19 +1,14 @@
+import { useApolloClient } from '@apollo/react-hooks';
 import { IonCard, IonCardContent, IonCol, IonGrid, IonRow } from '@ionic/react';
 import gql from 'graphql-tag';
 import * as React from 'react';
-import { RouteComponentProps } from 'react-router';
-import { Link } from 'react-router-dom';
+import { Redirect, RouteComponentProps } from 'react-router';
 import { apolloFormErrors } from '../../components';
 import { IMutationConfirmArgs } from '../../schema.gql';
-import { tracker, useMutation, useRouter } from '../../state';
+import { tracker, useMutation } from '../../state';
 
 const Errors = apolloFormErrors({
-  NO_INVITE: (
-    <>
-      You need an invite first. <Link to="/invite">Get your invite.</Link>
-    </>
-  ),
-  NO_APPROVED_INVITE: 'Your invite has not been approved yet.',
+  WRONG_CREDENTIALS: () => <Redirect to="/" />,
 });
 
 const CONFIRM_EMAIL = gql`
@@ -24,25 +19,28 @@ const CONFIRM_EMAIL = gql`
 const ConfirmEmail = React.memo<{
   code: string;
 }>(({ code }) => {
-  const { history } = useRouter();
-  const [mutate, { error, called }] = useMutation<IMutationConfirmArgs>(
+  const client = useApolloClient();
+  const [mutate, { data, error, called }] = useMutation<IMutationConfirmArgs>(
     CONFIRM_EMAIL,
-    {
-      onCompleted: data => {
-        if (data.confirm) {
-          tracker.event('CONFIRM_EMAIL', {});
-          history.push('/login');
-        }
-      },
-    },
   );
+
+  React.useEffect(() => {
+    if (!called) {
+      mutate({ variables: { code } }).then(({ data }) => {
+        if (data?.confirm) {
+          tracker.event('CONFIRM_EMAIL', {});
+          return client.resetStore();
+        }
+      });
+    }
+  });
+
+  if (data?.confirm) {
+    return <Redirect to="/" />;
+  }
 
   if (error) {
     return <Errors error={error} />;
-  }
-
-  if (!called) {
-    mutate({ variables: { code } });
   }
 
   return <IonCardContent>Loading...</IonCardContent>;

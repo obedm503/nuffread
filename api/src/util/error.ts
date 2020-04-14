@@ -36,24 +36,6 @@ export class DuplicateUser extends ApolloError {
   }
 }
 
-export class NoInvite extends ApolloError {
-  constructor() {
-    super('NO_INVITE');
-  }
-}
-
-export class NoApprovedInvite extends ApolloError {
-  constructor() {
-    super('NO_APPROVED_INVITE');
-  }
-}
-
-export class DuplicateInvite extends ApolloError {
-  constructor() {
-    super('DUPLICATE_INVITE');
-  }
-}
-
 export class WrongCredentials extends ApolloError {
   constructor() {
     super('WRONG_CREDENTIALS');

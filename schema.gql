@@ -28,7 +28,7 @@ type Query {
   listing(id: ID!): Listing
   book(id: ID!): Book
 
-  invites: [Invite!]!
+  users: [User!]!
   schools: [School!]!
   sessions: [Session!]!
 
@@ -40,8 +40,6 @@ type Mutation {
   createUser(user: UserInput!): User!
   toggleUserTrackable: User!
 
-  requestInvite(email: String!, name: String!): Boolean!
-  sendInvite(email: String!): Invite!
   resendConfirmEmail(email: String!): Boolean!
 
   register(email: String!, password: String!): User!
@@ -61,13 +59,6 @@ type Mutation {
   setPrice(listingId: ID!, price: Int!): Listing!
 }
 
-type Invite {
-  email: String!
-  name: String!
-  user: User
-  invitedAt: Date
-}
-
 type User {
   id: ID!
 
@@ -79,8 +70,6 @@ type User {
   listings: [Listing!]!
   recent: [Listing!]!
   saved(paginate: PaginationInput): PaginatedListings!
-
-  invite: Invite!
 
   confirmedAt: Date
   schoolName: String @deprecated(reason: "use school.name instead")
