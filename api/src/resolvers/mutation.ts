@@ -118,45 +118,29 @@ export const MutationResolver: IMutationResolvers = {
     return user;
   },
 
-  async login(_, { email: emailInput, password, type }, { req }) {
-    let Ent: typeof Admin | typeof User;
-    if (type === 'USER') {
-      Ent = User;
-    } else if (type === 'ADMIN') {
-      Ent = Admin;
-    } else {
-      throw new BadRequest();
-    }
+  async resendConfirmEmail(
+    _,
+    { email: emailInput },
+    { session, userEmailLoader },
+  ) {
+    ensureAdmin(session);
 
     const email = cleanEmail(emailInput);
-    const me = await Ent.findOne({ where: { email } });
 
-    if (!me) {
+    const user = await userEmailLoader.load(email);
+    if (!user) {
       throw new WrongCredentials();
     }
 
-    if (me instanceof User && !me.confirmedAt) {
-      throw new NotConfirmed();
+    if (user.confirmedAt || !user.confirmCode) {
+      return true; // user is already confirmed
     }
 
-    if (!(await compare(password, me.passwordHash))) {
-      throw new WrongCredentials();
-    }
-
-    login(req, me.id, type);
-
-    return me;
-  },
-  async logout(_, {}, { req, res }) {
-    const session = req.session;
-    if (session) {
-      const destroy = promisify(session.destroy.bind(session));
-      await destroy();
-    }
-    res.clearCookie('session');
+    await sendConfirmationEmail({ email, confirmCode: user.confirmCode });
 
     return true;
   },
+
   async confirm(_, { code }, { session, req }) {
     ensurePublic(session);
 
@@ -182,28 +166,118 @@ export const MutationResolver: IMutationResolvers = {
       return true;
     });
   },
-  async resendConfirmEmail(
+
+  async login(_, { email: emailInput, password, type }, { req }) {
+    let Ent: typeof Admin | typeof User;
+    if (type === SystemUserType.User) {
+      Ent = User;
+    } else if (type === SystemUserType.Admin) {
+      Ent = Admin;
+    } else {
+      throw new BadRequest();
+    }
+
+    const email = cleanEmail(emailInput);
+    const me = await Ent.findOne({ where: { email } });
+
+    if (!me) {
+      throw new WrongCredentials();
+    }
+
+    if (me instanceof User && !me.confirmedAt) {
+      throw new NotConfirmed();
+    }
+
+    if (!(await compare(password, me.passwordHash))) {
+      throw new WrongCredentials();
+    }
+
+    login(req, me.id, type);
+
+    return me;
+  },
+
+  async logout(_, {}, { req, res }) {
+    const session = req.session;
+    if (session) {
+      const destroy = promisify(session.destroy.bind(session));
+      await destroy();
+    }
+    res.clearCookie('session');
+
+    return true;
+  },
+
+  async requestResetPassword(
     _,
     { email: emailInput },
     { session, userEmailLoader },
   ) {
-    ensureAdmin(session);
+    ensurePublic(session);
 
     const email = cleanEmail(emailInput);
-
     const user = await userEmailLoader.load(email);
-    if (!user) {
-      throw new WrongCredentials();
+    if (!isUser(user)) {
+      return true; // email doens't exist, but don't tell the client
     }
 
-    if (user.confirmedAt || !user.confirmCode) {
-      return true; // user is already confirmed
-    }
+    // can be called multiple times, but only the last request will be valid
+    const token = await jwt.sign({ email }, { expiresIn: '15 min' });
+    user.passwordResetToken = token;
 
-    await sendConfirmationEmail({ email, confirmCode: user.confirmCode });
+    const sentEmail = send({
+      email,
+      subject: 'Reset your password',
+      html: `To reset your password, click the link below.
+      <br/>
+      If you did not request to change your password, simply ignore this email.
+
+      <a href="${CONFIG.origin}/reset/${token}">https://www.nuffread.com/reset/${token}</a>
+    `,
+    });
+    await Promise.all([user.save(), sentEmail]);
 
     return true;
   },
+
+  async resetPassword(_, { token, password }, { session, req }) {
+    ensurePublic(session);
+
+    const user = await User.findOne({ where: { passwordResetToken: token } });
+    if (!isUser(user)) {
+      throw new WrongCredentials();
+    }
+
+    try {
+      await jwt.verify(token); // verify token is not expired
+    } catch (e) {
+      logger.error(e, { email: user.email });
+
+      // token is expired, delete it
+      user.passwordResetToken = undefined;
+      await user.save();
+
+      throw new WrongCredentials();
+    }
+
+    user.passwordHash = await hash(password, 12);
+    user.passwordResetToken = undefined;
+    await user.save();
+
+    // automatically log in
+    login(req, user.id, SystemUserType.User);
+
+    return true;
+  },
+
+  async setSchoolName(_, { id, name }, { session }) {
+    ensureAdmin(session);
+
+    const school = await School.findOneOrFail({ where: { id } });
+    school.name = name;
+    return await school.save();
+  },
+
   async createListing(
     _,
     { listing: { googleId, price, description, coverIndex } },
@@ -267,75 +341,6 @@ export const MutationResolver: IMutationResolvers = {
     });
 
     return true;
-  },
-
-  async requestResetPassword(
-    _,
-    { email: emailInput },
-    { session, userEmailLoader },
-  ) {
-    ensurePublic(session);
-
-    const email = cleanEmail(emailInput);
-    const user = await userEmailLoader.load(email);
-    if (!isUser(user)) {
-      return true; // email doens't exist, but don't tell the client
-    }
-
-    // can be called multiple times, but only the last request will be valid
-    const token = await jwt.sign({ email }, { expiresIn: '15 min' });
-    user.passwordResetToken = token;
-
-    const sentEmail = send({
-      email,
-      subject: 'Reset your password',
-      html: `To reset your password, click the link below.
-      <br/>
-      If you did not request to change your password, simply ignore this email.
-
-      <a href="${CONFIG.origin}/reset/${token}">https://www.nuffread.com/reset/${token}</a>
-    `,
-    });
-    await Promise.all([user.save(), sentEmail]);
-
-    return true;
-  },
-  async resetPassword(_, { token, password }, { session, req }) {
-    ensurePublic(session);
-
-    const user = await User.findOne({ where: { passwordResetToken: token } });
-    if (!isUser(user)) {
-      throw new WrongCredentials();
-    }
-
-    try {
-      await jwt.verify(token); // verify token is not expired
-    } catch (e) {
-      logger.error(e, { email: user.email });
-
-      // token is expired, delete it
-      user.passwordResetToken = undefined;
-      await user.save();
-
-      throw new WrongCredentials();
-    }
-
-    user.passwordHash = await hash(password, 12);
-    user.passwordResetToken = undefined;
-    await user.save();
-
-    // automatically log in
-    login(req, user.id, SystemUserType.User);
-
-    return true;
-  },
-
-  async setSchoolName(_, { id, name }, { session }) {
-    ensureAdmin(session);
-
-    const school = await School.findOneOrFail({ where: { id } });
-    school.name = name;
-    return await school.save();
   },
 
   async saveListing(_, { listingId, saved }, { session, listingLoader }) {
