@@ -51,7 +51,7 @@ export const Explore = memo(function Explore() {
               <IonButtonLink href="/login" color="primary">
                 Login
               </IonButtonLink>
-              <IonButtonLink href="/invite" color="primary" fill="solid">
+              <IonButtonLink href="/join" color="primary" fill="solid">
                 <b>Join</b>
               </IonButtonLink>
             </IonButtons>

@@ -12,12 +12,10 @@ import {
   JoinColumn,
   ManyToOne,
   OneToMany,
-  OneToOne,
   Unique,
 } from 'typeorm';
 import { IsEdu, IsInstance, validate } from '../util';
 import { Base, Created, PrimaryKey, Updated } from '../util/db';
-import { Invite } from './invite';
 import { Listing } from './listing';
 import { RecentListing } from './recent-listing';
 import { SavedListing } from './saved-listing';
@@ -43,6 +41,7 @@ class EmailPassword {
 @Entity()
 @Unique(['email'])
 @Unique(['passwordResetToken'])
+@Unique(['confirmCode'])
 export class User extends Base {
   @PrimaryKey()
   readonly id: string;
@@ -65,6 +64,10 @@ export class User extends Base {
   passwordHash: string;
 
   @Column({ nullable: true })
+  @IsString()
+  confirmCode?: string;
+
+  @Column({ nullable: true })
   @IsDate()
   confirmedAt?: Date;
 
@@ -81,13 +84,6 @@ export class User extends Base {
     listing => listing.user,
   )
   listings: Listing[];
-
-  @OneToOne(
-    () => Invite,
-    invite => invite.user,
-  )
-  @JoinColumn({ name: 'email', referencedColumnName: 'email' })
-  invite: Invite;
 
   @Column({ nullable: true })
   @IsString()

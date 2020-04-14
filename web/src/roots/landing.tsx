@@ -13,7 +13,7 @@ import {
 } from '@ionic/react';
 import memoize from 'lodash/memoize';
 import * as React from 'react';
-import { IonButtonLink, IonRoutes, RequestInvite, Title } from '../components';
+import { IonButtonLink, IonRoutes, Title } from '../components';
 import { Book } from '../pages/book';
 import { Listing } from '../pages/listing';
 import { RootPageProps } from '../util.types';
@@ -53,7 +53,7 @@ const Landing = React.memo(function Landing() {
             </IonCol>
 
             <IonCol size="12" sizeMd="5" offsetMd="1" sizeLg="4" offsetLg="2">
-              <RequestInvite />
+              {/* request invite form */}
             </IonCol>
           </IonRow>
         </IonGrid>

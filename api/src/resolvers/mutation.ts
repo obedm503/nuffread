@@ -1,17 +1,18 @@
 import { compare, hash } from 'bcryptjs';
+import * as crypto from 'crypto';
 import { getConnection } from 'typeorm';
+import { promisify } from 'util';
 import { CONFIG } from '../config';
 import {
   Admin,
   Book,
-  Invite,
   Listing,
   RecentListing,
   SavedListing,
   School,
   User,
 } from '../entities';
-import { IGoogleBook, IMutationResolvers } from '../schema.gql';
+import { IGoogleBook, IMutationResolvers, SystemUserType } from '../schema.gql';
 import { jwt, logger } from '../util';
 import { ensureAdmin, ensurePublic, ensureUser, isUser } from '../util/auth';
 import { send } from '../util/email';
@@ -19,15 +20,31 @@ import {
   AuthorizationError,
   BadRequest,
   BookNotFound,
-  DuplicateInvite,
   DuplicateUser,
   ListingNotFound,
-  NoApprovedInvite,
-  NoInvite,
   NotConfirmed,
   WrongCredentials,
 } from '../util/error';
 import { getBook } from '../util/google-books';
+
+const randomBytes = promisify(crypto.randomBytes);
+async function generateConfirmCode(): Promise<string> {
+  const buffer = await randomBytes(48);
+  return buffer.toString('hex');
+}
+
+function cleanEmail(email: string): string {
+  return email.toLowerCase().trim();
+}
+
+function login(req: Express.Request, id: string, type: SystemUserType) {
+  if (!req.session) {
+    throw new Error('no session');
+  }
+
+  req.session.userId = id;
+  req.session.userType = type;
+}
 
 export const sendConfirmationEmail = async ({
   email,
@@ -44,14 +61,6 @@ export const sendConfirmationEmail = async ({
   });
 };
 
-function ensureInvited(invite?: Invite): asserts invite is Invite {
-  if (!invite) {
-    throw new NoInvite();
-  }
-  if (!invite.invitedAt) {
-    throw new NoApprovedInvite();
-  }
-}
 function getThumbnail(gBook: IGoogleBook, coverIndex: number): string {
   const cover = gBook.possibleCovers[coverIndex];
   if (!cover) {
@@ -64,10 +73,10 @@ export const MutationResolver: IMutationResolvers = {
   async register(
     _,
     { email: emailInput, password },
-    { inviteLoader, userEmailLoader, session },
+    { userEmailLoader, session },
   ) {
     ensurePublic(session);
-    const email = emailInput.toLowerCase();
+    const email = cleanEmail(emailInput);
 
     // validate email and password
     await User.validateEmailPassword({ email, password });
@@ -77,45 +86,98 @@ export const MutationResolver: IMutationResolvers = {
       throw new DuplicateUser();
     }
 
-    const invite = await inviteLoader.load(email);
-    // only invited users can register
-    ensureInvited(invite);
-
     const passwordHash = await hash(password, 12);
 
-    const domain = email.split('@')[1];
-    let school = await School.findOne({ where: { domain } });
+    const [username, domain] = email.split('@');
+
+    const [foundSchool, confirmCode] = await Promise.all([
+      School.findOne({ where: { domain } }),
+      generateConfirmCode(),
+    ]);
 
     const user: User = await getConnection().transaction(async manager => {
+      let school = foundSchool;
       if (!school) {
         // school doesn't yet exist
         // create it and default name to ''
         school = await manager.save(School.create({ domain, name: '' }));
       }
       return await manager.save(
-        User.create({ name: invite.name, email, passwordHash, school }),
+        User.create({
+          name: username,
+          email,
+          passwordHash,
+          school,
+          confirmCode,
+        }),
       );
     });
 
-    await sendConfirmationEmail({
-      email: user.email,
-      confirmCode: invite.code,
-    });
+    await sendConfirmationEmail({ email, confirmCode: confirmCode! });
 
     return user;
   },
 
+  async resendConfirmEmail(
+    _,
+    { email: emailInput },
+    { session, userEmailLoader },
+  ) {
+    ensureAdmin(session);
+
+    const email = cleanEmail(emailInput);
+
+    const user = await userEmailLoader.load(email);
+    if (!user) {
+      throw new WrongCredentials();
+    }
+
+    if (user.confirmedAt || !user.confirmCode) {
+      return true; // user is already confirmed
+    }
+
+    await sendConfirmationEmail({ email, confirmCode: user.confirmCode });
+
+    return true;
+  },
+
+  async confirm(_, { code }, { session, req }) {
+    ensurePublic(session);
+
+    return await getConnection().transaction(async manager => {
+      const user = await manager.findOne(User, {
+        where: { confirmCode: code },
+      });
+      if (!user) {
+        throw new WrongCredentials();
+      }
+
+      if (user.confirmedAt) {
+        return true; // user is already confirmed
+      }
+
+      user.confirmedAt = new Date();
+      user.confirmCode = undefined;
+      await manager.save(user);
+
+      // automatically log in
+      login(req, user.id, SystemUserType.User);
+
+      return true;
+    });
+  },
+
   async login(_, { email: emailInput, password, type }, { req }) {
     let Ent: typeof Admin | typeof User;
-    if (type === 'USER') {
+    if (type === SystemUserType.User) {
       Ent = User;
-    } else if (type === 'ADMIN') {
+    } else if (type === SystemUserType.Admin) {
       Ent = Admin;
     } else {
       throw new BadRequest();
     }
 
-    const email = emailInput.toLowerCase();
+    const email = cleanEmail(emailInput);
     const me = await Ent.findOne({ where: { email } });
 
     if (!me) {
@@ -130,73 +192,92 @@ export const MutationResolver: IMutationResolvers = {
       throw new WrongCredentials();
     }
 
-    if (req.session) {
-      req.session.userId = me.id;
-      req.session.userType = type;
-    }
+    login(req, me.id, type);
 
     return me;
   },
+
   async logout(_, {}, { req, res }) {
     const session = req.session;
     if (session) {
-      await new Promise(done => session.destroy(done));
+      const destroy = promisify(session.destroy.bind(session));
+      await destroy();
     }
     res.clearCookie('session');
 
     return true;
   },
-  async confirm(_, { code }, { session }) {
-    ensurePublic(session);
 
-    return await getConnection().transaction(async manager => {
-      const invite = await manager.findOne(Invite, {
-        where: { code },
-      });
-      ensureInvited(invite);
-
-      const user = await manager.findOne(User, {
-        where: { email: invite.email },
-      });
-      if (!user) {
-        throw new WrongCredentials();
-      }
-
-      if (user.confirmedAt) {
-        return true; // user is already confirmed
-      }
-
-      user.confirmedAt = new Date();
-      await manager.save(user);
-
-      return true;
-    });
-  },
-  async resendConfirmEmail(
+  async requestResetPassword(
     _,
     { email: emailInput },
-    { session, inviteLoader, userEmailLoader },
+    { session, userEmailLoader },
   ) {
-    ensureAdmin(session);
+    ensurePublic(session);
 
-    const email = emailInput.toLowerCase();
-
-    const invite = await inviteLoader.load(email);
-    ensureInvited(invite);
-
+    const email = cleanEmail(emailInput);
     const user = await userEmailLoader.load(email);
-    if (!user) {
-      throw new WrongCredentials();
+    if (!isUser(user)) {
+      return true; // email doens't exist, but don't tell the client
     }
 
-    if (user.confirmedAt) {
-      return true; // user is already confirmed
-    }
+    // can be called multiple times, but only the last request will be valid
+    const token = await jwt.sign({ email }, { expiresIn: '15 min' });
+    user.passwordResetToken = token;
 
-    await sendConfirmationEmail({ email, confirmCode: invite.code });
+    const sentEmail = send({
+      email,
+      subject: 'Reset your password',
+      html: `To reset your password, click the link below.
+      <br/>
+      If you did not request to change your password, simply ignore this email.
+
+      <a href="${CONFIG.origin}/reset/${token}">https://www.nuffread.com/reset/${token}</a>
+    `,
+    });
+    await Promise.all([user.save(), sentEmail]);
 
     return true;
   },
+
+  async resetPassword(_, { token, password }, { session, req }) {
+    ensurePublic(session);
+
+    const user = await User.findOne({ where: { passwordResetToken: token } });
+    if (!isUser(user)) {
+      throw new WrongCredentials();
+    }
+
+    try {
+      await jwt.verify(token); // verify token is not expired
+    } catch (e) {
+      logger.error(e, { email: user.email });
+
+      // token is expired, delete it
+      user.passwordResetToken = undefined;
+      await user.save();
+
+      throw new WrongCredentials();
+    }
+
+    user.passwordHash = await hash(password, 12);
+    user.passwordResetToken = undefined;
+    await user.save();
+
+    // automatically log in
+    login(req, user.id, SystemUserType.User);
+
+    return true;
+  },
+
+  async setSchoolName(_, { id, name }, { session }) {
+    ensureAdmin(session);
+
+    const school = await School.findOneOrFail({ where: { id } });
+    school.name = name;
+    return await school.save();
+  },
+
   async createListing(
     _,
     { listing: { googleId, price, description, coverIndex } },
@@ -261,120 +342,6 @@ export const MutationResolver: IMutationResolvers = {
 
     return true;
   },
-  async requestInvite(
-    _,
-    { email: emailInput, name },
-    { session, inviteLoader },
-  ) {
-    ensurePublic(session);
-
-    const email = emailInput.toLowerCase();
-    if (await inviteLoader.load(email)) {
-      throw new DuplicateInvite();
-    }
-
-    const invite = Invite.create({ email, name });
-    const admins = await Admin.find();
-    const sentEmail = Promise.all(
-      admins.map(admin =>
-        send({
-          email: admin.email,
-          subject: 'New invite request',
-          html: [
-            `${name} (${email}) has requested an invite.`,
-            `Go to <a href="${CONFIG.origin}/admin">https://www.nuffread.com/admin</a> to authorize it.`,
-          ].join(' '),
-        }),
-      ),
-    );
-    await Promise.all([invite.save(), sentEmail]);
-
-    return true;
-  },
-  async sendInvite(_, { email: emailInput }, { session, inviteLoader }) {
-    ensureAdmin(session);
-
-    const email = emailInput.toLowerCase();
-    const invite = await inviteLoader.load(email);
-    if (!invite) {
-      throw new NoInvite();
-    }
-    invite.invitedAt = new Date();
-    const sentEmail = send({
-      email,
-      subject: 'Welcome to Nuffread',
-      html: `Your request has been approved. Go to <a href="${CONFIG.origin}/join">https://www.nuffread.com/join</a> and go through the standard signup process.
-    `,
-    });
-    const [savedInvite] = await Promise.all([invite.save(), sentEmail]);
-    return savedInvite;
-  },
-
-  async requestResetPassword(
-    _,
-    { email: emailInput },
-    { session, userEmailLoader },
-  ) {
-    ensurePublic(session);
-
-    const email = emailInput.toLowerCase();
-    const user = await userEmailLoader.load(email);
-    if (!isUser(user)) {
-      return true; // email doens't exist, but don't tell the client
-    }
-
-    // can be called multiple times, but only the last request will be valid
-    const token = await jwt.sign({ email }, { expiresIn: '2h' });
-    user.passwordResetToken = token;
-
-    const sentEmail = send({
-      email,
-      subject: 'Reset your password',
-      html: `To reset your password, click the link below.
-      <br/>
-      If you did not request to change your password, simply ignore this email.
-
-      <a href="${CONFIG.origin}/reset/${token}">https://www.nuffread.com/reset/${token}</a>
-    `,
-    });
-    await Promise.all([user.save(), sentEmail]);
-
-    return true;
-  },
-  async resetPassword(_, { token, password }, { session }) {
-    ensurePublic(session);
-
-    const user = await User.findOne({ where: { passwordResetToken: token } });
-    if (!isUser(user)) {
-      throw new WrongCredentials();
-    }
-
-    try {
-      await jwt.verify(token); // verify token is not expired
-    } catch (e) {
-      logger.error(e, { email: user.email });
-
-      // token is expired, delete it
-      user.passwordResetToken = undefined;
-      await user.save();
-
-      throw new WrongCredentials();
-    }
-
-    user.passwordHash = await hash(password, 12);
-    user.passwordResetToken = undefined;
-    await user.save();
-
-    return true;
-  },
-
-  async setSchoolName(_, { id, name }, { session }) {
-    ensureAdmin(session);
-
-    const school = await School.findOneOrFail({ where: { id } });
-    school.name = name;
-    return await school.save();
-  },
 
   async saveListing(_, { listingId, saved }, { session, listingLoader }) {
     ensureUser(session);
@@ -394,7 +361,7 @@ export const MutationResolver: IMutationResolvers = {
   async sellListing(_, { listingId, price }, { session, listingLoader }) {
     ensureUser(session);
 
-    const listing = await Listing.findOne({ where: { id: listingId } });
+    const listing = await listingLoader.load(listingId);
     if (!listing) {
       throw new ListingNotFound();
     }
@@ -411,7 +378,7 @@ export const MutationResolver: IMutationResolvers = {
   async setPrice(_, { listingId, price }, { session, listingLoader }) {
     ensureUser(session);
 
-    const listing = await Listing.findOne({ where: { id: listingId } });
+    const listing = await listingLoader.load(listingId);
     if (!listing) {
       throw new ListingNotFound();
     }

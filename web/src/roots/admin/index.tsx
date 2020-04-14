@@ -15,14 +15,14 @@ import * as React from 'react';
 import { Redirect, Route } from 'react-router';
 import { LogoutButton, Routes, TopNav } from '../../components';
 import { RootPageProps } from '../../util.types';
-import Invites from './invites';
+import Users from './users';
 import Schools from './schools';
 import Sessions from './sessions';
 
 const Admin = React.memo(() => {
   return (
     <IonPage>
-      <TopNav homeHref="/invites">
+      <TopNav homeHref="/">
         <IonButtons slot="end">
           <LogoutButton />
         </IonButtons>
@@ -31,16 +31,16 @@ const Admin = React.memo(() => {
       <IonContent>
         <IonTabs>
           <IonRouterOutlet>
-            <Redirect from="/" exact to="/invites" />
-            <Route path="/:tab(invites)" exact component={Invites} />
+            <Redirect from="/" exact to="/users" />
+            <Route path="/:tab(users)" exact component={Users} />
             <Route path="/:tab(schools)" exact component={Schools} />
             <Route path="/:tab(sessions)" exact component={Sessions} />
           </IonRouterOutlet>
 
           <IonTabBar slot="bottom">
-            <IonTabButton tab="invites" href="/invites">
+            <IonTabButton tab="users" href="/users">
               <IonIcon icon={personAdd} />
-              <IonLabel>Invites</IonLabel>
+              <IonLabel>Users</IonLabel>
             </IonTabButton>
             <IonTabButton tab="schools" href="/schools">
               <IonIcon icon={school} />

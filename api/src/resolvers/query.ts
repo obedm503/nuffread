@@ -1,5 +1,5 @@
 import { Brackets, getConnection } from 'typeorm';
-import { Invite, RecentListing, School } from '../entities';
+import { RecentListing, School, User } from '../entities';
 import { IQueryResolvers, ISession, SystemUserType } from '../schema.gql';
 import { logger, paginationOptions, sameSchoolListings } from '../util';
 import { ensureAdmin, ensureUser, userSession } from '../util/auth';
@@ -141,10 +141,10 @@ export const QueryResolver: IQueryResolvers = {
     return book;
   },
 
-  async invites(_, {}, { session }) {
+  async users(_, {}, { session }) {
     ensureAdmin(session);
 
-    return await Invite.find({ order: { createdAt: 'DESC' } });
+    return await User.find({ order: { createdAt: 'DESC' } });
   },
   async schools(_, {}, { session }) {
     ensureAdmin(session);

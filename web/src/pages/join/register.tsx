@@ -39,12 +39,6 @@ const schema = object<FormSchema>().shape({
 const RegisterSuccess = () => <p>Click the confirmation link in your email.</p>;
 
 const Errors = apolloFormErrors({
-  NO_INVITE: (
-    <>
-      You need an invite first. <Link to="/invite">Get your invite.</Link>
-    </>
-  ),
-  NO_APPROVED_INVITE: 'Your invite request has not been approved.',
   DUPLICATE_USER: (
     <>
       This email is already registered. <Link to="/login">Login?</Link>
@@ -58,26 +52,30 @@ const onRegister = (data: IMutation) => {
   }
   tracker.register({ email: data.register.email });
 };
+const init: FormSchema = {
+  email: '',
+  password: '',
+};
 const RegisterForm: React.FC = () => {
   const [mutate, { error, data, loading }] = useMutation<IMutationRegisterArgs>(
     REGISTER,
     { onCompleted: onRegister },
   );
 
+  const onSubmit = React.useCallback(
+    ({ email, password }) => mutate({ variables: { email, password } }),
+    [mutate],
+  );
+
   if (data?.register) {
     return <RegisterSuccess />;
   }
 
-  const onSubmit = ({ email, password }) =>
-    mutate({ variables: { email, password } });
   return (
     <Formik<FormSchema>
       onSubmit={onSubmit}
       validationSchema={schema}
-      initialValues={{
-        email: '',
-        password: '',
-      }}
+      initialValues={init}
     >
       <Form>
         <IonList>

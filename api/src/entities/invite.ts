@@ -1,18 +1,9 @@
 import { IsDate, IsEmail, IsNotEmpty, IsString } from 'class-validator';
 import * as crypto from 'crypto';
-import {
-  BeforeInsert,
-  Column,
-  Entity,
-  OneToOne,
-  PrimaryColumn,
-  Unique,
-} from 'typeorm';
+import { BeforeInsert, Column, Entity, PrimaryColumn, Unique } from 'typeorm';
 import { promisify } from 'util';
 import { IsEdu } from '../util';
 import { Base, Created } from '../util/db';
-import { User } from './user';
-
 const randomBytes = promisify(crypto.randomBytes);
 
 @Entity()
@@ -27,13 +18,6 @@ export class Invite extends Base {
   @IsEmail()
   @IsEdu()
   email: string;
-
-  @OneToOne(
-    () => User,
-    user => user.invite,
-    { nullable: true },
-  )
-  user?: User;
 
   @Column()
   @IsNotEmpty()

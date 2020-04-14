@@ -1,14 +1,6 @@
 import DataLoader from 'dataloader';
 import { Request, Response } from 'express';
-import {
-  Admin,
-  Book,
-  Invite,
-  Listing,
-  SavedListing,
-  School,
-  User,
-} from '../entities';
+import { Admin, Book, Listing, SavedListing, School, User } from '../entities';
 import { SystemUserType } from '../schema.gql';
 
 export type UserSession = Express.Session & {
@@ -38,7 +30,6 @@ export type IContext = {
   adminLoader: DataLoader<string, Admin | undefined>;
   listingLoader: DataLoader<string, Listing | undefined>;
   bookLoader: DataLoader<string, Book | undefined>;
-  inviteLoader: DataLoader<string, Invite | undefined>;
   schoolLoader: DataLoader<string, School | undefined>;
   savedListingLoader: DataLoader<string, SavedListing | undefined>;
 };

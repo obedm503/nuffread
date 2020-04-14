@@ -4,19 +4,10 @@ import * as fs from 'fs';
 import { GraphQLSchema } from 'graphql';
 import { makeExecutableSchema } from 'graphql-tools';
 import { resolve } from 'path';
-import {
-  Admin,
-  Book,
-  Invite,
-  Listing,
-  SavedListing,
-  School,
-  User,
-} from './entities';
+import { Admin, Book, Listing, SavedListing, School, User } from './entities';
 import {
   BookResolver,
   DateResolver,
-  InviteResolver,
   ListingResolver,
   MutationResolver,
   QueryResolver,
@@ -58,7 +49,6 @@ function createSchema(): GraphQLSchema {
     Listing: ListingResolver,
     Mutation: MutationResolver,
     User: UserResolver,
-    Invite: InviteResolver,
     Book: BookResolver,
     School: SchoolResolver,
   };
@@ -115,7 +105,6 @@ export async function getContext({
     adminLoader: makeIdLoader(Admin),
     listingLoader: makeIdLoader(Listing),
     bookLoader: makeIdLoader(Book),
-    inviteLoader: makeEmailLoader(Invite),
     userEmailLoader: makeEmailLoader(User),
     schoolLoader: makeIdLoader(School),
     savedListingLoader: new DataLoader(async (ids: readonly string[]) => {
