@@ -18,13 +18,7 @@ module.exports.scripts = {
   deploy: {
     web: series.nps('clean', 'build.types', 'build.web'),
     api: series.nps('clean', 'build.types', 'build.api'),
-    admin: series(
-      'nps clean',
-      'nps build.types',
-      'nps build.admin',
-      'cd admin',
-      'npm run deploy',
-    ),
+    admin: series('nps clean', 'nps build.types', 'cd admin', 'npm run deploy'),
   },
   dev: {
     default: series(
