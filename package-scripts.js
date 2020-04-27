@@ -18,15 +18,23 @@ module.exports.scripts = {
   deploy: {
     web: series.nps('clean', 'build.types', 'build.web'),
     api: series.nps('clean', 'build.types', 'build.api'),
+    admin: series(
+      'nps clean',
+      'nps build.types',
+      'nps build.admin',
+      'cd admin',
+      'npm run deploy',
+    ),
   },
   dev: {
     default: series(
       'nps clean',
-      concurrent.nps('dev.types', 'dev.web', 'dev.api'),
+      concurrent.nps('dev.types', 'dev.web', 'dev.api', 'dev.admin'),
     ),
     types: 'graphql-codegen --config codegen.yml --watch',
     web: series('cd web', 'npm run dev'),
     api: series('cd api', 'npm run dev'),
+    admin: series('cd admin', 'npm run dev'),
   },
   build: {
     default: series(
@@ -37,6 +45,7 @@ module.exports.scripts = {
     types: 'graphql-codegen --config codegen.yml',
     web: series('cd web', 'npm run build'),
     api: series('cd api', 'npm run build'),
+    admin: series('cd admin', 'npm run build'),
   },
   clean: rimraf('.cache web/build api/dist'),
   start: {
