@@ -10,7 +10,7 @@ export default function App({ Component, pageProps }: AppProps) {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <div className="absolute h-full w-full bg-tertiary">
+      <div className="absolute min-h-full min-w-full bg-tertiary">
         <Component {...pageProps} />
       </div>
     </>
