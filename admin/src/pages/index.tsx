@@ -1,14 +1,14 @@
 import Router from 'next/router';
 import { useEffect } from 'react';
 import { withApollo } from '../apollo';
-import { useToLogin } from '../util/auth';
+import { withToLogin } from '../util/auth';
 
-export default withApollo()(function Index() {
-  useToLogin();
+export default withApollo()(
+  withToLogin(function Index() {
+    useEffect(() => {
+      Router.push('/users');
+    });
 
-  useEffect(() => {
-    Router.push('/users');
-  });
-
-  return null;
-});
+    return null;
+  }),
+);

@@ -4,7 +4,7 @@ import { Layout } from '../components/layout';
 import { Cols, Table } from '../components/table';
 import { ISchool } from '../schema.gql';
 import { useQuery } from '../util/apollo';
-import { useToLogin } from '../util/auth';
+import { withToLogin } from '../util/auth';
 
 const SCHOOLS = gql`
   query GetSchools {
@@ -21,14 +21,14 @@ const cols: Cols<ISchool> = [
   { name: 'Domain', key: 'domain' },
 ];
 
-export default withApollo()(function Schools() {
-  useToLogin();
+export default withApollo()(
+  withToLogin(function Schools() {
+    const { data } = useQuery(SCHOOLS);
 
-  const { data } = useQuery(SCHOOLS);
-
-  return (
-    <Layout>
-      <Table title="Sessions" cols={cols} data={data?.schools} />
-    </Layout>
-  );
-});
+    return (
+      <Layout>
+        <Table title="Sessions" cols={cols} data={data?.schools} />
+      </Layout>
+    );
+  }),
+);

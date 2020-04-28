@@ -35,26 +35,22 @@ export function useMe(): { me?: IAdmin; loading: boolean } {
   return { me, loading };
 }
 
-export function useToHome() {
-  const { me, loading } = useMe();
-  const hasUser = !!me;
+export function withToLogin(Children) {
+  return () => {
+    const { me, loading } = useMe();
+    const hasUser = !!me;
 
-  useEffect(() => {
-    if (loading) return;
-    if (hasUser) {
-      Router.push('/');
+    useEffect(() => {
+      if (loading) return;
+      if (!hasUser) {
+        Router.push('/login');
+      }
+    }, [loading, hasUser]);
+
+    if (loading || !hasUser) {
+      return null;
     }
-  }, [loading, hasUser]);
-}
 
-export function useToLogin() {
-  const { me, loading } = useMe();
-  const hasUser = !!me;
-
-  useEffect(() => {
-    if (loading) return;
-    if (!hasUser) {
-      Router.push('/login');
-    }
-  }, [loading, hasUser]);
+    return <Children />;
+  };
 }

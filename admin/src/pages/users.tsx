@@ -4,7 +4,7 @@ import { Layout } from '../components/layout';
 import { Cols, Table } from '../components/table';
 import { IUser } from '../schema.gql';
 import { useQuery } from '../util/apollo';
-import { useToLogin } from '../util/auth';
+import { withToLogin } from '../util/auth';
 
 const USERS = gql`
   query GetUsers {
@@ -22,14 +22,14 @@ const cols: Cols<IUser> = [
   { name: 'Email', key: 'email' },
 ];
 
-export default withApollo()(function Users() {
-  useToLogin();
+export default withApollo()(
+  withToLogin(function Users() {
+    const { data } = useQuery(USERS);
 
-  const { data } = useQuery(USERS);
-
-  return (
-    <Layout>
-      <Table title="Users" cols={cols} data={data?.users} />
-    </Layout>
-  );
-});
+    return (
+      <Layout>
+        <Table title="Users" cols={cols} data={data?.users} />
+      </Layout>
+    );
+  }),
+);

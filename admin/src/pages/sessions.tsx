@@ -4,7 +4,7 @@ import { Layout } from '../components/layout';
 import { Cols, Table } from '../components/table';
 import { ISession } from '../schema.gql';
 import { useQuery } from '../util/apollo';
-import { useToLogin } from '../util/auth';
+import { withToLogin } from '../util/auth';
 
 const SESSIONS = gql`
   query GetSessions {
@@ -32,14 +32,14 @@ const cols: Cols<ISession> = [
   { name: 'Expiration', key: 'expiresAt' },
 ];
 
-export default withApollo()(function Sessions() {
-  useToLogin();
+export default withApollo()(
+  withToLogin(function Sessions() {
+    const { data } = useQuery(SESSIONS);
 
-  const { data } = useQuery(SESSIONS);
-
-  return (
-    <Layout>
-      <Table title="Sessions" cols={cols} data={data?.sessions} />
-    </Layout>
-  );
-});
+    return (
+      <Layout>
+        <Table title="Sessions" cols={cols} data={data?.sessions} />
+      </Layout>
+    );
+  }),
+);
