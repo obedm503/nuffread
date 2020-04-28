@@ -29,7 +29,7 @@ export function Navbar() {
 
   return (
     <nav className="relative flex flex-wrap items-center justify-between navbar-expand-lg bg-white mb-6 shadow-md">
-      <div className="container flex flex-wrap items-center justify-between mx-24 px-2 py-4">
+      <div className="container flex flex-wrap items-center justify-between py-4 max-w-6xl mx-auto">
         <div className="w-full relative flex justify-between lg:w-auto  px-4 lg:static lg:block lg:justify-start">
           <Link href="/">
             <a className="text-sm font-bold leading-relaxed inline-block mr-4 py-2 whitespace-no-wrap uppercase text-primary">
@@ -46,10 +46,7 @@ export function Navbar() {
             <span className="block relative w-6 h-px rounded-sm bg-primary mt-1"></span>
           </button>
         </div>
-        <div
-          className="lg:flex flex-grow items-center"
-          id="example-navbar-warning"
-        >
+        <div className="lg:flex flex-grow items-center pr-4">
           <ul className="flex flex-col lg:flex-row list-none ml-auto">
             <MenuItem href="/users" name="Users" />
 
@@ -63,7 +60,9 @@ export function Navbar() {
               </span>
             </li>
 
-            <LogoutButton />
+            <li className="nav-item ml-2">
+              <LogoutButton />
+            </li>
           </ul>
         </div>
       </div>
