@@ -1,11 +1,12 @@
 import Link from 'next/link';
-import Router from 'next/router';
+import { useRouter } from 'next/router';
 import { useCallback, useState } from 'react';
 import { useMe } from '../util/auth';
 import { LogoutButton } from './logout';
 
 function MenuItem({ href, name }) {
-  const isActive = Router.pathname === href;
+  const router = useRouter();
+  const isActive = router.pathname === href;
   return (
     <li className="nav-item">
       <Link href={href}>
@@ -27,7 +28,7 @@ export function Navbar() {
   const toggle = useCallback(() => setActive(a => !!a), [setActive]);
 
   return (
-    <nav className="relative flex flex-wrap items-center justify-between navbar-expand-lg bg-white mb-3 shadow-md">
+    <nav className="relative flex flex-wrap items-center justify-between navbar-expand-lg bg-white mb-6 shadow-md">
       <div className="container flex flex-wrap items-center justify-between mx-24 px-2 py-4">
         <div className="w-full relative flex justify-between lg:w-auto  px-4 lg:static lg:block lg:justify-start">
           <Link href="/">

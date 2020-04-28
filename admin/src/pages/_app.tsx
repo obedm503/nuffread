@@ -9,7 +9,10 @@ export default function App({ Component, pageProps }: AppProps) {
         <title>Admin | Nuffread</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <Component {...pageProps} />
+
+      <div className="absolute h-full w-full bg-tertiary">
+        <Component {...pageProps} />
+      </div>
     </>
   );
 }

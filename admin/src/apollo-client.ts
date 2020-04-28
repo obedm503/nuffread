@@ -1,6 +1,11 @@
-import { InMemoryCache, NormalizedCacheObject } from 'apollo-cache-inmemory';
+import {
+  InMemoryCache,
+  IntrospectionFragmentMatcher,
+  NormalizedCacheObject,
+} from 'apollo-cache-inmemory';
 import { ApolloClient } from 'apollo-client';
 import { HttpLink } from 'apollo-link-http';
+import { Kind } from 'graphql';
 import 'isomorphic-unfetch';
 import { NextPageContext } from 'next';
 
@@ -26,6 +31,21 @@ export default function createApolloClient(
       credentials: 'include', // Additional fetch() options like `credentials` or `headers`
       headers,
     }),
-    cache: new InMemoryCache().restore(initialState),
+    cache: new InMemoryCache({
+      freezeResults: process.env.NODE_ENV !== 'production',
+      fragmentMatcher: new IntrospectionFragmentMatcher({
+        introspectionQueryResultData: {
+          __schema: {
+            types: [
+              {
+                kind: Kind.UNION_TYPE_DEFINITION,
+                name: 'SystemUser',
+                possibleTypes: [{ name: 'Admin' }, { name: 'User' }],
+              },
+            ],
+          },
+        },
+      }),
+    }).restore(initialState),
   });
 }
