@@ -137,6 +137,8 @@ type GoogleBook {
 
 type School {
   id: ID!
+  # createdAt: Date!
+  # updatedAt: Date!
   name: String!
   # only accessible to administrators
   domain: String!

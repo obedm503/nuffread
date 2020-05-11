@@ -2,6 +2,7 @@
   "private": true,
   "workspaces": [
     "api",
+    "admin",
     "web"
   ],
   "scripts": {

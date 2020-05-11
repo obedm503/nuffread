@@ -39,7 +39,6 @@ const validRoots = [
   'b',
   'invite',
   'login',
-  'admin',
   'join',
   'reset',
 ];
