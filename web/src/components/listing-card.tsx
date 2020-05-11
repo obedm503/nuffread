@@ -15,7 +15,7 @@ import {
   IonToast,
 } from '@ionic/react';
 import gql from 'graphql-tag';
-import { bookmark, bookmarkOutline, person } from 'ionicons/icons';
+import { cart, cartOutline, person } from 'ionicons/icons';
 import range from 'lodash/range';
 import React from 'react';
 import { BASIC_LISTING, SAVED_LISTINGS } from '../queries';
@@ -126,7 +126,7 @@ const SaveListingButton = React.memo<{
     <IonButton onClick={onClick} color={loading ? 'medium' : 'dark'}>
       <IonIcon
         slot="icon-only"
-        icon={listing.saved ? bookmark : bookmarkOutline}
+        icon={listing.saved ? cart : cartOutline}
         size="large"
       />
 
@@ -134,8 +134,8 @@ const SaveListingButton = React.memo<{
         color="primary"
         isOpen={isOpen}
         onDidDismiss={hide}
-        message={listing.saved ? 'Saved post.' : 'Unsaved post.'}
-        duration={400}
+        message={listing.saved ? 'Saved to Cart' : 'Removed from Cart'}
+        duration={900}
       />
     </IonButton>
   );
