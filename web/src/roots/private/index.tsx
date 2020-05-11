@@ -5,7 +5,7 @@ import {
   IonTabButton,
   IonTabs,
 } from '@ionic/react';
-import { add, bookmarkOutline, person, search } from 'ionicons/icons';
+import { add, cartOutline, person, search } from 'ionicons/icons';
 import memoize from 'lodash/memoize';
 import * as React from 'react';
 import { Redirect, RouteProps } from 'react-router';
@@ -16,14 +16,16 @@ import { Listing } from '../../pages/listing';
 import { Search } from '../../pages/search';
 import { useRootValidator } from '../../state';
 import { RootPageProps } from '../../util.types';
+import { Cart } from './cart';
 import { CreateModal } from './components/create';
 import { Profile } from './profile';
-import { Saved } from './saved';
 
 const routes: RouteProps[] = [
   { path: '/:tab(explore)', exact: true, render: () => <Explore /> },
   { path: '/search', exact: true, render: () => <Search /> },
-  { path: '/:tab(saved)', exact: true, render: () => <Saved /> },
+  // keep /saved in case links exists in the wild
+  { path: '/:tab(saved)', exact: true, render: () => <Redirect to="/cart" /> },
+  { path: '/:tab(cart)', exact: true, render: () => <Cart /> },
   { path: '/:tab(profile)', exact: true, render: () => <Profile /> },
   {
     path: '/p/:listingId',
@@ -44,6 +46,7 @@ const validRoots = [
   'search',
   'create',
   'saved',
+  'cart',
   'profile',
   'p',
   'b',
@@ -76,8 +79,8 @@ const Private = React.memo(function Private() {
           <IonIcon icon={add} ariaLabel="Create" />
         </IonTabButton>
 
-        <IonTabButton tab="saved" href="/saved">
-          <IonIcon icon={bookmarkOutline} ariaLabel="Saved" />
+        <IonTabButton tab="cart" href="/cart">
+          <IonIcon icon={cartOutline} ariaLabel="Cart" />
         </IonTabButton>
 
         <IonTabButton tab="profile" href="/profile">

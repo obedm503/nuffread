@@ -116,7 +116,7 @@ const useSavedListings = (): PaginatedRefresh<IQuery> => {
   };
 };
 
-export const Saved = React.memo(function Saved() {
+export const Cart = React.memo(function Saved() {
   const {
     load,
     refresh,
@@ -129,7 +129,7 @@ export const Saved = React.memo(function Saved() {
 
   return (
     <IonPage>
-      <TopNav homeHref={false} title="Saved Books" />
+      <TopNav homeHref={false} title="Cart" />
 
       <IonContent>
         <IonRefresher slot="fixed" onIonRefresh={refresh}>
