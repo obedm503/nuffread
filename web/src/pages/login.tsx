@@ -41,10 +41,6 @@ const LOGIN = gql`
         id
         email
       }
-      ... on Admin {
-        id
-        email
-      }
     }
   }
 `;
@@ -109,52 +105,39 @@ const LoginForm = React.memo<{
   );
 });
 
-const adminSchema = object().shape({
-  email: emailSchema,
-  password: passwordSchema,
-});
 const userSchema = object().shape({
   email: emailSchema,
   password: passwordSchema,
 });
 
-export const UserLogin = React.memo<
-  RouteComponentProps<{}> & { admin?: boolean }
->(function UserLogin({ admin = false }) {
-  const user = useUser();
-  if (user) {
-    return <Redirect to="/" />;
-  }
-  return (
-    <IonPage>
-      <TopNav homeHref="/">
-        <IonButtons slot="start">
-          <IonBackButton />
-        </IonButtons>
-      </TopNav>
+export const UserLogin = React.memo<RouteComponentProps<{}>>(
+  function UserLogin() {
+    const user = useUser();
+    if (user) {
+      return <Redirect to="/" />;
+    }
+    return (
+      <IonPage>
+        <TopNav homeHref="/">
+          <IonButtons slot="start">
+            <IonBackButton />
+          </IonButtons>
+        </TopNav>
 
-      <IonContent>
-        <Container>
-          <IonCard>
-            <IonCardHeader>
-              <IonCardTitle className="ion-text-center">Login</IonCardTitle>
-            </IonCardHeader>
+        <IonContent>
+          <Container>
+            <IonCard>
+              <IonCardHeader>
+                <IonCardTitle className="ion-text-center">Login</IonCardTitle>
+              </IonCardHeader>
 
-            <IonCardContent>
-              <LoginForm
-                type={admin ? SystemUserType.Admin : SystemUserType.User}
-                schema={admin ? adminSchema : userSchema}
-              />
-            </IonCardContent>
-          </IonCard>
-        </Container>
-      </IonContent>
-    </IonPage>
-  );
-});
-
-export class AdminLogin extends React.PureComponent<RouteComponentProps<{}>> {
-  render() {
-    return <UserLogin {...this.props} admin />;
-  }
-}
+              <IonCardContent>
+                <LoginForm type={SystemUserType.User} schema={userSchema} />
+              </IonCardContent>
+            </IonCard>
+          </Container>
+        </IonContent>
+      </IonPage>
+    );
+  },
+);

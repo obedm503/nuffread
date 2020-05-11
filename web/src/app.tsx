@@ -13,10 +13,11 @@ import { RouteProps } from 'react-router';
 import './app.scss';
 import { Error, TrackApp } from './components';
 import Join from './pages/join';
-import { AdminLogin, UserLogin } from './pages/login';
+import { UserLogin } from './pages/login';
 import ResetPassword from './pages/reset-password';
 import Landing from './roots/landing';
 import Private from './roots/private';
+import Public from './roots/public';
 import { ISystemUser } from './schema.gql';
 import { IsDesktopProvider, tracker, useQuery, UserProvider } from './state';
 import { RootPageProps } from './util.types';
@@ -53,33 +54,12 @@ const ME = gql`
           name
         }
       }
-      ... on Admin {
-        id
-        email
-      }
     }
   }
 `;
 
-const makeLazy = <T extends React.ComponentType<any>>(
-  factory: () => Promise<{ default: T }>,
-  Fallback?: () => NonNullable<React.ReactNode>,
-) => {
-  const loading = Fallback ? Fallback() : null;
-  const Comp = React.lazy(factory);
-  return props => (
-    <React.Suspense fallback={loading}>
-      <Comp {...props} />
-    </React.Suspense>
-  );
-};
-
-const Admin = makeLazy(() => import('./roots/admin'));
-const Public = makeLazy(() => import('./roots/public'));
-
 const globalRoutes: readonly RouteProps[] = [
   { path: '/login', exact: true, component: UserLogin },
-  { path: '/admin', exact: true, component: AdminLogin },
   { path: '/join', component: Join },
   { path: '/reset', component: ResetPassword },
 ];
@@ -90,9 +70,6 @@ const rootPage = memoize(function(
 ): React.ComponentType<RootPageProps> {
   if (!user) {
     return isReady ? Public : Landing;
-  }
-  if (user.__typename === 'Admin') {
-    return Admin;
   }
   return Private;
 });

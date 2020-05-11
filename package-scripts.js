@@ -34,7 +34,7 @@ module.exports.scripts = {
     default: series(
       'nps clean',
       'nps build.types',
-      concurrent.nps('build.web', 'build.api'),
+      concurrent.nps('build.web', 'build.api', 'build.admin'),
     ),
     types: 'graphql-codegen --config codegen.yml',
     web: series('cd web', 'npm run build'),
