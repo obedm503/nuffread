@@ -1,5 +1,7 @@
 import gql from 'graphql-tag';
 import { withApollo } from '../apollo';
+import { Card } from '../components/card';
+import { RelativeDate } from '../components/date';
 import { Layout } from '../components/layout';
 import { Cols, Table } from '../components/table';
 import { ISession } from '../schema.gql';
@@ -29,7 +31,17 @@ const SESSIONS = gql`
 const cols: Cols<ISession> = [
   { name: 'Name', key: s => (s.user.__typename === 'User' ? s.user.name : '') },
   { name: 'Email', key: s => s.user.email },
-  { name: 'Expiration', key: 'expiresAt' },
+  { name: 'Expiration', key: s => <RelativeDate date={s.expiresAt} /> },
+  { name: 'ID', key: 'id' },
+  // {
+  //   name: 'Delete',
+  //   className: 'text-center',
+  //   key: s => (
+  //     <button>
+  //       <span>🗑</span>
+  //     </button>
+  //   ),
+  // },
 ];
 
 export default withApollo()(
@@ -38,7 +50,9 @@ export default withApollo()(
 
     return (
       <Layout>
-        <Table title="Sessions" cols={cols} data={data?.sessions} />
+        <Card title="Sessions">
+          <Table cols={cols} data={data?.sessions} />
+        </Card>
       </Layout>
     );
   }),

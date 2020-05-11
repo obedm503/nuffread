@@ -1,5 +1,8 @@
 import gql from 'graphql-tag';
+import { groupBy } from 'lodash';
 import { withApollo } from '../apollo';
+import { Card } from '../components/card';
+import { RelativeDate } from '../components/date';
 import { Layout } from '../components/layout';
 import { Cols, Table } from '../components/table';
 import { IUser } from '../schema.gql';
@@ -20,15 +23,29 @@ const USERS = gql`
 const cols: Cols<IUser> = [
   { name: 'Name', key: 'name' },
   { name: 'Email', key: 'email' },
+  { name: 'Confirmed At', key: u => <RelativeDate date={u.confirmedAt} /> },
 ];
 
 export default withApollo()(
   withToLogin(function Users() {
     const { data } = useQuery(USERS);
 
+    const users = data && data.users;
+    const { confirmed, notConfirmed } = users
+      ? groupBy(users, user =>
+          user.confirmedAt ? 'confirmed' : 'notConfirmed',
+        )
+      : ({} as any);
+
     return (
       <Layout>
-        <Table title="Users" cols={cols} data={data?.users} />
+        <Card title="Not Confirmed Users">
+          <Table cols={cols} data={notConfirmed} />
+        </Card>
+
+        <Card title="Confirmed Users">
+          <Table cols={cols} data={confirmed} />
+        </Card>
       </Layout>
     );
   }),
