@@ -27,8 +27,8 @@ export default function createApolloClient(
   return new ApolloClient({
     ssrMode,
     link: new HttpLink({
-      uri, // Server URL (must be absolute)
-      credentials: 'include', // Additional fetch() options like `credentials` or `headers`
+      uri,
+      credentials: 'include',
       headers,
     }),
     cache: new InMemoryCache({

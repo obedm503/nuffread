@@ -7,7 +7,7 @@ export default function App({ Component, pageProps }: AppProps) {
     <>
       <Head>
         <title>Admin | Nuffread</title>
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" href="https://www.nuffread.com/favicon.ico" />
       </Head>
 
       <div className="absolute min-h-full w-full min-w-full bg-tertiary">
