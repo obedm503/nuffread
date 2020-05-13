@@ -2,79 +2,83 @@ import { IonInfiniteScroll } from '@ionic/react';
 import gql from 'graphql-tag';
 import * as React from 'react';
 import { Error } from '.';
-import { BASIC_LISTING } from '../queries';
-import { IQuerySearchArgs } from '../schema.gql';
+import { BOOK } from '../queries';
+import { IQuerySearchBooksArgs } from '../schema.gql';
 import { useQuery } from '../state';
-import { paginated } from '../util';
-import { ListingBasic } from './listing-basic';
-import { Listings } from './listings';
+import { paginatedBooks } from '../util';
+import { Books } from './books';
+import { BookBasic } from './listing-basic';
 
-export const SEARCH = gql`
-  ${BASIC_LISTING}
+export const SEARCH_BOOKS = gql`
+  ${BOOK}
 
-  query Search($query: String!, $paginate: PaginationInput!) {
-    search(query: $query, paginate: $paginate) {
+  query SearchBooks($query: String!, $paginate: PaginationInput!) {
+    searchBooks(query: $query, paginate: $paginate) {
       totalCount
       items {
-        ...BasicListing
+        ...Book
       }
     }
   }
 `;
 
-type SearchListingsProps = {
+type SearchBooksProps = {
   onClick: (id: string) => void;
   searchValue: string;
 };
-export const SearchListings = React.memo<SearchListingsProps>(
-  function SearchListings({ onClick: handleClick, searchValue }) {
-    const { error, data, loading, fetchMore } = useQuery<IQuerySearchArgs>(
-      SEARCH,
-      { variables: { query: searchValue, paginate: { offset: 0 } } },
-    );
-    const { totalCount, currentCount } = paginated(data?.search);
+export const SearchBooks = React.memo<SearchBooksProps>(function SearchBooks({
+  onClick: handleClick,
+  searchValue,
+}) {
+  const { error, data, loading, fetchMore } = useQuery<IQuerySearchBooksArgs>(
+    SEARCH_BOOKS,
+    { variables: { query: searchValue, paginate: { offset: 0 } } },
+  );
+  const { totalCount, currentCount } = paginatedBooks(data?.searchBooks);
 
-    const getMore = React.useCallback(
-      async e => {
-        await fetchMore({
-          variables: { query: searchValue, paginate: { offset: currentCount } },
-          updateQuery: (prev, { fetchMoreResult }) => {
-            if (!fetchMoreResult) return prev;
-            return {
-              ...prev,
-              search: {
-                __typename: 'PaginatedListings',
-                totalCount: fetchMoreResult.search.totalCount,
-                items: [...prev.search.items, ...fetchMoreResult.search.items],
-              },
-            };
-          },
-        });
-        (e.target! as HTMLIonInfiniteScrollElement).complete();
-      },
-      [currentCount, searchValue, fetchMore],
-    );
+  const getMore = React.useCallback(
+    async e => {
+      await fetchMore({
+        variables: { query: searchValue, paginate: { offset: currentCount } },
+        updateQuery: (prev, { fetchMoreResult }) => {
+          if (!fetchMoreResult) return prev;
+          return {
+            ...prev,
+            searchBooks: {
+              __typename: 'PaginatedBooks',
+              totalCount: fetchMoreResult.searchBooks.totalCount,
+              items: [
+                ...prev.searchBooks.items,
+                ...fetchMoreResult.searchBooks.items,
+              ],
+            },
+          };
+        },
+      });
+      (e.target! as HTMLIonInfiniteScrollElement).complete();
+    },
+    [currentCount, searchValue, fetchMore],
+  );
 
-    if (error) {
-      return <Error value={error} />;
-    }
+  if (error) {
+    return <Error value={error} />;
+  }
 
-    return (
-      <>
-        <Listings
-          loading={loading}
-          onClick={handleClick}
-          listings={data?.search.items}
-          title={'Results for: ' + searchValue}
-          component={ListingBasic}
-        />
+  return (
+    <>
+      <Books
+        loading={loading}
+        onClick={handleClick}
+        books={data?.searchBooks.items}
+        title={'Results for: ' + searchValue}
+        component={BookBasic}
+      />
 
-        {currentCount < totalCount ? (
-          <IonInfiniteScroll onIonInfinite={getMore}>
-            {ListingBasic.loading}
-          </IonInfiniteScroll>
-        ) : null}
-      </>
-    );
-  },
-);
+      {currentCount < totalCount ? (
+        <IonInfiniteScroll onIonInfinite={getMore}>
+          {BookBasic.loading}
+        </IonInfiniteScroll>
+      ) : null}
+    </>
+  );
+});

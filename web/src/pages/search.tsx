@@ -14,7 +14,7 @@ import {
   Listings,
   ListWrapper,
   SearchBar,
-  SearchListings,
+  SearchBooks,
 } from '../components';
 import { BASIC_LISTING } from '../queries';
 import { useQuery, useSearch } from '../state';
@@ -76,7 +76,7 @@ export const Search = memo(function Search() {
       <IonContent>
         <Container>
           {searchValue ? (
-            <SearchListings onClick={onClick} searchValue={searchValue} />
+            <SearchBooks onClick={onClick} searchValue={searchValue} />
           ) : (
             <RecentListings onClick={onClick} />
           )}

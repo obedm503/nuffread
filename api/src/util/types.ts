@@ -34,4 +34,6 @@ export type IContext = {
   savedListingLoader: DataLoader<string, SavedListing | undefined>;
 };
 
-export type PaginatedListings = { items: Listing[]; totalCount: number };
+type Paginated<T> = { items: T[]; totalCount: number };
+export type PaginatedListings = Paginated<Listing>;
+export type PaginatedBooks = Paginated<Book>;

@@ -53,18 +53,16 @@ export const Listing = React.memo<{
 
   return (
     <IonPage>
-      <TopNav homeHref="/" title="Post">
+      <TopNav homeHref={false} title="Post">
         <IonButtons slot="start">
           <IonBackButton defaultHref={defaultHref || undefined} />
         </IonButtons>
 
-        {listing && listing.book.listings.totalCount > 1 ? (
-          <IonButtons slot="end">
-            <IonButtonLink href={listing ? `/b/${listing.book.id}` : ''}>
-              More Deals
-            </IonButtonLink>
-          </IonButtons>
-        ) : null}
+        <IonButtons slot="end">
+          <IonButtonLink href={listing ? `/b/${listing.book.id}` : ''}>
+            Deals
+          </IonButtonLink>
+        </IonButtons>
       </TopNav>
 
       <IonContent>

@@ -45,6 +45,7 @@ generates:
         ListingInput: IListingInput
         GoogleBook: IGoogleBook
 
+        PaginatedBooks: ./util/types#PaginatedBooks
         PaginatedListings: ./util/types#PaginatedListings
         Admin: ./entities#Admin
         Listing: ./entities#Listing

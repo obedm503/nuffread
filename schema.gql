@@ -13,8 +13,13 @@ type PaginatedListings {
   items: [Listing!]!
   totalCount: Int!
 }
+type PaginatedBooks {
+  items: [Book!]!
+  totalCount: Int!
+}
 
 type Query {
+  searchBooks(query: String, paginate: PaginationInput): PaginatedBooks!
   search(
     query: String
     maxPrice: Int

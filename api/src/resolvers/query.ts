@@ -1,5 +1,5 @@
 import { Brackets, getConnection } from 'typeorm';
-import { RecentListing, School, User } from '../entities';
+import { Book, RecentListing, School, User } from '../entities';
 import { IQueryResolvers, ISession, SystemUserType } from '../schema.gql';
 import { logger, paginationOptions, sameSchoolListings } from '../util';
 import { ensureAdmin, ensureUser, userSession } from '../util/auth';
@@ -7,6 +7,84 @@ import { InternalError } from '../util/error';
 import { getBook, searchBooks } from '../util/google-books';
 
 export const QueryResolver: IQueryResolvers = {
+  async searchBooks(_, { query, paginate }, { session, getMe }) {
+    const segments = query
+      ?.toLowerCase()
+      .trim()
+      .split(' ')
+      .map(s => s.trim())
+      .filter(Boolean); // eliminate spaces
+
+    if (!segments || !segments.length) {
+      return { items: [], totalCount: 0 };
+    }
+
+    // how to partial search
+    // https://dba.stackexchange.com/questions/157951/get-partial-match-from-gin-indexed-tsvector-column/157982
+    // full-text search in postgres
+    // http://rachbelaid.com/postgres-full-text-search-is-good-enough/
+    // postgres manual on full-text search
+    // https://www.postgresql.org/docs/11/textsearch-controls.html
+    // mastering full text search
+    // https://compose.com/articles/mastering-postgresql-tools-full-text-search-and-phrase-search/
+
+    const { take, skip } = paginationOptions(paginate);
+
+    const builder = Book.createQueryBuilder('book').innerJoinAndSelect(
+      'book.listings',
+      'listing',
+    );
+
+    if (userSession(session)) {
+      const me = await getMe();
+      if (me instanceof User) {
+        builder.innerJoin('listing.user', 'user', 'user.schoolId = :schoolId', {
+          schoolId: me.schoolId,
+        });
+      }
+    }
+
+    builder
+      .where('listing.soldAt IS NULL')
+      // skip and take break with custom ORDER BY expression
+      .limit(take)
+      .offset(skip);
+
+    builder.andWhere(
+      new Brackets(subQuery => {
+        for (let i = 0; i < segments.length; i++) {
+          const segment = segments[i];
+          builder.setParameter(`segment_${i}`, segment);
+
+          if (i === 0) {
+            subQuery
+              .where(`listing.search_text ~* :segment_${i}`)
+              .orWhere(`book.search_text ~* :segment_${i}`);
+          } else {
+            subQuery
+              .orWhere(`listing.search_text ~* :segment_${i}`)
+              .orWhere(`book.search_text ~* :segment_${i}`);
+          }
+        }
+      }),
+    );
+
+    builder.orderBy(
+      `GREATEST(${segments
+        .map((_, i) => {
+          return `SIMILARITY(listing.search_text, :segment_${i})`;
+        })
+        .join(', ')})`,
+      'DESC',
+    );
+
+    const [items, totalCount] = await builder.getManyAndCount();
+    return {
+      totalCount,
+      items,
+    };
+  },
+
   async search(_, { query, paginate }, { session, getMe }) {
     const segments = query
       ?.toLowerCase()

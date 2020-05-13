@@ -8,6 +8,7 @@ import {
   IonRefresherContent,
   useIonViewWillEnter,
 } from '@ionic/react';
+import { join } from 'path';
 import React, { memo, useCallback } from 'react';
 import {
   Container,
@@ -18,11 +19,14 @@ import {
   TopNav,
   useTopListings,
 } from '../components';
-import { useLoggedIn, useRouter, useSearch } from '../state';
+import { useLoggedIn, useRouter } from '../state';
 
 export const Explore = memo(function Explore() {
-  const { onClick } = useSearch();
   const { history } = useRouter();
+  const toListing = useCallback(
+    (id: string) => history.push({ pathname: join('/p', id) }),
+    [history],
+  );
   const toSearch = useCallback(() => history.push({ pathname: '/search' }), [
     history,
   ]);
@@ -69,7 +73,7 @@ export const Explore = memo(function Explore() {
 
           <Listings
             loading={loading}
-            onClick={onClick}
+            onClick={toListing}
             listings={data}
             component={ListingCard}
           />

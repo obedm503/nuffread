@@ -1,6 +1,11 @@
 import { join, normalize } from 'path';
 import * as yup from 'yup';
-import { IListing, IPaginatedListings } from './schema.gql';
+import {
+  IBook,
+  IListing,
+  IPaginatedBooks,
+  IPaginatedListings,
+} from './schema.gql';
 
 const ensureString = str => (typeof str === 'string' ? str : '');
 const removeSlash = (str: string) => {
@@ -71,6 +76,19 @@ export const queryLoading = ({
   loading: boolean;
 }) => (!called ? true : loading);
 
+export function paginatedBooks(
+  books?: IPaginatedBooks,
+): {
+  books: readonly IBook[] | undefined;
+  currentCount: number;
+  totalCount: number;
+} {
+  return {
+    books: books?.items,
+    currentCount: books?.items.length || 0,
+    totalCount: books?.totalCount || 0,
+  };
+}
 export function paginated(
   listings?: IPaginatedListings,
 ): {
