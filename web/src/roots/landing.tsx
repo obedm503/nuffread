@@ -11,7 +11,7 @@ import {
   IonText,
   IonToolbar,
 } from '@ionic/react';
-import memoize from 'lodash/memoize';
+import memoizeOne from 'memoize-one';
 import * as React from 'react';
 import { IonButtonLink, IonRoutes, Title } from '../components';
 import { Book } from '../pages/book';
@@ -62,7 +62,7 @@ const Landing = React.memo(function Landing() {
   );
 });
 
-const getRoutes = memoize(globalRoutes =>
+const getRoutes = memoizeOne(globalRoutes =>
   globalRoutes.concat(
     {
       path: '/p/:listingId',

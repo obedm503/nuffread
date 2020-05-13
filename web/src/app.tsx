@@ -6,7 +6,7 @@ import {
 } from 'apollo-cache-inmemory';
 import { Kind } from 'graphql';
 import gql from 'graphql-tag';
-import memoize from 'lodash/memoize';
+import memoizeOne from 'memoize-one';
 import * as React from 'react';
 import { Helmet } from 'react-helmet-async';
 import { RouteProps } from 'react-router';
@@ -65,7 +65,7 @@ const globalRoutes: readonly RouteProps[] = [
 ];
 
 const isReady = process.env.REACT_APP_MODE === 'ready';
-const rootPage = memoize(function(
+const rootPage = memoizeOne(function(
   user?: ISystemUser,
 ): React.ComponentType<RootPageProps> {
   if (!user) {

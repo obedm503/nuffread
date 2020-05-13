@@ -1,4 +1,4 @@
-import memoize from 'lodash/memoize';
+import memoizeOne from 'memoize-one';
 import React from 'react';
 import { Redirect, RouteProps } from 'react-router';
 import { IonRoutes } from '../../components';
@@ -9,7 +9,7 @@ import { Search } from '../../pages/search';
 import { useRootValidator } from '../../state';
 import { RootPageProps } from '../../util.types';
 
-const getRoutes = memoize(globalRoutes => {
+const getRoutes = memoizeOne(globalRoutes => {
   const routes: RouteProps[] = [
     { path: '/explore', exact: true, render: () => <Explore /> },
     { path: '/search', exact: true, render: () => <Search /> },
