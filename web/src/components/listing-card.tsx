@@ -17,6 +17,7 @@ import React from 'react';
 import { IListing, ISchool } from '../schema.gql';
 import { IListingPreview } from '../util.types';
 import { RelativeDate } from './relative-date';
+import { SafeImg } from './safe-img';
 import { SaveListingButton } from './save-listing-button';
 import { UserBasic } from './user-details';
 
@@ -76,12 +77,7 @@ export const BookCard = React.memo<BookCardProps>(function BookCard({
 
       <IonCardContent>
         <div className="book-cover-card --has-ribbon">
-          {/* <SafeImg
-            src={book.thumbnail || undefined}
-            alt={[book.title, book.subTitle].join(' ')}
-            placeholder="/img/book.png"
-          /> */}
-          <img
+          <SafeImg
             src={book.thumbnail || undefined}
             alt={[book.title, book.subTitle].join(' ')}
             placeholder="/img/book.png"
