@@ -2,11 +2,19 @@ import { RefresherEventDetail } from '@ionic/core';
 import {
   IonBackButton,
   IonButtons,
+  IonCard,
+  IonCardContent,
+  IonCardHeader,
+  IonCardSubtitle,
+  IonCardTitle,
   IonContent,
   IonInfiniteScroll,
+  IonItem,
+  IonLabel,
   IonPage,
   IonRefresher,
   IonRefresherContent,
+  IonText,
   useIonViewWillEnter,
 } from '@ionic/react';
 import gql from 'graphql-tag';
@@ -16,32 +24,109 @@ import {
   Container,
   Error,
   ListingBasic,
+  ListingCard,
   ListWrapper,
+  SafeImg,
   TopNav,
 } from '../components';
+import { SaveListingButton } from '../components/save-listing-button';
 import { BASIC_LISTING, BOOK } from '../queries';
-import { IBook, IPaginationInput, IQueryBookArgs } from '../schema.gql';
+import {
+  IBook,
+  IPaginatedListings,
+  IPaginationInput,
+  IQueryBookArgs,
+} from '../schema.gql';
 import { useLazyQuery, useRouter } from '../state';
 import { paginated, queryLoading } from '../util';
 import { Optional } from '../util.types';
 
-const MoreDeals: FC<{ book?: IBook; loading: boolean }> = ({
-  book,
+const BookCard = React.memo<{
+  book: IBook;
+}>(function BookCard({ book }) {
+  return (
+    <IonCard color="white" className="book-cover-card">
+      <IonCardHeader>
+        <IonCardTitle>{book.title}</IonCardTitle>
+
+        {book.subTitle ? (
+          <IonCardSubtitle>{book.subTitle}</IonCardSubtitle>
+        ) : null}
+      </IonCardHeader>
+
+      <IonCardContent>
+        <div className="book-cover-card --has-ribbon">
+          <SafeImg
+            src={book.thumbnail || undefined}
+            alt={[book.title, book.subTitle].join(' ')}
+            placeholder="/img/book.png"
+          />
+        </div>
+      </IonCardContent>
+
+      <IonItem lines="inset">
+        <IonLabel className="ion-text-wrap">
+          <b>{book.authors.join(', ')}</b>
+        </IonLabel>
+      </IonItem>
+
+      <IonItem lines="none">
+        <IonLabel className="ion-text-wrap">
+          {book.isbn.map(isbn => (
+            <small key={isbn}>
+              <b>ISBN: </b> {isbn}
+              <br />
+            </small>
+          ))}
+
+          {book.publishedAt ? (
+            <small>
+              <b>Published on: </b>
+              {new Date(book.publishedAt).toLocaleDateString()}
+              <br />
+            </small>
+          ) : null}
+        </IonLabel>
+      </IonItem>
+    </IonCard>
+  );
+});
+
+const Deals: FC<{ listings?: IPaginatedListings; loading: boolean }> = ({
+  listings,
   loading,
 }) => {
   const { history } = useRouter();
-  if (loading || !book) {
+  if (loading || !listings) {
     return ListingBasic.loading;
   }
 
   return (
     <ListWrapper title="Deals">
-      {book.listings.items.map(listing => (
-        <ListingBasic
+      {listings.items.map(listing => (
+        <IonItem
           key={listing.id}
-          listing={listing}
           onClick={() => history.push(`/p/${listing.id}`)}
-        />
+          button
+        >
+          <IonText
+            slot="start"
+            color="danger"
+            style={{ fontSize: '1.5rem', fontWeight: 'bold' }}
+          >
+            ${listing.price / 100}
+          </IonText>
+
+          <p>
+            {/* <b>Used - Like New</b>
+            <br /> */}
+            {listing.user?.name || listing.user?.email}
+          </p>
+
+          <IonButtons slot="end">
+            <SaveListingButton listing={listing} />
+          </IonButtons>
+        </IonItem>
       ))}
     </ListWrapper>
   );
@@ -59,6 +144,12 @@ const GET_BOOK_LISTINGS = gql`
         totalCount
         items {
           ...BasicListing
+
+          user {
+            id
+            name
+            email
+          }
         }
       }
     }
@@ -145,7 +236,7 @@ export const Book = memo<{ bookId: string; defaultHref: Optional<string> }>(
 
     return (
       <IonPage>
-        <TopNav homeHref="/" title="Deals">
+        <TopNav homeHref={false} title="Deals">
           <IonButtons slot="start">
             <IonBackButton defaultHref={defaultHref || undefined} />
           </IonButtons>
@@ -157,7 +248,9 @@ export const Book = memo<{ bookId: string; defaultHref: Optional<string> }>(
           </IonRefresher>
 
           <Container>
-            <MoreDeals book={book} loading={loading} />
+            {book ? <BookCard book={book} /> : ListingCard.loading[0]}
+
+            <Deals listings={book?.listings} loading={loading} />
 
             {canFetchMore ? (
               <IonInfiniteScroll onIonInfinite={fetchMore}>

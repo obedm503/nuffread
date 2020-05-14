@@ -27,7 +27,11 @@
     "@graphql-codegen/cli": "^1.11.0",
     "@graphql-codegen/typescript": "^1.11.0",
     "@graphql-codegen/typescript-resolvers": "^1.11.0",
-    "husky": "^4.2.3"
+    "husky": "^4.2.3",
+    "prettier": "^2.0.5"
+  },
+  "resolutions": {
+    "tslib": "1.11.2"
   },
   "engines": {
     "node": "12.16.1",

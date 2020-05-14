@@ -29,13 +29,7 @@ export const UserBasic = React.memo<UBProps>(function UserBasic({
   const name = user.name || user.email;
   return (
     <IonItem lines="none">
-      <SafeImg
-        slot="start"
-        style={{ height: '2rem' }}
-        src={user.photo || undefined}
-        alt={name}
-        placeholder={person}
-      />
+      <img slot="start" src={person} alt={name} style={{ height: '2rem' }} />
 
       <IonLabel className="ion-text-wrap">
         <b>

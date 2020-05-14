@@ -3,6 +3,7 @@ import {
   registerDecorator,
   validate as validator,
   ValidationOptions,
+  ValidatorOptions,
 } from 'class-validator';
 import { Request } from 'express';
 import { sign, SignOptions, verify, VerifyOptions } from 'jsonwebtoken';
@@ -36,7 +37,7 @@ export const getUrl = (req: Request) => {
 };
 
 export const sleep = (timeout: number): Promise<void> =>
-  new Promise(res => {
+  new Promise((res) => {
     setTimeout(res, timeout);
   });
 
@@ -50,7 +51,7 @@ export const logger = pino({
 
 type Class = new (...args: any[]) => any;
 export function IsInstance(getter: () => Class, options?: ValidationOptions) {
-  return function(object: Object, propertyName: string) {
+  return function (object: Object, propertyName: string) {
     registerDecorator({
       target: object.constructor,
       propertyName,
@@ -66,7 +67,7 @@ export function IsInstance(getter: () => Class, options?: ValidationOptions) {
 }
 
 export function IsEdu(options?: ValidationOptions) {
-  return function(object: Object, propertyName: string) {
+  return function (object: Object, propertyName: string) {
     registerDecorator({
       target: object.constructor,
       propertyName,
@@ -103,17 +104,21 @@ export function paginationOptions(
   return { take: paginate?.limit || 10, skip: paginate?.offset };
 }
 
-export async function validate(obj: object) {
+export async function validate(obj: object, opts?: ValidatorOptions) {
   const errors = await validator(obj, {
-    skipMissingProperties: true,
+    ...opts,
     forbidUnknownValues: true,
   });
   if (errors.length > 0) {
     const msg = errors
-      .map(err => {
+      .map((err) => {
+        if (!err.constraints) {
+          return '';
+        }
         const constraints = Object.values(err.constraints).join(', ');
         return `${err.property}: ${constraints} got '${obj[err.property]}'`;
       })
+      .filter(Boolean)
       .join(';\n');
     throw new UserInputError(msg);
   }

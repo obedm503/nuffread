@@ -1,21 +1,27 @@
 import { IonBadge, IonItem, IonLabel, IonSkeletonText } from '@ionic/react';
 import range from 'lodash/range';
-import React, { FC, memo, NamedExoticComponent } from 'react';
+import React, { memo, NamedExoticComponent } from 'react';
 import { IBook, IGoogleBook, IListing } from '../schema.gql';
 import { SafeImg } from './safe-img';
 
-export const BookBasic: FC<{
+type BookBasicProps = {
   book: IBook | IGoogleBook;
-  onClick?: () => void;
+  onClick?: (bookId: string) => void;
   disabled?: boolean;
   color?: string;
-}> = memo(function BookBasic({
+  children?: React.ReactNode;
+};
+export const BookBasic = memo<BookBasicProps>(function BookBasic({
   book,
-  onClick: handleClick,
+  onClick,
   disabled = false,
   color,
   children,
 }) {
+  const handleClick = React.useCallback(
+    () => onClick && onClick('id' in book ? book.id : book.googleId),
+    [onClick, book],
+  );
   return (
     <IonItem
       button={!!handleClick}
@@ -48,7 +54,7 @@ export const BookBasic: FC<{
       </IonLabel>
     </IonItem>
   );
-});
+}) as NamedExoticComponent<BookBasicProps> & { loading };
 
 type Props = {
   listing: IListing;
@@ -60,10 +66,10 @@ export const ListingBasic = memo<Props>(function ListingBasic({
   disabled = false,
   onClick,
 }) {
-  const handleClick = React.useCallback(() => onClick && onClick(listing.id), [
-    onClick,
-    listing,
-  ]);
+  const handleClick = React.useCallback(
+    (bookId: string) => onClick && onClick(listing.id),
+    [onClick, listing],
+  );
   return (
     <BookBasic book={listing.book} onClick={handleClick} disabled={disabled}>
       <br />
@@ -87,4 +93,6 @@ const Loading = () => (
   </IonItem>
 );
 
-ListingBasic.loading = range(10).map(n => <Loading key={n} />);
+ListingBasic.loading = BookBasic.loading = range(10).map(n => (
+  <Loading key={n} />
+));

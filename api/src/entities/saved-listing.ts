@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsString } from 'class-validator';
 import { Entity, ManyToOne, PrimaryColumn } from 'typeorm';
 import { IsInstance } from '../util';
 import { Base, Created, Updated } from '../util/db';
@@ -15,19 +15,14 @@ export class SavedListing extends Base {
 
   @PrimaryColumn()
   @IsString()
-  @IsNotEmpty()
   userId: string;
 
-  @ManyToOne(
-    () => User,
-    user => user.recent,
-  )
+  @ManyToOne(() => User, (user) => user.recent)
   @IsInstance(() => User)
   user: User;
 
   @PrimaryColumn()
   @IsString()
-  @IsNotEmpty()
   listingId: string;
 
   @ManyToOne(() => Listing)

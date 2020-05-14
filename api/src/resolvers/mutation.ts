@@ -95,7 +95,7 @@ export const MutationResolver: IMutationResolvers = {
       generateConfirmCode(),
     ]);
 
-    const user: User = await getConnection().transaction(async manager => {
+    const user: User = await getConnection().transaction(async (manager) => {
       let school = foundSchool;
       if (!school) {
         // school doesn't yet exist
@@ -144,7 +144,7 @@ export const MutationResolver: IMutationResolvers = {
   async confirm(_, { code }, { session, req }) {
     ensurePublic(session);
 
-    return await getConnection().transaction(async manager => {
+    return await getConnection().transaction(async (manager) => {
       const user = await manager.findOne(User, {
         where: { confirmCode: code },
       });
@@ -280,12 +280,12 @@ export const MutationResolver: IMutationResolvers = {
 
   async createListing(
     _,
-    { listing: { googleId, price, description, coverIndex } },
+    { listing: { googleId, price, description, coverIndex, condition } },
     { getMe, session },
   ) {
     ensureUser(session);
 
-    return await getConnection().transaction(async manager => {
+    return await getConnection().transaction(async (manager) => {
       let [book, gBook] = await Promise.all([
         manager.findOne(Book, { where: { googleId } }),
         getBook(googleId),
@@ -321,6 +321,7 @@ export const MutationResolver: IMutationResolvers = {
           price,
           user: await getMe(),
           description,
+          condition,
         }),
       );
       return listing;
@@ -334,7 +335,7 @@ export const MutationResolver: IMutationResolvers = {
       throw new AuthorizationError();
     }
 
-    await getConnection().transaction(async manager => {
+    await getConnection().transaction(async (manager) => {
       await manager.delete(RecentListing, { listingId: id });
       await manager.delete(SavedListing, { listingId: id });
       await manager.delete(Listing, { id });

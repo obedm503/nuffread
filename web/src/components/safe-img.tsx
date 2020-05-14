@@ -7,6 +7,15 @@ const useImage = (src?: string) => {
     loading: boolean;
   }>({ error: undefined, loading: true });
 
+  const onLoad = React.useCallback(
+    () => setState({ loading: false, error: undefined }),
+    [],
+  );
+  const onError = React.useCallback(
+    (e: ErrorEvent) => setState({ loading: false, error: e }),
+    [],
+  );
+
   React.useEffect(() => {
     if (!src) {
       setState({ loading: false, error: undefined });
@@ -15,14 +24,15 @@ const useImage = (src?: string) => {
     const img = new Image();
 
     img.src = src;
-    img.onload = e => setState({ loading: false, error: undefined });
-    img.onerror = e => setState({ loading: false, error: e });
+    img.addEventListener('load', onLoad);
+    img.addEventListener('error', onError);
 
     return () => {
-      img.onload = null;
-      img.onerror = null;
+      img.removeEventListener('load', onLoad);
+      img.removeEventListener('error', onError);
+      img.src = '';
     };
-  }, [src]);
+  }, [src, onLoad, onError]);
 
   return { loading, error };
 };

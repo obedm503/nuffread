@@ -28,7 +28,7 @@ export const useSearch = () => {
   const onClick = useCallback(
     (id: string) => {
       push({
-        pathname: join('/p', id),
+        pathname: join('/b', id),
         search: currentSearch,
       });
     },

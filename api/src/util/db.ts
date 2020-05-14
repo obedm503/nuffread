@@ -26,9 +26,15 @@ export const Updated = () =>
 
 export class Base extends BaseEntity {
   @BeforeInsert()
-  @BeforeUpdate()
-  validate(): Promise<void> {
+  validateInsert(): Promise<void> {
     return validate(this);
+  }
+
+  @BeforeUpdate()
+  validateUpdate(): Promise<void> {
+    return validate(this, {
+      skipMissingProperties: true,
+    });
   }
 }
 

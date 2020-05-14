@@ -6,7 +6,7 @@ import {
   IonTabs,
 } from '@ionic/react';
 import { add, cartOutline, person, search } from 'ionicons/icons';
-import memoize from 'lodash/memoize';
+import memoizeOne from 'memoize-one';
 import * as React from 'react';
 import { Redirect, RouteProps } from 'react-router';
 import { mapRoutes, Routes } from '../../components';
@@ -91,7 +91,7 @@ const Private = React.memo(function Private() {
   );
 });
 
-const getRoutes = memoize(globalRoutes =>
+const getRoutes = memoizeOne(globalRoutes =>
   globalRoutes.concat({ path: '/', component: Private }),
 );
 
