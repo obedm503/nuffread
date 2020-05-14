@@ -346,7 +346,8 @@ ion-card.book-card {
 }
 
 // with 6:9 aspect ratio
-.book-cover-card ion-skeleton-text {
+.book-cover-card ion-skeleton-text,
+ion-skeleton-text.book-cover-card {
   margin: 0 auto;
   width: 100%;
   height: 50vmax;
@@ -415,7 +416,7 @@ ion-modal {
   > .pager {
     display: flex;
     justify-content: space-between;
-    align-items: baseline;
+    align-items: center;
     flex: 0 0 auto;
     margin-top: 0.8rem;
 
@@ -429,6 +430,9 @@ ion-modal {
         width: 6rem;
         padding: 0;
         margin: 0;
+      }
+      ion-skeleton-text.image {
+        height: 6rem;
       }
     }
   }
