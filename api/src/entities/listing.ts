@@ -1,11 +1,13 @@
 import {
   IsDate,
+  IsEnum,
   IsInt,
-  IsNotEmpty,
+  IsOptional,
   IsPositive,
   IsString,
 } from 'class-validator';
 import { Column, Entity, Index, JoinColumn, ManyToOne } from 'typeorm';
+import { ListingCondition } from '../schema.gql';
 import { IsInstance } from '../util';
 import { Base, Created, PrimaryKey, Updated } from '../util/db';
 import { Book } from './book';
@@ -27,31 +29,22 @@ export class Listing extends Base {
   @IsString()
   bookId: string;
 
-  @ManyToOne(
-    () => Book,
-    book => book.listings,
-  )
+  @ManyToOne(() => Book, (book) => book.listings)
   @JoinColumn({ name: 'book_id' })
-  @IsNotEmpty()
   @IsInstance(() => Book)
   book: Book;
 
   @Column()
   @IsInt()
   @IsPositive()
-  @IsNotEmpty()
   price: number;
 
   @Column()
   @IsString()
   userId: string;
 
-  @ManyToOne(
-    () => User,
-    user => user.listings,
-  )
+  @ManyToOne(() => User, (user) => user.listings)
   @JoinColumn({ name: 'user_id' })
-  @IsNotEmpty()
   @IsInstance(() => User)
   user: User;
 
@@ -69,11 +62,13 @@ export class Listing extends Base {
 
   @Column({ type: 'timestamp with time zone', nullable: true })
   @IsDate()
+  @IsOptional()
   soldAt?: Date;
 
   @Column({ nullable: true })
   @IsInt()
   @IsPositive()
+  @IsOptional()
   soldPrice?: number;
 
   @Column({

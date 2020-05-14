@@ -3,6 +3,7 @@ import {
   registerDecorator,
   validate as validator,
   ValidationOptions,
+  ValidatorOptions,
 } from 'class-validator';
 import { Request } from 'express';
 import { sign, SignOptions, verify, VerifyOptions } from 'jsonwebtoken';
@@ -103,9 +104,9 @@ export function paginationOptions(
   return { take: paginate?.limit || 10, skip: paginate?.offset };
 }
 
-export async function validate(obj: object) {
+export async function validate(obj: object, opts?: ValidatorOptions) {
   const errors = await validator(obj, {
-    skipMissingProperties: true,
+    ...opts,
     forbidUnknownValues: true,
   });
   if (errors.length > 0) {

@@ -1,4 +1,10 @@
-import { IsDate, IsEmail, IsNotEmpty, IsString } from 'class-validator';
+import {
+  IsDate,
+  IsEmail,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 import * as crypto from 'crypto';
 import { BeforeInsert, Column, Entity, PrimaryColumn, Unique } from 'typeorm';
 import { promisify } from 'util';
@@ -37,5 +43,6 @@ export class Invite extends Base {
 
   @Column({ nullable: true })
   @IsDate()
+  @IsOptional()
   invitedAt?: Date;
 }
