@@ -36,7 +36,7 @@ export const getUrl = (req: Request) => {
 };
 
 export const sleep = (timeout: number): Promise<void> =>
-  new Promise(res => {
+  new Promise((res) => {
     setTimeout(res, timeout);
   });
 
@@ -50,7 +50,7 @@ export const logger = pino({
 
 type Class = new (...args: any[]) => any;
 export function IsInstance(getter: () => Class, options?: ValidationOptions) {
-  return function(object: Object, propertyName: string) {
+  return function (object: Object, propertyName: string) {
     registerDecorator({
       target: object.constructor,
       propertyName,
@@ -66,7 +66,7 @@ export function IsInstance(getter: () => Class, options?: ValidationOptions) {
 }
 
 export function IsEdu(options?: ValidationOptions) {
-  return function(object: Object, propertyName: string) {
+  return function (object: Object, propertyName: string) {
     registerDecorator({
       target: object.constructor,
       propertyName,
@@ -110,10 +110,14 @@ export async function validate(obj: object) {
   });
   if (errors.length > 0) {
     const msg = errors
-      .map(err => {
+      .map((err) => {
+        if (!err.constraints) {
+          return '';
+        }
         const constraints = Object.values(err.constraints).join(', ');
         return `${err.property}: ${constraints} got '${obj[err.property]}'`;
       })
+      .filter(Boolean)
       .join(';\n');
     throw new UserInputError(msg);
   }

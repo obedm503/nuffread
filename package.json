@@ -29,6 +29,9 @@
     "@graphql-codegen/typescript-resolvers": "^1.11.0",
     "husky": "^4.2.3"
   },
+  "resolutions": {
+    "tslib": "1.11.2"
+  },
   "engines": {
     "node": "12.16.1",
     "yarn": "1.22.4"
