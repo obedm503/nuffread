@@ -75,4 +75,12 @@ export class Listing extends Base {
   @IsInt()
   @IsPositive()
   soldPrice?: number;
+
+  @Column({
+    nullable: true,
+    type: 'enum',
+    enum: ListingCondition,
+  })
+  @IsEnum(ListingCondition)
+  condition?: ListingCondition;
 }

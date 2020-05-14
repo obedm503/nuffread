@@ -280,7 +280,7 @@ export const MutationResolver: IMutationResolvers = {
 
   async createListing(
     _,
-    { listing: { googleId, price, description, coverIndex } },
+    { listing: { googleId, price, description, coverIndex, condition } },
     { getMe, session },
   ) {
     ensureUser(session);
@@ -321,6 +321,7 @@ export const MutationResolver: IMutationResolvers = {
           price,
           user: await getMe(),
           description,
+          condition,
         }),
       );
       return listing;

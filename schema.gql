@@ -5,6 +5,14 @@ enum SystemUserType {
   USER
 }
 
+enum ListingCondition {
+  NEW
+  LIKE_NEW
+  VERY_GOOD
+  GOOD
+  ACCEPTABLE
+}
+
 input PaginationInput {
   limit: Int
   offset: Int
@@ -104,6 +112,8 @@ type Listing {
   saved: Boolean
   soldAt: Date
   soldPrice: Int
+
+  condition: ListingCondition
 }
 
 input ListingInput {
@@ -111,6 +121,7 @@ input ListingInput {
   price: Int!
   description: String!
   coverIndex: Int # optional for backwards compat reasons
+  condition: ListingCondition!
 }
 
 type Book {
