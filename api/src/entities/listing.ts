@@ -77,5 +77,6 @@ export class Listing extends Base {
     enum: ListingCondition,
   })
   @IsEnum(ListingCondition)
+  @IsOptional()
   condition?: ListingCondition;
 }
