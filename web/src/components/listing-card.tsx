@@ -121,7 +121,7 @@ export const BookCard = React.memo<BookCardProps>(function BookCard({
       {detailed ? (
         <IonItem lines="inset">
           <IonLabel className="ion-text-wrap">
-            {book.isbn.map(isbn => (
+            {book.isbn.map((isbn) => (
               <small key={isbn}>
                 <b>ISBN: </b> {isbn}
                 <br />
@@ -226,6 +226,6 @@ export const LoadingListingCard = ({ animated = true }) => (
   </IonCard>
 );
 
-ListingCard.loading = range(10).map(n => (
+ListingCard.loading = range(10).map((n) => (
   <LoadingListingCard key={n} animated />
 ));

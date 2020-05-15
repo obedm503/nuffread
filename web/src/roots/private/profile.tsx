@@ -118,7 +118,7 @@ function useOptions() {
   return {
     event,
     listing,
-    open: React.useCallback(state => setState(state), []),
+    open: React.useCallback((state) => setState(state), []),
     handleClose: React.useCallback(() => setState({}), []),
   };
 }
@@ -260,7 +260,7 @@ const Listings = React.memo<
       ) : null}
 
       <List>
-        {data.me.listings.map(listing => (
+        {data.me.listings.map((listing) => (
           <Listing
             key={listing.id}
             listing={listing}
