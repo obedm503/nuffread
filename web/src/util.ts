@@ -5,6 +5,7 @@ import {
   IListing,
   IPaginatedBooks,
   IPaginatedListings,
+  ListingCondition,
 } from './schema.gql';
 
 const ensureString = str => (typeof str === 'string' ? str : '');
@@ -102,3 +103,11 @@ export function paginated(
     totalCount: listings?.totalCount || 0,
   };
 }
+
+export const conditionNames: { [key in ListingCondition]: string } = {
+  [ListingCondition.New]: 'New',
+  [ListingCondition.LikeNew]: 'Used - Like New',
+  [ListingCondition.VeryGood]: 'Used - Very Good',
+  [ListingCondition.Good]: 'Used - Good',
+  [ListingCondition.Acceptable]: 'Used - Acceptable',
+};

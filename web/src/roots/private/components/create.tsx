@@ -1,4 +1,5 @@
 import { useApolloClient } from '@apollo/react-hooks';
+import { SelectChangeEventDetail } from '@ionic/core';
 import {
   IonButton,
   IonButtons,
@@ -14,6 +15,8 @@ import {
   IonItem,
   IonLabel,
   IonModal,
+  IonSelect,
+  IonSelectOption,
   IonTextarea,
   IonToolbar,
 } from '@ionic/react';
@@ -28,8 +31,10 @@ import {
   IMutation,
   IQuery,
   IQueryGoogleBookArgs,
+  ListingCondition,
 } from '../../../schema.gql';
 import { readQuery, tracker, useMutation, useQuery } from '../../../state';
+import { conditionNames } from '../../../util';
 import { CoverPicker } from './cover-picker';
 import { PickBook } from './pick-book';
 import { ListingState, PreviewListing } from './preview';
@@ -62,6 +67,7 @@ const useCreateListing = (listing: ListingState, closeModal) => {
         price: parseFloat(listing.price) * 100,
         description: listing.description,
         coverIndex: listing.coverIndex,
+        condition: listing.condition,
       },
       onCompleted,
       update: (proxy, { data }) => {
@@ -111,6 +117,7 @@ const initialState = {
   isFocused: false,
   book: {} as any,
   coverIndex: 0,
+  condition: undefined as any,
 };
 const useListingState = () => {
   const [state, set] = React.useState<
@@ -122,7 +129,7 @@ const useListingState = () => {
 
   const pickBook = React.useCallback(
     (book: IGoogleBook) =>
-      set(state => ({
+      set((state) => ({
         ...state,
         googleId: book.googleId,
         isFocused: false,
@@ -132,7 +139,7 @@ const useListingState = () => {
   );
   const setPrice = React.useCallback(({ detail }) => {
     if (detail.value) {
-      set(state => ({ ...state, price: detail.value }));
+      set((state) => ({ ...state, price: detail.value }));
     }
   }, []);
 
@@ -140,21 +147,44 @@ const useListingState = () => {
     state,
     pickBook: pickBook,
     onFocus: React.useCallback(
-      () => set(state => ({ ...state, isFocused: true })),
+      () => set((state) => ({ ...state, isFocused: true })),
       [],
     ),
     setPrice: setPrice,
     setDescription: React.useCallback(({ detail }) => {
       if (detail.value) {
-        set(state => ({ ...state, description: detail.value }));
+        set((state) => ({ ...state, description: detail.value }));
       }
     }, []),
     setCoverIndex: React.useCallback(
-      index => set(state => ({ ...state, coverIndex: index })),
+      (index) => set((state) => ({ ...state, coverIndex: index })),
+      [],
+    ),
+    setCondition: React.useCallback(
+      (event: CustomEvent<SelectChangeEventDetail>) =>
+        set((state) => ({ ...state, condition: event.detail.value })),
       [],
     ),
   };
 };
+
+function ConditionOptions() {
+  return (
+    <>
+      {([
+        ListingCondition.New,
+        ListingCondition.LikeNew,
+        ListingCondition.VeryGood,
+        ListingCondition.Good,
+        ListingCondition.Acceptable,
+      ] as ListingCondition[]).map((cond) => (
+        <IonSelectOption key={cond} value={cond}>
+          {conditionNames[cond]}
+        </IonSelectOption>
+      ))}
+    </>
+  );
+}
 
 export const CreateModal = ({ isOpen, onClose: closeModal }) => {
   const {
@@ -164,6 +194,7 @@ export const CreateModal = ({ isOpen, onClose: closeModal }) => {
     setPrice,
     setCoverIndex,
     onFocus,
+    setCondition,
   } = useListingState();
   const { create, loading: createLoading, error, listing } = useCreateListing(
     state,
@@ -245,6 +276,13 @@ export const CreateModal = ({ isOpen, onClose: closeModal }) => {
 
           <IonCardContent>
             <IonItem>
+              <IonLabel>Book Condition</IonLabel>
+              <IonSelect value={state.condition} onIonChange={setCondition}>
+                <ConditionOptions />
+              </IonSelect>
+            </IonItem>
+
+            <IonItem>
               <IonLabel>Price</IonLabel>
               <IonIcon icon={logoUsd} size="small" />
               <IonInput
@@ -280,6 +318,7 @@ export const CreateModal = ({ isOpen, onClose: closeModal }) => {
             book={googleBook}
             coverIndex={state.coverIndex}
             price={state.price}
+            condition={state.condition}
           />
         ) : null}
 
@@ -292,7 +331,9 @@ export const CreateModal = ({ isOpen, onClose: closeModal }) => {
             className="ion-margin"
             expand="block"
             onClick={create}
-            disabled={!state.googleId || !state.price || loading}
+            disabled={
+              !state.googleId || !state.price || !state.condition || loading
+            }
             size="default"
           >
             Post

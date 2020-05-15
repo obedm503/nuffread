@@ -1,6 +1,6 @@
 import React from 'react';
 import { ListingCard } from '../../../components';
-import { IGoogleBook } from '../../../schema.gql';
+import { IGoogleBook, ListingCondition } from '../../../schema.gql';
 import { IListingPreview } from '../../../util.types';
 
 export type ListingState = {
@@ -9,6 +9,7 @@ export type ListingState = {
   description: string;
   book: IGoogleBook;
   coverIndex: number;
+  condition: ListingCondition;
 };
 
 export const PreviewListing = React.memo<ListingState>(function PreviewListing({
@@ -16,6 +17,7 @@ export const PreviewListing = React.memo<ListingState>(function PreviewListing({
   description,
   book,
   coverIndex,
+  condition,
 }) {
   const listingPreview: IListingPreview = {
     __typename: 'ListingPreview',
@@ -23,6 +25,7 @@ export const PreviewListing = React.memo<ListingState>(function PreviewListing({
     price: price === '' ? 0 : parseFloat(price) * 100,
     createdAt: new Date().toISOString(),
     description,
+    condition,
   };
 
   return <ListingCard listing={listingPreview} />;
