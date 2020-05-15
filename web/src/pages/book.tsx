@@ -69,7 +69,7 @@ const BookCard = React.memo<{
 
       <IonItem lines="none">
         <IonLabel className="ion-text-wrap">
-          {book.isbn.map((isbn) => (
+          {book.isbn.map(isbn => (
             <small key={isbn}>
               <b>ISBN: </b> {isbn}
               <br />
@@ -94,7 +94,7 @@ const priceBadge = {
   fontWeight: 'bold',
 };
 
-const loadingDeals = range(10).map((n) => (
+const loadingDeals = range(10).map(n => (
   <IonItem key={n}>
     <IonLabel class="ion-text-wrap">
       <IonText color="danger" style={priceBadge}>
@@ -130,7 +130,7 @@ const Deals: FC<{ listings?: IPaginatedListings; loading: boolean }> = ({
 
   return (
     <ListWrapper title="Deals">
-      {listings.items.map((listing) => (
+      {listings.items.map(listing => (
         <IonItem
           key={listing.id}
           onClick={() => history.push(`/p/${listing.id}`)}
@@ -217,7 +217,7 @@ const useGetBookListings = ({ bookId }) => {
   const { currentCount, totalCount } = paginated(book?.listings);
 
   const getMore = React.useCallback(
-    async (e) => {
+    async e => {
       await fetchMore<keyof (IQueryBookArgs & IPaginationInput)>({
         query: GET_MORE_BOOK_LISTINGS,
         variables: { id: bookId, offset: currentCount },

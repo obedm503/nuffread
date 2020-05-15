@@ -37,7 +37,7 @@ export const getUrl = (req: Request) => {
 };
 
 export const sleep = (timeout: number): Promise<void> =>
-  new Promise((res) => {
+  new Promise(res => {
     setTimeout(res, timeout);
   });
 
@@ -111,7 +111,7 @@ export async function validate(obj: object, opts?: ValidatorOptions) {
   });
   if (errors.length > 0) {
     const msg = errors
-      .map((err) => {
+      .map(err => {
         if (!err.constraints) {
           return '';
         }

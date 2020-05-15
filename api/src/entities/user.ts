@@ -80,7 +80,7 @@ export class User extends Base {
   @IsOptional()
   photo?: string;
 
-  @OneToMany(() => Listing, (listing) => listing.user)
+  @OneToMany(() => Listing, listing => listing.user)
   listings: Listing[];
 
   @Column({ nullable: true })
@@ -88,17 +88,17 @@ export class User extends Base {
   @IsOptional()
   passwordResetToken?: string;
 
-  @OneToMany(() => RecentListing, (recent) => recent.user)
+  @OneToMany(() => RecentListing, recent => recent.user)
   recent: RecentListing[];
 
-  @OneToMany(() => SavedListing, (saved) => saved.user)
+  @OneToMany(() => SavedListing, saved => saved.user)
   saved: SavedListing[];
 
   @Column()
   @IsString()
   schoolId: string;
 
-  @ManyToOne(() => School, (school) => school.users)
+  @ManyToOne(() => School, school => school.users)
   @JoinColumn({ name: 'school_id' })
   @IsNotEmpty()
   @IsInstance(() => School)

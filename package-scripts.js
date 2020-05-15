@@ -58,4 +58,5 @@ module.exports.scripts = {
       'heroku maintenance:off --app nuffread-staging',
     ),
   },
+  pretty: 'prettier web/src api/src admin/src --write',
 };

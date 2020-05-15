@@ -4,9 +4,11 @@ import * as React from 'react';
 import { ControlProps } from './control';
 import { Text } from './text';
 
-export const Password: React.FC<ControlProps & {
-  autoComplete?: 'current' | 'new';
-}> = React.memo(function Password({ autoComplete = 'current', ...props }) {
+export const Password: React.FC<
+  ControlProps & {
+    autoComplete?: 'current' | 'new';
+  }
+> = React.memo(function Password({ autoComplete = 'current', ...props }) {
   const [isVisible, setVisible] = React.useState(false);
   const toggle = React.useCallback(
     () => setVisible(visibility => !visibility),

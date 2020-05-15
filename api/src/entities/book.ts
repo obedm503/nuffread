@@ -50,7 +50,7 @@ export class Book extends Base {
   @IsOptional()
   publishedAt?: Date;
 
-  @OneToMany(() => Listing, (listing) => listing.book)
+  @OneToMany(() => Listing, listing => listing.book)
   listings: Listing[];
 
   // for full-text search

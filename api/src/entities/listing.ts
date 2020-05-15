@@ -29,7 +29,7 @@ export class Listing extends Base {
   @IsString()
   bookId: string;
 
-  @ManyToOne(() => Book, (book) => book.listings)
+  @ManyToOne(() => Book, book => book.listings)
   @JoinColumn({ name: 'book_id' })
   @IsInstance(() => Book)
   book: Book;
@@ -43,7 +43,7 @@ export class Listing extends Base {
   @IsString()
   userId: string;
 
-  @ManyToOne(() => User, (user) => user.listings)
+  @ManyToOne(() => User, user => user.listings)
   @JoinColumn({ name: 'user_id' })
   @IsInstance(() => User)
   user: User;

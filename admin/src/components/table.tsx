@@ -18,8 +18,9 @@ export function Table<T>({
           {cols.map(col => (
             <th
               key={col.name}
-              className={`px-6 bg-light text-dark align-middle border border-solid border-light py-3 text-xs uppercase border-l-0 border-r-0 whitespace-no-wrap font-semibold text-left ${col.className ||
-                ''}`}
+              className={`px-6 bg-light text-dark align-middle border border-solid border-light py-3 text-xs uppercase border-l-0 border-r-0 whitespace-no-wrap font-semibold text-left ${
+                col.className || ''
+              }`}
             >
               {col.name}
             </th>

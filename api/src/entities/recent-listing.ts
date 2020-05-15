@@ -17,7 +17,7 @@ export class RecentListing extends Base {
   @IsString()
   userId: string;
 
-  @ManyToOne(() => User, (user) => user.recent)
+  @ManyToOne(() => User, user => user.recent)
   @IsInstance(() => User)
   user: User;
 

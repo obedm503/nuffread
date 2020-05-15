@@ -65,7 +65,7 @@ const globalRoutes: readonly RouteProps[] = [
 ];
 
 const isReady = process.env.REACT_APP_MODE === 'ready';
-const rootPage = memoizeOne(function(
+const rootPage = memoizeOne(function (
   user?: ISystemUser,
 ): React.ComponentType<RootPageProps> {
   if (!user) {

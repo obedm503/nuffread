@@ -24,6 +24,6 @@ export class School extends Base {
   @IsEdu()
   domain: string;
 
-  @OneToMany(() => User, (user) => user.school)
+  @OneToMany(() => User, user => user.school)
   users: User[];
 }

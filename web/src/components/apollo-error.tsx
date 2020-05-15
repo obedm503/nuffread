@@ -23,11 +23,7 @@ export const apolloFormErrors = (handlers: {
           }
           return (
             <ControlError key={e.message}>
-              {typeof Render === 'function' ? (
-                <Render error={e} />
-              ) : (
-                Render
-              )}
+              {typeof Render === 'function' ? <Render error={e} /> : Render}
             </ControlError>
           );
         })}
