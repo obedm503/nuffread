@@ -422,15 +422,19 @@ ion-modal {
 
     > .pager-item {
       display: block;
+      width: 100%;
+      height: auto;
       padding: 0;
-      border: 0.2rem solid;
-      border-color: white;
+      background: transparent;
 
       .image {
-        width: 6rem;
+        border: 0.2rem solid transparent;
+        height: 100%;
+        width: 100%;
         padding: 0;
         margin: 0;
       }
+
       ion-skeleton-text.image {
         height: 6rem;
       }
