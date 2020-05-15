@@ -10,17 +10,17 @@ export const CoverPicker: React.FC<{
   coverIndex: number;
 }> = ({ book, setCoverIndex, possibleCovers, coverIndex }) => {
   const handleSlideChanged = React.useCallback(
-    e => {
+    (e) => {
       const target = e.target;
       if (typeof target.getActiveIndex === 'function') {
-        target.getActiveIndex().then(index => {
+        target.getActiveIndex().then((index) => {
           setCoverIndex(index);
         });
       }
     },
     [setCoverIndex],
   );
-  const handleClick = i => () => setCoverIndex(i);
+  const handleClick = (i) => () => setCoverIndex(i);
 
   const ref = React.useRef<HTMLIonSlidesElement>(null);
   const current = ref.current;
@@ -38,7 +38,7 @@ export const CoverPicker: React.FC<{
         onIonSlideWillChange={handleSlideChanged}
         ref={ref}
       >
-        {possibleCovers.map(url => (
+        {possibleCovers.map((url) => (
           <IonSlide key={url}>
             <SafeImg
               src={url}
@@ -52,16 +52,12 @@ export const CoverPicker: React.FC<{
 
       <div className="pager">
         {possibleCovers.map((url, i) => (
-          <button
-            key={url}
-            className="pager-item"
-            onClick={handleClick(i)}
-            style={{
-              borderColor:
-                coverIndex === i ? 'var(--ion-color-primary)' : 'white',
-            }}
-          >
+          <button key={url} className="pager-item" onClick={handleClick(i)}>
             <SafeImg
+              style={{
+                borderColor:
+                  coverIndex === i ? 'var(--ion-color-primary)' : 'white',
+              }}
               className="image"
               src={url}
               alt={[book.title, book.subTitle].join(' ')}

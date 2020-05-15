@@ -19,5 +19,5 @@ export type PaginatedRefresh<T> = {
 
 export type IListingPreview = Pick<
   IListing,
-  'price' | 'createdAt' | 'description'
+  'price' | 'createdAt' | 'description' | 'condition'
 > & { book: IGoogleBook; __typename: 'ListingPreview' };

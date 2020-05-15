@@ -15,6 +15,7 @@ import { person } from 'ionicons/icons';
 import range from 'lodash/range';
 import React from 'react';
 import { IListing, ISchool } from '../schema.gql';
+import { conditionNames } from '../util';
 import { IListingPreview } from '../util.types';
 import { RelativeDate } from './relative-date';
 import { SafeImg } from './safe-img';
@@ -44,7 +45,7 @@ export const BookCard = React.memo<BookCardProps>(function BookCard({
   const handleClick = React.useCallback(() => {
     onClick && listing.__typename === 'Listing' && onClick(listing.id);
   }, [onClick, listing]);
-  const { book, description } = listing;
+  const { book, description, condition } = listing;
 
   const sold = !!('soldPrice' in listing && listing.soldPrice);
   // @ts-ignore
@@ -99,6 +100,13 @@ export const BookCard = React.memo<BookCardProps>(function BookCard({
         ) : null}
 
         <IonLabel className="ion-text-wrap">
+          {condition ? (
+            <>
+              <IonBadge color="success">{conditionNames[condition]}</IonBadge>
+              <br />
+            </>
+          ) : null}
+
           <b>{book.authors.join(', ')}</b>
 
           {description ? (
@@ -113,7 +121,7 @@ export const BookCard = React.memo<BookCardProps>(function BookCard({
       {detailed ? (
         <IonItem lines="inset">
           <IonLabel className="ion-text-wrap">
-            {book.isbn.map(isbn => (
+            {book.isbn.map((isbn) => (
               <small key={isbn}>
                 <b>ISBN: </b> {isbn}
                 <br />
@@ -218,6 +226,6 @@ export const LoadingListingCard = ({ animated = true }) => (
   </IonCard>
 );
 
-ListingCard.loading = range(10).map(n => (
+ListingCard.loading = range(10).map((n) => (
   <LoadingListingCard key={n} animated />
 ));

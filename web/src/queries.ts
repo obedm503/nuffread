@@ -13,10 +13,8 @@ export const BOOK = gql`
   }
 `;
 
-export const BASIC_LISTING = gql`
-  ${BOOK}
-
-  fragment BasicListing on Listing {
+export const LISTING = gql`
+  fragment Listing on Listing {
     id
     createdAt
     price
@@ -24,12 +22,22 @@ export const BASIC_LISTING = gql`
     saved
     soldAt
     soldPrice
-    book {
-      ...Book
-    }
+    condition
     school {
       id
       name
+    }
+  }
+`;
+
+export const BASIC_LISTING = gql`
+  ${BOOK}
+  ${LISTING}
+
+  fragment BasicListing on Listing {
+    ...Listing
+    book {
+      ...Book
     }
   }
 `;
@@ -116,6 +124,7 @@ export const CREATE_LISTING = gql`
     $price: Int!
     $description: String!
     $coverIndex: Int!
+    $condition: ListingCondition!
   ) {
     createListing(
       listing: {
@@ -123,6 +132,7 @@ export const CREATE_LISTING = gql`
         price: $price
         description: $description
         coverIndex: $coverIndex
+        condition: $condition
       }
     ) {
       ...BasicListing

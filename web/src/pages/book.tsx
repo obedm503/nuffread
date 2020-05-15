@@ -1,6 +1,7 @@
 import { RefresherEventDetail } from '@ionic/core';
 import {
   IonBackButton,
+  IonButton,
   IonButtons,
   IonCard,
   IonCardContent,
@@ -8,29 +9,25 @@ import {
   IonCardSubtitle,
   IonCardTitle,
   IonContent,
+  IonIcon,
   IonInfiniteScroll,
   IonItem,
   IonLabel,
   IonPage,
   IonRefresher,
   IonRefresherContent,
+  IonSkeletonText,
   IonText,
   useIonViewWillEnter,
 } from '@ionic/react';
 import gql from 'graphql-tag';
+import { cartOutline } from 'ionicons/icons';
+import { range } from 'lodash';
 import React, { FC, memo } from 'react';
 import { Redirect } from 'react-router';
-import {
-  Container,
-  Error,
-  ListingBasic,
-  ListingCard,
-  ListWrapper,
-  SafeImg,
-  TopNav,
-} from '../components';
+import { Container, Error, ListWrapper, SafeImg, TopNav } from '../components';
 import { SaveListingButton } from '../components/save-listing-button';
-import { BASIC_LISTING, BOOK } from '../queries';
+import { BOOK, LISTING } from '../queries';
 import {
   IBook,
   IPaginatedListings,
@@ -38,7 +35,7 @@ import {
   IQueryBookArgs,
 } from '../schema.gql';
 import { useLazyQuery, useRouter } from '../state';
-import { paginated, queryLoading } from '../util';
+import { conditionNames, paginated, queryLoading } from '../util';
 import { Optional } from '../util.types';
 
 const BookCard = React.memo<{
@@ -72,7 +69,7 @@ const BookCard = React.memo<{
 
       <IonItem lines="none">
         <IonLabel className="ion-text-wrap">
-          {book.isbn.map(isbn => (
+          {book.isbn.map((isbn) => (
             <small key={isbn}>
               <b>ISBN: </b> {isbn}
               <br />
@@ -92,36 +89,69 @@ const BookCard = React.memo<{
   );
 });
 
+const priceBadge = {
+  fontSize: '1.5rem',
+  fontWeight: 'bold',
+};
+
+const loadingDeals = range(10).map((n) => (
+  <IonItem key={n}>
+    <IonLabel class="ion-text-wrap">
+      <IonText color="danger" style={priceBadge}>
+        <IonSkeletonText animated style={{ width: '2rem' }} />
+      </IonText>
+      <b>
+        <IonSkeletonText animated style={{ width: '20%' }} />
+      </b>
+      <IonSkeletonText animated style={{ width: '30%' }} />
+    </IonLabel>
+
+    <IonButtons slot="end">
+      <IonButton color="white" fill="clear">
+        <IonIcon
+          slot="icon-only"
+          color="medium"
+          icon={cartOutline}
+          size="large"
+        />
+      </IonButton>
+    </IonButtons>
+  </IonItem>
+));
+
 const Deals: FC<{ listings?: IPaginatedListings; loading: boolean }> = ({
   listings,
   loading,
 }) => {
   const { history } = useRouter();
   if (loading || !listings) {
-    return ListingBasic.loading;
+    return <ListWrapper title="Deals">{loadingDeals}</ListWrapper>;
   }
 
   return (
     <ListWrapper title="Deals">
-      {listings.items.map(listing => (
+      {listings.items.map((listing) => (
         <IonItem
           key={listing.id}
           onClick={() => history.push(`/p/${listing.id}`)}
           button
         >
-          <IonText
-            slot="start"
-            color="danger"
-            style={{ fontSize: '1.5rem', fontWeight: 'bold' }}
-          >
-            ${listing.price / 100}
-          </IonText>
+          <IonLabel>
+            <IonText color="danger" style={priceBadge}>
+              ${listing.price / 100}
+            </IonText>
 
-          <p>
-            {/* <b>Used - Like New</b>
-            <br /> */}
+            <br />
+
+            {listing.condition ? (
+              <b>
+                {conditionNames[listing.condition]}
+                <br />
+              </b>
+            ) : null}
+
             {listing.user?.name || listing.user?.email}
-          </p>
+          </IonLabel>
 
           <IonButtons slot="end">
             <SaveListingButton listing={listing} />
@@ -134,17 +164,36 @@ const Deals: FC<{ listings?: IPaginatedListings; loading: boolean }> = ({
 
 const GET_BOOK_LISTINGS = gql`
   ${BOOK}
-  ${BASIC_LISTING}
+  ${LISTING}
 
   query GetBookListings($id: ID!, $offset: Int!) {
     book(id: $id) {
       ...Book
-
       listings(paginate: { offset: $offset }) {
         totalCount
         items {
-          ...BasicListing
+          ...Listing
+          user {
+            id
+            name
+            email
+          }
+        }
+      }
+    }
+  }
+`;
 
+const GET_MORE_BOOK_LISTINGS = gql`
+  ${LISTING}
+
+  query GetMoreBookListings($id: ID!, $offset: Int!) {
+    book(id: $id) {
+      id
+      listings(paginate: { offset: $offset }) {
+        totalCount
+        items {
+          ...Listing
           user {
             id
             name
@@ -168,8 +217,9 @@ const useGetBookListings = ({ bookId }) => {
   const { currentCount, totalCount } = paginated(book?.listings);
 
   const getMore = React.useCallback(
-    async e => {
+    async (e) => {
       await fetchMore<keyof (IQueryBookArgs & IPaginationInput)>({
+        query: GET_MORE_BOOK_LISTINGS,
         variables: { id: bookId, offset: currentCount },
         updateQuery: (prev, { fetchMoreResult }) => {
           if (!fetchMoreResult || !fetchMoreResult.book || !prev.book) {
@@ -183,7 +233,10 @@ const useGetBookListings = ({ bookId }) => {
               listings: {
                 __typename: 'PaginatedListings',
                 totalCount: fetchMoreResult.book.listings.totalCount,
-                items: [...prev.top.items, ...fetchMoreResult.top.items],
+                items: [
+                  ...prev.book.listings.items,
+                  ...fetchMoreResult.book.listings.items,
+                ],
               },
             },
           };
@@ -248,13 +301,13 @@ export const Book = memo<{ bookId: string; defaultHref: Optional<string> }>(
           </IonRefresher>
 
           <Container>
-            {book ? <BookCard book={book} /> : ListingCard.loading[0]}
+            {book ? <BookCard book={book} /> : loadingDeals[0]}
 
             <Deals listings={book?.listings} loading={loading} />
 
             {canFetchMore ? (
               <IonInfiniteScroll onIonInfinite={fetchMore}>
-                {ListingBasic.loading}
+                {loadingDeals}
               </IonInfiniteScroll>
             ) : null}
           </Container>

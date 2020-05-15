@@ -1,4 +1,4 @@
-import { IsString } from 'class-validator';
+import { IsOptional, IsString } from 'class-validator';
 import { Entity, ManyToOne, PrimaryColumn } from 'typeorm';
 import { IsInstance } from '../util';
 import { Base, Created, Updated } from '../util/db';
@@ -19,6 +19,7 @@ export class SavedListing extends Base {
 
   @ManyToOne(() => User, (user) => user.recent)
   @IsInstance(() => User)
+  @IsOptional()
   user: User;
 
   @PrimaryColumn()
@@ -27,5 +28,6 @@ export class SavedListing extends Base {
 
   @ManyToOne(() => Listing)
   @IsInstance(() => Listing)
+  @IsOptional()
   listing: Listing;
 }
