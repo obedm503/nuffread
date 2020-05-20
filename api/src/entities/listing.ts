@@ -74,9 +74,9 @@ export class Listing extends Base {
   soldPrice?: number;
 
   @Column({
-    nullable: true,
     type: 'enum',
     enum: ListingCondition,
+    nullable: true,
   })
   @IsEnum(ListingCondition)
   @IsOptional()
