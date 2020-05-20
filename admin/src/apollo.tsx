@@ -87,7 +87,7 @@ function initApolloClient(
  */
 export function withApollo({ ssr = true }: { ssr?: boolean } = {}) {
   return (PageComponent: NextPage | AppType) => {
-    const WithApollo = ({ apolloClient, apolloState, ...pageProps }) => {
+    function WithApollo({ apolloClient, apolloState, ...pageProps }) {
       let client;
       if (apolloClient) {
         // Happens on: getDataFromTree & next.js ssr
@@ -102,7 +102,7 @@ export function withApollo({ ssr = true }: { ssr?: boolean } = {}) {
           <PageComponent {...(pageProps as any)} />
         </ApolloProvider>
       );
-    };
+    }
 
     // Set the correct displayName in development
     if (process.env.NODE_ENV !== 'production') {
