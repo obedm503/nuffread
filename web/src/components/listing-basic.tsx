@@ -1,6 +1,6 @@
 import { IonBadge, IonItem, IonLabel, IonSkeletonText } from '@ionic/react';
 import range from 'lodash/range';
-import React, { memo, NamedExoticComponent } from 'react';
+import React from 'react';
 import { IBook, IGoogleBook, IListing } from '../schema.gql';
 import { SafeImg } from './safe-img';
 
@@ -11,7 +11,7 @@ type BookBasicProps = {
   color?: string;
   children?: React.ReactNode;
 };
-export const BookBasic = memo<BookBasicProps>(function BookBasic({
+export const BookBasic = React.memo<BookBasicProps>(function BookBasic({
   book,
   onClick,
   disabled = false,
@@ -54,14 +54,14 @@ export const BookBasic = memo<BookBasicProps>(function BookBasic({
       </IonLabel>
     </IonItem>
   );
-}) as NamedExoticComponent<BookBasicProps> & { loading };
+}) as React.NamedExoticComponent<BookBasicProps> & { loading };
 
 type Props = {
   listing: IListing;
   disabled?: boolean;
   onClick?: (id: string) => void;
 };
-export const ListingBasic = memo<Props>(function ListingBasic({
+export const ListingBasic = React.memo<Props>(function ListingBasic({
   listing,
   disabled = false,
   onClick,
@@ -76,7 +76,7 @@ export const ListingBasic = memo<Props>(function ListingBasic({
       <IonBadge color="secondary">${listing.price / 100}</IonBadge>
     </BookBasic>
   );
-}) as NamedExoticComponent<Props> & { loading };
+}) as React.NamedExoticComponent<Props> & { loading };
 
 const Loading = () => (
   <IonItem>

@@ -1,5 +1,5 @@
 import gql from 'graphql-tag';
-import { groupBy } from 'lodash';
+import groupBy from 'lodash/groupBy';
 import { withApollo } from '../apollo';
 import { Card } from '../components/card';
 import { RelativeDate } from '../components/date';

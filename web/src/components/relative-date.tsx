@@ -4,11 +4,11 @@ import {
   formatDistanceToNow,
 } from 'date-fns';
 import upperFirst from 'lodash/upperFirst';
-import React, { Component } from 'react';
+import React from 'react';
 import { Scalars } from '../schema.gql';
 
 type Props = { date?: Scalars['Date'] };
-export class RelativeDate extends Component<Props> {
+export class RelativeDate extends React.Component<Props> {
   lastRender?: Date;
   shouldComponentUpdate(nextProps: Props) {
     if (this.props.date !== nextProps.date) {
