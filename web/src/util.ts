@@ -53,7 +53,8 @@ export const classes = (
 export const emailSchema = yup
   .string()
   .required('Email is required')
-  .email('Email must be valid');
+  .email('Email must be valid')
+  .max(255, 'Email is too long');
 export const studentEmailSchema = emailSchema.test(
   'edu',
   'Email must be a student email',
@@ -62,6 +63,7 @@ export const studentEmailSchema = emailSchema.test(
 export const passwordSchema = yup.string().required('Passphrase is required');
 export const strongPasswordSchema = passwordSchema
   .min(8, 'Passphrase must be at least 8 characters long')
+  .max(32, 'Passphrase is too long')
   .test('number', 'Passphrase must contain at least 1 number', value => {
     return !!value && /\d+/.test(value);
   });

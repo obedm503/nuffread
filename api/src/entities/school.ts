@@ -1,4 +1,4 @@
-import { IsString } from 'class-validator';
+import { IsString, MaxLength } from 'class-validator';
 import { Column, Entity, OneToMany } from 'typeorm';
 import { IsEdu } from '../util';
 import { Base, Created, PrimaryKey, Updated } from '../util/db';
@@ -15,13 +15,15 @@ export class School extends Base {
   @Updated()
   readonly updatedAt: Date;
 
-  @Column()
+  @Column({ length: 255 })
   @IsString()
+  @MaxLength(255)
   name: string;
 
-  @Column()
+  @Column({ length: 255 })
   @IsString()
   @IsEdu()
+  @MaxLength(255)
   domain: string;
 
   @OneToMany(() => User, user => user.school)

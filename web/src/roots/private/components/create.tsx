@@ -299,6 +299,7 @@ export const CreateModal = ({ isOpen, onClose: closeModal }) => {
                 value={state.description}
                 debounce={500}
                 onIonChange={setDescription}
+                maxlength={300}
               />
             </IonItem>
           </IonCardContent>

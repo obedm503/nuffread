@@ -5,6 +5,7 @@ import {
   IsOptional,
   IsPositive,
   IsString,
+  MaxLength,
 } from 'class-validator';
 import { Column, Entity, Index, JoinColumn, ManyToOne } from 'typeorm';
 import { ListingCondition } from '../schema.gql';
@@ -50,7 +51,8 @@ export class Listing extends Base {
 
   // give recommendations based on books used for the same class
   // give recommendations based on books bought by other people who also bought this one
-  @Column({ default: '' })
+  @Column({ default: '', length: 300 })
+  @MaxLength(300)
   description: string;
 
   @Column()

@@ -1,4 +1,4 @@
-import { IsEmail, IsString } from 'class-validator';
+import { IsEmail, IsString, MaxLength } from 'class-validator';
 import { Column, Entity, Unique } from 'typeorm';
 import { Base, Created, PrimaryKey, Updated } from '../util/db';
 
@@ -14,8 +14,9 @@ export class Admin extends Base {
   @Updated()
   readonly updatedAt: Date;
 
-  @Column()
+  @Column({ length: 255 })
   @IsEmail()
+  @MaxLength(255)
   email: string;
 
   @Column()
