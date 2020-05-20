@@ -51,7 +51,7 @@ export class Listing extends Base {
 
   // give recommendations based on books used for the same class
   // give recommendations based on books bought by other people who also bought this one
-  @Column({ default: '', length: 300 })
+  @Column({ default: '' })
   @MaxLength(300)
   description: string;
 
@@ -74,9 +74,9 @@ export class Listing extends Base {
   soldPrice?: number;
 
   @Column({
-    nullable: true,
     type: 'enum',
     enum: ListingCondition,
+    nullable: true,
   })
   @IsEnum(ListingCondition)
   @IsOptional()
