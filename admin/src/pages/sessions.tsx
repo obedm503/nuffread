@@ -29,7 +29,10 @@ const SESSIONS = gql`
 `;
 
 const cols: Cols<ISession> = [
-  { name: 'Name', key: s => (s.user.__typename === 'User' ? s.user.name : '') },
+  {
+    name: 'Name',
+    key: s => (s.user.__typename === 'User' ? s.user.name : ''),
+  },
   { name: 'Email', key: s => s.user.email },
   { name: 'Expiration', key: s => <RelativeDate date={s.expiresAt} /> },
   { name: 'ID', key: 'id' },

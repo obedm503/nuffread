@@ -6,7 +6,7 @@ import {
   IonPage,
 } from '@ionic/react';
 import gql from 'graphql-tag';
-import React, { memo } from 'react';
+import React from 'react';
 import {
   Container,
   Error,
@@ -33,7 +33,7 @@ const GET_RECENT_LISTINGS = gql`
     }
   }
 `;
-const RecentListings = memo<{ onClick: (id: string) => void }>(
+const RecentListings = React.memo<{ onClick: (id: string) => void }>(
   function RecentListings({ onClick }) {
     const { error, loading, data } = useQuery(GET_RECENT_LISTINGS);
 
@@ -59,7 +59,7 @@ const RecentListings = memo<{ onClick: (id: string) => void }>(
   },
 );
 
-export const Search = memo(function Search() {
+export const Search = React.memo(function Search() {
   const { onClick, onSearch, searchValue } = useSearch();
   return (
     <IonPage>

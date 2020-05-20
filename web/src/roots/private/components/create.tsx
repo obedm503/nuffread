@@ -129,7 +129,7 @@ const useListingState = () => {
 
   const pickBook = React.useCallback(
     (book: IGoogleBook) =>
-      set((state) => ({
+      set(state => ({
         ...state,
         googleId: book.googleId,
         isFocused: false,
@@ -139,7 +139,7 @@ const useListingState = () => {
   );
   const setPrice = React.useCallback(({ detail }) => {
     if (detail.value) {
-      set((state) => ({ ...state, price: detail.value }));
+      set(state => ({ ...state, price: detail.value }));
     }
   }, []);
 
@@ -147,22 +147,22 @@ const useListingState = () => {
     state,
     pickBook: pickBook,
     onFocus: React.useCallback(
-      () => set((state) => ({ ...state, isFocused: true })),
+      () => set(state => ({ ...state, isFocused: true })),
       [],
     ),
     setPrice: setPrice,
     setDescription: React.useCallback(({ detail }) => {
       if (detail.value) {
-        set((state) => ({ ...state, description: detail.value }));
+        set(state => ({ ...state, description: detail.value }));
       }
     }, []),
     setCoverIndex: React.useCallback(
-      (index) => set((state) => ({ ...state, coverIndex: index })),
+      index => set(state => ({ ...state, coverIndex: index })),
       [],
     ),
     setCondition: React.useCallback(
       (event: CustomEvent<SelectChangeEventDetail>) =>
-        set((state) => ({ ...state, condition: event.detail.value })),
+        set(state => ({ ...state, condition: event.detail.value })),
       [],
     ),
   };
@@ -177,7 +177,7 @@ function ConditionOptions() {
         ListingCondition.VeryGood,
         ListingCondition.Good,
         ListingCondition.Acceptable,
-      ] as ListingCondition[]).map((cond) => (
+      ] as ListingCondition[]).map(cond => (
         <IonSelectOption key={cond} value={cond}>
           {conditionNames[cond]}
         </IonSelectOption>
@@ -299,6 +299,7 @@ export const CreateModal = ({ isOpen, onClose: closeModal }) => {
                 value={state.description}
                 debounce={500}
                 onIonChange={setDescription}
+                maxlength={300}
               />
             </IonItem>
           </IonCardContent>

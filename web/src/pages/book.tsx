@@ -22,8 +22,8 @@ import {
 } from '@ionic/react';
 import gql from 'graphql-tag';
 import { cartOutline } from 'ionicons/icons';
-import { range } from 'lodash';
-import React, { FC, memo } from 'react';
+import range from 'lodash/range';
+import React from 'react';
 import { Redirect } from 'react-router';
 import { Container, Error, ListWrapper, SafeImg, TopNav } from '../components';
 import { SaveListingButton } from '../components/save-listing-button';
@@ -69,7 +69,7 @@ const BookCard = React.memo<{
 
       <IonItem lines="none">
         <IonLabel className="ion-text-wrap">
-          {book.isbn.map((isbn) => (
+          {book.isbn.map(isbn => (
             <small key={isbn}>
               <b>ISBN: </b> {isbn}
               <br />
@@ -94,7 +94,7 @@ const priceBadge = {
   fontWeight: 'bold',
 };
 
-const loadingDeals = range(10).map((n) => (
+const loadingDeals = range(10).map(n => (
   <IonItem key={n}>
     <IonLabel class="ion-text-wrap">
       <IonText color="danger" style={priceBadge}>
@@ -119,7 +119,7 @@ const loadingDeals = range(10).map((n) => (
   </IonItem>
 ));
 
-const Deals: FC<{ listings?: IPaginatedListings; loading: boolean }> = ({
+const Deals: React.FC<{ listings?: IPaginatedListings; loading: boolean }> = ({
   listings,
   loading,
 }) => {
@@ -130,7 +130,7 @@ const Deals: FC<{ listings?: IPaginatedListings; loading: boolean }> = ({
 
   return (
     <ListWrapper title="Deals">
-      {listings.items.map((listing) => (
+      {listings.items.map(listing => (
         <IonItem
           key={listing.id}
           onClick={() => history.push(`/p/${listing.id}`)}
@@ -217,7 +217,7 @@ const useGetBookListings = ({ bookId }) => {
   const { currentCount, totalCount } = paginated(book?.listings);
 
   const getMore = React.useCallback(
-    async (e) => {
+    async e => {
       await fetchMore<keyof (IQueryBookArgs & IPaginationInput)>({
         query: GET_MORE_BOOK_LISTINGS,
         variables: { id: bookId, offset: currentCount },
@@ -266,53 +266,54 @@ const useGetBookListings = ({ bookId }) => {
   };
 };
 
-export const Book = memo<{ bookId: string; defaultHref: Optional<string> }>(
-  function Book({ bookId, defaultHref }) {
-    const {
-      error,
-      loading,
-      book,
-      load,
-      refresh,
-      canFetchMore,
-      fetchMore,
-    } = useGetBookListings({ bookId });
-    useIonViewWillEnter(load);
+export const Book = React.memo<{
+  bookId: string;
+  defaultHref: Optional<string>;
+}>(function Book({ bookId, defaultHref }) {
+  const {
+    error,
+    loading,
+    book,
+    load,
+    refresh,
+    canFetchMore,
+    fetchMore,
+  } = useGetBookListings({ bookId });
+  useIonViewWillEnter(load);
 
-    if (error) {
-      return <Error value={error} />;
-    }
+  if (error) {
+    return <Error value={error} />;
+  }
 
-    if (!loading && !book) {
-      return <Redirect to={defaultHref === false ? '/' : defaultHref} />;
-    }
+  if (!loading && !book) {
+    return <Redirect to={defaultHref === false ? '/' : defaultHref} />;
+  }
 
-    return (
-      <IonPage>
-        <TopNav homeHref={false} title="Deals">
-          <IonButtons slot="start">
-            <IonBackButton defaultHref={defaultHref || undefined} />
-          </IonButtons>
-        </TopNav>
+  return (
+    <IonPage>
+      <TopNav homeHref={false} title="Deals">
+        <IonButtons slot="start">
+          <IonBackButton defaultHref={defaultHref || undefined} />
+        </IonButtons>
+      </TopNav>
 
-        <IonContent>
-          <IonRefresher slot="fixed" onIonRefresh={refresh}>
-            <IonRefresherContent />
-          </IonRefresher>
+      <IonContent>
+        <IonRefresher slot="fixed" onIonRefresh={refresh}>
+          <IonRefresherContent />
+        </IonRefresher>
 
-          <Container>
-            {book ? <BookCard book={book} /> : loadingDeals[0]}
+        <Container>
+          {book ? <BookCard book={book} /> : loadingDeals[0]}
 
-            <Deals listings={book?.listings} loading={loading} />
+          <Deals listings={book?.listings} loading={loading} />
 
-            {canFetchMore ? (
-              <IonInfiniteScroll onIonInfinite={fetchMore}>
-                {loadingDeals}
-              </IonInfiniteScroll>
-            ) : null}
-          </Container>
-        </IonContent>
-      </IonPage>
-    );
-  },
-);
+          {canFetchMore ? (
+            <IonInfiniteScroll onIonInfinite={fetchMore}>
+              {loadingDeals}
+            </IonInfiniteScroll>
+          ) : null}
+        </Container>
+      </IonContent>
+    </IonPage>
+  );
+});

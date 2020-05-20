@@ -1,7 +1,10 @@
 import { IonLabel, IonList, IonListHeader } from '@ionic/react';
-import React, { FC } from 'react';
+import React from 'react';
 
-export const ListWrapper: FC<{ title?: string }> = ({ title, children }) => (
+export const ListWrapper: React.FC<{ title?: string }> = ({
+  title,
+  children,
+}) => (
   <IonList>
     {title ? (
       <IonListHeader>

@@ -95,6 +95,6 @@ const getRoutes = memoizeOne(globalRoutes =>
   globalRoutes.concat({ path: '/', component: Private }),
 );
 
-export default React.memo<RootPageProps>(function({ globalRoutes }) {
+export default React.memo<RootPageProps>(function ({ globalRoutes }) {
   return <Routes routes={getRoutes(globalRoutes)} />;
 });

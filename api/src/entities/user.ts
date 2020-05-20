@@ -5,6 +5,7 @@ import {
   IsOptional,
   IsString,
   Matches,
+  MaxLength,
   MinLength,
 } from 'class-validator';
 import {
@@ -25,10 +26,12 @@ import { School } from './school';
 class EmailPassword {
   @IsEmail(undefined, { message: 'must be valid school email' })
   @IsEdu({ message: 'must be valid school email' })
+  @MaxLength(255, { message: 'must be at most 255 characters long' })
   email: string;
 
   @Matches(/\d+/, { message: 'must contain at least 1 number' })
   @MinLength(8, { message: 'must be at least 8 characters long' })
+  @MaxLength(32, { message: 'must be at most 32 characters long' })
   password: string;
 
   constructor({ email, password }: { email: string; password: string }) {
@@ -51,9 +54,10 @@ export class User extends Base {
   @Updated()
   readonly updatedAt: Date;
 
-  @Column()
+  @Column({ length: 255 })
   @IsEmail()
   @IsEdu({ message: 'email must be valid school email' })
+  @MaxLength(255)
   email: string;
 
   @Column()
@@ -70,9 +74,10 @@ export class User extends Base {
   @IsOptional()
   confirmedAt?: Date;
 
-  @Column({ nullable: true })
+  @Column({ nullable: true, length: 255 })
   @IsString()
   @IsOptional()
+  @MaxLength(255)
   name?: string;
 
   @Column({ nullable: true })
@@ -80,7 +85,7 @@ export class User extends Base {
   @IsOptional()
   photo?: string;
 
-  @OneToMany(() => Listing, (listing) => listing.user)
+  @OneToMany(() => Listing, listing => listing.user)
   listings: Listing[];
 
   @Column({ nullable: true })
@@ -88,17 +93,17 @@ export class User extends Base {
   @IsOptional()
   passwordResetToken?: string;
 
-  @OneToMany(() => RecentListing, (recent) => recent.user)
+  @OneToMany(() => RecentListing, recent => recent.user)
   recent: RecentListing[];
 
-  @OneToMany(() => SavedListing, (saved) => saved.user)
+  @OneToMany(() => SavedListing, saved => saved.user)
   saved: SavedListing[];
 
   @Column()
   @IsString()
   schoolId: string;
 
-  @ManyToOne(() => School, (school) => school.users)
+  @ManyToOne(() => School, school => school.users)
   @JoinColumn({ name: 'school_id' })
   @IsNotEmpty()
   @IsInstance(() => School)

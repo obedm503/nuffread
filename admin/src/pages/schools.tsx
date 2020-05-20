@@ -1,5 +1,5 @@
 import gql from 'graphql-tag';
-import { groupBy } from 'lodash';
+import groupBy from 'lodash/groupBy';
 import { useCallback } from 'react';
 import { withApollo } from '../apollo';
 import { Card } from '../components/card';
@@ -58,6 +58,7 @@ function Name(school: ISchool) {
           name="name"
           defaultValue={school.name}
           className="px-3 py-3 placeholder-gray-400 text-gray-700 relative bg-white bg-white rounded text-sm shadow outline-none focus:outline-none focus:shadow-outline w-full"
+          maxLength={255}
         />
       </div>
     </form>

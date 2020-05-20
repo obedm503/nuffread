@@ -11,17 +11,20 @@ import {
   IonRow,
 } from '@ionic/react';
 import { UnregisterCallback } from 'history';
-import React, { Component, ErrorInfo } from 'react';
+import React from 'react';
 import { RouteComponentProps, withRouter } from 'react-router';
 import { tracker } from '../state';
 import { TopNav } from './top-nav';
 
 export const TrackApp = withRouter(
-  class Tracker extends Component<RouteComponentProps, { hasError: boolean }> {
+  class Tracker extends React.Component<
+    RouteComponentProps,
+    { hasError: boolean }
+  > {
     state = { hasError: false };
     componentDidCatch(
       { name, message, stack }: Error,
-      { componentStack }: ErrorInfo,
+      { componentStack }: React.ErrorInfo,
     ) {
       tracker.event('RENDER_ERROR', { name, message, stack, componentStack });
 

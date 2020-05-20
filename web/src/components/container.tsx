@@ -1,7 +1,7 @@
 import { IonCol, IonGrid, IonRow } from '@ionic/react';
-import React, { memo } from 'react';
+import React from 'react';
 
-export const Container = memo<{
+export const Container = React.memo<{
   className?: string;
   children: React.ReactNode;
 }>(function Container({ className, children }) {

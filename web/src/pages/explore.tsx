@@ -9,7 +9,7 @@ import {
   useIonViewWillEnter,
 } from '@ionic/react';
 import { join } from 'path';
-import React, { memo, useCallback } from 'react';
+import React from 'react';
 import {
   Container,
   DummySearchBar,
@@ -21,15 +21,16 @@ import {
 } from '../components';
 import { useLoggedIn, useRouter } from '../state';
 
-export const Explore = memo(function Explore() {
+export const Explore = React.memo(function Explore() {
   const { history } = useRouter();
-  const toListing = useCallback(
+  const toListing = React.useCallback(
     (id: string) => history.push({ pathname: join('/p', id) }),
     [history],
   );
-  const toSearch = useCallback(() => history.push({ pathname: '/search' }), [
-    history,
-  ]);
+  const toSearch = React.useCallback(
+    () => history.push({ pathname: '/search' }),
+    [history],
+  );
 
   const isLoggedIn = useLoggedIn();
   const {

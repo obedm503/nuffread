@@ -103,12 +103,14 @@ export default withApollo()(
                       name="email"
                       type="email"
                       autoComplete="username"
+                      maxLength={255}
                     />
                     <Control
                       placeholder="Password"
                       name="password"
                       type="password"
                       autoComplete="current-password"
+                      maxLength={32}
                     />
 
                     <div className="text-center mt-6">

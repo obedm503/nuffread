@@ -15,7 +15,7 @@ import {
 import { Form, Formik } from 'formik';
 import gql from 'graphql-tag';
 import { key } from 'ionicons/icons';
-import React, { FC, memo, useCallback } from 'react';
+import React from 'react';
 import { Redirect, RouteComponentProps, RouteProps } from 'react-router';
 import { object } from 'yup';
 import {
@@ -44,7 +44,7 @@ const Card = ({ children }) => (
     <IonCardContent>{children}</IonCardContent>
   </IonCard>
 );
-const Submit = memo<{ loading: boolean }>(({ loading }) => (
+const Submit = React.memo<{ loading: boolean }>(({ loading }) => (
   <IonGrid>
     <IonRow>
       <IonCol>
@@ -63,12 +63,12 @@ const REQUEST_RESET = gql`
   }
 `;
 const requestSchema = object().shape({ email: emailSchema });
-const RequestResetForm: FC = () => {
+const RequestResetForm: React.FC = () => {
   const [mutate, { loading, error, data }] = useMutation<
     IMutationRequestResetPasswordArgs
   >(REQUEST_RESET);
 
-  const onSubmit = useCallback(
+  const onSubmit = React.useCallback(
     async ({ email }) => {
       const res = await mutate({
         variables: { email },
@@ -115,13 +115,13 @@ const ResetErrors = apolloFormErrors({
   WRONG_CREDENTIALS: 'An error occurred while trying to reset the passphrase',
 });
 
-const ResetForm: FC<{ token: string }> = ({ token }) => {
+const ResetForm: React.FC<{ token: string }> = ({ token }) => {
   const [mutate, { loading, error }] = useMutation<IMutationResetPasswordArgs>(
     RESET,
   );
   const { history } = useRouter();
 
-  const onSubmit = useCallback(
+  const onSubmit = React.useCallback(
     async ({ password }) => {
       const res = await mutate({
         variables: { password, token },
@@ -172,7 +172,9 @@ const routes: RouteProps[] = [
     ),
   },
 ];
-export default memo<RouteComponentProps>(function ResetPassword({ match }) {
+export default React.memo<RouteComponentProps>(function ResetPassword({
+  match,
+}) {
   const user = useUser();
   if (user) {
     return <Redirect to="/" />;

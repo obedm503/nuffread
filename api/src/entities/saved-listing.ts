@@ -17,7 +17,7 @@ export class SavedListing extends Base {
   @IsString()
   userId: string;
 
-  @ManyToOne(() => User, (user) => user.recent)
+  @ManyToOne(() => User, user => user.recent)
   @IsInstance(() => User)
   @IsOptional()
   user: User;

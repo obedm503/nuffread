@@ -36,7 +36,7 @@ export function useMe(): { me?: IAdmin; loading: boolean } {
 }
 
 export function withToLogin(Children) {
-  return () => {
+  return function WithToLogin() {
     const { me, loading } = useMe();
     const hasUser = !!me;
 

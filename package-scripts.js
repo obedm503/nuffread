@@ -21,13 +21,20 @@ module.exports.scripts = {
     admin: series('nps clean', 'nps build.types', 'cd admin', 'npm run deploy'),
   },
   dev: {
-    default: series(
-      'nps clean',
-      concurrent.nps('dev.types', 'dev.web', 'dev.api', 'dev.admin'),
+    default: concurrent.nps(
+      'dev.types',
+      'dev.web',
+      'dev.api.start',
+      'dev.api.build',
+      'dev.admin',
     ),
     types: 'graphql-codegen --config codegen.yml --watch',
     web: series('cd web', 'npm run dev'),
-    api: series('cd api', 'npm run dev'),
+    api: {
+      default: concurrent.nps('dev.api.build', 'dev.api.start'),
+      build: series('cd api', 'npm run dev:build'),
+      start: series('cd api', 'npm run dev:start'),
+    },
     admin: series('cd admin', 'npm run dev'),
   },
   build: {
@@ -61,4 +68,5 @@ module.exports.scripts = {
       'heroku maintenance:off --app nuffread-staging',
     ),
   },
+  pretty: 'prettier web/src api/src admin/src --write',
 };

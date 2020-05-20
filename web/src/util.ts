@@ -8,7 +8,7 @@ import {
   ListingCondition,
 } from './schema.gql';
 
-const ensureString = (str) => (typeof str === 'string' ? str : '');
+const ensureString = str => (typeof str === 'string' ? str : '');
 const removeSlash = (str: string) => {
   let s = ensureString(str);
   return s.endsWith('/') ? s.slice(0, s.length - 1) : s;
@@ -33,12 +33,12 @@ export const callable = <R, P>(fn?: Callable<R, P>, props?: P) =>
   typeof fn === 'function' ? ((fn as Function)(props) as R) : fn;
 
 const filterKeys = (o: { [key: string]: any }): string[] =>
-  Object.keys(o).filter((key) => o[key]);
+  Object.keys(o).filter(key => o[key]);
 export const classes = (
   ...names: Array<undefined | string | { [key: string]: any }>
 ) =>
   names
-    .map((name) => {
+    .map(name => {
       if (!name) {
         return '';
       }
@@ -53,16 +53,18 @@ export const classes = (
 export const emailSchema = yup
   .string()
   .required('Email is required')
-  .email('Email must be valid');
+  .email('Email must be valid')
+  .max(255, 'Email is too long');
 export const studentEmailSchema = emailSchema.test(
   'edu',
   'Email must be a student email',
-  (value) => !!value && value.endsWith('.edu'),
+  value => !!value && value.endsWith('.edu'),
 );
 export const passwordSchema = yup.string().required('Passphrase is required');
 export const strongPasswordSchema = passwordSchema
   .min(8, 'Passphrase must be at least 8 characters long')
-  .test('number', 'Passphrase must contain at least 1 number', (value) => {
+  .max(32, 'Passphrase is too long')
+  .test('number', 'Passphrase must contain at least 1 number', value => {
     return !!value && /\d+/.test(value);
   });
 export function validateStrongPassword(password: string): boolean {

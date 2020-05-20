@@ -43,7 +43,7 @@ const validRoots = [
   'reset',
 ];
 
-export default React.memo<RootPageProps>(function({ globalRoutes }) {
+export default React.memo<RootPageProps>(function ({ globalRoutes }) {
   if (!useRootValidator({ validRoots })) {
     return <Redirect to="/explore" />;
   }

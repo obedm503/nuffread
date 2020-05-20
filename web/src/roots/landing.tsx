@@ -80,6 +80,6 @@ const getRoutes = memoizeOne(globalRoutes =>
   ),
 );
 
-export default React.memo<RootPageProps>(function({ globalRoutes }) {
+export default React.memo<RootPageProps>(function ({ globalRoutes }) {
   return <IonRoutes routes={getRoutes(globalRoutes)} />;
 });

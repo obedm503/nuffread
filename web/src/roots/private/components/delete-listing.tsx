@@ -2,7 +2,7 @@ import { useApolloClient } from '@apollo/react-hooks';
 import { AlertButton, IonAlert } from '@ionic/react';
 import ApolloClient, { MutationUpdaterFn } from 'apollo-client';
 import gql from 'graphql-tag';
-import React, { useCallback } from 'react';
+import React from 'react';
 import { MY_LISTINGS } from '../../../queries';
 import {
   IListing,
@@ -59,7 +59,7 @@ const useDelete = (id: string) => {
   }
 
   return {
-    del: useCallback(() => {
+    del: React.useCallback(() => {
       return mutate({ variables: { id }, update: update(id, client) });
     }, [client, id, mutate]),
     loading,

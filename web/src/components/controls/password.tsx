@@ -4,9 +4,11 @@ import * as React from 'react';
 import { ControlProps } from './control';
 import { Text } from './text';
 
-export const Password: React.FC<ControlProps & {
-  autoComplete?: 'current' | 'new';
-}> = React.memo(function Password({ autoComplete = 'current', ...props }) {
+export const Password: React.FC<
+  ControlProps & {
+    autoComplete?: 'current' | 'new';
+  }
+> = React.memo(function Password({ autoComplete = 'current', ...props }) {
   const [isVisible, setVisible] = React.useState(false);
   const toggle = React.useCallback(
     () => setVisible(visibility => !visibility),
@@ -17,7 +19,7 @@ export const Password: React.FC<ControlProps & {
   const icon = isVisible ? eye : eyeOff;
 
   return (
-    <Text {...props} type={type} autocomplete="on">
+    <Text {...props} type={type} autocomplete="on" maxlength={32}>
       <IonButton slot="end" fill="clear" onClick={toggle}>
         <IonIcon slot="icon-only" color="medium" icon={icon} />
       </IonButton>
