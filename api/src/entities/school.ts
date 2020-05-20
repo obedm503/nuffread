@@ -15,12 +15,12 @@ export class School extends Base {
   @Updated()
   readonly updatedAt: Date;
 
-  @Column({ length: 255 })
+  @Column()
   @IsString()
   @MaxLength(255)
   name: string;
 
-  @Column({ length: 255 })
+  @Column()
   @IsString()
   @IsEdu()
   @MaxLength(255)

@@ -14,7 +14,7 @@ export class Admin extends Base {
   @Updated()
   readonly updatedAt: Date;
 
-  @Column({ length: 255 })
+  @Column()
   @IsEmail()
   @MaxLength(255)
   email: string;

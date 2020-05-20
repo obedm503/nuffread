@@ -54,7 +54,7 @@ export class User extends Base {
   @Updated()
   readonly updatedAt: Date;
 
-  @Column({ length: 255 })
+  @Column()
   @IsEmail()
   @IsEdu({ message: 'email must be valid school email' })
   @MaxLength(255)
@@ -74,7 +74,7 @@ export class User extends Base {
   @IsOptional()
   confirmedAt?: Date;
 
-  @Column({ nullable: true, length: 255 })
+  @Column({ nullable: true })
   @IsString()
   @IsOptional()
   @MaxLength(255)
