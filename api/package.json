@@ -10,6 +10,9 @@
     "build": "NODE_ENV=production tsc --project tsconfig.json --pretty",
     "start": "NODE_ENV=production node --optimize_for_size --max_old_space_size=512 --gc_interval=100 dist/main.js"
   },
+  "resolutions": {
+    "tslib": "1.11.2"
+  },
   "dependencies": {
     "apollo-server-express": "^2.9.13",
     "bcryptjs": "^2.4.3",
