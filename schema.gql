@@ -121,7 +121,7 @@ input ListingInput {
   price: Int!
   description: String!
   coverIndex: Int # optional for backwards compat reasons
-  condition: ListingCondition
+  condition: ListingCondition # optional for backwards compat reasons
 }
 
 type Book {
