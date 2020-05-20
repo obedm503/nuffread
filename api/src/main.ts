@@ -4,7 +4,6 @@ require('dotenv-safe').config({
   path: production ? undefined : resolve(__dirname, '../.env'),
   example: resolve(__dirname, '../.env.example'),
 });
-require('isomorphic-fetch');
 require('reflect-metadata');
 
 import { ApolloError, ApolloServer } from 'apollo-server-express';

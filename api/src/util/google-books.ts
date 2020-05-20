@@ -1,4 +1,5 @@
 import uniq from 'lodash/uniq';
+import fetch from 'node-fetch';
 import { logger } from '.';
 import { IGoogleBook } from '../schema.gql';
 

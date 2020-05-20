@@ -1,3 +1,4 @@
+import fetch, { Headers } from 'node-fetch';
 import { logger } from '.';
 import { CONFIG } from '../config';
 

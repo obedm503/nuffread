@@ -144,3 +144,18 @@ export async function sameSchoolListings({
 
   return query;
 }
+
+export function btoa(str: string | Buffer): string {
+  let buffer;
+
+  if (str instanceof Buffer) {
+    buffer = str;
+  } else {
+    buffer = Buffer.from(str.toString(), 'binary');
+  }
+
+  return buffer.toString('base64');
+}
+export function atob(str: string): string {
+  return Buffer.from(str, 'base64').toString('binary');
+}
