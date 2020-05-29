@@ -53,6 +53,7 @@ module.exports.scripts = {
     default: concurrent.nps('start.api', 'start.web'),
     api: series('cd api', 'npm run start'),
     web: series('cd web', 'npm run start'),
+    admin: series('cd admin', 'npm run start'),
   },
   db: {
     info: [
