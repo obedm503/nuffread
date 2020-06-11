@@ -53,6 +53,7 @@ module.exports.scripts = {
     default: concurrent.nps('start.api', 'start.web'),
     api: series('cd api', 'npm run start'),
     web: series('cd web', 'npm run start'),
+    admin: series('cd admin', 'npm run start'),
   },
   db: {
     info: [
@@ -69,4 +70,9 @@ module.exports.scripts = {
     ),
   },
   pretty: 'prettier web/src api/src admin/src --write',
+  logs: {
+    default:
+      'heroku logs -a nuffread -s app -d web -n 5000 | cut -c46- - | grep \'{"level":50\' > heroku.log',
+    tail: 'heroku logs -a nuffread -s app -d web -t | cut -c46- -',
+  },
 };
