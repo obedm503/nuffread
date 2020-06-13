@@ -269,7 +269,7 @@ export const QueryResolver: IQueryResolvers = {
     ensureUser(session);
     const thread = await threadLoader.load(id);
     if (!thread) {
-      throw new ThreadNotFound({ id, userId: session.userId });
+      throw new ThreadNotFound({ id, session });
     }
     return thread;
   },
