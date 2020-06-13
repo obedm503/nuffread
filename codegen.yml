@@ -45,11 +45,11 @@ generates:
         ListingInput: IListingInput
         GoogleBook: IGoogleBook
 
-        PaginatedBooks: ./util/types#PaginatedBooks
-        PaginatedListings: ./util/types#PaginatedListings
         Admin: ./entities#Admin
         Listing: ./entities#Listing
+        PaginatedListings: ./util/types#PaginatedListings
         Book: ./entities#Book
+        PaginatedBooks: ./util/types#PaginatedBooks
         User: ./entities#User
         School: ./entities#School
         Thread: ./entities#Thread

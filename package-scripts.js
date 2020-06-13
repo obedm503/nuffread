@@ -31,7 +31,10 @@ module.exports.scripts = {
     types: 'graphql-codegen --config codegen.yml --watch',
     web: series('cd web', 'npm run dev'),
     api: {
-      default: concurrent.nps('dev.api.build', 'dev.api.start'),
+      default: series(
+        'nps build.api',
+        concurrent.nps('dev.api.build', 'dev.api.start'),
+      ),
       build: series('cd api', 'npm run dev:build'),
       start: series('cd api', 'npm run dev:start'),
     },

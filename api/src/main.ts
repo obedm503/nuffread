@@ -1,7 +1,7 @@
-const production = process.env.NODE_ENV === 'production';
+const isProduction = process.env.NODE_ENV === 'production';
 const { join, resolve } = require('path');
 require('dotenv-safe').config({
-  path: production ? undefined : resolve(__dirname, '../.env'),
+  path: isProduction ? undefined : resolve(__dirname, '../.env'),
   example: resolve(__dirname, '../.env.example'),
 });
 require('reflect-metadata');
@@ -40,7 +40,7 @@ const app = express()
   )
   .get('/_health', (req, res) => res.status(200).send('ok'));
 
-if (production) {
+if (isProduction) {
   // force ssl
   app.use((req, res, next) => {
     if (
@@ -57,14 +57,14 @@ const port = Number(process.env.PORT) || 8081;
 
 const schema = getSchema();
 const apollo = new ApolloServer({
-  tracing: !production,
+  tracing: !isProduction,
   context: ({ req, res }) => getContext({ req, res }),
   schema,
   formatError(e) {
     const { message, path, extensions, originalError } = e;
-    logger.error({ message, path });
+    logger.error({ message, path }, 'APOLLO_ERROR');
 
-    if (!production) {
+    if (!isProduction) {
       return e;
     }
 
@@ -79,6 +79,14 @@ const apollo = new ApolloServer({
     return new InternalError();
   },
   plugins: [complexityPlugin(schema)],
+  playground: isProduction
+    ? false
+    : {
+        settings: {
+          'request.credentials': 'include',
+          'schema.polling.interval': 20000,
+        } as any,
+      },
 });
 
 apollo.applyMiddleware({
@@ -86,7 +94,7 @@ apollo.applyMiddleware({
   path: '/',
   cors: {
     credentials: true,
-    origin: production ? CONFIG.origin : true,
+    origin: isProduction ? CONFIG.origin : true,
   },
 });
 

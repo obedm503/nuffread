@@ -23,7 +23,7 @@ const justListings = (listings: (Listing | Error | undefined)[]) =>
   });
 
 export const UserResolver: IUserResolvers = {
-  // deprecated
+  /** @deprecated */
   schoolName({ email }) {
     logger.info('User.schoolName is deprecated', { email });
     return getSchoolName(email);
