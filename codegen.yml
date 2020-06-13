@@ -52,3 +52,7 @@ generates:
         Book: ./entities#Book
         User: ./entities#User
         School: ./entities#School
+        Thread: ./entities#Thread
+        PaginatedThreads: ./util/types#PaginatedThreads
+        Message: ./entities#Message
+        PaginatedMessages: ./util/types#PaginatedMessages

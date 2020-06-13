@@ -1,16 +1,18 @@
 import { compare, hash } from 'bcryptjs';
 import * as crypto from 'crypto';
-import { getConnection } from 'typeorm';
+import { Brackets, getConnection } from 'typeorm';
 import { promisify } from 'util';
 import { CONFIG } from '../config';
 import {
   Admin,
   Book,
   Listing,
+  Message,
   RecentListing,
   SavedListing,
   School,
-  User,
+  Thread,
+  User
 } from '../entities';
 import { IGoogleBook, IMutationResolvers, SystemUserType } from '../schema.gql';
 import { jwt, logger } from '../util';
@@ -23,7 +25,7 @@ import {
   DuplicateUser,
   ListingNotFound,
   NotConfirmed,
-  WrongCredentials,
+  WrongCredentials
 } from '../util/error';
 import { getBook } from '../util/google-books';
 
@@ -331,13 +333,31 @@ export const MutationResolver: IMutationResolvers = {
     ensureUser(session);
 
     const [me, listing] = await Promise.all([getMe(), listingLoader.load(id)]);
-    if (!listing || !me || listing.userId !== me.id) {
+    if (!me) {
+      throw new AuthorizationError();
+    }
+    if (!listing) {
+      throw new ListingNotFound({ id, session });
+    }
+    if (listing.userId !== me.id) {
       throw new AuthorizationError();
     }
 
     await getConnection().transaction(async manager => {
-      await manager.delete(RecentListing, { listingId: id });
-      await manager.delete(SavedListing, { listingId: id });
+      const listingId = id;
+      const threads = await manager.find(Thread, { where: { listingId } });
+      const threadIds = threads.map(t => t.id);
+      await manager.query(
+        `DELETE FROM "message" WHERE "thread_id" IN (${threadIds
+          // creates ($1, $2, $3, ...)
+          .map((id, n) => `$${n + 1}`)
+          .join(', ')})`,
+        // always escape variables
+        threadIds,
+      );
+      await manager.delete(Thread, { listingId });
+      await manager.delete(RecentListing, { listingId });
+      await manager.delete(SavedListing, { listingId });
       await manager.delete(Listing, { id });
     });
 
@@ -364,7 +384,7 @@ export const MutationResolver: IMutationResolvers = {
 
     const listing = await listingLoader.load(listingId);
     if (!listing) {
-      throw new ListingNotFound();
+      throw new ListingNotFound({ id: listingId, session });
     }
     if (listing.soldAt) {
       return listing;
@@ -381,7 +401,7 @@ export const MutationResolver: IMutationResolvers = {
 
     const listing = await listingLoader.load(listingId);
     if (!listing) {
-      throw new ListingNotFound();
+      throw new ListingNotFound({ id: listingId, session });
     }
     if (listing.soldAt) {
       throw new BadRequest();
@@ -404,5 +424,71 @@ export const MutationResolver: IMutationResolvers = {
     }
     user.isTrackable = !user.isTrackable;
     return await user.save();
+  },
+
+  async sendMessage(
+    _,
+    { toUserId, listingId, content },
+    { session, listingLoader },
+  ) {
+    ensureUser(session);
+    const fromUserId = session.userId;
+
+    if (fromUserId === toUserId) {
+      throw new BadRequest();
+    }
+
+    const listing = await listingLoader.load(listingId);
+    if (!listing) {
+      throw new ListingNotFound({ id: listingId, session });
+    }
+
+    let thread = await Thread.createQueryBuilder('thread')
+      .setParameters({
+        listingId,
+        curUserId: fromUserId,
+        otherUserId: toUserId,
+      })
+      .where('thread.listingId = :listingId')
+      .andWhere(
+        new Brackets(subQuery => {
+          subQuery
+            .where(
+              new Brackets(subSubQuery =>
+                subSubQuery
+                  .where('thread.buyerId = :curUserId')
+                  .andWhere('thread.sellerId = :otherUserId'),
+              ),
+            )
+            .orWhere(
+              new Brackets(subSubQuery =>
+                subSubQuery
+                  .where('thread.buyerId = :otherUserId')
+                  .andWhere('thread.sellerId = :curUserId'),
+              ),
+            );
+        }),
+      )
+      .getOne();
+
+    if (!thread) {
+      const sellerId = listing.userId;
+      const buyerId = sellerId === fromUserId ? toUserId : fromUserId;
+      thread = Thread.create({ sellerId, buyerId, listingId });
+    }
+
+    // instead of an expensive subquery on the messages keep track of when the
+    // last message was sent. saves a db query when ordering the threads
+    const now = new Date();
+    thread.lastMessageAt = now;
+    await thread.save();
+
+    return await Message.create({
+      createdAt: now,
+      threadId: thread.id,
+      fromId: session.userId,
+      toId: toUserId,
+      content,
+    }).save();
   },
 };

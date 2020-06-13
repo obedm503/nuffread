@@ -47,6 +47,8 @@ type Query {
 
   searchGoogle(query: String!): [GoogleBook!]
   googleBook(id: ID!): GoogleBook!
+
+  thread(id: ID!): Thread!
 }
 
 type Mutation {
@@ -67,6 +69,8 @@ type Mutation {
   setPrice(listingId: ID!, price: Int!): Listing!
 
   toggleUserTrackable: User!
+
+  sendMessage(toUserId: ID!, listingId: ID!, content: String!): Message!
 }
 
 type User {
@@ -84,6 +88,8 @@ type User {
   confirmedAt: Date
   schoolName: String @deprecated(reason: "use school.name instead")
   school: School!
+
+  threads(paginate: PaginationInput): PaginatedThreads!
 }
 
 input UserInput {
@@ -165,4 +171,40 @@ type Session {
   expiresAt: Date!
 
   user: SystemUser!
+}
+
+# chat system
+type Thread {
+  id: ID!
+
+  sellerId: ID!
+  seller: User!
+  buyerId: ID!
+  buyer: User!
+  listingId: ID!
+  listing: Listing!
+
+  lastMessageAt: Date!
+  messages(paginate: PaginationInput): PaginatedMessages!
+}
+type PaginatedThreads {
+  items: [Thread!]!
+  totalCount: Int!
+}
+type Message {
+  id: ID!
+  createdAt: Date!
+
+  threadId: ID!
+  thread: Thread!
+  fromId: ID!
+  from: User!
+  toId: ID!
+  to: User!
+
+  content: String!
+}
+type PaginatedMessages {
+  items: [Message!]!
+  totalCount: Int!
 }

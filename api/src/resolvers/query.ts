@@ -3,7 +3,7 @@ import { Book, RecentListing, School, User } from '../entities';
 import { IQueryResolvers, ISession, SystemUserType } from '../schema.gql';
 import { logger, paginationOptions, sameSchoolListings } from '../util';
 import { ensureAdmin, ensureUser, userSession } from '../util/auth';
-import { InternalError } from '../util/error';
+import { InternalError, ThreadNotFound } from '../util/error';
 import { getBook, searchBooks } from '../util/google-books';
 
 export const QueryResolver: IQueryResolvers = {
@@ -263,5 +263,14 @@ export const QueryResolver: IQueryResolvers = {
       }),
     );
     return sessions;
+  },
+
+  async thread(_, { id }, { session, threadLoader }) {
+    ensureUser(session);
+    const thread = await threadLoader.load(id);
+    if (!thread) {
+      throw new ThreadNotFound({ id, userId: session.userId });
+    }
+    return thread;
   },
 };

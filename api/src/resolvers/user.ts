@@ -1,4 +1,11 @@
-import { Admin, Listing, RecentListing, SavedListing, User } from '../entities';
+import {
+  Admin,
+  Listing,
+  RecentListing,
+  SavedListing,
+  Thread,
+  User,
+} from '../entities';
 import { ISystemUserResolvers, IUserResolvers } from '../schema.gql';
 import { logger, paginationOptions } from '../util';
 import { ensureAdmin, ensureUser } from '../util/auth';
@@ -63,6 +70,20 @@ export const UserResolver: IUserResolvers = {
       items: justListings(listings),
       totalCount,
     };
+  },
+  async threads(user, { paginate }) {
+    const { take, skip } = paginationOptions(paginate);
+    const [items, totalCount] = await Thread.createQueryBuilder('thread')
+      .setParameter('userId', user.id)
+      // any threads that involves the user
+      .where('thread.sellerId = :userId')
+      .orWhere('thread.buyerId = :userId')
+      .orderBy('thread.lastMessageAt', 'DESC')
+      // skip and take break with custom ORDER BY expression
+      .limit(take)
+      .offset(skip)
+      .getManyAndCount();
+    return { items, totalCount };
   },
 };
 

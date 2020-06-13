@@ -4,16 +4,26 @@ import * as fs from 'fs';
 import { GraphQLSchema } from 'graphql';
 import { makeExecutableSchema } from 'graphql-tools';
 import { resolve } from 'path';
-import { Admin, Book, Listing, SavedListing, School, User } from './entities';
+import {
+  Admin,
+  Book,
+  Listing,
+  SavedListing,
+  School,
+  Thread,
+  User
+} from './entities';
 import {
   BookResolver,
   DateResolver,
   ListingResolver,
+  MessageResolver,
   MutationResolver,
   QueryResolver,
   SchoolResolver,
   SystemUserResolver,
-  UserResolver,
+  ThreadResolver,
+  UserResolver
 } from './resolvers';
 import { IResolvers, SystemUserType } from './schema.gql';
 import { logger } from './util';
@@ -43,14 +53,16 @@ function createSchema(): GraphQLSchema {
     'utf-8',
   );
   const resolvers: IResolvers = {
-    Date: DateResolver,
-    SystemUser: SystemUserResolver,
-    Query: QueryResolver,
-    Listing: ListingResolver,
-    Mutation: MutationResolver,
-    User: UserResolver,
     Book: BookResolver,
+    Date: DateResolver,
+    Listing: ListingResolver,
+    Message: MessageResolver,
+    Mutation: MutationResolver,
+    Query: QueryResolver,
     School: SchoolResolver,
+    SystemUser: SystemUserResolver,
+    Thread: ThreadResolver,
+    User: UserResolver,
   };
 
   return makeExecutableSchema<IContext>({
@@ -101,12 +113,9 @@ export async function getContext({
     req,
     res,
     session,
-    userLoader: makeIdLoader(User),
     adminLoader: makeIdLoader(Admin),
-    listingLoader: makeIdLoader(Listing),
     bookLoader: makeIdLoader(Book),
-    userEmailLoader: makeEmailLoader(User),
-    schoolLoader: makeIdLoader(School),
+    listingLoader: makeIdLoader(Listing),
     savedListingLoader: new DataLoader(async (ids: readonly string[]) => {
       // in format listingId::userId
       logger.debug(`data-loader ${SavedListing.name}`, ids);
@@ -126,5 +135,9 @@ export async function getContext({
         );
       });
     }),
+    schoolLoader: makeIdLoader(School),
+    threadLoader: makeIdLoader(Thread),
+    userEmailLoader: makeEmailLoader(User),
+    userLoader: makeIdLoader(User),
   };
 }
