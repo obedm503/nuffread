@@ -25,6 +25,7 @@ import {
   DuplicateUser,
   ListingNotFound,
   NotConfirmed,
+  ThreadNotFound,
   WrongCredentials
 } from '../util/error';
 import { getBook } from '../util/google-books';
@@ -426,29 +427,22 @@ export const MutationResolver: IMutationResolvers = {
     return await user.save();
   },
 
-  async sendMessage(
-    _,
-    { toUserId, listingId, content },
-    { session, listingLoader },
-  ) {
+  async startThread(_, { listingId }, { session, listingLoader }) {
     ensureUser(session);
-    const fromUserId = session.userId;
-
-    if (fromUserId === toUserId) {
-      throw new BadRequest();
-    }
+    const curUserId = session.userId;
 
     const listing = await listingLoader.load(listingId);
     if (!listing) {
       throw new ListingNotFound({ id: listingId, session });
     }
 
+    const otherUserId = listing.userId;
+    if (curUserId === otherUserId) {
+      throw new BadRequest();
+    }
+
     let thread = await Thread.createQueryBuilder('thread')
-      .setParameters({
-        listingId,
-        curUserId: fromUserId,
-        otherUserId: toUserId,
-      })
+      .setParameters({ listingId, curUserId, otherUserId })
       .where('thread.listingId = :listingId')
       .andWhere(
         new Brackets(subQuery => {
@@ -473,9 +467,28 @@ export const MutationResolver: IMutationResolvers = {
 
     if (!thread) {
       const sellerId = listing.userId;
-      const buyerId = sellerId === fromUserId ? toUserId : fromUserId;
-      thread = Thread.create({ sellerId, buyerId, listingId });
+      const buyerId = sellerId === curUserId ? otherUserId : curUserId;
+      thread = await Thread.create({
+        sellerId,
+        buyerId,
+        listingId,
+        lastMessageAt: new Date(),
+      }).save();
     }
+
+    return thread;
+  },
+  async sendMessage(_, { threadId, content }, { session, threadLoader }) {
+    ensureUser(session);
+    const fromUserId = session.userId;
+
+    const thread = await threadLoader.load(threadId);
+    if (!thread) {
+      throw new ThreadNotFound({ id: threadId, session });
+    }
+
+    const toUserId =
+      fromUserId === thread.buyerId ? thread.sellerId : thread.buyerId;
 
     // instead of an expensive subquery on the messages keep track of when the
     // last message was sent. saves a db query when ordering the threads

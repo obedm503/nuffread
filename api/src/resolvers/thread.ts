@@ -5,6 +5,20 @@ import { ensureUser } from '../util/auth';
 import { ListingNotFound, UserNotFound } from '../util/error';
 
 export const ThreadResolver: IThreadResolvers = {
+  otherId({ buyerId, sellerId }, {}, { session }) {
+    ensureUser(session);
+    return session.userId === buyerId ? sellerId : buyerId;
+  },
+  async other({ buyerId, sellerId  }, {}, { session, userLoader }) {
+    ensureUser(session);
+    const otherId = session.userId === buyerId ? sellerId : buyerId;
+    
+    const user = await userLoader.load(otherId);
+    if (!user) {
+      throw new UserNotFound({ id: otherId, session });
+    }
+    return user;
+  },
   async buyer({ buyerId }, {}, { session, userLoader }) {
     ensureUser(session);
     const user = await userLoader.load(buyerId);

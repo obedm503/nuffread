@@ -48,7 +48,7 @@ type Query {
   searchGoogle(query: String!): [GoogleBook!]
   googleBook(id: ID!): GoogleBook!
 
-  thread(id: ID!): Thread!
+  thread(id: ID!): Thread
 }
 
 type Mutation {
@@ -70,7 +70,8 @@ type Mutation {
 
   toggleUserTrackable: User!
 
-  sendMessage(toUserId: ID!, listingId: ID!, content: String!): Message!
+  startThread(listingId: ID!): Thread!
+  sendMessage(threadId: ID!, content: String!): Message!
 }
 
 type User {
@@ -177,10 +178,15 @@ type Session {
 type Thread {
   id: ID!
 
+  # TODO: these may be unnsessary
   sellerId: ID!
   seller: User!
   buyerId: ID!
   buyer: User!
+
+  otherId: ID!
+  other: User!
+  
   listingId: ID!
   listing: Listing!
 
