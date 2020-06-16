@@ -19,12 +19,14 @@ export type ControlProps = {
   error?: React.ReactNode;
   name: string;
   disabled?: boolean;
+  color?: string;
 };
 
 export const Control: React.FC<ControlProps> = React.memo(function Control({
   label,
   error,
   name,
+  color,
   children,
 }) {
   const { touched, errors, submitCount } = useFormikContext<any>();
@@ -37,6 +39,7 @@ export const Control: React.FC<ControlProps> = React.memo(function Control({
   return (
     <>
       <IonItem
+        color={color}
         lines="full"
         style={{
           '--highlight-height': '2px', // always show highlight

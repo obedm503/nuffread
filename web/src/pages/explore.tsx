@@ -1,12 +1,11 @@
 import {
   IonButtons,
   IonContent,
-  IonHeader,
   IonInfiniteScroll,
   IonPage,
   IonRefresher,
   IonRefresherContent,
-  useIonViewWillEnter,
+  useIonViewWillEnter
 } from '@ionic/react';
 import { join } from 'path';
 import React from 'react';
@@ -16,8 +15,9 @@ import {
   IonButtonLink,
   ListingCard,
   Listings,
-  TopNav,
-  useTopListings,
+
+
+  NavBar, useTopListings
 } from '../components';
 import { useLoggedIn, useRouter } from '../state';
 
@@ -45,13 +45,17 @@ export const Explore = React.memo(function Explore() {
 
   return (
     <IonPage>
-      <IonHeader>
-        {isLoggedIn ? (
-          <Container className="no-padding">
-            <DummySearchBar onFocus={toSearch} />
-          </Container>
-        ) : (
-          <TopNav homeHref={false}>
+      {isLoggedIn ? (
+        // <IonHeader>
+        //   <Container className="no-padding">
+        //     <DummySearchBar onFocus={toSearch} />
+        //   </Container>
+        // </IonHeader>
+        <NavBar title="Explore" />
+      ) : (
+        <NavBar
+          title="Explore"
+          end={
             <IonButtons slot="end">
               <IonButtonLink href="/login" color="primary">
                 Login
@@ -60,9 +64,9 @@ export const Explore = React.memo(function Explore() {
                 <b>Join</b>
               </IonButtonLink>
             </IonButtons>
-          </TopNav>
-        )}
-      </IonHeader>
+          }
+        />
+      )}
 
       <IonContent>
         <IonRefresher slot="fixed" onIonRefresh={refresh}>

@@ -3,7 +3,7 @@ import {
   IonButtons,
   IonContent,
   IonPage,
-  useIonViewWillEnter,
+  useIonViewWillEnter
 } from '@ionic/react';
 import * as React from 'react';
 import { Redirect } from 'react-router';
@@ -12,7 +12,8 @@ import {
   IonButtonLink,
   ListingCard,
   ListingSeller,
-  TopNav,
+
+  NavBar
 } from '../components';
 import { useListing } from '../state';
 import { Optional } from '../util.types';
@@ -53,17 +54,21 @@ export const Listing = React.memo<{
 
   return (
     <IonPage>
-      <TopNav homeHref={false} title="Post">
-        <IonButtons slot="start">
-          <IonBackButton defaultHref={defaultHref || undefined} />
-        </IonButtons>
-
-        <IonButtons slot="end">
-          <IonButtonLink href={listing ? `/b/${listing.book.id}` : ''}>
-            Deals
-          </IonButtonLink>
-        </IonButtons>
-      </TopNav>
+      <NavBar
+        title="Post"
+        start={
+          <IonButtons slot="start">
+            <IonBackButton defaultHref={defaultHref || undefined} />
+          </IonButtons>
+        }
+        end={
+          <IonButtons slot="end">
+            <IonButtonLink href={listing ? `/b/${listing.book.id}` : ''}>
+              Deals
+            </IonButtonLink>
+          </IonButtons>
+        }
+      />
 
       <IonContent>
         {/* {listing ? <Fab /> : null} */}

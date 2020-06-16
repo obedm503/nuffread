@@ -18,21 +18,21 @@ import {
   IonRefresherContent,
   IonSkeletonText,
   IonText,
-  useIonViewWillEnter,
+  useIonViewWillEnter
 } from '@ionic/react';
 import gql from 'graphql-tag';
 import { cartOutline } from 'ionicons/icons';
 import range from 'lodash/range';
 import React from 'react';
 import { Redirect } from 'react-router';
-import { Container, Error, ListWrapper, SafeImg, TopNav } from '../components';
+import { Container, Error, ListWrapper, NavBar, SafeImg } from '../components';
 import { SaveListingButton } from '../components/save-listing-button';
 import { BOOK, LISTING } from '../queries';
 import {
   IBook,
   IPaginatedListings,
   IPaginationInput,
-  IQueryBookArgs,
+  IQueryBookArgs
 } from '../schema.gql';
 import { useLazyQuery, useRouter } from '../state';
 import { conditionNames, paginated, queryLoading } from '../util';
@@ -291,11 +291,15 @@ export const Book = React.memo<{
 
   return (
     <IonPage>
-      <TopNav homeHref={false} title="Deals">
-        <IonButtons slot="start">
-          <IonBackButton defaultHref={defaultHref || undefined} />
-        </IonButtons>
-      </TopNav>
+      <NavBar
+        title="Deals"
+        start={
+          <IonButtons slot="start">
+            <IonBackButton defaultHref={defaultHref || undefined} />
+          </IonButtons>
+        }
+        end={null}
+      />
 
       <IonContent>
         <IonRefresher slot="fixed" onIonRefresh={refresh}>
