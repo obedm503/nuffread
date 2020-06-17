@@ -69,7 +69,6 @@ const apollo = new ApolloServer({
       : getContext({ session: req.session as Session | undefined, req, res }),
   schema,
   formatError(e) {
-    console.log('formatError', e);
     const { extensions, originalError } = e;
     logger.error(e, 'APOLLO_ERROR');
 

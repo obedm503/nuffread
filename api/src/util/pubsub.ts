@@ -2,14 +2,18 @@ import { PubSub } from 'apollo-server-express';
 import { Message } from '../entities';
 
 const engine = new PubSub();
-type Channel<T> = AsyncIterator<T, any, undefined> & {
+export type Channel<T> = AsyncIterator<T, any, undefined> & {
   [Symbol.asyncIterator](): Channel<T>;
 };
-export const subscriptions = {
-  get(channel: 'NEW_MESSAGE'): Channel<Message> {
-    return engine.asyncIterator(channel) as any;
-  },
+
+const NEW_MESSAGE = 'NEW_MESSAGE';
+
+export const subscriptions = new (class {
+  get(channel: typeof NEW_MESSAGE): Channel<{ newMessage: Message }>;
+  get(channel: string) {
+    return engine.asyncIterator(channel);
+  }
   newMessage(m: Message) {
-    return engine.publish('NEW_MESSAGE', m);
-  },
-};
+    return engine.publish(NEW_MESSAGE, { newMessage: m });
+  }
+})();
