@@ -10,6 +10,7 @@ import { ApolloError, ApolloServer } from 'apollo-server-express';
 import * as pgSession from 'connect-pg-simple';
 import * as express from 'express';
 import * as session from 'express-session';
+import { createServer } from 'http';
 import { promisify } from 'util';
 import { CONFIG } from './config';
 import { getContext, getSchema } from './schema';
@@ -17,27 +18,26 @@ import { logger } from './util';
 import { complexityPlugin } from './util/complexity';
 import * as db from './util/db';
 import { BadRequest, InternalError } from './util/error';
+import { Session } from './util/types';
 
 const Store = pgSession(session);
-
+const sessionParser = session({
+  secret: process.env.SECRET!,
+  resave: false,
+  saveUninitialized: false,
+  name: 'session',
+  store: new Store({
+    conObject: {
+      connectionString: process.env.DATABASE_URL,
+      ssl: { rejectUnauthorized: false },
+    },
+  }),
+});
 const app = express()
   .disable('etag')
   .disable('x-powered-by')
   .set('trust proxy', true)
-  .use(
-    session({
-      secret: process.env.SECRET!,
-      resave: false,
-      saveUninitialized: false,
-      name: 'session',
-      store: new Store({
-        conObject: {
-          connectionString: process.env.DATABASE_URL,
-          ssl: { rejectUnauthorized: false },
-        },
-      }),
-    }),
-  )
+  .use(sessionParser)
   .get('/_health', (req, res) => res.status(200).send('ok'));
 
 if (isProduction) {
@@ -58,11 +58,20 @@ const port = Number(process.env.PORT) || 8081;
 const schema = getSchema();
 const apollo = new ApolloServer({
   tracing: !isProduction,
-  context: ({ req, res }) => getContext({ req, res }),
+  subscriptions: {
+    path: '/',
+    onConnect: (params, ws, ctx) =>
+      getContext({ session: ctx.request['session'] }),
+  },
+  context: ({ req, res, connection }) =>
+    connection
+      ? connection.context
+      : getContext({ session: req.session as Session | undefined, req, res }),
   schema,
   formatError(e) {
-    const { message, path, extensions, originalError } = e;
-    logger.error({ message, path }, 'APOLLO_ERROR');
+    console.log('formatError', e);
+    const { extensions, originalError } = e;
+    logger.error(e, 'APOLLO_ERROR');
 
     if (!isProduction) {
       return e;
@@ -84,7 +93,7 @@ const apollo = new ApolloServer({
     : {
         settings: {
           'request.credentials': 'include',
-          'schema.polling.interval': 20000,
+          'schema.polling.interval': 120_000,
         } as any,
       },
 });
@@ -98,6 +107,17 @@ apollo.applyMiddleware({
   },
 });
 
+const httpServer = createServer(app);
+apollo.installSubscriptionHandlers(httpServer);
+// parse websocket cookies
+httpServer.on('upgrade', (req, socket) => {
+  sessionParser(req as any, {} as any, e => {
+    if (e) {
+      logger.error(e, 'error parsing cookies');
+    }
+  });
+});
+
 (async () => {
   const con = await db.connect();
 
@@ -106,8 +126,13 @@ apollo.applyMiddleware({
   await con.runMigrations({ transaction: 'all' });
   // await con.synchronize();
 
-  const server = app.listen(port, () => {
-    logger.info(`started server on port ${port}`);
+  const server = httpServer.listen(port, () => {
+    logger.info(
+      `🚀 Server ready at http://localhost:${port}${apollo.graphqlPath}`,
+    );
+    logger.info(
+      `🚀 Subscriptions ready at ws://localhost:${port}${apollo.subscriptionsPath}`,
+    );
   });
 
   const close = async () => {

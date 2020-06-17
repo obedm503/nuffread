@@ -7,6 +7,18 @@ export function isUser(me?: User): me is User {
   return me instanceof User && !!me.confirmedAt;
 }
 
+function ensureAuthenticated(
+  session?: Session,
+): asserts session is UserSession | AdminSession {
+  if (
+    !session ||
+    typeof session.userId !== 'string' ||
+    typeof session.userType !== 'string'
+  ) {
+    throw new AuthenticationError();
+  }
+}
+
 export function userSession(session?: Session): session is UserSession {
   return (
     !!session &&
@@ -16,6 +28,8 @@ export function userSession(session?: Session): session is UserSession {
   );
 }
 export function ensureUser(session?: Session): asserts session is UserSession {
+  ensureAuthenticated(session);
+
   if (userSession(session)) {
     return;
   }
@@ -34,6 +48,8 @@ export function adminSession(session?: Session): session is AdminSession {
 export function ensureAdmin(
   session?: Session,
 ): asserts session is AdminSession {
+  ensureAuthenticated(session);
+
   if (adminSession(session)) {
     return;
   }

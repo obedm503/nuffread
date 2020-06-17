@@ -2,6 +2,21 @@ import { ApolloError } from 'apollo-server-core';
 import { logger } from '.';
 import { UserSession } from './types';
 
+Object.defineProperty(Error.prototype, 'toJSON', {
+  configurable: true,
+  writable: true,
+  value() {
+    const obj = {};
+    const ownProps = Object.getOwnPropertyNames(this);
+    // always include name, message, and stack
+    ownProps.concat('name', 'message', 'stack').forEach(key => {
+      obj[key] = this[key];
+    });
+
+    return obj;
+  },
+});
+
 export class AuthorizationError extends ApolloError {
   constructor() {
     super('UNAUTHORIZED');

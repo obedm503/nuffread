@@ -5,5 +5,6 @@ export * from './message';
 export * from './mutation';
 export * from './query';
 export * from './school';
+export * from './subscription';
 export * from './thread';
 export * from './user';

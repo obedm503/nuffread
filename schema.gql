@@ -1,30 +1,5 @@
 scalar Date
 
-enum SystemUserType {
-  ADMIN
-  USER
-}
-
-enum ListingCondition {
-  NEW
-  LIKE_NEW
-  VERY_GOOD
-  GOOD
-  ACCEPTABLE
-}
-
-input PaginationInput {
-  limit: Int
-  offset: Int
-}
-type PaginatedListings {
-  items: [Listing!]!
-  totalCount: Int!
-}
-type PaginatedBooks {
-  items: [Book!]!
-  totalCount: Int!
-}
 
 type Query {
   searchBooks(query: String, paginate: PaginationInput): PaginatedBooks!
@@ -72,6 +47,36 @@ type Mutation {
 
   startThread(listingId: ID!): Thread!
   sendMessage(threadId: ID!, content: String!): Message!
+}
+
+type Subscription {
+  newMessage: Message!
+}
+
+enum SystemUserType {
+  ADMIN
+  USER
+}
+
+enum ListingCondition {
+  NEW
+  LIKE_NEW
+  VERY_GOOD
+  GOOD
+  ACCEPTABLE
+}
+
+input PaginationInput {
+  limit: Int
+  offset: Int
+}
+type PaginatedListings {
+  items: [Listing!]!
+  totalCount: Int!
+}
+type PaginatedBooks {
+  items: [Book!]!
+  totalCount: Int!
 }
 
 type User {

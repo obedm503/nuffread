@@ -13,7 +13,7 @@ import { Listing, User } from '../entities';
 import { IPaginationInput } from '../schema.gql';
 import { userSession } from './auth';
 import { Base } from './db';
-import { GetMe, UserSession } from './types';
+import { GetMe, Session } from './types';
 
 export async function findOne<T extends Base>(
   Ent: typeof Base,
@@ -128,7 +128,7 @@ export async function sameSchoolListings({
   session,
   getMe,
 }: {
-  session?: UserSession;
+  session?: Session;
   getMe: GetMe;
 }): Promise<SelectQueryBuilder<Listing>> {
   const query = Listing.createQueryBuilder('listing');

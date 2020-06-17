@@ -11,7 +11,7 @@ import {
   SavedListing,
   School,
   Thread,
-  User
+  User,
 } from './entities';
 import {
   BookResolver,
@@ -21,14 +21,15 @@ import {
   MutationResolver,
   QueryResolver,
   SchoolResolver,
+  SubscriptionResolver,
   SystemUserResolver,
   ThreadResolver,
-  UserResolver
+  UserResolver,
 } from './resolvers';
 import { IResolvers, SystemUserType } from './schema.gql';
 import { logger } from './util';
 import { Base } from './util/db';
-import { IContext, UserSession } from './util/types';
+import { IContext, Session } from './util/types';
 
 function makeIdLoader<T extends Base & { id: string }>(Ent: typeof Base) {
   return new DataLoader(async (ids: readonly string[]) => {
@@ -60,6 +61,7 @@ function createSchema(): GraphQLSchema {
     Mutation: MutationResolver,
     Query: QueryResolver,
     School: SchoolResolver,
+    Subscription: SubscriptionResolver,
     SystemUser: SystemUserResolver,
     Thread: ThreadResolver,
     User: UserResolver,
@@ -71,13 +73,16 @@ function createSchema(): GraphQLSchema {
   });
 }
 
-async function getMe(session?: UserSession): Promise<User | Admin | undefined> {
+async function getMe(session?: Session): Promise<User | Admin | undefined> {
   if (!session) {
     return;
   }
 
   const id = session.userId;
   const type = session.userType;
+  if (!id || !type) {
+    return;
+  }
   if (type === SystemUserType.User) {
     return User.findOne(id);
   }
@@ -95,13 +100,14 @@ export const getSchema = () => {
 };
 
 export async function getContext({
+  session,
   req,
   res,
 }: {
-  req: Request;
-  res: Response;
+  session?: Session;
+  req?: Request;
+  res?: Response;
 }): Promise<IContext> {
-  const session = req.session as UserSession | undefined;
   let me;
   return {
     getMe: async () => {

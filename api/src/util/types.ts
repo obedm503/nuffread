@@ -30,9 +30,9 @@ export type Session = UserSession | AdminSession | PublicSession;
 
 export type GetMe = () => Promise<User | Admin | undefined>;
 export type IContext = {
-  req: Request;
-  res: Response;
-  session?: UserSession;
+  req?: Request;
+  res?: Response;
+  session?: Session;
   getMe: GetMe;
   adminLoader: DataLoader<string, Admin | undefined>;
   bookLoader: DataLoader<string, Book | undefined>;

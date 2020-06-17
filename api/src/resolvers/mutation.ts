@@ -12,7 +12,7 @@ import {
   SavedListing,
   School,
   Thread,
-  User
+  User,
 } from '../entities';
 import { IGoogleBook, IMutationResolvers, SystemUserType } from '../schema.gql';
 import { jwt, logger } from '../util';
@@ -26,9 +26,11 @@ import {
   ListingNotFound,
   NotConfirmed,
   ThreadNotFound,
-  WrongCredentials
+  WrongCredentials,
 } from '../util/error';
 import { getBook } from '../util/google-books';
+import { subscriptions } from '../util/pubsub';
+import { Session } from '../util/types';
 
 const randomBytes = promisify(crypto.randomBytes);
 async function generateConfirmCode(): Promise<string> {
@@ -40,13 +42,13 @@ function cleanEmail(email: string): string {
   return email.toLowerCase().trim();
 }
 
-function login(req: Express.Request, id: string, type: SystemUserType) {
-  if (!req.session) {
+function login(id: string, type: SystemUserType, session?: Session) {
+  if (!session) {
     throw new Error('no session');
   }
 
-  req.session.userId = id;
-  req.session.userType = type;
+  session.userId = id;
+  session.userType = type;
 }
 
 export const sendConfirmationEmail = async ({
@@ -144,7 +146,7 @@ export const MutationResolver: IMutationResolvers = {
     return true;
   },
 
-  async confirm(_, { code }, { session, req }) {
+  async confirm(_, { code }, { session }) {
     ensurePublic(session);
 
     return await getConnection().transaction(async manager => {
@@ -164,13 +166,13 @@ export const MutationResolver: IMutationResolvers = {
       await manager.save(user);
 
       // automatically log in
-      login(req, user.id, SystemUserType.User);
+      login(user.id, SystemUserType.User, session);
 
       return true;
     });
   },
 
-  async login(_, { email: emailInput, password, type }, { req }) {
+  async login(_, { email: emailInput, password, type }, { session }) {
     let Ent: typeof Admin | typeof User;
     if (type === SystemUserType.User) {
       Ent = User;
@@ -195,18 +197,17 @@ export const MutationResolver: IMutationResolvers = {
       throw new WrongCredentials();
     }
 
-    login(req, me.id, type);
+    login(me.id, type, session);
 
     return me;
   },
 
-  async logout(_, {}, { req, res }) {
-    const session = req.session;
+  async logout(_, {}, { res, session }) {
     if (session) {
       const destroy = promisify(session.destroy.bind(session));
       await destroy();
     }
-    res.clearCookie('session');
+    res?.clearCookie('session');
 
     return true;
   },
@@ -243,7 +244,7 @@ export const MutationResolver: IMutationResolvers = {
     return true;
   },
 
-  async resetPassword(_, { token, password }, { session, req }) {
+  async resetPassword(_, { token, password }, { session }) {
     ensurePublic(session);
 
     const user = await User.findOne({ where: { passwordResetToken: token } });
@@ -268,7 +269,7 @@ export const MutationResolver: IMutationResolvers = {
     await user.save();
 
     // automatically log in
-    login(req, user.id, SystemUserType.User);
+    login(user.id, SystemUserType.User, session);
 
     return true;
   },
@@ -496,12 +497,15 @@ export const MutationResolver: IMutationResolvers = {
     thread.lastMessageAt = now;
     await thread.save();
 
-    return await Message.create({
+    const msg = await Message.create({
       createdAt: now,
       threadId: thread.id,
       fromId: session.userId,
       toId: toUserId,
       content,
     }).save();
+    // notify subscriptions
+    await subscriptions.newMessage(msg);
+    return msg;
   },
 };
