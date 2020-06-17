@@ -4,7 +4,7 @@ import {
   Kind,
   ValueNode,
 } from 'graphql';
-import Maybe from 'graphql/tsutils/Maybe';
+import { Maybe } from 'graphql/jsutils/Maybe';
 
 class Config implements GraphQLScalarTypeConfig<Date, string> {
   name = 'Date';

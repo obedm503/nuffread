@@ -1,8 +1,8 @@
+import { makeExecutableSchema } from '@graphql-tools/schema';
 import * as DataLoader from 'dataloader';
 import { Request, Response } from 'express';
 import * as fs from 'fs';
 import { GraphQLSchema } from 'graphql';
-import { makeExecutableSchema } from 'graphql-tools';
 import { resolve } from 'path';
 import {
   Admin,
@@ -26,7 +26,7 @@ import {
   ThreadResolver,
   UserResolver,
 } from './resolvers';
-import { IResolvers, SystemUserType } from './schema.gql';
+import { SystemUserType } from './schema.gql';
 import { logger } from './util';
 import { Base } from './util/db';
 import { IContext, Session } from './util/types';
@@ -53,23 +53,22 @@ function createSchema(): GraphQLSchema {
     resolve(__dirname, '../../schema.gql'),
     'utf-8',
   );
-  const resolvers: IResolvers = {
-    Book: BookResolver,
-    Date: DateResolver,
-    Listing: ListingResolver,
-    Message: MessageResolver,
-    Mutation: MutationResolver,
-    Query: QueryResolver,
-    School: SchoolResolver,
-    Subscription: SubscriptionResolver,
-    SystemUser: SystemUserResolver,
-    Thread: ThreadResolver,
-    User: UserResolver,
-  };
 
   return makeExecutableSchema<IContext>({
     typeDefs,
-    resolvers: resolvers as any,
+    resolvers: {
+      Book: BookResolver,
+      Date: DateResolver,
+      Listing: ListingResolver,
+      Message: MessageResolver,
+      Mutation: MutationResolver,
+      Query: QueryResolver,
+      School: SchoolResolver,
+      Subscription: SubscriptionResolver,
+      SystemUser: SystemUserResolver,
+      Thread: ThreadResolver,
+      User: UserResolver,
+    },
   });
 }
 
