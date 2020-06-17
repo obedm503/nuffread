@@ -87,7 +87,7 @@ export const MutationResolver: IMutationResolvers = {
     await User.validateEmailPassword({ email, password });
 
     // email already exists
-    if (await userEmailLoader.load(email)) {
+    if (await userEmailLoader().load(email)) {
       throw new DuplicateUser();
     }
 
@@ -132,7 +132,7 @@ export const MutationResolver: IMutationResolvers = {
 
     const email = cleanEmail(emailInput);
 
-    const user = await userEmailLoader.load(email);
+    const user = await userEmailLoader().load(email);
     if (!user) {
       throw new WrongCredentials();
     }
@@ -220,7 +220,7 @@ export const MutationResolver: IMutationResolvers = {
     ensurePublic(session);
 
     const email = cleanEmail(emailInput);
-    const user = await userEmailLoader.load(email);
+    const user = await userEmailLoader().load(email);
     if (!isUser(user)) {
       return true; // email doens't exist, but don't tell the client
     }
@@ -334,7 +334,10 @@ export const MutationResolver: IMutationResolvers = {
   async deleteListing(_, { id }, { getMe, listingLoader, session }) {
     ensureUser(session);
 
-    const [me, listing] = await Promise.all([getMe(), listingLoader.load(id)]);
+    const [me, listing] = await Promise.all([
+      getMe(),
+      listingLoader().load(id),
+    ]);
     if (!me) {
       throw new AuthorizationError();
     }
@@ -378,13 +381,13 @@ export const MutationResolver: IMutationResolvers = {
       await SavedListing.delete({ listingId, userId: session.userId });
     }
 
-    return (await listingLoader.load(listingId))!;
+    return (await listingLoader().load(listingId))!;
   },
 
   async sellListing(_, { listingId, price }, { session, listingLoader }) {
     ensureUser(session);
 
-    const listing = await listingLoader.load(listingId);
+    const listing = await listingLoader().load(listingId);
     if (!listing) {
       throw new ListingNotFound({ id: listingId, session });
     }
@@ -401,7 +404,7 @@ export const MutationResolver: IMutationResolvers = {
   async setPrice(_, { listingId, price }, { session, listingLoader }) {
     ensureUser(session);
 
-    const listing = await listingLoader.load(listingId);
+    const listing = await listingLoader().load(listingId);
     if (!listing) {
       throw new ListingNotFound({ id: listingId, session });
     }
@@ -420,7 +423,7 @@ export const MutationResolver: IMutationResolvers = {
   async toggleUserTrackable(_, {}, { session, userLoader }) {
     ensureUser(session);
 
-    const user = await userLoader.load(session.userId);
+    const user = await userLoader().load(session.userId);
     if (!user) {
       throw new WrongCredentials();
     }
@@ -432,7 +435,7 @@ export const MutationResolver: IMutationResolvers = {
     ensureUser(session);
     const curUserId = session.userId;
 
-    const listing = await listingLoader.load(listingId);
+    const listing = await listingLoader().load(listingId);
     if (!listing) {
       throw new ListingNotFound({ id: listingId, session });
     }
@@ -483,7 +486,7 @@ export const MutationResolver: IMutationResolvers = {
     ensureUser(session);
     const fromUserId = session.userId;
 
-    const thread = await threadLoader.load(threadId);
+    const thread = await threadLoader().load(threadId);
     if (!thread) {
       throw new ThreadNotFound({ id: threadId, session });
     }

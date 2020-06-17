@@ -27,7 +27,7 @@ import {
   UserResolver,
 } from './resolvers';
 import { SystemUserType } from './schema.gql';
-import { logger } from './util';
+import { lazy, logger } from './util';
 import { Base } from './util/db';
 import { IContext, Session } from './util/types';
 
@@ -118,31 +118,33 @@ export async function getContext({
     req,
     res,
     session,
-    adminLoader: makeIdLoader(Admin),
-    bookLoader: makeIdLoader(Book),
-    listingLoader: makeIdLoader(Listing),
-    savedListingLoader: new DataLoader(async (ids: readonly string[]) => {
-      // in format listingId::userId
-      logger.debug(`data-loader ${SavedListing.name}`, ids);
+    adminLoader: lazy(() => makeIdLoader(Admin)),
+    bookLoader: lazy(() => makeIdLoader(Book)),
+    listingLoader: lazy(() => makeIdLoader(Listing)),
+    savedListingLoader: lazy(() => {
+      return new DataLoader(async (ids: readonly string[]) => {
+        // in format listingId::userId
+        logger.debug(`data-loader ${SavedListing.name}`, ids);
 
-      const items = await SavedListing.find({
-        where: ids.map(id => {
+        const items = await SavedListing.find({
+          where: ids.map(id => {
+            const [listingId, userId] = id.split('::');
+            return { listingId, userId };
+          }),
+        });
+
+        return ids.map(id => {
           const [listingId, userId] = id.split('::');
-          return { listingId, userId };
-        }),
-      });
 
-      return ids.map(id => {
-        const [listingId, userId] = id.split('::');
-
-        return items.find(
-          item => item.listingId === listingId && item.userId === userId,
-        );
+          return items.find(
+            item => item.listingId === listingId && item.userId === userId,
+          );
+        });
       });
     }),
-    schoolLoader: makeIdLoader(School),
-    threadLoader: makeIdLoader(Thread),
-    userEmailLoader: makeEmailLoader(User),
-    userLoader: makeIdLoader(User),
+    schoolLoader: lazy(() => makeIdLoader(School)),
+    threadLoader: lazy(() => makeIdLoader(Thread)),
+    userEmailLoader: lazy(() => makeEmailLoader(User)),
+    userLoader: lazy(() => makeIdLoader(User)),
   };
 }

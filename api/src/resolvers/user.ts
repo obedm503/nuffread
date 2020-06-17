@@ -29,7 +29,7 @@ export const UserResolver: IUserResolvers = {
     return getSchoolName(email);
   },
   async school({ school, schoolId }, {}, { schoolLoader }) {
-    return school || (await schoolLoader.load(schoolId));
+    return school || (await schoolLoader().load(schoolId));
   },
   confirmedAt({ confirmedAt }, {}, { session }) {
     ensureAdmin(session);
@@ -51,7 +51,7 @@ export const UserResolver: IUserResolvers = {
       take: 30,
     });
 
-    const listings = await listingLoader.loadMany(
+    const listings = await listingLoader().loadMany(
       recents.map(r => r.listingId),
     );
     return justListings(listings);
@@ -65,7 +65,9 @@ export const UserResolver: IUserResolvers = {
       skip,
     });
 
-    const listings = await listingLoader.loadMany(saved.map(s => s.listingId));
+    const listings = await listingLoader().loadMany(
+      saved.map(s => s.listingId),
+    );
     return {
       items: justListings(listings),
       totalCount,

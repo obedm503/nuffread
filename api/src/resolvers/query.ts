@@ -170,7 +170,7 @@ export const QueryResolver: IQueryResolvers = {
   },
 
   async listing(_, { id }, { listingLoader, session }) {
-    const listing = await listingLoader.load(id);
+    const listing = await listingLoader().load(id);
     if (!listing) {
       return;
     }
@@ -198,7 +198,7 @@ export const QueryResolver: IQueryResolvers = {
   },
 
   async book(_, { id }, { bookLoader }) {
-    return await bookLoader.load(id);
+    return await bookLoader().load(id);
   },
 
   async searchGoogle(_, { query }, { session }) {
@@ -247,8 +247,8 @@ export const QueryResolver: IQueryResolvers = {
       dbSessions.map<Promise<ISession>>(async s => {
         const user =
           s.user_type === SystemUserType.Admin
-            ? await adminLoader.load(s.user_id)
-            : await userLoader.load(s.user_id);
+            ? await adminLoader().load(s.user_id)
+            : await userLoader().load(s.user_id);
 
         if (!user) {
           logger.error({ id: s.user_id, type: s.user_type }, 'user not found');
@@ -266,6 +266,6 @@ export const QueryResolver: IQueryResolvers = {
   },
 
   async thread(_, { id }, { threadLoader }) {
-    return threadLoader.load(id);
+    return threadLoader().load(id);
   },
 };

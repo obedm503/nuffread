@@ -34,14 +34,14 @@ export type IContext = {
   res?: Response;
   session?: Session;
   getMe: GetMe;
-  adminLoader: DataLoader<string, Admin | undefined>;
-  bookLoader: DataLoader<string, Book | undefined>;
-  listingLoader: DataLoader<string, Listing | undefined>;
-  savedListingLoader: DataLoader<string, SavedListing | undefined>;
-  schoolLoader: DataLoader<string, School | undefined>;
-  threadLoader: DataLoader<string, Thread | undefined>;
-  userEmailLoader: DataLoader<string, User | undefined>;
-  userLoader: DataLoader<string, User | undefined>;
+  adminLoader(): DataLoader<string, Admin | undefined>;
+  bookLoader(): DataLoader<string, Book | undefined>;
+  listingLoader(): DataLoader<string, Listing | undefined>;
+  savedListingLoader(): DataLoader<string, SavedListing | undefined>;
+  schoolLoader(): DataLoader<string, School | undefined>;
+  threadLoader(): DataLoader<string, Thread | undefined>;
+  userEmailLoader(): DataLoader<string, User | undefined>;
+  userLoader(): DataLoader<string, User | undefined>;
 };
 
 type Paginated<T> = { items: T[]; totalCount: number };

@@ -6,14 +6,14 @@ export const ListingResolver: IListingResolvers = {
     if (!userSession(session)) {
       return;
     }
-    return user || (await userLoader.load(userId));
+    return user || (await userLoader().load(userId));
   },
   async school({ userId, user: loadedUser }, {}, { userLoader, schoolLoader }) {
-    const user = loadedUser || (await userLoader.load(userId));
-    return user && (user.school || (await schoolLoader.load(user.schoolId)));
+    const user = loadedUser || (await userLoader().load(userId));
+    return user && (user.school || (await schoolLoader().load(user.schoolId)));
   },
   async book({ bookId, book }, {}, { bookLoader }) {
-    return book || (await bookLoader.load(bookId));
+    return book || (await bookLoader().load(bookId));
   },
   async saved(listing, {}, { session, savedListingLoader }) {
     if (!userSession(session)) {
@@ -21,7 +21,7 @@ export const ListingResolver: IListingResolvers = {
     }
 
     // in format listingId::userId
-    const saved = await savedListingLoader.load(
+    const saved = await savedListingLoader().load(
       [listing.id, session.userId].join('::'),
     );
     return !!saved;

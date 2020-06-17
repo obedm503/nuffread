@@ -159,3 +159,13 @@ export function btoa(str: string | Buffer): string {
 export function atob(str: string): string {
   return Buffer.from(str, 'base64').toString('binary');
 }
+
+export function lazy<T>(factory: () => T) {
+  let value: T;
+  return () => {
+    if (!value) {
+      value = factory();
+    }
+    return value;
+  };
+}

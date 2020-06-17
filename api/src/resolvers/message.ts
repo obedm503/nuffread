@@ -5,7 +5,7 @@ import { ThreadNotFound, UserNotFound } from '../util/error';
 export const MessageResolver: IMessageResolvers = {
   async from({ fromId }, {}, { session, userLoader }) {
     ensureUser(session);
-    const user = await userLoader.load(fromId);
+    const user = await userLoader().load(fromId);
     if (!user) {
       throw new UserNotFound({ id: fromId, session });
     }
@@ -13,7 +13,7 @@ export const MessageResolver: IMessageResolvers = {
   },
   async to({ toId }, {}, { session, userLoader }) {
     ensureUser(session);
-    const user = await userLoader.load(toId);
+    const user = await userLoader().load(toId);
     if (!user) {
       throw new UserNotFound({ id: toId, session });
     }
@@ -21,7 +21,7 @@ export const MessageResolver: IMessageResolvers = {
   },
   async thread({ threadId }, {}, { session, threadLoader }) {
     ensureUser(session);
-    const thread = await threadLoader.load(threadId);
+    const thread = await threadLoader().load(threadId);
     if (!thread) {
       throw new ThreadNotFound({ id: threadId, session });
     }
