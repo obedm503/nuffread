@@ -7,7 +7,7 @@ import {
 } from 'class-validator';
 import { Request } from 'express';
 import { sign, SignOptions, verify, VerifyOptions } from 'jsonwebtoken';
-import * as pino from 'pino';
+import pino from 'pino';
 import { FindOneOptions, SelectQueryBuilder } from 'typeorm';
 import { Listing, User } from '../entities';
 import { IPaginationInput } from '../schema.gql';

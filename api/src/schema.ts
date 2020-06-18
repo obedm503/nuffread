@@ -1,5 +1,5 @@
 import { makeExecutableSchema } from '@graphql-tools/schema';
-import * as DataLoader from 'dataloader';
+import DataLoader from 'dataloader';
 import { Request, Response } from 'express';
 import * as fs from 'fs';
 import { GraphQLSchema } from 'graphql';
