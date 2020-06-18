@@ -442,7 +442,17 @@ ion-modal {
   }
 }
 
+ion-grid.message-grid {
+  padding: 0;
+
+  ion-col {
+    padding: 0;
+  }
+}
 ion-list.messages {
+  display: flex;
+  flex-direction: column-reverse;
+  overflow: auto;
   padding: 0;
 
   .group {
@@ -451,8 +461,19 @@ ion-list.messages {
     width: 80%;
     margin-top: 10px;
 
+    &:first-of-type {
+      padding-bottom: 10px;
+    }
+    &:last-of-type {
+      padding-top: 10px;
+    }
+
     &.me {
       margin-left: auto;
+      padding-right: 10px;
+    }
+    &.other {
+      padding-left: 10px;
     }
 
     ion-avatar {

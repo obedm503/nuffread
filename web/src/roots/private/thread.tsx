@@ -64,33 +64,32 @@ function groupMessages(
 
 const Messages = React.memo<Pick<QueryResult<IQuery>, 'data' | 'loading'>>(
   function Messages({ loading, data }) {
-    // const messages = React.useMemo(() => {
-    //   return data?.thread?.messages.items.slice(0).reverse();
-    // }, [data?.thread?.messages]);
     const messages = data?.thread?.messages.items;
 
     const groupedMessages = React.useMemo(
-      () => messages && groupMessages(messages.slice(0).reverse()),
+      () => messages && groupMessages(messages),
       [messages],
     );
 
     if (loading || !data?.thread || !messages || !groupedMessages) {
-      return <ListWrapper>loading</ListWrapper>;
+      return (
+        <IonItem>
+          <IonLabel>loading</IonLabel>
+        </IonItem>
+      );
     }
 
     if (!messages.length) {
       return (
-        <IonList>
-          <IonItem>
-            <IonLabel>You have not saved any posts.</IonLabel>
-          </IonItem>
-        </IonList>
+        <IonItem>
+          <IonLabel>You have not saved any posts.</IonLabel>
+        </IonItem>
       );
     }
 
     const otherId = data.thread.otherId;
     return (
-      <IonList className="messages" lines="none">
+      <>
         {groupedMessages.map((group, i) => {
           const isOther = group.fromId === otherId;
           return (
@@ -123,7 +122,7 @@ const Messages = React.memo<Pick<QueryResult<IQuery>, 'data' | 'loading'>>(
             </div>
           );
         })}
-      </IonList>
+      </>
     );
   },
 );
@@ -284,15 +283,8 @@ export const Thread = React.memo<{
     [me, send, threadId],
   );
 
-  const firstId = data?.thread?.messages.items[0].id;
-  React.useEffect(() => {
-    if (firstId && !loading) {
-      setTimeout(() => {
-        const el = document.querySelector(`#message-${firstId}`);
-        el?.scrollIntoView(true);
-      }, 0);
-    }
-  }, [firstId, loading]);
+  const content = React.useRef<HTMLIonContentElement>(null);
+  const height = content.current?.clientHeight;
 
   if (!loading && !data?.thread) {
     return <Redirect to={defaultHref} />;
@@ -310,15 +302,21 @@ export const Thread = React.memo<{
         end={null}
       />
 
-      <IonContent>
-        <Container style={{ minHeight: '100%' }}>
+      <IonContent ref={content}>
+        {/* TODO: fix grid on desktop */}
+        <Container className="message-grid">
           {/* {canFetchMore ? (
           <IonInfiniteScroll onIonInfinite={fetchMore}>
           {loadingMessages}
           </IonInfiniteScroll>
         ) : null} */}
-
-          <Messages data={data} loading={loading} />
+          <IonList
+            className="messages"
+            lines="none"
+            style={{ height: height ? `${height - 4}px` : '' }}
+          >
+            <Messages data={data} loading={loading} />
+          </IonList>
         </Container>
       </IonContent>
 
@@ -329,7 +327,14 @@ export const Thread = React.memo<{
           initialValues={{ content: '' }}
         >
           <Form>
-            <TextArea label="" name="content" autoGrow rows={1} color="light">
+            <TextArea
+              label=""
+              name="content"
+              autoGrow
+              rows={1}
+              color="light"
+              placeholder="Message..."
+            >
               <IonSubmit
                 slot="end"
                 fill="clear"
