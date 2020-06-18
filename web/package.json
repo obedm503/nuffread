@@ -23,6 +23,7 @@
     "apollo-client": "^2.6.4",
     "apollo-link-error": "^1.1.12",
     "apollo-link-http": "^1.5.14",
+    "apollo-link-ws": "^1.0.20",
     "date-fns": "^2.6.0",
     "formik": "^2.0.8",
     "graphql": "^15.0.0",
@@ -37,6 +38,7 @@
     "react-helmet-async": "^1.0.2",
     "react-router": "^5.0.1",
     "react-router-dom": "^5.0.1",
+    "subscriptions-transport-ws": "^0.9.16",
     "yup": "^0.29.1"
   },
   "devDependencies": {

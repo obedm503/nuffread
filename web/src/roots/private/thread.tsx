@@ -11,7 +11,7 @@ import {
   IonLabel,
   IonList,
   IonPage,
-  useIonViewWillEnter
+  useIonViewWillEnter,
 } from '@ionic/react';
 import { Form, Formik, FormikHelpers } from 'formik';
 import gql from 'graphql-tag';
@@ -20,13 +20,14 @@ import * as React from 'react';
 import { Redirect } from 'react-router';
 import { Container, IonSubmit, ListWrapper, NavBar } from '../../components';
 import { TextArea } from '../../components/controls/text-area';
+import { MESSAGES } from '../../queries';
 import {
   IMessage,
   IMutationSendMessageArgs,
   IPaginatedMessages,
   IPaginationInput,
   IQuery,
-  IQueryThreadArgs
+  IQueryThreadArgs,
 } from '../../schema.gql';
 import { readQuery, useLazyQuery, useMutation, useUser } from '../../state';
 import { classes, queryLoading } from '../../util';
@@ -127,30 +128,6 @@ const Messages = React.memo<Pick<QueryResult<IQuery>, 'data' | 'loading'>>(
   },
 );
 
-const MESSAGES = gql`
-  query GetMessages($id: ID!, $offset: Int!) {
-    thread(id: $id) {
-      id
-      lastMessageAt
-      otherId
-      other {
-        id
-        email
-        name
-      }
-      messages(paginate: { limit: 15, offset: $offset }) {
-        totalCount
-        items {
-          id
-          createdAt
-          content
-          fromId
-        }
-      }
-    }
-  }
-`;
-
 function paginated(
   messages?: IPaginatedMessages,
 ): {
@@ -167,10 +144,12 @@ function paginated(
 const useData = (
   threadId: string,
 ): Omit<PaginatedRefresh<IQuery>, 'refresh'> => {
-  const [load, { data, loading, error, called, fetchMore }] = useLazyQuery<
-    IQueryThreadArgs & IPaginationInput
-  >(MESSAGES, {
+  const [
+    load,
+    { data, loading, error, called, fetchMore, subscribeToMore },
+  ] = useLazyQuery<IQueryThreadArgs & IPaginationInput>(MESSAGES, {
     variables: { id: threadId, offset: 0 },
+    // fetchPolicy: 'cache-and-network',
   });
 
   const thread = data?.thread || undefined;
@@ -305,21 +284,15 @@ export const Thread = React.memo<{
     [me, send, threadId],
   );
 
-  const first = data?.thread?.messages.items[0].id;
-  const el = React.useMemo(() => {
-    console.log('first', first);
-    if (first) {
-      console.log('found first', first);
-      return document.querySelector(`#message-${first}`) || undefined;
+  const firstId = data?.thread?.messages.items[0].id;
+  React.useEffect(() => {
+    if (firstId && !loading) {
+      setTimeout(() => {
+        const el = document.querySelector(`#message-${firstId}`);
+        el?.scrollIntoView(true);
+      }, 0);
     }
-  }, [first]);
-  React.useLayoutEffect(() => {
-    console.log('el', el);
-    if (el) {
-      console.log('scroll el', first);
-      el.scrollIntoView(false);
-    }
-  }, [el]);
+  }, [firstId, loading]);
 
   if (!loading && !data?.thread) {
     return <Redirect to={defaultHref} />;
@@ -337,7 +310,7 @@ export const Thread = React.memo<{
         end={null}
       />
 
-      <IonContent fullscreen>
+      <IonContent>
         <Container style={{ minHeight: '100%' }}>
           {/* {canFetchMore ? (
           <IonInfiniteScroll onIonInfinite={fetchMore}>

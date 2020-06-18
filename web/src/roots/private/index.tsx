@@ -3,13 +3,13 @@ import {
   IonRouterOutlet,
   IonTabBar,
   IonTabButton,
-  IonTabs
+  IonTabs,
 } from '@ionic/react';
 import {
   addOutline,
   cartOutline,
   chatbubblesOutline,
-  homeOutline
+  homeOutline,
 } from 'ionicons/icons';
 import memoizeOne from 'memoize-one';
 import * as React from 'react';
@@ -19,11 +19,12 @@ import { Book } from '../../pages/book';
 import { Explore } from '../../pages/explore';
 import { Listing } from '../../pages/listing';
 import { Search } from '../../pages/search';
-import { useRootValidator, useRouter } from '../../state';
+import { useRootValidator } from '../../state';
 import { RootPageProps } from '../../util.types';
 import { Cart } from './cart';
 import { Chat } from './chat';
 import { CreateModal } from './components/create';
+import { LiveChats } from './components/live-chats';
 import { Profile } from './profile';
 import { Thread } from './thread';
 
@@ -76,47 +77,42 @@ const Private = React.memo(function Private() {
     e.preventDefault();
     setModalOpen(true);
   }, []);
-  const router = useRouter();
-  const pathname = router.location.pathname;
-  const tabBarStyle = React.useMemo(
-    () =>
-      // hide tabs when looking at a thread
-      pathname.startsWith('/chat/') ? { display: 'none' } : { display: '' },
-    [pathname],
-  );
 
   if (!useRootValidator({ validRoots })) {
     return <Redirect to="/explore" />;
   }
 
   return (
-    <IonTabs>
-      <IonRouterOutlet>{mapRoutesMemo({ routes }, true)}</IonRouterOutlet>
+    <>
+      <LiveChats />
+      <IonTabs>
+        <IonRouterOutlet>{mapRoutesMemo({ routes }, true)}</IonRouterOutlet>
 
-      <IonTabBar slot="bottom" style={tabBarStyle}>
-        <IonTabButton tab="explore" href="/explore">
-          <IonIcon icon={homeOutline} ariaLabel="Explore" />
-        </IonTabButton>
+        <IonTabBar slot="bottom">
+          <IonTabButton tab="explore" href="/explore">
+            <IonIcon icon={homeOutline} ariaLabel="Explore" />
+          </IonTabButton>
 
-        <IonTabButton tab="cart" href="/cart">
-          <IonIcon icon={cartOutline} ariaLabel="Cart" />
-        </IonTabButton>
+          <IonTabButton tab="cart" href="/cart">
+            <IonIcon icon={cartOutline} ariaLabel="Cart" />
+          </IonTabButton>
 
-        <IonTabButton onClick={showModal}>
-          {isOpen ? <CreateModal isOpen onClose={closeModal} /> : null}
+          <IonTabButton onClick={showModal}>
+            {isOpen ? <CreateModal isOpen onClose={closeModal} /> : null}
 
-          <IonIcon icon={addOutline} ariaLabel="Create" />
-        </IonTabButton>
+            <IonIcon icon={addOutline} ariaLabel="Create" />
+          </IonTabButton>
 
-        <IonTabButton tab="chat" href="/chat">
-          <IonIcon icon={chatbubblesOutline} ariaLabel="Chat" />
-        </IonTabButton>
+          <IonTabButton tab="chat" href="/chat">
+            <IonIcon icon={chatbubblesOutline} ariaLabel="Chat" />
+          </IonTabButton>
 
-        {/* <IonTabButton tab="profile" href="/profile">
+          {/* <IonTabButton tab="profile" href="/profile">
           <IonIcon icon={person} ariaLabel="Profile" />
         </IonTabButton> */}
-      </IonTabBar>
-    </IonTabs>
+        </IonTabBar>
+      </IonTabs>
+    </>
   );
 });
 

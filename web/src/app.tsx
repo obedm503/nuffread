@@ -2,7 +2,7 @@ import { IonApp, IonSpinner } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
 import {
   InMemoryCache,
-  IntrospectionFragmentMatcher
+  IntrospectionFragmentMatcher,
 } from 'apollo-cache-inmemory';
 import { Kind } from 'graphql';
 import gql from 'graphql-tag';
@@ -67,7 +67,7 @@ const rootPage = memoizeOne(function (
   user?: ISystemUser,
 ): React.ComponentType<RootPageProps> {
   if (!user) {
-    return Public 
+    return Public;
   }
   return Private;
 });

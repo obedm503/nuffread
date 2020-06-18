@@ -139,3 +139,27 @@ export const CREATE_LISTING = gql`
     }
   }
 `;
+
+export const MESSAGES = gql`
+  query GetMessages($id: ID!, $offset: Int!) {
+    thread(id: $id) {
+      id
+      lastMessageAt
+      otherId
+      other {
+        id
+        email
+        name
+      }
+      messages(paginate: { limit: 20, offset: $offset }) {
+        totalCount
+        items {
+          id
+          createdAt
+          content
+          fromId
+        }
+      }
+    }
+  }
+`;

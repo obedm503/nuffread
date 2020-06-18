@@ -2,14 +2,16 @@ import {
   LazyQueryHookOptions,
   MutationHookOptions,
   QueryHookOptions,
+  SubscriptionHookOptions,
   useLazyQuery as apolloLazyQuery,
   useMutation as apolloMutation,
   useQuery as apolloQuery,
+  useSubscription as apolloSubscription,
 } from '@apollo/react-hooks';
 import { DataProxy } from 'apollo-cache';
 import ApolloClient from 'apollo-client';
 import { DocumentNode } from 'graphql';
-import { IMutation, IQuery } from '../schema.gql';
+import { IMutation, IQuery, ISubscription } from '../schema.gql';
 
 export const useQuery = <TVariables = never>(
   query: DocumentNode,
@@ -25,6 +27,11 @@ export const useMutation = <TVariables = never>(
   mutation: DocumentNode,
   options?: MutationHookOptions<IMutation, TVariables>,
 ) => apolloMutation<IMutation, TVariables>(mutation, options);
+
+export const useSubscription = <TVariables = never>(
+  subscription: DocumentNode,
+  options?: SubscriptionHookOptions<ISubscription, TVariables>,
+) => apolloSubscription<ISubscription, TVariables>(subscription, options);
 
 /**
  * using custom readQuery because it throws if item is not in cache
