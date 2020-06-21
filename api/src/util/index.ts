@@ -1,31 +1,9 @@
 import { UserInputError } from 'apollo-server-express';
-import {
-  registerDecorator,
-  validate as validator,
-  ValidationOptions,
-  ValidatorOptions,
-} from 'class-validator';
+import { validate as validator, ValidatorOptions } from 'class-validator';
 import { Request } from 'express';
 import { sign, SignOptions, verify, VerifyOptions } from 'jsonwebtoken';
 import pino from 'pino';
-import { FindOneOptions, SelectQueryBuilder } from 'typeorm';
-import { Listing, User } from '../entities';
-import { IPaginationInput } from '../schema.gql';
-import { userSession } from './auth';
-import { Base } from './db';
-import { GetMe, Session } from './types';
 
-export async function findOne<T extends Base>(
-  Ent: typeof Base,
-  id: string,
-  config?: FindOneOptions<T>,
-) {
-  const value = await Ent.findOne<T>(id, { cache: true, ...config });
-  if (!value) {
-    throw new Error(`Could not find ${Ent.name} with id ${id}`);
-  }
-  return value;
-}
 /**  gets the server's base url */
 export const getUrl = (req: Request) => {
   const includePort = req.hostname === 'localhost';
@@ -41,45 +19,13 @@ export const sleep = (timeout: number): Promise<void> =>
     setTimeout(res, timeout);
   });
 
-const production = process.env.NODE_ENV === 'production';
+const isProduction = process.env.NODE_ENV === 'production';
 export const logger = pino({
-  level: production ? 'info' : 'trace',
-  prettyPrint: !production && {
+  level: isProduction ? 'info' : 'trace',
+  prettyPrint: !isProduction && {
     ignore: 'pid,hostname,time',
   },
 });
-
-type Class = new (...args: any[]) => any;
-export function IsInstance(getter: () => Class, options?: ValidationOptions) {
-  return function (object: Object, propertyName: string) {
-    registerDecorator({
-      target: object.constructor,
-      propertyName,
-      options,
-      validator: {
-        validate(value: any) {
-          const Type = getter();
-          return typeof Type === 'function' && value instanceof Type;
-        },
-      },
-    });
-  };
-}
-
-export function IsEdu(options?: ValidationOptions) {
-  return function (object: Object, propertyName: string) {
-    registerDecorator({
-      target: object.constructor,
-      propertyName,
-      options,
-      validator: {
-        validate(value: any) {
-          return typeof value === 'string' && value.endsWith('.edu');
-        },
-      },
-    });
-  };
-}
 
 export const jwt = {
   sign: (payload: any, options: SignOptions): Promise<string> => {
@@ -97,12 +43,6 @@ export const jwt = {
     });
   },
 };
-
-export function paginationOptions(
-  paginate?: IPaginationInput,
-): { take: number; skip?: number } {
-  return { take: paginate?.limit || 10, skip: paginate?.offset };
-}
 
 export async function validate(obj: object, opts?: ValidatorOptions) {
   const errors = await validator(obj, {
@@ -124,27 +64,6 @@ export async function validate(obj: object, opts?: ValidatorOptions) {
   }
 }
 
-export async function sameSchoolListings({
-  session,
-  getMe,
-}: {
-  session?: Session;
-  getMe: GetMe;
-}): Promise<SelectQueryBuilder<Listing>> {
-  const query = Listing.createQueryBuilder('listing');
-
-  if (userSession(session)) {
-    const me = await getMe();
-    if (me instanceof User) {
-      query.innerJoin('listing.user', 'user', 'user.schoolId = :schoolId', {
-        schoolId: me.schoolId,
-      });
-    }
-  }
-
-  return query;
-}
-
 export function btoa(str: string | Buffer): string {
   let buffer;
 
@@ -158,14 +77,4 @@ export function btoa(str: string | Buffer): string {
 }
 export function atob(str: string): string {
   return Buffer.from(str, 'base64').toString('binary');
-}
-
-export function lazy<T>(factory: () => T) {
-  let value: T;
-  return () => {
-    if (!value) {
-      value = factory();
-    }
-    return value;
-  };
 }

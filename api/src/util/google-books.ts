@@ -1,7 +1,7 @@
 import { uniq } from 'lodash';
 import fetch from 'node-fetch';
 import { logger } from '.';
-import { IGoogleBook } from '../schema.gql';
+import { IGoogleBook } from '../graphql/schema.gql';
 
 type GoogleBook = {
   kind: string;

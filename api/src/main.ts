@@ -13,9 +13,9 @@ import { createServer } from 'http';
 import ms from 'ms';
 import { promisify } from 'util';
 import { CONFIG } from './config';
-import { getApollo } from './gql';
+import { getApollo } from './graphql';
 import { logger } from './util';
-import * as db from './util/db';
+import * as db from './db';
 
 const Store = pgSession(session);
 const sessionParser = session({
