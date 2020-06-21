@@ -8,7 +8,7 @@ import {
   MaxLength,
 } from 'class-validator';
 import { Column, Entity, Index, JoinColumn, ManyToOne } from 'typeorm';
-import { ListingCondition } from '../../graphql';
+import { ListingCondition } from '../../graphql/schema.gql';
 import { Base, Created, IsInstance, PrimaryKey, Updated } from '../util';
 import { Book } from './book';
 import { User } from './user';
@@ -32,6 +32,7 @@ export class Listing extends Base {
   @ManyToOne(() => Book, book => book.listings)
   @JoinColumn({ name: 'book_id' })
   @IsInstance(() => Book)
+  @IsOptional()
   book: Book;
 
   @Column()
@@ -46,6 +47,7 @@ export class Listing extends Base {
   @ManyToOne(() => User, user => user.listings)
   @JoinColumn({ name: 'user_id' })
   @IsInstance(() => User)
+  @IsOptional()
   user: User;
 
   // give recommendations based on books used for the same class

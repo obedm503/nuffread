@@ -191,7 +191,7 @@ type Thread {
 
   otherId: ID!
   other: User!
-  
+
   listingId: ID!
   listing: Listing!
 

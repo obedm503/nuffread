@@ -10,7 +10,7 @@ import {
   Thread,
   User,
 } from './db/entities';
-import { SystemUserType } from './graphql';
+import { SystemUserType } from './graphql/schema.gql';
 
 export type UserSession = Express.Session & {
   userId: string;

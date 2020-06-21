@@ -290,9 +290,10 @@ export const MutationResolver: IMutationResolvers = {
     ensureUser(session);
 
     return await getConnection().transaction(async manager => {
-      let [book, gBook] = await Promise.all([
+      let [book, gBook, user] = await Promise.all([
         manager.findOne(Book, { where: { googleId } }),
         getBook(googleId),
+        getMe(),
       ]);
 
       // allow users to pick cover image
@@ -321,9 +322,9 @@ export const MutationResolver: IMutationResolvers = {
 
       const listing = await manager.save(
         Listing.create({
-          book,
+          bookId: book.id,
           price,
-          user: await getMe(),
+          userId: user?.id,
           description,
           condition,
         }),
@@ -331,6 +332,7 @@ export const MutationResolver: IMutationResolvers = {
       return listing;
     });
   },
+
   async deleteListing(_, { id }, { getMe, listingLoader, session }) {
     ensureUser(session);
 
