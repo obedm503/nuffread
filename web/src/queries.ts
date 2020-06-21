@@ -106,6 +106,10 @@ export const GET_LISTING = gql`
     listing(id: $id) {
       ...BasicListing
 
+      user {
+        id
+      }
+
       book {
         id
         listings {
@@ -140,8 +144,8 @@ export const CREATE_LISTING = gql`
   }
 `;
 
-export const MESSAGES = gql`
-  query GetMessages($id: ID!, $offset: Int!) {
+export const THREAD = gql`
+  query GetThread($id: ID!, $offset: Int!) {
     thread(id: $id) {
       id
       lastMessageAt

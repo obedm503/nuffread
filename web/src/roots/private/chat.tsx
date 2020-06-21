@@ -61,7 +61,7 @@ class Threads extends React.PureComponent<
               {thread.other.name}: {thread.listing.book.title}
               <br />
               <IonText color="medium">
-                {thread.messages.items[0].content}
+                {thread.messages.items[0]?.content}
               </IonText>
             </IonLabel>
           </IonItemLink>

@@ -3,6 +3,7 @@ import { RefresherEventDetail } from '@ionic/core';
 import {
   ActionSheetButton,
   IonActionSheet,
+  IonBackButton,
   IonButton,
   IonButtons,
   IonContent,
@@ -300,6 +301,10 @@ export const Profile = React.memo(function Profile() {
       <SettingsModal isOpen={settings.isOpen} onClose={settings.handleClose} />
 
       <TopNav homeHref={false} title="Account">
+        <IonButtons slot="start">
+          <IonBackButton defaultHref="/explore" />
+        </IonButtons>
+
         <IonButtons slot="end">
           <Popover attached>
             <LogoutItem />

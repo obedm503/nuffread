@@ -1,7 +1,7 @@
 import { OnSubscriptionDataOptions } from '@apollo/react-common';
 import gql from 'graphql-tag';
 import React from 'react';
-import { MESSAGES } from '../../../queries';
+import { THREAD } from '../../../queries';
 import {
   IPaginationInput,
   IQuery,
@@ -33,7 +33,7 @@ function onSubscriptionData({
   // best effort update
   type Args = IQueryThreadArgs & IPaginationInput;
   const messagesData = readQuery<IQuery, Args>(client, {
-    query: MESSAGES,
+    query: THREAD,
     variables: { id: newMessage.threadId, offset: 0 },
   });
   if (!messagesData?.thread?.messages.items) {
@@ -42,7 +42,7 @@ function onSubscriptionData({
 
   const messages = messagesData?.thread?.messages.items;
   client.writeQuery({
-    query: MESSAGES,
+    query: THREAD,
     variables: { id: newMessage.threadId, offset: 0 },
     data: {
       ...messagesData,

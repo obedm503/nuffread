@@ -18,9 +18,9 @@ import gql from 'graphql-tag';
 import { personCircleOutline, sendSharp } from 'ionicons/icons';
 import * as React from 'react';
 import { Redirect } from 'react-router';
-import { Container, IonSubmit, ListWrapper, NavBar } from '../../components';
+import { Container, IonSubmit, NavBar } from '../../components';
 import { TextArea } from '../../components/controls/text-area';
-import { MESSAGES } from '../../queries';
+import { THREAD } from '../../queries';
 import {
   IMessage,
   IMutationSendMessageArgs,
@@ -80,11 +80,7 @@ const Messages = React.memo<Pick<QueryResult<IQuery>, 'data' | 'loading'>>(
     }
 
     if (!messages.length) {
-      return (
-        <IonItem>
-          <IonLabel>You have not saved any posts.</IonLabel>
-        </IonItem>
-      );
+      return null;
     }
 
     const otherId = data.thread.otherId;
@@ -146,7 +142,7 @@ const useData = (
   const [
     load,
     { data, loading, error, called, fetchMore, subscribeToMore },
-  ] = useLazyQuery<IQueryThreadArgs & IPaginationInput>(MESSAGES, {
+  ] = useLazyQuery<IQueryThreadArgs & IPaginationInput>(THREAD, {
     variables: { id: threadId, offset: 0 },
     // fetchPolicy: 'cache-and-network',
   });
@@ -157,7 +153,7 @@ const useData = (
   const getMore = React.useCallback(
     async e => {
       await fetchMore<keyof (IQueryThreadArgs & IPaginationInput)>({
-        query: MESSAGES,
+        query: THREAD,
         variables: { id: threadId, offset: currentCount },
         updateQuery: (prev, { fetchMoreResult }) => {
           if (!fetchMoreResult || !fetchMoreResult.thread || !prev.thread) {
@@ -235,7 +231,7 @@ export const Thread = React.memo<{
         IQuery,
         IQueryThreadArgs & IPaginationInput
       >(client, {
-        query: MESSAGES,
+        query: THREAD,
         variables: { id: threadId, offset: 0 },
       });
       if (!messagesData?.thread?.messages.items) {
@@ -243,7 +239,7 @@ export const Thread = React.memo<{
       }
       const messages = messagesData?.thread?.messages.items;
       client.writeQuery({
-        query: MESSAGES,
+        query: THREAD,
         variables: { id: threadId, offset: 0 },
         data: {
           ...messagesData,

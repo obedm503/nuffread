@@ -18,21 +18,28 @@ import {
   IonRefresherContent,
   IonSkeletonText,
   IonText,
-  useIonViewWillEnter
+  useIonViewWillEnter,
 } from '@ionic/react';
 import gql from 'graphql-tag';
 import { cartOutline } from 'ionicons/icons';
 import range from 'lodash/range';
 import React from 'react';
 import { Redirect } from 'react-router';
-import { Container, Error, ListWrapper, NavBar, SafeImg } from '../components';
-import { SaveListingButton } from '../components/save-listing-button';
+import {
+  Container,
+  Error,
+  GoToChat,
+  ListWrapper,
+  NavBar,
+  SafeImg,
+  SaveListingButton,
+} from '../components';
 import { BOOK, LISTING } from '../queries';
 import {
   IBook,
   IPaginatedListings,
   IPaginationInput,
-  IQueryBookArgs
+  IQueryBookArgs,
 } from '../schema.gql';
 import { useLazyQuery, useRouter } from '../state';
 import { conditionNames, paginated, queryLoading } from '../util';
@@ -154,6 +161,7 @@ const Deals: React.FC<{ listings?: IPaginatedListings; loading: boolean }> = ({
           </IonLabel>
 
           <IonButtons slot="end">
+            <GoToChat listing={listing} />
             <SaveListingButton listing={listing} />
           </IonButtons>
         </IonItem>

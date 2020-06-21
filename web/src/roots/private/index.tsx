@@ -19,7 +19,7 @@ import { Book } from '../../pages/book';
 import { Explore } from '../../pages/explore';
 import { Listing } from '../../pages/listing';
 import { Search } from '../../pages/search';
-import { useRootValidator } from '../../state';
+import { useIsAdmin, useRootValidator } from '../../state';
 import { RootPageProps } from '../../util.types';
 import { Cart } from './cart';
 import { Chat } from './chat';
@@ -77,6 +77,7 @@ const Private = React.memo(function Private() {
     e.preventDefault();
     setModalOpen(true);
   }, []);
+  const isAdmin = useIsAdmin();
 
   if (!useRootValidator({ validRoots })) {
     return <Redirect to="/explore" />;
@@ -93,9 +94,11 @@ const Private = React.memo(function Private() {
             <IonIcon icon={homeOutline} ariaLabel="Explore" />
           </IonTabButton>
 
-          <IonTabButton tab="cart" href="/cart">
-            <IonIcon icon={cartOutline} ariaLabel="Cart" />
-          </IonTabButton>
+          {isAdmin ? (
+            <IonTabButton tab="cart" href="/cart">
+              <IonIcon icon={cartOutline} ariaLabel="Cart" />
+            </IonTabButton>
+          ) : null}
 
           <IonTabButton onClick={showModal}>
             {isOpen ? <CreateModal isOpen onClose={closeModal} /> : null}
@@ -103,13 +106,17 @@ const Private = React.memo(function Private() {
             <IonIcon icon={addOutline} ariaLabel="Create" />
           </IonTabButton>
 
-          <IonTabButton tab="chat" href="/chat">
-            <IonIcon icon={chatbubblesOutline} ariaLabel="Chat" />
-          </IonTabButton>
+          {!isAdmin ? (
+            <IonTabButton tab="cart" href="/cart">
+              <IonIcon icon={cartOutline} ariaLabel="Cart" />
+            </IonTabButton>
+          ) : null}
 
-          {/* <IonTabButton tab="profile" href="/profile">
-          <IonIcon icon={person} ariaLabel="Profile" />
-        </IonTabButton> */}
+          {isAdmin ? (
+            <IonTabButton tab="chat" href="/chat">
+              <IonIcon icon={chatbubblesOutline} ariaLabel="Chat" />
+            </IonTabButton>
+          ) : null}
         </IonTabBar>
       </IonTabs>
     </>
