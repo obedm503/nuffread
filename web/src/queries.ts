@@ -106,6 +106,10 @@ export const GET_LISTING = gql`
     listing(id: $id) {
       ...BasicListing
 
+      user {
+        id
+      }
+
       book {
         id
         listings {
@@ -136,6 +140,41 @@ export const CREATE_LISTING = gql`
       }
     ) {
       ...BasicListing
+    }
+  }
+`;
+
+export const THREAD = gql`
+  query GetThread($id: ID!, $offset: Int!) {
+    thread(id: $id) {
+      id
+      lastMessage {
+        id
+        createdAt
+        content
+      }
+      listing {
+        id
+        book {
+          id
+          title
+        }
+      }
+      otherId
+      other {
+        id
+        email
+        name
+      }
+      messages(paginate: { limit: 20, offset: $offset }) {
+        totalCount
+        items {
+          id
+          createdAt
+          content
+          fromId
+        }
+      }
     }
   }
 `;

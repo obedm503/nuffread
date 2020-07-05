@@ -15,7 +15,6 @@ import { Error, TrackApp } from './components';
 import Join from './pages/join';
 import { UserLogin } from './pages/login';
 import ResetPassword from './pages/reset-password';
-import Landing from './roots/landing';
 import Private from './roots/private';
 import Public from './roots/public';
 import { ISystemUser } from './schema.gql';
@@ -64,12 +63,11 @@ const globalRoutes: readonly RouteProps[] = [
   { path: '/reset', component: ResetPassword },
 ];
 
-const isReady = process.env.REACT_APP_MODE === 'ready';
 const rootPage = memoizeOne(function (
   user?: ISystemUser,
 ): React.ComponentType<RootPageProps> {
   if (!user) {
-    return isReady ? Public : Landing;
+    return Public;
   }
   return Private;
 });

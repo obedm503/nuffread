@@ -1,46 +1,46 @@
-const production = process.env.NODE_ENV === 'production';
+const isProduction = process.env.NODE_ENV === 'production';
 const { join, resolve } = require('path');
 require('dotenv-safe').config({
-  path: production ? undefined : resolve(__dirname, '../.env'),
+  path: isProduction ? undefined : resolve(__dirname, '../.env'),
   example: resolve(__dirname, '../.env.example'),
 });
 require('reflect-metadata');
 
-import { ApolloError, ApolloServer } from 'apollo-server-express';
-import * as pgSession from 'connect-pg-simple';
-import * as express from 'express';
-import * as session from 'express-session';
+import pgSession from 'connect-pg-simple';
+import express from 'express';
+import session from 'express-session';
+import { createServer } from 'http';
+import ms from 'ms';
 import { promisify } from 'util';
 import { CONFIG } from './config';
-import { getContext, getSchema } from './schema';
+import { getApollo } from './graphql';
 import { logger } from './util';
-import { complexityPlugin } from './util/complexity';
-import * as db from './util/db';
-import { BadRequest, InternalError } from './util/error';
+import * as db from './db';
 
 const Store = pgSession(session);
+const sessionParser = session({
+  secret: process.env.SECRET!,
+  resave: false,
+  rolling: true,
+  saveUninitialized: false,
+  name: 'session',
+  cookie: { maxAge: ms('1 week') },
+  store: new Store({
+    conObject: {
+      connectionString: process.env.DATABASE_URL,
+      ssl: { rejectUnauthorized: false },
+    },
+  }),
+});
 
 const app = express()
   .disable('etag')
   .disable('x-powered-by')
   .set('trust proxy', true)
-  .use(
-    session({
-      secret: process.env.SECRET!,
-      resave: false,
-      saveUninitialized: false,
-      name: 'session',
-      store: new Store({
-        conObject: {
-          connectionString: process.env.DATABASE_URL,
-          ssl: { rejectUnauthorized: false },
-        },
-      }),
-    }),
-  )
+  .use(sessionParser)
   .get('/_health', (req, res) => res.status(200).send('ok'));
 
-if (production) {
+if (isProduction) {
   // force ssl
   app.use((req, res, next) => {
     if (
@@ -55,39 +55,26 @@ if (production) {
 
 const port = Number(process.env.PORT) || 8081;
 
-const schema = getSchema();
-const apollo = new ApolloServer({
-  tracing: !production,
-  context: ({ req, res }) => getContext({ req, res }),
-  schema,
-  formatError(e) {
-    const { message, path, extensions, originalError } = e;
-    logger.error({ message, path });
-
-    if (!production) {
-      return e;
-    }
-
-    if (extensions?.code === 'BAD_USER_INPUT') {
-      return new BadRequest();
-    }
-
-    if (originalError instanceof ApolloError) {
-      return e;
-    }
-
-    return new InternalError();
-  },
-  plugins: [complexityPlugin(schema)],
-});
+const apollo = getApollo();
+const httpServer = createServer(app);
 
 apollo.applyMiddleware({
   app,
   path: '/',
   cors: {
     credentials: true,
-    origin: production ? CONFIG.origin : true,
+    origin: isProduction ? CONFIG.origin : true,
   },
+});
+apollo.installSubscriptionHandlers(httpServer);
+// parse websocket cookies
+httpServer.on('upgrade', (req, socket) => {
+  logger.info('new socket connection');
+  sessionParser(req as any, {} as any, e => {
+    if (e) {
+      logger.error(e, 'error parsing cookies');
+    }
+  });
 });
 
 (async () => {
@@ -98,8 +85,13 @@ apollo.applyMiddleware({
   await con.runMigrations({ transaction: 'all' });
   // await con.synchronize();
 
-  const server = app.listen(port, () => {
-    logger.info(`started server on port ${port}`);
+  const server = httpServer.listen(port, () => {
+    logger.info(
+      `🚀 Server ready at http://localhost:${port}${apollo.graphqlPath}`,
+    );
+    logger.info(
+      `🚀 Subscriptions ready at ws://localhost:${port}${apollo.subscriptionsPath}`,
+    );
   });
 
   const close = async () => {

@@ -24,7 +24,7 @@ generates:
       scalars:
         Date: string
 
-  api/src/schema.gql.ts:
+  api/src/graphql/schema.gql.ts:
     plugins:
       - typescript
       - typescript-resolvers
@@ -36,7 +36,7 @@ generates:
         Date: Date
 
       # resolvers config
-      contextType: ./util/types#IContext
+      contextType: ../types#IContext
       rootValueType: never
       mappers:
         PaginationInput: IPaginationInput
@@ -45,10 +45,14 @@ generates:
         ListingInput: IListingInput
         GoogleBook: IGoogleBook
 
-        PaginatedBooks: ./util/types#PaginatedBooks
-        PaginatedListings: ./util/types#PaginatedListings
-        Admin: ./entities#Admin
-        Listing: ./entities#Listing
-        Book: ./entities#Book
-        User: ./entities#User
-        School: ./entities#School
+        Admin: ../db/entities#Admin
+        Listing: ../db/entities#Listing
+        PaginatedListings: ../types#PaginatedListings
+        Book: ../db/entities#Book
+        PaginatedBooks: ../types#PaginatedBooks
+        User: ../db/entities#User
+        School: ../db/entities#School
+        Thread: ../db/entities#Thread
+        PaginatedThreads: ../types#PaginatedThreads
+        Message: ../db/entities#Message
+        PaginatedMessages: ../types#PaginatedMessages

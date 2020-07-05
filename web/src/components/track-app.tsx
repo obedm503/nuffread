@@ -8,7 +8,7 @@ import {
   IonGrid,
   IonItem,
   IonPage,
-  IonRow,
+  IonRow
 } from '@ionic/react';
 import { UnregisterCallback } from 'history';
 import React from 'react';

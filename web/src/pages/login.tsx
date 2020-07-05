@@ -13,7 +13,7 @@ import {
   IonLabel,
   IonList,
   IonPage,
-  IonRow,
+  IonRow
 } from '@ionic/react';
 import { Form, Formik } from 'formik';
 import gql from 'graphql-tag';
@@ -28,7 +28,7 @@ import {
   Email,
   IonSubmit,
   Password,
-  TopNav,
+  TopNav
 } from '../components';
 import { IMutationLoginArgs, SystemUserType } from '../schema.gql';
 import { tracker, useMutation, useUser } from '../state';

@@ -8,6 +8,9 @@ import { HelmetProvider } from 'react-helmet-async';
 import { App, createCache } from './app';
 import * as serviceWorker from './serviceWorker';
 import { tracker } from './state';
+import { WebSocketLink } from 'apollo-link-ws';
+import { split } from 'apollo-link';
+import { getMainDefinition } from 'apollo-utilities';
 
 const errorLink = onError(({ graphQLErrors, networkError }) => {
   if (graphQLErrors) {
@@ -22,13 +25,31 @@ const errorLink = onError(({ graphQLErrors, networkError }) => {
     });
   }
 });
+
 const httpLink = createHttpLink({
   uri: process.env.REACT_APP_API,
   credentials: 'include',
 });
+const wsLink = new WebSocketLink({
+  uri: process.env.REACT_APP_WS!,
+  options: { reconnect: true },
+});
 
 const client = new ApolloClient({
-  link: errorLink.concat(httpLink),
+  link: errorLink.concat(
+    // split based on operation type
+    split(
+      ({ query }) => {
+        const definition = getMainDefinition(query);
+        return (
+          definition.kind === 'OperationDefinition' &&
+          definition.operation === 'subscription'
+        );
+      },
+      wsLink,
+      httpLink,
+    ),
+  ),
   cache: createCache(),
 });
 

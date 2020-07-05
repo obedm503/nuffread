@@ -17,6 +17,7 @@ import React from 'react';
 import { IListing, ISchool } from '../schema.gql';
 import { conditionNames } from '../util';
 import { IListingPreview } from '../util.types';
+import { GoToChat } from './go-to-chat';
 import { RelativeDate } from './relative-date';
 import { SafeImg } from './safe-img';
 import { SaveListingButton } from './save-listing-button';
@@ -95,6 +96,7 @@ export const BookCard = React.memo<BookCardProps>(function BookCard({
       <IonItem lines="inset">
         {listing.__typename === 'Listing' ? (
           <IonButtons slot="end">
+            <GoToChat listing={listing} />
             <SaveListingButton listing={listing} />
           </IonButtons>
         ) : null}

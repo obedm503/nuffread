@@ -44,6 +44,7 @@ type AppEvents = {
   CONFIRM_EMAIL: {};
   SAVE_POST: { listingId: string };
   UNSAVE_POST: { listingId: string };
+  START_THREAD: { listingId: string };
 };
 type EventsMap = ErrorEventsMap & AppEvents;
 

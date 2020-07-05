@@ -1,5 +1,58 @@
 scalar Date
 
+
+type Query {
+  searchBooks(query: String, paginate: PaginationInput): PaginatedBooks!
+  search(
+    query: String
+    maxPrice: Int
+    minPrice: Int
+    paginate: PaginationInput
+  ): PaginatedListings!
+  top(paginate: PaginationInput): PaginatedListings!
+
+  me: SystemUser
+
+  listing(id: ID!): Listing
+  book(id: ID!): Book
+
+  users: [User!]!
+  schools: [School!]!
+  sessions: [Session!]!
+
+  searchGoogle(query: String!): [GoogleBook!]
+  googleBook(id: ID!): GoogleBook!
+
+  thread(id: ID!): Thread
+}
+
+type Mutation {
+  register(email: String!, password: String!): User!
+  resendConfirmEmail(email: String!): Boolean!
+  confirm(code: String!): Boolean!
+  login(email: String!, password: String!, type: SystemUserType!): SystemUser!
+  logout: Boolean!
+  requestResetPassword(email: String!): Boolean!
+  resetPassword(token: String!, password: String!): Boolean!
+
+  setSchoolName(id: ID!, name: String!): School!
+
+  createListing(listing: ListingInput!): Listing!
+  deleteListing(id: ID!): Boolean
+  saveListing(listingId: ID!, saved: Boolean!): Listing!
+  sellListing(listingId: ID!, price: Int!): Listing!
+  setPrice(listingId: ID!, price: Int!): Listing!
+
+  toggleUserTrackable: User!
+
+  startThread(listingId: ID!): Thread!
+  sendMessage(threadId: ID!, content: String!): Message!
+}
+
+type Subscription {
+  newMessage: Message!
+}
+
 enum SystemUserType {
   ADMIN
   USER
@@ -26,49 +79,6 @@ type PaginatedBooks {
   totalCount: Int!
 }
 
-type Query {
-  searchBooks(query: String, paginate: PaginationInput): PaginatedBooks!
-  search(
-    query: String
-    maxPrice: Int
-    minPrice: Int
-    paginate: PaginationInput
-  ): PaginatedListings!
-  top(paginate: PaginationInput): PaginatedListings!
-
-  me: SystemUser
-
-  listing(id: ID!): Listing
-  book(id: ID!): Book
-
-  users: [User!]!
-  schools: [School!]!
-  sessions: [Session!]!
-
-  searchGoogle(query: String!): [GoogleBook!]
-  googleBook(id: ID!): GoogleBook!
-}
-
-type Mutation {
-  register(email: String!, password: String!): User!
-  resendConfirmEmail(email: String!): Boolean!
-  confirm(code: String!): Boolean!
-  login(email: String!, password: String!, type: SystemUserType!): SystemUser!
-  logout: Boolean!
-  requestResetPassword(email: String!): Boolean!
-  resetPassword(token: String!, password: String!): Boolean!
-
-  setSchoolName(id: ID!, name: String!): School!
-
-  createListing(listing: ListingInput!): Listing!
-  deleteListing(id: ID!): Boolean
-  saveListing(listingId: ID!, saved: Boolean!): Listing!
-  sellListing(listingId: ID!, price: Int!): Listing!
-  setPrice(listingId: ID!, price: Int!): Listing!
-
-  toggleUserTrackable: User!
-}
-
 type User {
   id: ID!
 
@@ -84,6 +94,8 @@ type User {
   confirmedAt: Date
   schoolName: String @deprecated(reason: "use school.name instead")
   school: School!
+
+  threads(paginate: PaginationInput): PaginatedThreads!
 }
 
 input UserInput {
@@ -165,4 +177,45 @@ type Session {
   expiresAt: Date!
 
   user: SystemUser!
+}
+
+# chat system
+type Thread {
+  id: ID!
+
+  # TODO: these may be unnsessary
+  sellerId: ID!
+  seller: User!
+  buyerId: ID!
+  buyer: User!
+
+  otherId: ID!
+  other: User!
+
+  listingId: ID!
+  listing: Listing!
+
+  lastMessage: Message
+  messages(paginate: PaginationInput): PaginatedMessages!
+}
+type PaginatedThreads {
+  items: [Thread!]!
+  totalCount: Int!
+}
+type Message {
+  id: ID!
+  createdAt: Date!
+
+  threadId: ID!
+  thread: Thread!
+  fromId: ID!
+  from: User!
+  toId: ID!
+  to: User!
+
+  content: String!
+}
+type PaginatedMessages {
+  items: [Message!]!
+  totalCount: Int!
 }

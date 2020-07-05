@@ -10,3 +10,13 @@ export function useUser() {
 export function useLoggedIn(): boolean {
   return !!useUser();
 }
+
+export function useIsAdmin() {
+  const me = useUser();
+
+  return (
+    me?.__typename === 'User' &&
+    (me.email === 'bdmrnddr@dordt.edu' ||
+      me.email === 'nam33@students.calvin.edu')
+  );
+}

@@ -441,3 +441,103 @@ ion-modal {
     }
   }
 }
+
+@mixin messages-width {
+  @each $name, $pixels in $ionic-breakpoints {
+    @if $pixels > 0 {
+      @include from($name) {
+        --messages-width: calc(60vw - #{$pixels / 2});
+        @content;
+      }
+    }
+  }
+}
+ion-list.messages {
+  display: flex;
+  flex-direction: column-reverse;
+  overflow: auto;
+  padding: 0;
+
+  .group {
+    display: flex;
+    align-items: flex-end;
+    margin-top: 10px;
+    @include messages-width {
+      max-width: unquote('min(40vw, var(--messages-width) * 3)');
+    }
+
+    &:first-of-type {
+      padding-bottom: 10px;
+    }
+    &:last-of-type {
+      padding-top: 10px;
+    }
+
+    &.me {
+      padding-right: 10px;
+      margin-left: auto;
+      @include messages-width {
+        margin-right: var(--messages-width);
+      }
+    }
+    &.other {
+      padding-left: 10px;
+      @include messages-width {
+        margin-left: var(--messages-width);
+      }
+      margin-right: auto;
+    }
+
+    ion-avatar {
+      height: 2rem;
+      width: 2rem;
+      font-size: 2rem;
+      margin: 0 10px 10px 0;
+    }
+
+    $inner-radius: 5px;
+    $outer-radius: 10px;
+
+    > .message-list {
+      width: 100%;
+      max-width: 60vw;
+
+      > ion-item {
+        width: 100%;
+        padding: 1px 0;
+        border-radius: $inner-radius;
+      }
+
+      // first element in group
+      > ion-item:first-of-type {
+        border-top-left-radius: $outer-radius;
+        border-top-right-radius: $outer-radius;
+      }
+      // last element in group
+      > ion-item:last-of-type {
+        border-bottom-left-radius: $outer-radius;
+        border-bottom-right-radius: $outer-radius;
+      }
+    }
+
+    // center edge of message uses $outer-radius
+    // like fb messenger
+    &.me > .message-list > ion-item {
+      border-top-left-radius: $outer-radius;
+      border-bottom-left-radius: $outer-radius;
+    }
+
+    &.other > .message-list > ion-item {
+      border-top-right-radius: $outer-radius;
+      border-bottom-right-radius: $outer-radius;
+    }
+  }
+}
+
+ion-grid.gapless {
+  padding: 0;
+
+  > ion-row > ion-col {
+    padding: 0;
+  }
+}

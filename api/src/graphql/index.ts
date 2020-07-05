@@ -1,0 +1,1 @@
+export { getApollo } from './apollo';

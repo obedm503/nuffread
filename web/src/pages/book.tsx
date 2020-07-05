@@ -25,8 +25,15 @@ import { cartOutline } from 'ionicons/icons';
 import range from 'lodash/range';
 import React from 'react';
 import { Redirect } from 'react-router';
-import { Container, Error, ListWrapper, SafeImg, TopNav } from '../components';
-import { SaveListingButton } from '../components/save-listing-button';
+import {
+  Container,
+  Error,
+  GoToChat,
+  ListWrapper,
+  NavBar,
+  SafeImg,
+  SaveListingButton,
+} from '../components';
 import { BOOK, LISTING } from '../queries';
 import {
   IBook,
@@ -154,6 +161,7 @@ const Deals: React.FC<{ listings?: IPaginatedListings; loading: boolean }> = ({
           </IonLabel>
 
           <IonButtons slot="end">
+            <GoToChat listing={listing} />
             <SaveListingButton listing={listing} />
           </IonButtons>
         </IonItem>
@@ -291,11 +299,15 @@ export const Book = React.memo<{
 
   return (
     <IonPage>
-      <TopNav homeHref={false} title="Deals">
-        <IonButtons slot="start">
-          <IonBackButton defaultHref={defaultHref || undefined} />
-        </IonButtons>
-      </TopNav>
+      <NavBar
+        title="Deals"
+        start={
+          <IonButtons slot="start">
+            <IonBackButton defaultHref={defaultHref || undefined} />
+          </IonButtons>
+        }
+        end={null}
+      />
 
       <IonContent>
         <IonRefresher slot="fixed" onIonRefresh={refresh}>
