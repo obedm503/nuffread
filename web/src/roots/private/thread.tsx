@@ -7,6 +7,8 @@ import {
   IonContent,
   IonFooter,
   IonIcon,
+  IonInfiniteScroll,
+  IonInfiniteScrollContent,
   IonItem,
   IonLabel,
   IonList,
@@ -18,7 +20,8 @@ import gql from 'graphql-tag';
 import { personCircleOutline, sendSharp } from 'ionicons/icons';
 import * as React from 'react';
 import { Redirect } from 'react-router';
-import { Container, IonSubmit, NavBar } from '../../components';
+import { object, string } from 'yup';
+import { IonSubmit, NavBar } from '../../components';
 import { TextArea } from '../../components/controls/text-area';
 import { THREAD } from '../../queries';
 import {
@@ -51,7 +54,7 @@ function groupMessages(
 
     if (currentUserId === msg.fromId) {
       // same user
-      grouped[grouped.length - 1].messages.push(msg);
+      grouped[grouped.length - 1].messages.unshift(msg);
     } else {
       // other user
       grouped.push({ id: msg.id, fromId: msg.fromId, messages: [msg] });
@@ -123,6 +126,24 @@ const Messages = React.memo<Pick<QueryResult<IQuery>, 'data' | 'loading'>>(
   },
 );
 
+const MORE_MESSAGES = gql`
+  query GetMoreMessages($id: ID!, $offset: Int!) {
+    thread(id: $id) {
+      id
+      lastMessageAt
+      messages(paginate: { limit: 50, offset: $offset }) {
+        totalCount
+        items {
+          id
+          createdAt
+          content
+          fromId
+        }
+      }
+    }
+  }
+`;
+
 function paginated(
   messages?: IPaginatedMessages,
 ): {
@@ -139,10 +160,9 @@ function paginated(
 const useData = (
   threadId: string,
 ): Omit<PaginatedRefresh<IQuery>, 'refresh'> => {
-  const [
-    load,
-    { data, loading, error, called, fetchMore, subscribeToMore },
-  ] = useLazyQuery<IQueryThreadArgs & IPaginationInput>(THREAD, {
+  const [load, { data, loading, error, called, fetchMore }] = useLazyQuery<
+    IQueryThreadArgs & IPaginationInput
+  >(THREAD, {
     variables: { id: threadId, offset: 0 },
     // fetchPolicy: 'cache-and-network',
   });
@@ -153,7 +173,7 @@ const useData = (
   const getMore = React.useCallback(
     async e => {
       await fetchMore<keyof (IQueryThreadArgs & IPaginationInput)>({
-        query: THREAD,
+        query: MORE_MESSAGES,
         variables: { id: threadId, offset: currentCount },
         updateQuery: (prev, { fetchMoreResult }) => {
           if (!fetchMoreResult || !fetchMoreResult.thread || !prev.thread) {
@@ -207,6 +227,10 @@ const SEND_MESSAGE = gql`
     }
   }
 `;
+
+const messageSchema = object().shape({
+  content: string().required().min(1).max(300),
+});
 
 export const Thread = React.memo<{
   threadId: string;
@@ -286,10 +310,16 @@ export const Thread = React.memo<{
     return <Redirect to={defaultHref} />;
   }
 
+  const bookTitle = data?.thread?.listing?.book?.title;
+  const otherName = data?.thread?.other.name;
+  const name =
+    (otherName && bookTitle && `${otherName}: ${bookTitle}`) || undefined;
+
   return (
     <IonPage>
       <NavBar
-        title="Deals"
+        title={name || ''}
+        name={name}
         start={
           <IonButtons slot="start">
             <IonBackButton defaultHref={defaultHref} />
@@ -299,27 +329,29 @@ export const Thread = React.memo<{
       />
 
       <IonContent ref={content}>
-        {/* TODO: fix grid on desktop */}
-        <Container className="message-grid">
-          {/* {canFetchMore ? (
-          <IonInfiniteScroll onIonInfinite={fetchMore}>
-          {loadingMessages}
-          </IonInfiniteScroll>
-        ) : null} */}
-          <IonList
-            className="messages"
-            lines="none"
-            style={{ height: height ? `${height - 4}px` : '' }}
-          >
-            <Messages data={data} loading={loading} />
-          </IonList>
-        </Container>
+        <IonList
+          className="messages"
+          lines="none"
+          style={{ height: height ? `${height}px` : '' }}
+        >
+          <Messages data={data} loading={loading} />
+
+          {canFetchMore ? (
+            <IonInfiniteScroll
+              onIonInfinite={fetchMore}
+              position="top"
+              threshold="20%"
+            >
+              <IonInfiniteScrollContent />
+            </IonInfiniteScroll>
+          ) : null}
+        </IonList>
       </IonContent>
 
       <IonFooter>
         <Formik<{ content: string }>
           onSubmit={onSubmit}
-          // validationSchema={resetSchema}
+          validationSchema={messageSchema}
           initialValues={{ content: '' }}
         >
           <Form>

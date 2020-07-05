@@ -1,13 +1,18 @@
 import { IonCol, IonGrid, IonRow } from '@ionic/react';
 import React, { CSSProperties } from 'react';
+import { classes } from '../util';
 
 export const Container = React.memo<{
   className?: string;
   children: React.ReactNode;
-  style?: CSSProperties
-}>(function Container({ className, children, style }) {
+  style?: CSSProperties;
+  gapless?: boolean;
+}>(function Container({ className, children, style, gapless }) {
   return (
-    <IonGrid className={className} style={style}>
+    <IonGrid
+      className={classes(className, gapless ? 'gapless' : '')}
+      style={style}
+    >
       <IonRow>
         <IonCol
           size="12"

@@ -1,9 +1,7 @@
 import { QueryResult } from '@apollo/react-common';
 import { RefresherEventDetail } from '@ionic/core';
 import {
-  IonAvatar,
   IonContent,
-  IonIcon,
   IonInfiniteScroll,
   IonItem,
   IonLabel,
@@ -11,17 +9,23 @@ import {
   IonRefresher,
   IonRefresherContent,
   IonText,
-  useIonViewWillEnter
+  useIonViewWillEnter,
 } from '@ionic/react';
 import gql from 'graphql-tag';
-import { personCircleOutline } from 'ionicons/icons';
 import * as React from 'react';
-import { Container, IonItemLink, ListingCard, ListWrapper, NavBar } from '../../components';
+import {
+  Container,
+  IonItemLink,
+  ListingCard,
+  ListWrapper,
+  NavBar,
+  SafeImg,
+} from '../../components';
 import {
   IPaginatedThreads,
   IPaginationInput,
   IQuery,
-  IThread
+  IThread,
 } from '../../schema.gql';
 import { useLazyQuery } from '../../state';
 import { queryLoading } from '../../util';
@@ -51,12 +55,16 @@ class Threads extends React.PureComponent<
       <ListWrapper>
         {data.me.threads.items.map(thread => (
           <IonItemLink key={thread.id} href={`/chat/${thread.id}`}>
-            <IonAvatar slot="start" style={{ height: '5rem', width: '5rem' }}>
-              <IonIcon
-                style={{ fontSize: '5rem' }}
-                icon={personCircleOutline}
-              />
-            </IonAvatar>
+            <SafeImg
+              slot="start"
+              src={thread.listing.book.thumbnail || undefined}
+              alt={[
+                thread.listing.book.title,
+                thread.listing.book.subTitle,
+              ].join(' ')}
+              placeholder="/img/book.png"
+              style={{ width: '5rem', fontSize: '5rem', marginRight: '20px' }}
+            />
             <IonLabel className="ion-text-wrap">
               {thread.other.name}: {thread.listing.book.title}
               <br />
@@ -89,6 +97,7 @@ const THREADS = gql`
               book {
                 id
                 title
+                thumbnail
               }
             }
             other {
@@ -204,7 +213,7 @@ export const Chat = React.memo(function Chat() {
           <IonRefresherContent />
         </IonRefresher>
 
-        <Container>
+        <Container gapless>
           <Threads loading={loading} data={data} />
 
           {canFetchMore ? (

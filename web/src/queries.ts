@@ -149,6 +149,13 @@ export const THREAD = gql`
     thread(id: $id) {
       id
       lastMessageAt
+      listing {
+        id
+        book {
+          id
+          title
+        }
+      }
       otherId
       other {
         id

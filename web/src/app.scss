@@ -442,11 +442,14 @@ ion-modal {
   }
 }
 
-ion-grid.message-grid {
-  padding: 0;
-
-  ion-col {
-    padding: 0;
+@mixin messages-width {
+  @each $name, $pixels in $ionic-breakpoints {
+    @if $pixels > 0 {
+      @include from($name) {
+        --messages-width: calc(60vw - #{$pixels / 2});
+        @content;
+      }
+    }
   }
 }
 ion-list.messages {
@@ -458,8 +461,10 @@ ion-list.messages {
   .group {
     display: flex;
     align-items: flex-end;
-    width: 80%;
     margin-top: 10px;
+    @include messages-width {
+      max-width: unquote('min(40vw, var(--messages-width) * 3)');
+    }
 
     &:first-of-type {
       padding-bottom: 10px;
@@ -469,11 +474,18 @@ ion-list.messages {
     }
 
     &.me {
-      margin-left: auto;
       padding-right: 10px;
+      margin-left: auto;
+      @include messages-width {
+        margin-right: var(--messages-width);
+      }
     }
     &.other {
       padding-left: 10px;
+      @include messages-width {
+        margin-left: var(--messages-width);
+      }
+      margin-right: auto;
     }
 
     ion-avatar {
@@ -488,6 +500,7 @@ ion-list.messages {
 
     > .message-list {
       width: 100%;
+      max-width: 60vw;
 
       > ion-item {
         width: 100%;
@@ -518,5 +531,13 @@ ion-list.messages {
       border-top-right-radius: $outer-radius;
       border-bottom-right-radius: $outer-radius;
     }
+  }
+}
+
+ion-grid.gapless {
+  padding: 0;
+
+  > ion-row > ion-col {
+    padding: 0;
   }
 }

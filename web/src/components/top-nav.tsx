@@ -3,7 +3,7 @@ import {
   IonHeader,
   IonIcon,
   IonTitle,
-  IonToolbar
+  IonToolbar,
 } from '@ionic/react';
 import { personCircleOutline, searchOutline } from 'ionicons/icons';
 import * as React from 'react';
@@ -67,17 +67,18 @@ export class NavBar extends React.PureComponent<{
   start?: React.ReactNode;
   end?: React.ReactNode;
   children?: never;
+  name?: string;
   title: string;
 }> {
   render() {
-    const { title, start, end } = this.props;
+    const { name = 'nuffread', title, start, end } = this.props;
     return (
       <IonHeader>
         <Container className="no-padding">
           <IonToolbar color="white">
             {start}
 
-            <IonTitle color="primary">nuffread</IonTitle>
+            <IonTitle color="primary">{name}</IonTitle>
             <Helmet>
               <title>{title} | nuffread</title>
             </Helmet>
