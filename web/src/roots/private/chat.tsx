@@ -68,9 +68,7 @@ class Threads extends React.PureComponent<
             <IonLabel className="ion-text-wrap">
               {thread.other.name}: {thread.listing.book.title}
               <br />
-              <IonText color="medium">
-                {thread.messages.items[0]?.content}
-              </IonText>
+              <IonText color="medium">{thread.lastMessage?.content}</IonText>
             </IonLabel>
           </IonItemLink>
         ))}
@@ -90,7 +88,11 @@ const THREADS = gql`
           totalCount
           items {
             id
-            lastMessageAt
+            lastMessage {
+              id
+              createdAt
+              content
+            }
             listingId
             listing {
               id

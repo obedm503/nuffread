@@ -130,7 +130,11 @@ const MORE_MESSAGES = gql`
   query GetMoreMessages($id: ID!, $offset: Int!) {
     thread(id: $id) {
       id
-      lastMessageAt
+      lastMessage {
+        id
+        createdAt
+        content
+      }
       messages(paginate: { limit: 50, offset: $offset }) {
         totalCount
         items {
@@ -269,6 +273,7 @@ export const Thread = React.memo<{
           ...messagesData,
           thread: {
             ...messagesData.thread,
+            lastMessage: newMessage,
             messages: {
               ...messagesData.thread.messages,
               totalCount: messagesData.thread.messages.totalCount + 1,

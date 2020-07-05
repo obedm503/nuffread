@@ -148,7 +148,11 @@ export const THREAD = gql`
   query GetThread($id: ID!, $offset: Int!) {
     thread(id: $id) {
       id
-      lastMessageAt
+      lastMessage {
+        id
+        createdAt
+        content
+      }
       listing {
         id
         book {
