@@ -18,7 +18,6 @@ import {
   IonRefresherContent,
   IonSkeletonText,
   IonText,
-  useIonViewWillEnter,
 } from '@ionic/react';
 import gql from 'graphql-tag';
 import { cartOutline } from 'ionicons/icons';
@@ -33,6 +32,7 @@ import {
   NavBar,
   SafeImg,
   SaveListingButton,
+  useWillEnter,
 } from '../components';
 import { BOOK, LISTING } from '../queries';
 import {
@@ -49,7 +49,7 @@ const BookCard = React.memo<{
   book: IBook;
 }>(function BookCard({ book }) {
   return (
-    <IonCard color="white" className="book-cover-card">
+    <IonCard color="white" className="book-card">
       <IonCardHeader>
         <IonCardTitle>{book.title}</IonCardTitle>
 
@@ -287,7 +287,7 @@ export const Book = React.memo<{
     canFetchMore,
     fetchMore,
   } = useGetBookListings({ bookId });
-  useIonViewWillEnter(load);
+  useWillEnter(load);
 
   if (error) {
     return <Error value={error} />;

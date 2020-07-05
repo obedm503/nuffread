@@ -13,7 +13,6 @@ import {
   IonPage,
   IonRefresher,
   IonRefresherContent,
-  useIonViewWillEnter,
 } from '@ionic/react';
 import {
   cashOutline,
@@ -37,6 +36,7 @@ import {
   TopNav,
   UserBasic,
   UserDetailed,
+  useWillEnter,
 } from '../../components';
 import { MY_LISTINGS } from '../../queries';
 import { IListing, IQuery } from '../../schema.gql';
@@ -279,7 +279,7 @@ export const Profile = React.memo(function Profile() {
   const [load, { loading, error, data, refetch, called }] = useLazyQuery(
     MY_LISTINGS,
   );
-  useIonViewWillEnter(load);
+  useWillEnter(load);
 
   const isLoading = queryLoading({ called, loading });
   const onRefresh = React.useCallback(

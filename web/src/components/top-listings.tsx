@@ -73,9 +73,7 @@ export const useTopListings = (): PaginatedRefresh<readonly IListing[]> => {
   }
 
   return {
-    load: React.useCallback(() => {
-      load();
-    }, [load]),
+    load,
     data: data?.top.items,
     loading: queryLoading({ called, loading }),
     canFetchMore: currentCount < totalCount,

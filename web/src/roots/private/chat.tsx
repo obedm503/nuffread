@@ -9,7 +9,6 @@ import {
   IonRefresher,
   IonRefresherContent,
   IonText,
-  useIonViewWillEnter,
 } from '@ionic/react';
 import gql from 'graphql-tag';
 import * as React from 'react';
@@ -20,6 +19,7 @@ import {
   ListWrapper,
   NavBar,
   SafeImg,
+  useWillEnter,
 } from '../../components';
 import {
   IPaginatedThreads,
@@ -191,9 +191,7 @@ const useData = (): PaginatedRefresh<IQuery> => {
   }
 
   return {
-    load: React.useCallback(() => {
-      load();
-    }, [load]),
+    load,
     data,
     loading: queryLoading({ called, loading }),
     canFetchMore: currentCount < totalCount,
@@ -204,7 +202,7 @@ const useData = (): PaginatedRefresh<IQuery> => {
 
 export const Chat = React.memo(function Chat() {
   const { load, refresh, canFetchMore, fetchMore, loading, data } = useData();
-  useIonViewWillEnter(load);
+  useWillEnter(load);
 
   return (
     <IonPage>
