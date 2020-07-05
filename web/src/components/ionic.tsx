@@ -1,4 +1,4 @@
-import { IonButton, IonItem } from '@ionic/react';
+import { IonButton, IonItem, useIonViewWillEnter } from '@ionic/react';
 import * as React from 'react';
 import { RouteComponentProps, withRouter } from 'react-router';
 
@@ -68,3 +68,8 @@ export const IonSubmit: React.FC<React.ComponentPropsWithRef<
     </IonButton>
   </>
 );
+
+export function useWillEnter(fn: () => any) {
+  const cb = React.useCallback(() => fn(), [fn]);
+  useIonViewWillEnter(cb);
+}

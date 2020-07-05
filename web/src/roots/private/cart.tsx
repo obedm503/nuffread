@@ -8,11 +8,16 @@ import {
   IonPage,
   IonRefresher,
   IonRefresherContent,
-  useIonViewWillEnter
 } from '@ionic/react';
 import { join } from 'path';
 import * as React from 'react';
-import { Container, ListingCard, ListWrapper, NavBar } from '../../components';
+import {
+  Container,
+  ListingCard,
+  ListWrapper,
+  NavBar,
+  useWillEnter,
+} from '../../components';
 import { SAVED_LISTINGS } from '../../queries';
 import { IPaginationInput, IQuery } from '../../schema.gql';
 import { useLazyQuery, useRouter } from '../../state';
@@ -107,9 +112,7 @@ const useSavedListings = (): PaginatedRefresh<IQuery> => {
   }
 
   return {
-    load: React.useCallback(() => {
-      load();
-    }, [load]),
+    load,
     data,
     loading: queryLoading({ called, loading }),
     canFetchMore: currentCount < totalCount,
@@ -127,7 +130,7 @@ export const Cart = React.memo(function Cart() {
     loading,
     data,
   } = useSavedListings();
-  useIonViewWillEnter(load);
+  useWillEnter(load);
 
   return (
     <IonPage>

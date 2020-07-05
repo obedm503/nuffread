@@ -13,7 +13,6 @@ import {
   IonLabel,
   IonList,
   IonPage,
-  useIonViewWillEnter,
 } from '@ionic/react';
 import { Form, Formik, FormikHelpers } from 'formik';
 import gql from 'graphql-tag';
@@ -21,7 +20,7 @@ import { personCircleOutline, sendSharp } from 'ionicons/icons';
 import * as React from 'react';
 import { Redirect } from 'react-router';
 import { object, string } from 'yup';
-import { IonSubmit, NavBar } from '../../components';
+import { IonSubmit, NavBar, useWillEnter } from '../../components';
 import { TextArea } from '../../components/controls/text-area';
 import { THREAD } from '../../queries';
 import {
@@ -210,9 +209,7 @@ const useData = (
   }
 
   return {
-    load: React.useCallback(() => {
-      load();
-    }, [load]),
+    load,
     fetchMore: getMore,
     canFetchMore: currentCount < totalCount,
     loading: queryLoading({ called, loading }),
@@ -241,7 +238,7 @@ export const Thread = React.memo<{
   defaultHref: string;
 }>(function Thread({ threadId, defaultHref }) {
   const { loading, data, load, canFetchMore, fetchMore } = useData(threadId);
-  useIonViewWillEnter(load);
+  useWillEnter(load);
 
   const me = useUser();
   const client = useApolloClient();

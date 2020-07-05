@@ -5,7 +5,6 @@ import {
   IonPage,
   IonRefresher,
   IonRefresherContent,
-  useIonViewWillEnter
 } from '@ionic/react';
 import { join } from 'path';
 import React from 'react';
@@ -15,9 +14,9 @@ import {
   IonButtonLink,
   ListingCard,
   Listings,
-
-
-  NavBar, useTopListings
+  NavBar,
+  useTopListings,
+  useWillEnter,
 } from '../components';
 import { useLoggedIn, useRouter } from '../state';
 
@@ -41,7 +40,7 @@ export const Explore = React.memo(function Explore() {
     loading,
     data,
   } = useTopListings();
-  useIonViewWillEnter(load);
+  useWillEnter(load);
 
   return (
     <IonPage>

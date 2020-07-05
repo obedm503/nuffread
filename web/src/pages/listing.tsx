@@ -1,10 +1,4 @@
-import {
-  IonBackButton,
-  IonButtons,
-  IonContent,
-  IonPage,
-  useIonViewWillEnter
-} from '@ionic/react';
+import { IonBackButton, IonButtons, IonContent, IonPage } from '@ionic/react';
 import * as React from 'react';
 import { Redirect } from 'react-router';
 import {
@@ -12,8 +6,8 @@ import {
   IonButtonLink,
   ListingCard,
   ListingSeller,
-
-  NavBar
+  NavBar,
+  useWillEnter,
 } from '../components';
 import { useListing } from '../state';
 import { Optional } from '../util.types';
@@ -46,7 +40,7 @@ export const Listing = React.memo<{
   id: string;
 }>(function Listing({ defaultHref, id }) {
   const { loading, listing, load } = useListing({ listingId: id });
-  useIonViewWillEnter(load);
+  useWillEnter(load);
 
   if (!loading && !listing) {
     return <Redirect to={defaultHref === false ? '/' : defaultHref} />;
