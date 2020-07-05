@@ -45,14 +45,14 @@ generates:
         ListingInput: IListingInput
         GoogleBook: IGoogleBook
 
-        Admin: ../entities#Admin
-        Listing: ../entities#Listing
+        Admin: ../db/entities#Admin
+        Listing: ../db/entities#Listing
         PaginatedListings: ../types#PaginatedListings
-        Book: ../entities#Book
+        Book: ../db/entities#Book
         PaginatedBooks: ../types#PaginatedBooks
-        User: ../entities#User
-        School: ../entities#School
-        Thread: ../entities#Thread
+        User: ../db/entities#User
+        School: ../db/entities#School
+        Thread: ../db/entities#Thread
         PaginatedThreads: ../types#PaginatedThreads
-        Message: ../entities#Message
+        Message: ../db/entities#Message
         PaginatedMessages: ../types#PaginatedMessages
