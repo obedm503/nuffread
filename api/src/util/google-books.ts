@@ -1,4 +1,4 @@
-import { uniq } from 'lodash';
+import { uniq, uniqBy } from 'lodash';
 import fetch from 'node-fetch';
 import { logger } from '.';
 import { IGoogleBook } from '../graphql/schema.gql';
@@ -154,5 +154,8 @@ export async function searchBooks(query: string): Promise<IGoogleBook[]> {
   if (!Array.isArray(json.items)) {
     return [];
   }
-  return json.items.map(item => formatBook(item)!).filter(b => !!b);
+  return uniqBy(
+    json.items.map(item => formatBook(item)!).filter(b => !!b),
+    'googleId' as keyof IGoogleBook,
+  );
 }
