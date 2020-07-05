@@ -195,7 +195,7 @@ type Thread {
   listingId: ID!
   listing: Listing!
 
-  lastMessageAt: Date!
+  lastMessage: Message
   messages(paginate: PaginationInput): PaginatedMessages!
 }
 type PaginatedThreads {

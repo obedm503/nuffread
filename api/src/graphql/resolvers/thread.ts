@@ -53,4 +53,12 @@ export const ThreadResolver: IThreadResolvers = {
     });
     return { items, totalCount };
   },
+  async lastMessage({ id }) {
+    const items = await Message.find({
+      where: { threadId: id },
+      take: 1,
+      order: { createdAt: 'DESC' },
+    });
+    return items.length ? items[0] : undefined;
+  },
 };
