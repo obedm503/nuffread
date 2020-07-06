@@ -24,7 +24,10 @@ const sessionParser = session({
   rolling: true,
   saveUninitialized: false,
   name: 'session',
-  cookie: { maxAge: ms('1 week') },
+  cookie: {
+    maxAge: ms('1 week'),
+    domain: isProduction ? 'www.nuffread.com' : undefined,
+  },
   store: new Store({
     conObject: {
       connectionString: process.env.DATABASE_URL,
