@@ -242,7 +242,7 @@ export const Thread = React.memo<{
 
   const me = useUser();
   const client = useApolloClient();
-  const [send, { loading: loadingSend, error }] = useMutation<
+  const [send] = useMutation<
     IMutationSendMessageArgs
   >(SEND_MESSAGE, {
     update(proxy, { data }) {
