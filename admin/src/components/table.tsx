@@ -4,13 +4,14 @@ type Col<T> = {
   className?: string;
 };
 export type Cols<T> = Col<T>[];
-export function Table<T>({
+export function Table<T, Extra>({
   cols,
   data = [],
+  ...extraProps
 }: {
   cols: Cols<T>;
   data?: readonly any[];
-}) {
+} & Extra) {
   return (
     <table className="w-full bg-transparent border-collapse">
       <thead className="thead-light">
@@ -39,7 +40,11 @@ export function Table<T>({
                     rowI % 2 !== 0 ? 'bg-light' : ''
                   } ${col.className || ''}`}
                 >
-                  {typeof Key === 'function' ? <Key {...row} /> : row[Key]}
+                  {typeof Key === 'function' ? (
+                    <Key {...row} {...extraProps} />
+                  ) : (
+                    row[Key]
+                  )}
                 </td>
               );
             })}
