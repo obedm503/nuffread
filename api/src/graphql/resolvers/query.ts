@@ -1,5 +1,5 @@
 import { Brackets, getConnection } from 'typeorm';
-import { Book, RecentListing, School, User } from '../../db/entities';
+import { Book, Feature, RecentListing, School, User } from '../../db/entities';
 import { logger } from '../../util';
 import { getBook, searchBooks } from '../../util/google-books';
 import { ensureAdmin, ensureUser, userSession } from '../auth';
@@ -268,5 +268,11 @@ export const QueryResolver: IQueryResolvers = {
 
   async thread(_, { id }, { threadLoader }) {
     return threadLoader().load(id);
+  },
+
+  async features(_, {}, { session }) {
+    ensureAdmin(session);
+
+    return await Feature.find();
   },
 };

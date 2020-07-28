@@ -52,6 +52,8 @@ export function Navbar() {
 
             <MenuItem href="/schools" name="Schools" />
 
+            <MenuItem href="/features" name="Features" />
+
             <MenuItem href="/sessions" name="Sessions" />
 
             <li className="nav-item">

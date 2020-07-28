@@ -46,6 +46,7 @@ generates:
         GoogleBook: IGoogleBook
 
         Admin: ../db/entities#Admin
+        Feature: ../db/entities#Feature
         Listing: ../db/entities#Listing
         PaginatedListings: ../types#PaginatedListings
         Book: ../db/entities#Book

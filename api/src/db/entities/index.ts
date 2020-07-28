@@ -1,5 +1,6 @@
 export * from './admin';
 export * from './book';
+export * from './feature';
 export * from './listing';
 export * from './message';
 export * from './recent-listing';

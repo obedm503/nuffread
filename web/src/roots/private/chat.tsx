@@ -38,14 +38,14 @@ class Threads extends React.PureComponent<
     const { loading, data } = this.props;
 
     if (loading || !(data?.me?.__typename === 'User')) {
-      return <ListWrapper>{ListingCard.loading}</ListWrapper>;
+      return <ListWrapper>Loading...</ListWrapper>;
     }
 
     if (!data.me.threads.items.length) {
       return (
         <ListWrapper>
           <IonItem>
-            <IonLabel>You have not saved any posts.</IonLabel>
+            <IonLabel>No chats available.</IonLabel>
           </IonItem>
         </ListWrapper>
       );
