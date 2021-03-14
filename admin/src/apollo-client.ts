@@ -13,12 +13,11 @@ const uri =
   process.env.NODE_ENV === 'production' ? '/graphql' : process.env.API;
 
 export default function createApolloClient(
-  initialState: NormalizedCacheObject,
-  ctx: NextPageContext,
+  ctx?: NextPageContext,
 ): ApolloClient<NormalizedCacheObject> {
-  const ssrMode = Boolean(ctx);
+  const ssrMode = typeof window === 'undefined';
   let headers;
-  if (ssrMode) {
+  if (ssrMode && ctx) {
     const h = ctx.req.headers;
     headers = { cookie: h.cookie, 'user-agent': h['user-agent'] };
   }
@@ -27,7 +26,7 @@ export default function createApolloClient(
   return new ApolloClient({
     ssrMode,
     link: new HttpLink({
-      uri,
+      uri: process.env.API,
       credentials: 'include',
       headers,
     }),
@@ -46,6 +45,6 @@ export default function createApolloClient(
           },
         },
       }),
-    }).restore(initialState),
+    }),
   });
 }

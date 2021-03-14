@@ -1,14 +1,12 @@
 import gql from 'graphql-tag';
 import { useCallback, useState } from 'react';
-import { withApollo } from '../apollo';
 import { Card } from '../components/card';
 import { Layout } from '../components/layout';
 import { Cols, Table } from '../components/table';
 import {
+  FeatureLevel,
   IFeature,
   IMutationCreateFeatureArgs,
-  ISchool,
-  FeatureLevel,
 } from '../schema.gql';
 import { useMutation, useQuery } from '../util/apollo';
 import { withToLogin } from '../util/auth';
@@ -163,20 +161,18 @@ function CreateFeature() {
   );
 }
 
-export default withApollo()(
-  withToLogin(function Features() {
-    const { data } = useQuery(FEATURES);
-    const features = data && data.features;
+export default withToLogin(function Features() {
+  const { data } = useQuery(FEATURES);
+  const features = data && data.features;
 
-    return (
-      <Layout>
-        <Card title="New Feature">
-          <CreateFeature />
-        </Card>
-        <Card title="Features">
-          <Table cols={cols} data={features} />
-        </Card>
-      </Layout>
-    );
-  }),
-);
+  return (
+    <Layout>
+      <Card title="New Feature">
+        <CreateFeature />
+      </Card>
+      <Card title="Features">
+        <Table cols={cols} data={features} />
+      </Card>
+    </Layout>
+  );
+});

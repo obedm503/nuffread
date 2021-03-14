@@ -1,13 +1,13 @@
 import gql from 'graphql-tag';
 import groupBy from 'lodash/groupBy';
 import { useCallback } from 'react';
-import { withApollo } from '../apollo';
 import { Card } from '../components/card';
 import { Layout } from '../components/layout';
 import { Cols, Table } from '../components/table';
 import { IMutationSetSchoolNameArgs, ISchool } from '../schema.gql';
 import { useMutation, useQuery } from '../util/apollo';
 import { withToLogin } from '../util/auth';
+import { initializeApollo } from '../apollo';
 
 const SET_SCHOOL_NAME = gql`
   mutation SetSchoolName($id: ID!, $name: String!) {
@@ -82,25 +82,38 @@ const cols: Cols<ISchool> = [
   // { name: 'Last Updated', key: s => <RelativeDate date={s.updatedAt} /> },
 ];
 
-export default withApollo()(
-  withToLogin(function Schools() {
-    const { data } = useQuery(SCHOOLS);
+export default withToLogin(function Schools() {
+  const { data } = useQuery(SCHOOLS);
 
-    const schools = data && data.schools;
-    const { noName, hasName } = schools
-      ? groupBy(schools, school => (school.name ? 'hasName' : 'noName'))
-      : ({} as any);
+  const schools = data && data.schools;
+  const { noName, hasName } = schools
+    ? groupBy(schools, school => (school.name ? 'hasName' : 'noName'))
+    : ({} as any);
 
-    return (
-      <Layout>
-        <Card title="New Schools">
-          <Table cols={cols} data={noName} />
-        </Card>
+  return (
+    <Layout>
+      <Card title="New Schools">
+        <Table cols={cols} data={noName} />
+      </Card>
 
-        <Card title="Schools">
-          <Table cols={cols} data={hasName} />
-        </Card>
-      </Layout>
-    );
-  }),
-);
+      <Card title="Schools">
+        <Table cols={cols} data={hasName} />
+      </Card>
+    </Layout>
+  );
+});
+
+export const getInitialProps = async ctx => {
+  const apolloClient = initializeApollo(null);
+
+  await apolloClient.query({
+    query: SCHOOLS,
+  });
+
+  return {
+    props: {
+      initialApolloState: apolloClient.cache.extract(),
+    },
+    unstable_revalidate: 1,
+  };
+};

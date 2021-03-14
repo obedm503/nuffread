@@ -1,7 +1,6 @@
 import gql from 'graphql-tag';
 import groupBy from 'lodash/groupBy';
 import { FC, useCallback, useEffect, useState } from 'react';
-import { withApollo } from '../apollo';
 import { Card } from '../components/card';
 import { RelativeDate } from '../components/date';
 import { Layout } from '../components/layout';
@@ -109,31 +108,23 @@ const notConfirmedCols: Cols<IUser & { refetch }> = [
   },
 ];
 
-export default withApollo()(
-  withToLogin(function Users() {
-    const { data, refetch } = useQuery(USERS);
+export default withToLogin(function Users() {
+  const { data, refetch } = useQuery(USERS);
 
-    const users = data && data.users;
-    const { confirmed, notConfirmed } = users
-      ? groupBy(users, user =>
-          user.confirmedAt ? 'confirmed' : 'notConfirmed',
-        )
-      : ({} as any);
+  const users = data && data.users;
+  const { confirmed, notConfirmed } = users
+    ? groupBy(users, user => (user.confirmedAt ? 'confirmed' : 'notConfirmed'))
+    : ({} as any);
 
-    return (
-      <Layout>
-        <Card title="Not Confirmed Users">
-          <Table
-            cols={notConfirmedCols}
-            data={notConfirmed}
-            refetch={refetch}
-          />
-        </Card>
+  return (
+    <Layout>
+      <Card title="Not Confirmed Users">
+        <Table cols={notConfirmedCols} data={notConfirmed} refetch={refetch} />
+      </Card>
 
-        <Card title="Confirmed Users">
-          <Table cols={cols} data={confirmed} />
-        </Card>
-      </Layout>
-    );
-  }),
-);
+      <Card title="Confirmed Users">
+        <Table cols={cols} data={confirmed} />
+      </Card>
+    </Layout>
+  );
+});
