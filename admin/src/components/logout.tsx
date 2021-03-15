@@ -1,5 +1,4 @@
-import { useApolloClient } from '@apollo/react-hooks';
-import gql from 'graphql-tag';
+import { gql, useApolloClient } from '@apollo/client';
 import Router from 'next/router';
 import { useCallback } from 'react';
 import { useMutation } from '../util/apollo';

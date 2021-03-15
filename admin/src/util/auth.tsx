@@ -1,5 +1,5 @@
-import gql from 'graphql-tag';
-import Router from 'next/router';
+import { gql } from '@apollo/client';
+import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 import { IAdmin } from '../schema.gql';
 import { useQuery } from './apollo';
@@ -37,15 +37,16 @@ export function useMe(): { me?: IAdmin; loading: boolean } {
 
 export function withToLogin(Children) {
   return function WithToLogin() {
+    const router = useRouter();
     const { me, loading } = useMe();
     const hasUser = !!me;
 
     useEffect(() => {
       if (loading) return;
       if (!hasUser) {
-        Router.push('/login');
+        router.push('/login');
       }
-    }, [loading, hasUser]);
+    }, [loading, hasUser, router]);
 
     if (loading || !hasUser) {
       return null;

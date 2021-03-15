@@ -1,7 +1,7 @@
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
 import groupBy from 'lodash/groupBy';
 import { useCallback } from 'react';
-import { withApollo } from '../apollo';
+import { makeGetSSP, withGraphQL } from '../apollo-client';
 import { Card } from '../components/card';
 import { Layout } from '../components/layout';
 import { Cols, Table } from '../components/table';
@@ -82,25 +82,26 @@ const cols: Cols<ISchool> = [
   // { name: 'Last Updated', key: s => <RelativeDate date={s.updatedAt} /> },
 ];
 
-export default withApollo()(
-  withToLogin(function Schools() {
-    const { data } = useQuery(SCHOOLS);
+const Schools = withToLogin(function Schools() {
+  const { data } = useQuery(SCHOOLS);
 
-    const schools = data && data.schools;
-    const { noName, hasName } = schools
-      ? groupBy(schools, school => (school.name ? 'hasName' : 'noName'))
-      : ({} as any);
+  const schools = data && data.schools;
+  const { noName, hasName } = schools
+    ? groupBy(schools, school => (school.name ? 'hasName' : 'noName'))
+    : ({} as any);
 
-    return (
-      <Layout>
-        <Card title="New Schools">
-          <Table cols={cols} data={noName} />
-        </Card>
+  return (
+    <Layout>
+      <Card title="New Schools">
+        <Table cols={cols} data={noName} />
+      </Card>
 
-        <Card title="Schools">
-          <Table cols={cols} data={hasName} />
-        </Card>
-      </Layout>
-    );
-  }),
-);
+      <Card title="Schools">
+        <Table cols={cols} data={hasName} />
+      </Card>
+    </Layout>
+  );
+});
+
+export default withGraphQL(Schools);
+export const getServerSideProps = makeGetSSP(Schools);
