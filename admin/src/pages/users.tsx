@@ -1,6 +1,7 @@
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
 import groupBy from 'lodash/groupBy';
 import { FC, useCallback, useEffect, useState } from 'react';
+import { makeGetSSP, withGraphQL } from '../apollo-client';
 import { Card } from '../components/card';
 import { RelativeDate } from '../components/date';
 import { Layout } from '../components/layout';
@@ -108,7 +109,7 @@ const notConfirmedCols: Cols<IUser & { refetch }> = [
   },
 ];
 
-export default withToLogin(function Users() {
+const Users = withToLogin(function Users() {
   const { data, refetch } = useQuery(USERS);
 
   const users = data && data.users;
@@ -128,3 +129,6 @@ export default withToLogin(function Users() {
     </Layout>
   );
 });
+
+export default withGraphQL(Users);
+export const getServerSideProps = makeGetSSP(Users);

@@ -1,7 +1,7 @@
-import { useApolloClient } from '@apollo/react-hooks';
-import gql from 'graphql-tag';
-import Router from 'next/router';
+import { gql, useApolloClient } from '@apollo/client';
+import { useRouter } from 'next/router';
 import { useCallback, useEffect } from 'react';
+import { makeGetSSP, withGraphQL } from '../apollo-client';
 import { IMutationLoginArgs, SystemUserType } from '../schema.gql';
 import { useMutation } from '../util/apollo';
 import { useMe } from '../util/auth';
@@ -39,15 +39,16 @@ const LOGIN = gql`
 
 function withToHome(Children) {
   return () => {
+    const router = useRouter();
     const { me, loading } = useMe();
     const hasUser = !!me;
 
     useEffect(() => {
       if (loading) return;
       if (hasUser) {
-        Router.push('/');
+        router.push('/');
       }
-    }, [loading, hasUser]);
+    }, [loading, hasUser, router]);
 
     if (loading || hasUser) {
       return null;
@@ -57,7 +58,8 @@ function withToHome(Children) {
   };
 }
 
-export default withToHome(function Login() {
+const Login = withToHome(function Login() {
+  const router = useRouter();
   const [login] = useMutation<IMutationLoginArgs>(LOGIN);
   const client = useApolloClient();
   const onSubmit = useCallback(
@@ -78,10 +80,10 @@ export default withToHome(function Login() {
 
       if (res?.data?.login) {
         await client.resetStore();
-        await Router.push('/');
+        await router.push('/');
       }
     },
-    [client, login],
+    [client, login, router],
   );
 
   return (
@@ -129,3 +131,6 @@ export default withToHome(function Login() {
     </main>
   );
 });
+
+export default withGraphQL(Login);
+export const getServerSideProps = makeGetSSP(Login);

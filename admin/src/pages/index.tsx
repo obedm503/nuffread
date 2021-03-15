@@ -1,11 +1,17 @@
-import Router from 'next/router';
+import { useRouter } from 'next/router';
 import { useEffect } from 'react';
+import { makeGetSSP, withGraphQL } from '../apollo-client';
 import { withToLogin } from '../util/auth';
 
-export default withToLogin(function Index() {
+const Index = withToLogin(function Index() {
+  const router = useRouter();
+
   useEffect(() => {
-    Router.push('/users');
-  });
+    router.push('/users');
+  }, [router]);
 
   return null;
 });
+
+export default withGraphQL(Index);
+export const getServerSideProps = makeGetSSP(Index);

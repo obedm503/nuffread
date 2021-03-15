@@ -6,7 +6,7 @@ import { LogoutButton } from './logout';
 
 function MenuItem({ href, name }) {
   const router = useRouter();
-  const isActive = router.pathname === href;
+  const isActive = router?.pathname === href;
   return (
     <li className="nav-item">
       <Link href={href}>

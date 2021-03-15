@@ -1,13 +1,13 @@
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
 import groupBy from 'lodash/groupBy';
 import { useCallback } from 'react';
+import { makeGetSSP, withGraphQL } from '../apollo-client';
 import { Card } from '../components/card';
 import { Layout } from '../components/layout';
 import { Cols, Table } from '../components/table';
 import { IMutationSetSchoolNameArgs, ISchool } from '../schema.gql';
 import { useMutation, useQuery } from '../util/apollo';
 import { withToLogin } from '../util/auth';
-import { initializeApollo } from '../apollo';
 
 const SET_SCHOOL_NAME = gql`
   mutation SetSchoolName($id: ID!, $name: String!) {
@@ -82,7 +82,7 @@ const cols: Cols<ISchool> = [
   // { name: 'Last Updated', key: s => <RelativeDate date={s.updatedAt} /> },
 ];
 
-export default withToLogin(function Schools() {
+const Schools = withToLogin(function Schools() {
   const { data } = useQuery(SCHOOLS);
 
   const schools = data && data.schools;
@@ -103,17 +103,5 @@ export default withToLogin(function Schools() {
   );
 });
 
-export const getInitialProps = async ctx => {
-  const apolloClient = initializeApollo(null);
-
-  await apolloClient.query({
-    query: SCHOOLS,
-  });
-
-  return {
-    props: {
-      initialApolloState: apolloClient.cache.extract(),
-    },
-    unstable_revalidate: 1,
-  };
-};
+export default withGraphQL(Schools);
+export const getServerSideProps = makeGetSSP(Schools);
