@@ -1,5 +1,4 @@
-import { OnSubscriptionDataOptions } from '@apollo/react-common';
-import gql from 'graphql-tag';
+import { gql, OnSubscriptionDataOptions } from '@apollo/client';
 import React from 'react';
 import { THREAD } from '../../../queries';
 import {

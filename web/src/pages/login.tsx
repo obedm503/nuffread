@@ -1,4 +1,4 @@
-import { useApolloClient } from '@apollo/react-hooks';
+import { gql, useApolloClient } from '@apollo/client';
 import {
   IonBackButton,
   IonButtons,
@@ -13,10 +13,9 @@ import {
   IonLabel,
   IonList,
   IonPage,
-  IonRow
+  IonRow,
 } from '@ionic/react';
 import { Form, Formik } from 'formik';
-import gql from 'graphql-tag';
 import { logInOutline } from 'ionicons/icons';
 import * as React from 'react';
 import { Redirect, RouteComponentProps } from 'react-router';
@@ -28,7 +27,7 @@ import {
   Email,
   IonSubmit,
   Password,
-  TopNav
+  TopNav,
 } from '../components';
 import { IMutationLoginArgs, SystemUserType } from '../schema.gql';
 import { tracker, useMutation, useUser } from '../state';

@@ -1,6 +1,5 @@
-import { useApolloClient } from '@apollo/react-hooks';
+import { gql, useApolloClient } from '@apollo/client';
 import { IonButton, IonIcon, IonToast } from '@ionic/react';
-import gql from 'graphql-tag';
 import { cart, cartOutline } from 'ionicons/icons';
 import React from 'react';
 import { BASIC_LISTING, SAVED_LISTINGS } from '../queries';

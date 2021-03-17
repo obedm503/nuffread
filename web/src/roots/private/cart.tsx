@@ -1,4 +1,4 @@
-import { QueryResult } from '@apollo/react-common';
+import { QueryResult } from '@apollo/client';
 import { RefresherEventDetail } from '@ionic/core';
 import {
   IonContent,
@@ -69,31 +69,33 @@ const useSavedListings = (): PaginatedRefresh<IQuery> => {
 
   const getMore = React.useCallback(
     async e => {
-      await fetchMore({
-        variables: { offset: currentCount },
-        updateQuery: (prev, { fetchMoreResult }) => {
-          if (
-            !(fetchMoreResult?.me?.__typename === 'User') ||
-            !(prev?.me?.__typename === 'User')
-          ) {
-            return prev;
-          }
-          return {
-            ...prev,
-            me: {
-              ...prev.me,
-              saved: {
-                ...prev.me.saved,
-                totalCount: fetchMoreResult.me.saved.totalCount,
-                items: [
-                  ...prev.me.saved.items,
-                  ...fetchMoreResult.me.saved.items,
-                ],
+      if (fetchMore) {
+        await fetchMore({
+          variables: { offset: currentCount },
+          updateQuery: (prev, { fetchMoreResult }) => {
+            if (
+              !(fetchMoreResult?.me?.__typename === 'User') ||
+              !(prev?.me?.__typename === 'User')
+            ) {
+              return prev;
+            }
+            return {
+              ...prev,
+              me: {
+                ...prev.me,
+                saved: {
+                  ...prev.me.saved,
+                  totalCount: fetchMoreResult.me.saved.totalCount,
+                  items: [
+                    ...prev.me.saved.items,
+                    ...fetchMoreResult.me.saved.items,
+                  ],
+                },
               },
-            },
-          };
-        },
-      });
+            };
+          },
+        });
+      }
       (e.target! as HTMLIonInfiniteScrollElement).complete();
     },
     [currentCount, fetchMore],
@@ -101,7 +103,9 @@ const useSavedListings = (): PaginatedRefresh<IQuery> => {
 
   const refresh = React.useCallback(
     async (event: CustomEvent<RefresherEventDetail>) => {
-      await refetch();
+      if (refetch) {
+        await refetch();
+      }
       event.detail.complete();
     },
     [refetch],

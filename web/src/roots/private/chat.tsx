@@ -1,4 +1,4 @@
-import { QueryResult } from '@apollo/react-common';
+import { gql, QueryResult } from '@apollo/client';
 import { RefresherEventDetail } from '@ionic/core';
 import {
   IonContent,
@@ -10,7 +10,6 @@ import {
   IonRefresherContent,
   IonText,
 } from '@ionic/react';
-import gql from 'graphql-tag';
 import * as React from 'react';
 import {
   Container,
@@ -148,31 +147,33 @@ const useData = (): PaginatedRefresh<IQuery> => {
 
   const getMore = React.useCallback(
     async e => {
-      await fetchMore({
-        variables: { offset: currentCount },
-        updateQuery: (prev, { fetchMoreResult }) => {
-          if (
-            !(fetchMoreResult?.me?.__typename === 'User') ||
-            !(prev?.me?.__typename === 'User')
-          ) {
-            return prev;
-          }
-          return {
-            ...prev,
-            me: {
-              ...prev.me,
-              threads: {
-                ...prev.me.threads,
-                totalCount: fetchMoreResult.me.threads.totalCount,
-                items: [
-                  ...prev.me.threads.items,
-                  ...fetchMoreResult.me.threads.items,
-                ],
+      if (fetchMore) {
+        await fetchMore({
+          variables: { offset: currentCount },
+          updateQuery: (prev, { fetchMoreResult }) => {
+            if (
+              !(fetchMoreResult?.me?.__typename === 'User') ||
+              !(prev?.me?.__typename === 'User')
+            ) {
+              return prev;
+            }
+            return {
+              ...prev,
+              me: {
+                ...prev.me,
+                threads: {
+                  ...prev.me.threads,
+                  totalCount: fetchMoreResult.me.threads.totalCount,
+                  items: [
+                    ...prev.me.threads.items,
+                    ...fetchMoreResult.me.threads.items,
+                  ],
+                },
               },
-            },
-          };
-        },
-      });
+            };
+          },
+        });
+      }
       (e.target! as HTMLIonInfiniteScrollElement).complete();
     },
     [currentCount, fetchMore],
@@ -180,7 +181,9 @@ const useData = (): PaginatedRefresh<IQuery> => {
 
   const refresh = React.useCallback(
     async (event: CustomEvent<RefresherEventDetail>) => {
-      await refetch();
+      if (refetch) {
+        await refetch();
+      }
       event.detail.complete();
     },
     [refetch],

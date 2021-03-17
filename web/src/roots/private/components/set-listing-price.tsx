@@ -1,5 +1,5 @@
 import { AlertButton, AlertInput, IonAlert } from '@ionic/react';
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
 import React from 'react';
 import { BASIC_LISTING } from '../../../queries';
 import { IListing, IMutationSetPriceArgs } from '../../../schema.gql';

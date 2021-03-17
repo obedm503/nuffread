@@ -1,5 +1,5 @@
 import { IonInfiniteScroll } from '@ionic/react';
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
 import * as React from 'react';
 import { Error } from '.';
 import { BOOK } from '../queries';
