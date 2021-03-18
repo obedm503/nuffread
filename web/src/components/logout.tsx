@@ -1,5 +1,5 @@
+import { gql } from '@apollo/client';
 import { IonButton, IonIcon, IonItem, IonLabel } from '@ionic/react';
-import gql from 'graphql-tag';
 import { logOutOutline } from 'ionicons/icons';
 import * as React from 'react';
 import { IMutation } from '../schema.gql';

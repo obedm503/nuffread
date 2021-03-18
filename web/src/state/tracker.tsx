@@ -1,4 +1,4 @@
-import { ServerError, ServerParseError } from 'apollo-link-http-common';
+import { ServerError, ServerParseError } from '@apollo/client';
 import { GraphQLError } from 'graphql';
 import mixpanel from 'mixpanel-browser';
 

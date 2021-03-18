@@ -1,3 +1,4 @@
+import { gql } from '@apollo/client';
 import {
   IonCard,
   IonCardContent,
@@ -11,7 +12,6 @@ import {
   IonRow,
 } from '@ionic/react';
 import { Form, Formik } from 'formik';
-import gql from 'graphql-tag';
 import { add } from 'ionicons/icons';
 import * as React from 'react';
 import { Link } from 'react-router-dom';
@@ -31,7 +31,7 @@ const REGISTER = gql`
 `;
 
 type FormSchema = { email: string; password: string };
-const schema = object<FormSchema>().shape({
+const schema = object().shape({
   email: studentEmailSchema,
   password: strongPasswordSchema,
 });

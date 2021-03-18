@@ -1,4 +1,4 @@
-import { QueryResult } from '@apollo/react-common';
+import { QueryResult } from '@apollo/client';
 import { RefresherEventDetail } from '@ionic/core';
 import {
   ActionSheetButton,
@@ -284,7 +284,9 @@ export const Profile = React.memo(function Profile() {
   const isLoading = queryLoading({ called, loading });
   const onRefresh = React.useCallback(
     async (event: CustomEvent<RefresherEventDetail>) => {
-      await refetch();
+      if (refetch) {
+        await refetch();
+      }
       event.detail.complete();
     },
     [refetch],

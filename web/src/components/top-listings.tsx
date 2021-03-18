@@ -1,5 +1,5 @@
 import { RefresherEventDetail } from '@ionic/core';
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
 import * as React from 'react';
 import { BASIC_LISTING } from '../queries';
 import { IListing, IPaginationInput } from '../schema.gql';
@@ -41,20 +41,22 @@ export const useTopListings = (): PaginatedRefresh<readonly IListing[]> => {
 
   const getMore = React.useCallback(
     async e => {
-      await fetchMore({
-        variables: { offset: currentCount },
-        updateQuery: (prev, { fetchMoreResult }) => {
-          if (!fetchMoreResult) return prev;
-          return {
-            ...prev,
-            top: {
-              __typename: 'PaginatedListings',
-              totalCount: fetchMoreResult.top.totalCount,
-              items: [...prev.top.items, ...fetchMoreResult.top.items],
-            },
-          };
-        },
-      });
+      if (fetchMore) {
+        await fetchMore({
+          variables: { offset: currentCount },
+          updateQuery: (prev, { fetchMoreResult }) => {
+            if (!fetchMoreResult) return prev;
+            return {
+              ...prev,
+              top: {
+                __typename: 'PaginatedListings',
+                totalCount: fetchMoreResult.top.totalCount,
+                items: [...prev.top.items, ...fetchMoreResult.top.items],
+              },
+            };
+          },
+        });
+      }
       (e.target! as HTMLIonInfiniteScrollElement).complete();
     },
     [currentCount, fetchMore],
@@ -62,7 +64,9 @@ export const useTopListings = (): PaginatedRefresh<readonly IListing[]> => {
 
   const refresh = React.useCallback(
     async (event: CustomEvent<RefresherEventDetail>) => {
-      await refetch();
+      if (refetch) {
+        await refetch();
+      }
       event.detail.complete();
     },
     [refetch],

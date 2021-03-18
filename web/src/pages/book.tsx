@@ -19,7 +19,7 @@ import {
   IonSkeletonText,
   IonText,
 } from '@ionic/react';
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
 import { cartOutline } from 'ionicons/icons';
 import range from 'lodash/range';
 import React from 'react';
@@ -226,30 +226,32 @@ const useGetBookListings = ({ bookId }) => {
 
   const getMore = React.useCallback(
     async e => {
-      await fetchMore<keyof (IQueryBookArgs & IPaginationInput)>({
-        query: GET_MORE_BOOK_LISTINGS,
-        variables: { id: bookId, offset: currentCount },
-        updateQuery: (prev, { fetchMoreResult }) => {
-          if (!fetchMoreResult || !fetchMoreResult.book || !prev.book) {
-            return prev;
-          }
+      if (fetchMore) {
+        await fetchMore<keyof (IQueryBookArgs & IPaginationInput)>({
+          query: GET_MORE_BOOK_LISTINGS,
+          variables: { id: bookId, offset: currentCount },
+          updateQuery: (prev, { fetchMoreResult }) => {
+            if (!fetchMoreResult || !fetchMoreResult.book || !prev.book) {
+              return prev;
+            }
 
-          return {
-            ...prev,
-            book: {
-              ...prev.book,
-              listings: {
-                __typename: 'PaginatedListings',
-                totalCount: fetchMoreResult.book.listings.totalCount,
-                items: [
-                  ...prev.book.listings.items,
-                  ...fetchMoreResult.book.listings.items,
-                ],
+            return {
+              ...prev,
+              book: {
+                ...prev.book,
+                listings: {
+                  __typename: 'PaginatedListings',
+                  totalCount: fetchMoreResult.book.listings.totalCount,
+                  items: [
+                    ...prev.book.listings.items,
+                    ...fetchMoreResult.book.listings.items,
+                  ],
+                },
               },
-            },
-          };
-        },
-      });
+            };
+          },
+        });
+      }
       (e.target! as HTMLIonInfiniteScrollElement).complete();
     },
     [fetchMore, currentCount, bookId],
@@ -257,7 +259,9 @@ const useGetBookListings = ({ bookId }) => {
 
   const refresh = React.useCallback(
     async (event: CustomEvent<RefresherEventDetail>) => {
-      await refetch();
+      if (refetch) {
+        await refetch();
+      }
       event.detail.complete();
     },
     [refetch],

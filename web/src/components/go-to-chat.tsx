@@ -1,5 +1,5 @@
 import { IonButton, IonIcon } from '@ionic/react';
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
 import { chatbubblesOutline } from 'ionicons/icons';
 import React from 'react';
 import { IListing, IMutationStartThreadArgs } from '../schema.gql';

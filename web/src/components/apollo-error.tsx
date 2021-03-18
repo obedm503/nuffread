@@ -1,4 +1,4 @@
-import { ApolloError } from 'apollo-client';
+import { ApolloError } from '@apollo/client';
 import { GraphQLError } from 'graphql';
 import * as React from 'react';
 import { ControlError } from './controls/control';

@@ -28,7 +28,7 @@ export const logger = pino({
 });
 
 export const jwt = {
-  sign: (payload: any, options: SignOptions): Promise<string> => {
+  sign: (payload: any, options: SignOptions): Promise<string | undefined> => {
     return new Promise((res, rej) => {
       sign(payload, process.env.SECRET!, options, (err, token) =>
         err ? rej(err) : res(token),

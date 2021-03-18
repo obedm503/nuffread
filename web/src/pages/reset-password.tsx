@@ -13,7 +13,7 @@ import {
   IonRow,
 } from '@ionic/react';
 import { Form, Formik } from 'formik';
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
 import { key } from 'ionicons/icons';
 import React from 'react';
 import { Redirect, RouteComponentProps, RouteProps } from 'react-router';
@@ -153,7 +153,7 @@ const ResetForm: React.FC<{ token: string }> = ({ token }) => {
   );
 };
 
-const routes: RouteProps[] = [
+const routes: RouteProps<string, { token: string }>[] = [
   {
     path: '/',
     exact: true,
@@ -172,22 +172,22 @@ const routes: RouteProps[] = [
     ),
   },
 ];
-export default React.memo<RouteComponentProps>(function ResetPassword({
-  match,
-}) {
-  const user = useUser();
-  if (user) {
-    return <Redirect to="/" />;
-  }
-  return (
-    <IonPage>
-      <TopNav homeHref="/" />
+export default React.memo<RouteComponentProps<{ token: string }>>(
+  function ResetPassword({ match }) {
+    const user = useUser();
+    if (user) {
+      return <Redirect to="/" />;
+    }
+    return (
+      <IonPage>
+        <TopNav homeHref="/" />
 
-      <IonContent>
-        <Container>
-          <Routes routes={routes} base={match.url} />
-        </Container>
-      </IonContent>
-    </IonPage>
-  );
-});
+        <IonContent>
+          <Container>
+            <Routes routes={routes} base={match.url} />
+          </Container>
+        </IonContent>
+      </IonPage>
+    );
+  },
+);

@@ -1,5 +1,4 @@
-import { QueryResult } from '@apollo/react-common';
-import { useApolloClient } from '@apollo/react-hooks';
+import { gql, QueryResult, useApolloClient } from '@apollo/client';
 import {
   IonAvatar,
   IonBackButton,
@@ -15,7 +14,6 @@ import {
   IonPage,
 } from '@ionic/react';
 import { Form, Formik, FormikHelpers } from 'formik';
-import gql from 'graphql-tag';
 import { personCircleOutline, sendSharp } from 'ionicons/icons';
 import * as React from 'react';
 import { Redirect } from 'react-router';
@@ -175,30 +173,32 @@ const useData = (
 
   const getMore = React.useCallback(
     async e => {
-      await fetchMore<keyof (IQueryThreadArgs & IPaginationInput)>({
-        query: MORE_MESSAGES,
-        variables: { id: threadId, offset: currentCount },
-        updateQuery: (prev, { fetchMoreResult }) => {
-          if (!fetchMoreResult || !fetchMoreResult.thread || !prev.thread) {
-            return prev;
-          }
+      if (fetchMore) {
+        await fetchMore<keyof (IQueryThreadArgs & IPaginationInput)>({
+          query: MORE_MESSAGES,
+          variables: { id: threadId, offset: currentCount },
+          updateQuery: (prev, { fetchMoreResult }) => {
+            if (!fetchMoreResult || !fetchMoreResult.thread || !prev.thread) {
+              return prev;
+            }
 
-          return {
-            ...prev,
-            thread: {
-              ...prev.thread,
-              messages: {
-                __typename: 'PaginatedMessages',
-                totalCount: fetchMoreResult.thread.messages.totalCount,
-                items: [
-                  ...prev.thread.messages.items,
-                  ...fetchMoreResult.thread.messages.items,
-                ],
+            return {
+              ...prev,
+              thread: {
+                ...prev.thread,
+                messages: {
+                  __typename: 'PaginatedMessages',
+                  totalCount: fetchMoreResult.thread.messages.totalCount,
+                  items: [
+                    ...prev.thread.messages.items,
+                    ...fetchMoreResult.thread.messages.items,
+                  ],
+                },
               },
-            },
-          };
-        },
-      });
+            };
+          },
+        });
+      }
       (e.target! as HTMLIonInfiniteScrollElement).complete();
     },
     [fetchMore, currentCount, threadId],
@@ -242,9 +242,7 @@ export const Thread = React.memo<{
 
   const me = useUser();
   const client = useApolloClient();
-  const [send] = useMutation<
-    IMutationSendMessageArgs
-  >(SEND_MESSAGE, {
+  const [send] = useMutation<IMutationSendMessageArgs>(SEND_MESSAGE, {
     update(proxy, { data }) {
       const newMessage = data?.sendMessage;
       if (!newMessage) {

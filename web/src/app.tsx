@@ -1,11 +1,6 @@
+import { gql } from '@apollo/client';
 import { IonApp, IonSpinner } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
-import {
-  InMemoryCache,
-  IntrospectionFragmentMatcher,
-} from 'apollo-cache-inmemory';
-import { Kind } from 'graphql';
-import gql from 'graphql-tag';
 import memoizeOne from 'memoize-one';
 import * as React from 'react';
 import { Helmet } from 'react-helmet-async';
@@ -20,24 +15,6 @@ import Public from './roots/public';
 import { ISystemUser } from './schema.gql';
 import { IsDesktopProvider, tracker, useQuery, UserProvider } from './state';
 import { RootPageProps } from './util.types';
-
-export const createCache = () =>
-  new InMemoryCache({
-    freezeResults: process.env.NODE_ENV !== 'production',
-    fragmentMatcher: new IntrospectionFragmentMatcher({
-      introspectionQueryResultData: {
-        __schema: {
-          types: [
-            {
-              kind: Kind.UNION_TYPE_DEFINITION,
-              name: 'SystemUser',
-              possibleTypes: [{ name: 'Admin' }, { name: 'User' }],
-            },
-          ],
-        },
-      },
-    }),
-  });
 
 const ME = gql`
   query GetMe {

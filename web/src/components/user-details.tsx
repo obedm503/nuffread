@@ -7,7 +7,7 @@ import {
   IonLabel,
   IonSkeletonText,
 } from '@ionic/react';
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
 import { call, logoFacebook, mail, person } from 'ionicons/icons';
 import * as React from 'react';
 import { Link } from 'react-router-dom';

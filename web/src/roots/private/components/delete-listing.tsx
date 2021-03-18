@@ -1,7 +1,10 @@
-import { useApolloClient } from '@apollo/react-hooks';
+import {
+  ApolloClient,
+  gql,
+  MutationUpdaterFn,
+  useApolloClient,
+} from '@apollo/client';
 import { AlertButton, IonAlert } from '@ionic/react';
-import ApolloClient, { MutationUpdaterFn } from 'apollo-client';
-import gql from 'graphql-tag';
 import React from 'react';
 import { MY_LISTINGS } from '../../../queries';
 import {

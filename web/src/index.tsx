@@ -1,16 +1,19 @@
-import { ApolloProvider } from '@apollo/react-hooks';
-import { ApolloClient } from 'apollo-client';
-import { onError } from 'apollo-link-error';
-import { createHttpLink } from 'apollo-link-http';
+import {
+  ApolloClient,
+  ApolloProvider,
+  createHttpLink,
+  InMemoryCache,
+  split,
+} from '@apollo/client';
+import { onError } from '@apollo/client/link/error';
+import { WebSocketLink } from '@apollo/client/link/ws';
+import { getMainDefinition } from '@apollo/client/utilities';
 import React from 'react';
 import { render } from 'react-dom';
 import { HelmetProvider } from 'react-helmet-async';
-import { App, createCache } from './app';
+import { App } from './app';
 import * as serviceWorker from './serviceWorker';
 import { tracker } from './state';
-import { WebSocketLink } from 'apollo-link-ws';
-import { split } from 'apollo-link';
-import { getMainDefinition } from 'apollo-utilities';
 
 const errorLink = onError(({ graphQLErrors, networkError }) => {
   if (graphQLErrors) {
@@ -50,7 +53,9 @@ const client = new ApolloClient({
       httpLink,
     ),
   ),
-  cache: createCache(),
+  cache: new InMemoryCache({
+    possibleTypes: { SystemUser: ['Admin', 'User'] },
+  }),
 });
 
 const main = (
