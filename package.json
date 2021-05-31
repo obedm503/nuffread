@@ -3,6 +3,7 @@
   "workspaces": [
     "api",
     "admin",
+    "beta",
     "web"
   ],
   "scripts": {
@@ -28,6 +29,6 @@
   },
   "engines": {
     "node": "12.16.1",
-    "yarn": "1.22.4"
+    "yarn": "1.22.5"
   }
 }

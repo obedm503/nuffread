@@ -1,0 +1,9 @@
+{
+  "routes": [
+    {
+      "src": "/graphql",
+      "dest": "https://nuffread.herokuapp.com",
+      "status": 200
+    }
+  ]
+}
