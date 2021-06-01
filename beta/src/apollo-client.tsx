@@ -15,10 +15,7 @@ import {
 import { useMemo } from 'react';
 import { ParsedUrlQuery } from 'querystring';
 
-const uri =
-  process.env.NODE_ENV === 'production'
-    ? '/graphql'
-    : process.env.NEXT_PUBLIC_API;
+const uri = process.env.NEXT_PUBLIC_API;
 
 export const APOLLO_STATE_PROP_NAME = '__APOLLO_STATE__';
 export const APOLLO_CLIENT_PROP_NAME = '__APOLLO_CLIENT__';
