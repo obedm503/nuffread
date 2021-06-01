@@ -18,6 +18,7 @@ module.exports.scripts = {
   deploy: {
     web: series.nps('clean', 'build.types', 'build.web'),
     api: series.nps('clean', 'build.types', 'build.api'),
+    beta: series.nps('clean', 'build.types', 'build.beta'),
     admin: series('nps clean', 'nps build.types', 'cd admin', 'npm run deploy'),
   },
   dev: {
@@ -48,6 +49,7 @@ module.exports.scripts = {
     web: series('cd web', 'npm run build'),
     api: series('cd api', 'npm run build'),
     admin: series('cd admin', 'npm run build'),
+    beta: series('cd beta', 'npm run build'),
   },
   clean: rimraf('.cache web/build api/dist'),
   start: {
