@@ -1,13 +1,13 @@
 import { gql } from '@apollo/client';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
-import { IAdmin } from '../schema.gql';
+import { IUser } from '../schema.gql';
 import { useQuery } from './apollo';
 
 const ME = gql`
   query GetMe {
     me {
-      ... on Admin {
+      ... on User {
         id
         email
       }
@@ -15,7 +15,7 @@ const ME = gql`
   }
 `;
 
-export function useMe(): { me?: IAdmin; loading: boolean } {
+export function useMe(): { me?: IUser; loading: boolean } {
   const { data, error, loading } = useQuery(ME);
 
   if (error) {
@@ -28,8 +28,8 @@ export function useMe(): { me?: IAdmin; loading: boolean } {
     return { loading };
   }
 
-  if (me.__typename !== 'Admin') {
-    throw new Error('not logged in as admin');
+  if (me.__typename !== 'User') {
+    throw new Error('not logged in as user');
   }
 
   return { me, loading };
