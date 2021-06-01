@@ -15,6 +15,15 @@ generates:
       scalars:
         Date: string
 
+  beta/src/schema.gql.ts:
+    plugins:
+      - typescript
+    config:
+      skipTypename: false
+      immutableTypes: true
+      scalars:
+        Date: string
+
   admin/src/schema.gql.ts:
     plugins:
       - typescript
