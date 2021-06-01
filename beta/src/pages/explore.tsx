@@ -91,7 +91,19 @@ const Listing = memo<{ listing: IListing }>(({ listing }) => {
 
 const Explore = function Explore() {
   const { loading, data, error } = useQuery(TOP_LISTINGS);
-  console.log(data?.top);
+
+  if (error) {
+    console.error(error);
+    return (
+      <Layout>
+        <Head>
+          <title>Explore | Nuffread</title>
+        </Head>
+        <Listings>Something went wrong</Listings>
+      </Layout>
+    );
+  }
+  
   return (
     <Layout>
       <Head>
