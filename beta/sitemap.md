@@ -1,9 +1,11 @@
 # public
-/explore
-/search?q=
 /login
 /reset
 /join
+
+# semi public
+/explore
+/search?q=
 /p/[id]
 /b/[id]
 

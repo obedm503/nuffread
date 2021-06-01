@@ -112,7 +112,7 @@ const Explore = function Explore() {
 
       <Listings>
         {data?.top.items.map(listing => (
-          <Link key={listing.id} href={`/p/${listing.id}`}>
+          <Link key={listing.id} href={`/b/${listing.book.id}`}>
             <a>
               <Listing listing={listing} />
             </a>
