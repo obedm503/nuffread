@@ -1,5 +1,6 @@
 # public
 /explore
+/search?q=
 /login
 /reset
 /join

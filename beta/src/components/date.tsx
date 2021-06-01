@@ -36,7 +36,7 @@ export class RelativeDate extends Component<Props> {
 
     const diff = differenceInDays(new Date(), value);
     if (diff > 8) {
-      return <>{value.toLocaleDateString()}</>;
+      return <>{value.toLocaleDateString('en-US')}</>;
     }
     return <>{upperFirst(formatDistanceToNow(value, { addSuffix: true }))}</>;
   }
