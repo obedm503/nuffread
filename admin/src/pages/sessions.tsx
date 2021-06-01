@@ -1,5 +1,5 @@
-import gql from 'graphql-tag';
-import { withApollo } from '../apollo';
+import { gql } from '@apollo/client';
+import { makeGetSSP, withGraphQL } from '../apollo-client';
 import { Card } from '../components/card';
 import { RelativeDate } from '../components/date';
 import { Layout } from '../components/layout';
@@ -47,16 +47,17 @@ const cols: Cols<ISession> = [
   // },
 ];
 
-export default withApollo()(
-  withToLogin(function Sessions() {
-    const { data } = useQuery(SESSIONS);
+const Sessions = withToLogin(function Sessions() {
+  const { data } = useQuery(SESSIONS);
 
-    return (
-      <Layout>
-        <Card title="Sessions">
-          <Table cols={cols} data={data?.sessions} />
-        </Card>
-      </Layout>
-    );
-  }),
-);
+  return (
+    <Layout>
+      <Card title="Sessions">
+        <Table cols={cols} data={data?.sessions} />
+      </Card>
+    </Layout>
+  );
+});
+
+export default withGraphQL(Sessions);
+export const getServerSideProps = makeGetSSP(Sessions);

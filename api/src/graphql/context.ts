@@ -1,5 +1,5 @@
+import { ExpressContext } from 'apollo-server-express';
 import DataLoader from 'dataloader';
-import { Request, Response } from 'express';
 import { Base } from '../db';
 import {
   Admin,
@@ -51,8 +51,8 @@ export async function getContext({
   res,
 }: {
   session?: Session;
-  req?: Request;
-  res?: Response;
+  req?: ExpressContext['req'];
+  res?: ExpressContext['res'];
 }): Promise<IContext> {
   const adminLoader = lazy(() => makeIdLoader(Admin));
   const userLoader = lazy(() => makeIdLoader(User));

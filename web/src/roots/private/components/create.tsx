@@ -1,4 +1,4 @@
-import { useApolloClient } from '@apollo/react-hooks';
+import { gql, useApolloClient } from '@apollo/client';
 import { SelectChangeEventDetail } from '@ionic/core';
 import {
   IonButton,
@@ -20,7 +20,6 @@ import {
   IonTextarea,
   IonToolbar,
 } from '@ionic/react';
-import gql from 'graphql-tag';
 import { close, logoUsd } from 'ionicons/icons';
 import React from 'react';
 import { Error, Title } from '../../../components';

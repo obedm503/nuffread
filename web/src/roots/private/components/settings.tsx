@@ -12,7 +12,7 @@ import {
   IonToggle,
   IonToolbar,
 } from '@ionic/react';
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
 import { close, settings } from 'ionicons/icons';
 import React from 'react';
 import { Title } from '../../../components';

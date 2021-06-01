@@ -4,7 +4,7 @@ import { Route, RouteProps, Switch } from 'react-router';
 import { normalizeUrl } from '../util';
 
 type Props = {
-  routes: RouteProps[];
+  routes: RouteProps<string, any>[];
   base?: string;
 };
 

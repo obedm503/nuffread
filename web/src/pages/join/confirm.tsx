@@ -1,6 +1,5 @@
-import { useApolloClient } from '@apollo/react-hooks';
+import { gql, useApolloClient } from '@apollo/client';
 import { IonCard, IonCardContent, IonCol, IonGrid, IonRow } from '@ionic/react';
-import gql from 'graphql-tag';
 import * as React from 'react';
 import { Redirect, RouteComponentProps } from 'react-router';
 import { apolloFormErrors } from '../../components';
