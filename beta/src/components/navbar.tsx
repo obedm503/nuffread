@@ -1,8 +1,8 @@
+import { personCircleOutline } from 'ionicons/icons';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useCallback, useState } from 'react';
 import { useMe } from '../util/auth';
-import { LogoutButton } from './logout';
 
 function MenuItem({ href, name }) {
   const router = useRouter();
@@ -79,16 +79,25 @@ export function Navbar() {
           >
             Link2
           </a> */}
-          <Link href="/login">
-            <a className="text-lg no-underline text-primary uppercase ml-2">
-              Login
+
+          {me ? (
+            <a className="ml-2 pl-2 pr-2 pb-1 pt-1 rounded-full">
+              <img className="w-8 inline" src={personCircleOutline} alt="" />
             </a>
-          </Link>
-          <Link href="/join">
-            <a className="text-lg no-underline bg-primary text-white uppercase ml-2 pl-2 pr-2 pb-1 pt-1 rounded-sm">
-              Join
-            </a>
-          </Link>
+          ) : (
+            <>
+              <Link href="/login">
+                <a className="text-lg no-underline text-primary uppercase ml-2">
+                  Login
+                </a>
+              </Link>
+              <Link href="/join">
+                <a className="text-lg no-underline bg-primary text-white uppercase ml-2 pl-2 pr-2 pb-1 pt-1 rounded-sm">
+                  Join
+                </a>
+              </Link>
+            </>
+          )}
         </div>
       </div>
     </nav>
