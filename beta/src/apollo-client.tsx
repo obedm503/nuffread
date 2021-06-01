@@ -120,6 +120,12 @@ export function makeGetSSP<P, Q extends ParsedUrlQuery>(
 ): GetServerSideProps<P, Q> {
   return async ctx => {
     const { getDataFromTree } = await import('@apollo/client/react/ssr');
+    // technically using an internal api
+    // https://github.com/vercel/next.js/discussions/11957#discussioncomment-126931
+    const { RouterContext } = await import(
+      'next/dist/next-server/lib/router-context'
+    );
+
     const apolloClient = initializeApollo(null, ctx);
 
     let resProps: P = {} as any;
@@ -130,9 +136,21 @@ export function makeGetSSP<P, Q extends ParsedUrlQuery>(
       }
     }
 
+    const router = {
+      query: ctx.params,
+      locales: ctx.locales,
+      locale: ctx.locale,
+      defaultLocale: ctx.defaultLocale,
+      // missing route, pathname, asPath, basePath, isLocaleDomain
+    } as any;
+
     const WrappedPage = withGraphQL(Page);
     const props = { ...resProps, [APOLLO_CLIENT_PROP_NAME]: apolloClient };
-    await getDataFromTree(<WrappedPage {...props} />);
+    await getDataFromTree(
+      <RouterContext.Provider value={router}>
+        <WrappedPage {...props} />
+      </RouterContext.Provider>,
+    );
 
     return {
       props: {
