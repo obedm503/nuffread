@@ -6,7 +6,6 @@
 /join
 /p/[id]
 /b/[id]
-/search
 
 # private
 /profile
