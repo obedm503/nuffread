@@ -5,7 +5,7 @@ import { makeGetSSP, withGraphQL } from '../../apollo-client';
 import { RelativeDate } from '../../components/date';
 import { Layout } from '../../components/layout';
 import { BOOK, LISTING } from '../../queries';
-import { ListingCondition } from '../../schema.gql';
+import { conditionNames } from '../../util';
 import { useQuery } from '../../util/apollo';
 
 function Listings({ children }) {
@@ -15,14 +15,6 @@ function Listings({ children }) {
     </div>
   );
 }
-
-const conditionNames: { [key in ListingCondition]: string } = {
-  [ListingCondition.New]: 'New',
-  [ListingCondition.LikeNew]: 'Used: Like New',
-  [ListingCondition.VeryGood]: 'Used: Very Good',
-  [ListingCondition.Good]: 'Used: Good',
-  [ListingCondition.Acceptable]: 'Used: Acceptable',
-};
 
 const GET_BOOK = gql`
   ${LISTING}
@@ -111,9 +103,10 @@ function BookPage() {
               {book.listings.items.map(listing => (
                 <div
                   key={listing.id}
-                  className={`my-4 p-4 rounded-lg shadow-sm hover:shadow-lg ${
+                  className={`my-4 mr-4 p-4 rounded-lg shadow-sm hover:shadow-lg ${
                     bookId === listing.id ? 'border-primary border' : ''
-                  }`}
+                  } border-light`}
+                  style={{ borderWidth: '1px' }}
                 >
                   <span className="block opacity-75 -mb-1 text-sm">
                     <RelativeDate date={listing.createdAt} />
