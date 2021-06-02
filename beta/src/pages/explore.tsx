@@ -6,8 +6,9 @@ import { makeGetSSP, withGraphQL } from '../apollo-client';
 import { RelativeDate } from '../components/date';
 import { Layout } from '../components/layout';
 import { BASIC_LISTING } from '../queries';
-import { IListing, ListingCondition } from '../schema.gql';
+import { IListing } from '../schema.gql';
 import { useQuery } from '../util/apollo';
+import { conditionNames } from '../util/index';
 
 const TOP_LISTINGS = gql`
   ${BASIC_LISTING}
@@ -40,17 +41,12 @@ function Listings({ children }) {
   );
 }
 
-const conditionNames: { [key in ListingCondition]: string } = {
-  [ListingCondition.New]: 'New',
-  [ListingCondition.LikeNew]: 'Used: Like New',
-  [ListingCondition.VeryGood]: 'Used: Very Good',
-  [ListingCondition.Good]: 'Used: Good',
-  [ListingCondition.Acceptable]: 'Used: Acceptable',
-};
-
 const Listing = memo<{ listing: IListing }>(({ listing }) => {
   return (
-    <div className="flex-shrink-0 m-4 relative overflow-hidden rounded-lg w-40 shadow-sm hover:shadow-lg">
+    <div
+      className="flex-shrink-0 m-4 relative overflow-hidden rounded-lg w-40 shadow-sm hover:shadow-lg border-light"
+      style={{ borderWidth: '1px' }}
+    >
       <div className="relative bg-light">
         <img
           className="w-40"
@@ -89,7 +85,7 @@ const Listing = memo<{ listing: IListing }>(({ listing }) => {
   );
 });
 
-const Explore = function Explore() {
+function Explore() {
   const { loading, data, error } = useQuery(TOP_LISTINGS);
 
   if (error) {
@@ -121,7 +117,7 @@ const Explore = function Explore() {
       </Listings>
     </Layout>
   );
-};
+}
 
 export default withGraphQL(Explore);
 export const getServerSideProps = makeGetSSP(Explore);

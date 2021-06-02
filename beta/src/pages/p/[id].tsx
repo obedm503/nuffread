@@ -7,7 +7,8 @@ import { makeGetSSP, withGraphQL } from '../../apollo-client';
 import { RelativeDate } from '../../components/date';
 import { Layout } from '../../components/layout';
 import { BASIC_LISTING } from '../../queries';
-import { IListing, ListingCondition } from '../../schema.gql';
+import { IListing } from '../../schema.gql';
+import { conditionNames } from '../../util';
 import { useQuery } from '../../util/apollo';
 
 function Listings({ children }) {
@@ -17,14 +18,6 @@ function Listings({ children }) {
     </div>
   );
 }
-
-const conditionNames: { [key in ListingCondition]: string } = {
-  [ListingCondition.New]: 'New',
-  [ListingCondition.LikeNew]: 'Used: Like New',
-  [ListingCondition.VeryGood]: 'Used: Very Good',
-  [ListingCondition.Good]: 'Used: Good',
-  [ListingCondition.Acceptable]: 'Used: Acceptable',
-};
 
 const Listing = memo<{ listing: IListing }>(({ listing }) => {
   return (

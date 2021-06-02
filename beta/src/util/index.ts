@@ -1,3 +1,5 @@
+import { ListingCondition } from '../schema.gql';
+
 const filterKeys = (o: { [key: string]: any }): string[] =>
   Object.keys(o).filter(key => o[key]);
 export const classes = (
@@ -15,3 +17,11 @@ export const classes = (
     })
     .filter(Boolean)
     .join(' ');
+
+export const conditionNames: { [key in ListingCondition]: string } = {
+  [ListingCondition.New]: 'New',
+  [ListingCondition.LikeNew]: 'Used: Like New',
+  [ListingCondition.VeryGood]: 'Used: Very Good',
+  [ListingCondition.Good]: 'Used: Good',
+  [ListingCondition.Acceptable]: 'Used: Acceptable',
+};
