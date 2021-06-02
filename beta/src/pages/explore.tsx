@@ -43,10 +43,7 @@ function Listings({ children }) {
 
 const Listing = memo<{ listing: IListing }>(({ listing }) => {
   return (
-    <div
-      className="flex-shrink-0 m-4 relative overflow-hidden rounded-lg w-40 shadow-sm hover:shadow-lg border-light"
-      style={{ borderWidth: '1px' }}
-    >
+    <div className="flex-shrink-0 m-4 relative overflow-hidden rounded-lg w-40 shadow-sm hover:shadow-lg border-light border-1">
       <div className="relative bg-light">
         <img
           className="w-40"

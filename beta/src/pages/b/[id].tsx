@@ -105,8 +105,7 @@ function BookPage() {
                   key={listing.id}
                   className={`my-4 mr-4 p-4 rounded-lg shadow-sm hover:shadow-lg ${
                     bookId === listing.id ? 'border-primary border' : ''
-                  } border-light`}
-                  style={{ borderWidth: '1px' }}
+                  } border-light border-1`}
                 >
                   <span className="block opacity-75 -mb-1 text-sm">
                     <RelativeDate date={listing.createdAt} />
