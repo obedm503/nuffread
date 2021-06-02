@@ -35,6 +35,12 @@ export function useMe(): { me?: IUser; loading: boolean } {
   return { me, loading };
 }
 
+export function useIsLoggedIn(): boolean {
+  const { me, loading } = useMe();
+
+  return loading ? false : !!me;
+}
+
 export function withToLogin(Children) {
   return function WithToLogin() {
     const router = useRouter();
