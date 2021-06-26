@@ -8,6 +8,7 @@ import { Layout } from '../components/layout';
 import { BASIC_LISTING } from '../queries';
 import { IListing } from '../schema.gql';
 import { useQuery } from '../util/apollo';
+import { useIsLoggedIn } from '../util/auth';
 import { conditionNames } from '../util/index';
 
 const TOP_LISTINGS = gql`
@@ -35,15 +36,16 @@ const TOP_LISTINGS = gql`
 
 function Listings({ children }) {
   return (
-    <div className="p-6 flex flex-wrap items-end justify-center">
+    <div className="m-6 flex flex-wrap items-end justify-center">
       {children}
     </div>
   );
 }
 
 const Listing = memo<{ listing: IListing }>(({ listing }) => {
+  const isLoggedIn = useIsLoggedIn();
   return (
-    <div className="flex-shrink-0 m-4 relative overflow-hidden rounded-lg w-40 shadow-sm hover:shadow-lg border-light border-1">
+    <div className="flex-shrink-0 m-4 relative overflow-hidden rounded-lg w-40 shadow-sm hover:shadow-lg border-light border">
       <div className="relative bg-light">
         <img
           className="w-40"
@@ -51,8 +53,9 @@ const Listing = memo<{ listing: IListing }>(({ listing }) => {
           src={listing.book.thumbnail}
         />
       </div>
-      <div className="px-3 pb-3 mt-3">
-        {/* <span className="block font-semibold text-sm">
+      {isLoggedIn ? (
+        <div className="px-3 pb-3 mt-3">
+          {/* <span className="block font-semibold text-sm">
           {listing.book.title}
         </span>
 
@@ -64,20 +67,21 @@ const Listing = memo<{ listing: IListing }>(({ listing }) => {
           {listing.book.authors.join(', ')}
         </span> */}
 
-        <span className="block opacity-75 -mb-1 text-xs">
-          <RelativeDate date={listing.createdAt} />
-        </span>
-
-        <div className="flex justify-between">
-          <span className="block font-semibold text-xs">
-            {listing.condition ? conditionNames[listing.condition] : ''}
+          <span className="block opacity-75 -mb-1 text-xs">
+            <RelativeDate date={listing.createdAt} />
           </span>
 
-          <span className="bg-primary rounded-full text-white text-xs font-semibold px-3 py-2 leading-none flex items-center">
-            ${(listing.price / 100).toFixed(2)}
-          </span>
+          <div className="flex justify-between">
+            <span className="block font-semibold text-xs">
+              {listing.condition ? conditionNames[listing.condition] : ''}
+            </span>
+
+            <span className="bg-primary rounded-full text-white text-xs font-semibold px-3 py-2 leading-none flex items-center">
+              ${(listing.price / 100).toFixed(2)}
+            </span>
+          </div>
         </div>
-      </div>
+      ) : null}
     </div>
   );
 });

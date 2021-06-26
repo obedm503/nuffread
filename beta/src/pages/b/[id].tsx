@@ -10,7 +10,7 @@ import { useQuery } from '../../util/apollo';
 
 function Listings({ children }) {
   return (
-    <div className="p-6 flex flex-wrap items-end justify-center">
+    <div className="m-6 flex flex-wrap items-end justify-center">
       {children}
     </div>
   );
@@ -70,7 +70,7 @@ function BookPage() {
 
       <div className="container">
         <div className="flex">
-          <div className="w-1/2 p-6">
+          <div className="w-1/2 m-6">
             <div className="w-80 ml-auto overflow-hidden rounded-lg shadow-lg">
               <img
                 className="w-80"
@@ -79,7 +79,7 @@ function BookPage() {
               />
             </div>
           </div>
-          <div className="w-1/2 p-6">
+          <div className="w-1/2 m-6">
             <span className="block font-semibold text-md">{book.title}</span>
 
             {book.subTitle ? (
@@ -105,7 +105,7 @@ function BookPage() {
                   key={listing.id}
                   className={`my-4 mr-4 p-4 rounded-lg shadow-sm hover:shadow-lg ${
                     bookId === listing.id ? 'border-primary border' : ''
-                  } border-light border-1`}
+                  } border-light`}
                 >
                   <span className="block opacity-75 -mb-1 text-sm">
                     <RelativeDate date={listing.createdAt} />

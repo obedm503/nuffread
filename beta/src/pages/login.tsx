@@ -1,7 +1,11 @@
 import { gql, useApolloClient } from '@apollo/client';
+import { Field, Form, Formik } from 'formik';
+import Head from 'next/head';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useCallback, useEffect } from 'react';
 import { makeGetSSP, withGraphQL } from '../apollo-client';
+import { Navbar } from '../components/navbar';
 import { IMutationLoginArgs, SystemUserType } from '../schema.gql';
 import { useMutation } from '../util/apollo';
 import { useMe } from '../util/auth';
@@ -16,8 +20,8 @@ const Control = (
     <label className="block uppercase text-light-700 text-xs font-bold">
       {props.placeholder}
 
-      <input
-        className="mt-2 px-3 py-3 placeholder-light-400 text-light-700 bg-white rounded text-sm shadow focus:outline-none focus:shadow-outline w-full"
+      <Field
+        className="mt-2 px-3 py-3 placeholder-light-400 text-light-700 bg-white rounded text-sm shadow focus:outline-none focus:shadow-outline w-full border border-light"
         style={{ transition: 'all .15s ease' }}
         required
         {...props}
@@ -29,7 +33,7 @@ const Control = (
 const LOGIN = gql`
   mutation Login($email: String!, $password: String!, $type: SystemUserType!) {
     login(email: $email, password: $password, type: $type) {
-      ... on Admin {
+      ... on User {
         id
         email
       }
@@ -63,18 +67,12 @@ const Login = withToHome(function Login() {
   const [login] = useMutation<IMutationLoginArgs>(LOGIN);
   const client = useApolloClient();
   const onSubmit = useCallback(
-    async (e: React.FormEvent<HTMLFormElement>) => {
-      e.preventDefault();
-
-      if (!(e.target instanceof HTMLFormElement)) {
-        return;
-      }
-      const values = new FormData(e.target);
+    async ({ email, password }) => {
       const res = await login({
         variables: {
-          email: values.get('email').toString(),
-          password: values.get('password').toString(),
-          type: SystemUserType.Admin,
+          email,
+          password,
+          type: SystemUserType.User,
         },
       });
 
@@ -87,48 +85,72 @@ const Login = withToHome(function Login() {
   );
 
   return (
-    <main className="absolute w-full h-full">
-      <div className="container mx-auto px-4 h-full">
-        <div className="flex content-center items-center justify-center h-full">
-          <div className="w-full lg:w-4/12 px-4">
-            <div className="relative flex flex-col min-w-0 break-words w-full mb-6 shadow-lg rounded-lg bg-light border-0">
-              <div className="flex-auto px-4 lg:px-10 pb-10 pt-6">
-                <h2 className="text-center text-3xl text-primary font-bold mb-5">
-                  nuffread
-                </h2>
+    <div className="h-screen bg-primary">
+      <Navbar />
 
-                <form onSubmit={onSubmit}>
-                  <Control
-                    placeholder="Email"
-                    name="email"
-                    type="email"
-                    autoComplete="username"
-                    maxLength={255}
-                  />
-                  <Control
-                    placeholder="Password"
-                    name="password"
-                    type="password"
-                    autoComplete="current-password"
-                    maxLength={32}
-                  />
+      <main className="max-w-6xl mx-auto">
+        <Head>
+          <title>Login | Nuffread</title>
+        </Head>
 
-                  <div className="text-center mt-6">
-                    <button
-                      className="bg-primary hover:bg-secondary text-white text-sm font-bold uppercase px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 w-full"
-                      type="submit"
-                      style={{ transition: 'all .15s ease' }}
-                    >
-                      Sign In
-                    </button>
-                  </div>
-                </form>
+        <div className="container">
+          <div className="flex" style={{ marginTop: '15vh' }}>
+            <div className="w-2/3 m-6">
+              <div className="bg-medium" style={{ height: '50vh' }}></div>
+            </div>
+            <div className="w-1/3 m-6">
+              <div
+                className="bg-white rounded-lg shadow-lg p-4"
+                style={{ height: '50vh' }}
+              >
+                <Formik
+                  onSubmit={onSubmit}
+                  initialValues={{ email: '', password: '' }}
+                >
+                  <Form>
+                    <Control
+                      placeholder="Email"
+                      name="email"
+                      type="email"
+                      autoComplete="username"
+                      maxLength={255}
+                    />
+                    <Control
+                      placeholder="Password"
+                      name="password"
+                      type="password"
+                      autoComplete="current-password"
+                      maxLength={32}
+                    />
+
+                    <div className="text-center mt-6">
+                      <button
+                        className="bg-primary hover:bg-secondary text-white text-sm font-bold uppercase px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 w-full"
+                        type="submit"
+                        style={{ transition: 'all .15s ease' }}
+                      >
+                        Sign In
+                      </button>
+                    </div>
+                  </Form>
+                </Formik>
+
+                <Link href="/reset">
+                  <a className="block text-center hover:underline hover:text-secondary m-2">
+                    Forgot password?
+                  </a>
+                </Link>
+                <Link href="/join">
+                  <a className="block text-center hover:underline hover:text-secondary">
+                    Or Join
+                  </a>
+                </Link>
               </div>
             </div>
           </div>
         </div>
-      </div>
-    </main>
+      </main>
+    </div>
   );
 });
 
