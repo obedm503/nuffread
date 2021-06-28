@@ -149,17 +149,16 @@ const GET_LISTING_SELLER = gql`
 const Seller = React.memo<{ listingId: string }>(function ListingSeller({
   listingId,
 }) {
-  const { loading, error, data } = useQuery<IQueryListingArgs>(
-    GET_LISTING_SELLER,
-    { variables: { id: listingId } },
-  );
-  if (loading) {
+  const res = useQuery<IQueryListingArgs>(GET_LISTING_SELLER, {
+    variables: { id: listingId },
+  });
+  if (res.loading) {
     return userLoading;
   }
-  if (error) {
-    return <Error value={error} />;
+  if (res.error) {
+    return <Error value={res.error} />;
   }
-  const user = data!.listing!.user;
+  const user = res.data.listing!.user;
   if (!user) {
     return userHidden;
   }

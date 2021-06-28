@@ -1,45 +1,260 @@
 import {
   ApolloClient,
+  ApolloError,
   DataProxy,
   DocumentNode,
   LazyQueryHookOptions,
+  LazyQueryResult,
   MutationHookOptions,
+  MutationResult,
   MutationTuple,
   QueryHookOptions,
   QueryResult,
   QueryTuple,
   SubscriptionHookOptions,
   SubscriptionResult,
-  useLazyQuery as apolloLazyQuery,
-  useMutation as apolloMutation,
-  useQuery as apolloQuery,
-  useSubscription as apolloSubscription,
+  useLazyQuery as useApolloLazyQuery,
+  useMutation as useApolloMutation,
+  useQuery as useApolloQuery,
+  useSubscription as useApolloSubscription,
 } from '@apollo/client';
 import { IMutation, IQuery, ISubscription } from '../schema.gql';
 
-type UseQuery = <TVariables = never>(
+type WaitingResult = {
+  status: 'WAITING';
+  data: undefined;
+  loading: false;
+  error: undefined;
+};
+
+type LoadingResult = {
+  status: 'LOADING';
+  data: undefined;
+  loading: true;
+  error: undefined;
+};
+
+type ErrorResult = {
+  status: 'ERROR';
+  data: undefined;
+  loading: false;
+  error: ApolloError;
+};
+
+type SuccessResult<TData> = {
+  status: 'SUCCESS';
+  data: TData;
+  loading: false;
+  error: undefined;
+};
+
+export function useQuery<TVariables = never>(
   query: DocumentNode,
   options?: QueryHookOptions<IQuery, TVariables>,
-) => QueryResult<IQuery, TVariables>;
-export const useQuery = apolloQuery as UseQuery;
+): (LoadingResult | ErrorResult | SuccessResult<IQuery>) &
+  QueryResult<IQuery, TVariables> {
+  const { loading, error, data, ...rest } = useApolloQuery(query, options);
 
-type UseLazyQuery = <TVariables = never>(
+  if (loading) {
+    return {
+      status: 'LOADING',
+      loading: true,
+      error: undefined,
+      data: undefined,
+      ...rest,
+    };
+  }
+
+  if (error) {
+    return {
+      status: 'ERROR',
+      loading: false,
+      error,
+      data: undefined,
+      ...rest,
+    };
+  }
+
+  if (data) {
+    return {
+      status: 'SUCCESS',
+      loading: false,
+      error: undefined,
+      data,
+      ...rest,
+    };
+  }
+
+  throw new Error('unknown request state');
+}
+
+type CallLazyQuery<TVariables> = QueryTuple<IQuery, TVariables>['0'];
+export function useLazyQuery<TVariables = never>(
   query: DocumentNode,
   options?: LazyQueryHookOptions<IQuery, TVariables>,
-) => QueryTuple<IQuery, TVariables>;
-export const useLazyQuery = apolloLazyQuery as UseLazyQuery;
+): [
+  CallLazyQuery<TVariables>,
+  (WaitingResult | LoadingResult | ErrorResult | SuccessResult<IQuery>) &
+    LazyQueryResult<IQuery, TVariables>,
+] {
+  const [func, { loading, error, data, ...rest }] = useApolloLazyQuery(
+    query,
+    options,
+  );
 
-type UseMutation = <TVariables = never>(
-  mutation: DocumentNode,
+  if (!rest.called) {
+    return [
+      func,
+      {
+        status: 'WAITING',
+        loading: false,
+        error: undefined,
+        data: undefined,
+        ...rest,
+      },
+    ];
+  }
+
+  if (loading) {
+    return [
+      func,
+      {
+        status: 'LOADING',
+        loading: true,
+        error: undefined,
+        data: undefined,
+        ...rest,
+      },
+    ];
+  }
+
+  if (error) {
+    return [
+      func,
+      {
+        status: 'ERROR',
+        loading: false,
+        error,
+        data: undefined,
+        ...rest,
+      },
+    ];
+  }
+
+  if (data) {
+    return [
+      func,
+      {
+        status: 'SUCCESS',
+        loading: false,
+        error: undefined,
+        data,
+        ...rest,
+      },
+    ];
+  }
+
+  throw new Error('unknown request state');
+}
+
+type Mutate<TVariables> = MutationTuple<IMutation, TVariables>['0'];
+export function useMutation<TVariables = never>(
+  query: DocumentNode,
   options?: MutationHookOptions<IMutation, TVariables>,
-) => MutationTuple<IMutation, TVariables>;
-export const useMutation = apolloMutation as UseMutation;
+): [
+  Mutate<TVariables>,
+  (LoadingResult | ErrorResult | SuccessResult<IMutation>) &
+    MutationResult<IMutation>,
+] {
+  const [mutate, { loading, error, data, ...rest }] = useApolloMutation(
+    query,
+    options,
+  );
 
-type UseSubscription = <TVariables = never>(
-  subscription: DocumentNode,
+  if (loading) {
+    return [
+      mutate,
+      {
+        status: 'LOADING',
+        loading: true,
+        error: undefined,
+        data: undefined,
+        ...rest,
+      },
+    ];
+  }
+
+  if (error) {
+    return [
+      mutate,
+      {
+        status: 'ERROR',
+        loading: false,
+        error,
+        data: undefined,
+        ...rest,
+      },
+    ];
+  }
+
+  if (data) {
+    return [
+      mutate,
+      {
+        status: 'SUCCESS',
+        loading: false,
+        error: undefined,
+        data,
+        ...rest,
+      },
+    ];
+  }
+
+  throw new Error('unknown request state');
+}
+
+export function useSubscription<TVariables = never>(
+  query: DocumentNode,
   options?: SubscriptionHookOptions<ISubscription, TVariables>,
-) => SubscriptionResult<ISubscription>;
-export const useSubscription = apolloSubscription as UseSubscription;
+): (LoadingResult | ErrorResult | SuccessResult<ISubscription>) &
+  SubscriptionResult<ISubscription> {
+  const { loading, error, data, ...rest } = useApolloSubscription(
+    query,
+    options,
+  );
+
+  if (loading) {
+    return {
+      status: 'LOADING',
+      loading: true,
+      error: undefined,
+      data: undefined,
+      ...rest,
+    };
+  }
+
+  if (error) {
+    return {
+      status: 'ERROR',
+      loading: false,
+      error,
+      data: undefined,
+      ...rest,
+    };
+  }
+
+  if (data) {
+    return {
+      status: 'SUCCESS',
+      loading: false,
+      error: undefined,
+      data,
+      ...rest,
+    };
+  }
+
+  throw new Error('unknown request state');
+}
 
 /**
  * using custom readQuery because it throws if item is not in cache

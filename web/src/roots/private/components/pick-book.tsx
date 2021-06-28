@@ -38,23 +38,23 @@ const SearchResults = React.memo<{
   activeId?: string;
   isFocused: boolean;
 }>(({ onClick, searchValue, activeId, isFocused }) => {
-  const { error, data, loading } = useQuery<IQuerySearchGoogleArgs>(
-    SEARCH_GOOGLE,
-    { fetchPolicy: 'no-cache', variables: { query: searchValue } },
-  );
+  const res = useQuery<IQuerySearchGoogleArgs>(SEARCH_GOOGLE, {
+    fetchPolicy: 'no-cache',
+    variables: { query: searchValue },
+  });
 
-  if (error) {
-    return <Error value={error} />;
+  if (res.error) {
+    return <Error value={res.error} />;
   }
 
   const title = 'Results for: ' + searchValue;
-  const books = data?.searchGoogle;
 
-  if (loading || !Array.isArray(books)) {
+  if (res.loading) {
     return <ListWrapper title={title}>{ListingBasic.loading}</ListWrapper>;
   }
+  const books = res.data.searchGoogle;
 
-  if (!books.length) {
+  if (!books?.length) {
     return (
       <ListWrapper title={title}>
         <IonItem color="white">
