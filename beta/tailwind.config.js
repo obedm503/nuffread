@@ -2,11 +2,6 @@
 
 module.exports = {
   theme: {
-    extend: {
-      borderWidth: {
-        1: '1px',
-      },
-    },
     colors: {
       primary: '#15a0bf',
       secondary: '#2590a8',
