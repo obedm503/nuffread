@@ -75,7 +75,11 @@ export function initializeApollo(
 //   return pageProps;
 // }
 
-export function useApollo(pageProps: NextPageContext) {
+type Props<P> = P & {
+  [APOLLO_CLIENT_PROP_NAME]?: ApolloClient<NormalizedCacheObject>;
+  [APOLLO_STATE_PROP_NAME]?: NormalizedCacheObject;
+};
+export function useApolloClient(pageProps: Props<NextPageContext>) {
   const state = (pageProps as any)[APOLLO_STATE_PROP_NAME];
   const client = useMemo(
     () =>
@@ -86,10 +90,6 @@ export function useApollo(pageProps: NextPageContext) {
   return client;
 }
 
-type Props<P> = P & {
-  [APOLLO_CLIENT_PROP_NAME]?: ApolloClient<NormalizedCacheObject>;
-  [APOLLO_STATE_PROP_NAME]?: NormalizedCacheObject;
-};
 export function withApollo<P, IP>(
   Page: NextPage<P, IP>,
 ): NextPage<Props<P>, IP> {
