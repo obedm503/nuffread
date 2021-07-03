@@ -4,10 +4,11 @@ import Head from 'next/head';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useCallback, useEffect } from 'react';
-import { makeGetSSP, withGraphQL } from '../apollo-client';
+import { useMutation } from '../apollo/client';
+import { makeApolloSSR } from '../apollo/ssr';
+import { withApollo } from '../apollo/with-apollo';
 import { Navbar } from '../components/navbar';
 import { IMutationLoginArgs, SystemUserType } from '../schema.gql';
-import { useMutation } from '../util/apollo';
 import { useMe } from '../util/auth';
 
 const Control = (
@@ -154,5 +155,5 @@ const Login = withToHome(function Login() {
   );
 });
 
-export default withGraphQL(Login);
-export const getServerSideProps = makeGetSSP(Login);
+export default withApollo(Login);
+export const getServerSideProps = makeApolloSSR(Login);

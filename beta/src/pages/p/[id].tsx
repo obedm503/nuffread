@@ -2,10 +2,11 @@ import { gql } from '@apollo/client';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
-import { makeGetSSP, withGraphQL } from '../../apollo-client';
+import { useQuery } from '../../apollo/client';
+import { makeApolloSSR } from '../../apollo/ssr';
+import { withApollo } from '../../apollo/with-apollo';
 import { Layout } from '../../components/layout';
 import { BASIC_LISTING } from '../../queries';
-import { useQuery } from '../../util/apollo';
 
 const GET_LISTING = gql`
   ${BASIC_LISTING}
@@ -55,5 +56,5 @@ function Post() {
   return null;
 }
 
-export default withGraphQL(Post);
-export const getServerSideProps = makeGetSSP(Post);
+export default withApollo(Post);
+export const getServerSideProps = makeApolloSSR(Post);

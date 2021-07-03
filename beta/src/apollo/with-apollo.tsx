@@ -1,37 +1,30 @@
 import {
   ApolloClient,
-  InMemoryCache,
   ApolloProvider,
+  InMemoryCache,
   NormalizedCacheObject,
 } from '@apollo/client';
 import merge from 'deepmerge';
 import isEqual from 'lodash/isEqual';
-import {
-  NextPageContext,
-  NextPage,
-  GetServerSideProps,
-  GetServerSidePropsContext,
-} from 'next';
+import { GetServerSidePropsContext, NextPage, NextPageContext } from 'next';
 import { useMemo } from 'react';
-import { ParsedUrlQuery } from 'querystring';
-
-const uri = process.env.NEXT_PUBLIC_API;
 
 export const APOLLO_STATE_PROP_NAME = '__APOLLO_STATE__';
 export const APOLLO_CLIENT_PROP_NAME = '__APOLLO_CLIENT__';
 
-let apolloClient;
+type Client = ApolloClient<NormalizedCacheObject>;
+let apolloClient: Client;
 
 function createApolloClient(ctx?: NextPageContext | GetServerSidePropsContext) {
   const ssrMode = typeof window === 'undefined';
-  let headers;
+  let headers = {};
   if (ssrMode && ctx?.req) {
     const h = ctx.req.headers;
     headers = { cookie: h.cookie, 'user-agent': h['user-agent'] };
   }
   return new ApolloClient({
     ssrMode,
-    uri,
+    uri: process.env.NEXT_PUBLIC_GRAPHQL_API,
     credentials: 'include',
     headers,
     cache: new InMemoryCache({
@@ -43,7 +36,7 @@ function createApolloClient(ctx?: NextPageContext | GetServerSidePropsContext) {
 }
 
 export function initializeApollo(
-  initialState = null,
+  initialState?: NormalizedCacheObject,
   ctx?: NextPageContext | GetServerSidePropsContext,
 ): ApolloClient<NormalizedCacheObject> {
   const _apolloClient = apolloClient ?? createApolloClient(ctx);
@@ -74,34 +67,33 @@ export function initializeApollo(
   return _apolloClient;
 }
 
-export function addApolloState(client, pageProps) {
-  if (pageProps?.props) {
-    pageProps.props[APOLLO_STATE_PROP_NAME] = client.cache.extract();
-  }
+// export function addApolloState(client: Client, pageProps: any) {
+//   if (pageProps?.props) {
+//     pageProps.props[APOLLO_STATE_PROP_NAME] = client.cache.extract();
+//   }
 
-  return pageProps;
-}
+//   return pageProps;
+// }
 
 export function useApollo(pageProps: NextPageContext) {
-  const state = pageProps[APOLLO_STATE_PROP_NAME];
+  const state = (pageProps as any)[APOLLO_STATE_PROP_NAME];
   const client = useMemo(
     () =>
-      pageProps[APOLLO_CLIENT_PROP_NAME] ?? initializeApollo(state, pageProps),
+      (pageProps as any)[APOLLO_CLIENT_PROP_NAME] ??
+      initializeApollo(state, pageProps),
     [state, pageProps],
   );
   return client;
 }
 
-export function withGraphQL<P, IP>(
+type Props<P> = P & {
+  [APOLLO_CLIENT_PROP_NAME]?: ApolloClient<NormalizedCacheObject>;
+  [APOLLO_STATE_PROP_NAME]?: NormalizedCacheObject;
+};
+export function withApollo<P, IP>(
   Page: NextPage<P, IP>,
-): NextPage<
-  P & {
-    [APOLLO_CLIENT_PROP_NAME]?: ApolloClient<NormalizedCacheObject>;
-    [APOLLO_STATE_PROP_NAME]?: NormalizedCacheObject;
-  },
-  IP
-> {
-  return props => {
+): NextPage<Props<P>, IP> {
+  return function WithApollo(props) {
     const client =
       props[APOLLO_CLIENT_PROP_NAME] ??
       initializeApollo(props[APOLLO_STATE_PROP_NAME], props as any);
@@ -111,52 +103,5 @@ export function withGraphQL<P, IP>(
         <Page {...props} />
       </ApolloProvider>
     );
-  };
-}
-
-export function makeGetSSP<P, Q extends ParsedUrlQuery>(
-  Page: NextPage<P>,
-  getServerSideProps?: GetServerSideProps<P, Q>,
-): GetServerSideProps<P, Q> {
-  return async ctx => {
-    const { getDataFromTree } = await import('@apollo/client/react/ssr');
-    // technically using an internal api
-    // https://github.com/vercel/next.js/discussions/11957#discussioncomment-126931
-    const { RouterContext } = await import(
-      'next/dist/next-server/lib/router-context'
-    );
-
-    const apolloClient = initializeApollo(null, ctx);
-
-    let resProps: P = {} as any;
-    if (getServerSideProps) {
-      const res = await getServerSideProps(ctx);
-      if ('props' in res) {
-        resProps = res.props;
-      }
-    }
-
-    const router = {
-      query: ctx.params,
-      locales: ctx.locales,
-      locale: ctx.locale,
-      defaultLocale: ctx.defaultLocale,
-      // missing route, pathname, asPath, basePath, isLocaleDomain
-    } as any;
-
-    const WrappedPage = withGraphQL(Page);
-    const props = { ...resProps, [APOLLO_CLIENT_PROP_NAME]: apolloClient };
-    await getDataFromTree(
-      <RouterContext.Provider value={router}>
-        <WrappedPage {...props} />
-      </RouterContext.Provider>,
-    );
-
-    return {
-      props: {
-        ...resProps,
-        [APOLLO_STATE_PROP_NAME]: apolloClient.extract(),
-      },
-    };
   };
 }

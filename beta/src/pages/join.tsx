@@ -1,4 +1,5 @@
-import { makeGetSSP, withGraphQL } from '../apollo-client';
+import { makeApolloSSR } from '../apollo/ssr';
+import { withApollo } from '../apollo/with-apollo';
 import { Layout } from '../components/layout';
 
 const Join = function Join() {
@@ -9,5 +10,5 @@ const Join = function Join() {
   );
 };
 
-export default withGraphQL(Join);
-export const getServerSideProps = makeGetSSP(Join);
+export default withApollo(Join);
+export const getServerSideProps = makeApolloSSR(Join);

@@ -2,12 +2,13 @@ import { gql } from '@apollo/client';
 import Head from 'next/head';
 import Link from 'next/link';
 import { memo } from 'react';
-import { makeGetSSP, withGraphQL } from '../apollo-client';
+import { useQuery } from '../apollo/client';
+import { makeApolloSSR } from '../apollo/ssr';
+import { withApollo } from '../apollo/with-apollo';
 import { RelativeDate } from '../components/date';
 import { Layout } from '../components/layout';
 import { BASIC_LISTING } from '../queries';
 import { IListing } from '../schema.gql';
-import { useQuery } from '../util/apollo';
 import { useIsLoggedIn } from '../util/auth';
 import { conditionNames } from '../util/index';
 
@@ -50,7 +51,7 @@ const Listing = memo<{ listing: IListing }>(({ listing }) => {
         <img
           className="w-40"
           alt={`${listing.book.title} book cover`}
-          src={listing.book.thumbnail}
+          src={listing.book.thumbnail || ''}
         />
       </div>
       {isLoggedIn ? (
@@ -87,10 +88,14 @@ const Listing = memo<{ listing: IListing }>(({ listing }) => {
 });
 
 function Explore() {
-  const { loading, data, error } = useQuery(TOP_LISTINGS);
+  const res = useQuery(TOP_LISTINGS);
 
-  if (error) {
-    console.error(error);
+  if (res.loading) {
+    return null;
+  }
+
+  if (res.error) {
+    console.error(res.error);
     return (
       <Layout>
         <Head>
@@ -108,7 +113,7 @@ function Explore() {
       </Head>
 
       <Listings>
-        {data?.top.items.map(listing => (
+        {res.data.top.items.map(listing => (
           <Link key={listing.id} href={`/b/${listing.book.id}`}>
             <a>
               <Listing listing={listing} />
@@ -120,5 +125,5 @@ function Explore() {
   );
 }
 
-export default withGraphQL(Explore);
-export const getServerSideProps = makeGetSSP(Explore);
+export default withApollo(Explore);
+export const getServerSideProps = makeApolloSSR(Explore);

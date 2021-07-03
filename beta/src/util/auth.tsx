@@ -1,8 +1,8 @@
 import { gql } from '@apollo/client';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
+import { useQuery } from '../apollo/client';
 import { IUser } from '../schema.gql';
-import { useQuery } from './apollo';
 
 const ME = gql`
   query GetMe {

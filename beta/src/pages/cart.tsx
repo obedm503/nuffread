@@ -1,12 +1,11 @@
 import { gql } from '@apollo/client';
 import groupBy from 'lodash/groupBy';
-import { useCallback } from 'react';
-import { makeGetSSP, withGraphQL } from '../apollo-client';
-import { Card } from '../components/card';
+import { useQuery } from '../apollo/client';
+import { makeApolloSSR } from '../apollo/ssr';
+import { withApollo } from '../apollo/with-apollo';
 import { Layout } from '../components/layout';
-import { Cols, Table } from '../components/table';
-import { IMutationSetSchoolNameArgs, ISchool } from '../schema.gql';
-import { useMutation, useQuery } from '../util/apollo';
+import { Cols } from '../components/table';
+import { ISchool } from '../schema.gql';
 import { withToLogin } from '../util/auth';
 
 const SET_SCHOOL_NAME = gql`
@@ -46,5 +45,5 @@ const Schools = withToLogin(function Schools() {
   return <Layout>profile</Layout>;
 });
 
-export default withGraphQL(Schools);
-export const getServerSideProps = makeGetSSP(Schools);
+export default withApollo(Schools);
+export const getServerSideProps = makeApolloSSR(Schools);

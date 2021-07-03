@@ -1,4 +1,5 @@
-import { makeGetSSP, withGraphQL } from '../apollo-client';
+import { makeApolloSSR } from '../apollo/ssr';
+import { withApollo } from '../apollo/with-apollo';
 import { Layout } from '../components/layout';
 
 const Reset = function Reset() {
@@ -9,5 +10,5 @@ const Reset = function Reset() {
   );
 };
 
-export default withGraphQL(Reset);
-export const getServerSideProps = makeGetSSP(Reset);
+export default withApollo(Reset);
+export const getServerSideProps = makeApolloSSR(Reset);
