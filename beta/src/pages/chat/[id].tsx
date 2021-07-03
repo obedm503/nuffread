@@ -1,11 +1,12 @@
+import { useRouter } from 'next/router';
 import { makeApolloSSR } from '../../apollo/ssr';
 import { withApollo } from '../../apollo/with-apollo';
 import { Layout } from '../../components/layout';
-import { withToLogin } from '../../util/auth';
 
-const Schools = withToLogin(function Schools() {
-  return <Layout>profile</Layout>;
-});
+function Chat() {
+  const router = useRouter();
+  return <Layout>chat {router.query.id}</Layout>;
+}
 
-export default withApollo(Schools);
-export const getServerSideProps = makeApolloSSR(Schools);
+export default withApollo(Chat);
+export const getServerSideProps = makeApolloSSR(Chat);
