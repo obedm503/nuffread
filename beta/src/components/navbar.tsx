@@ -2,13 +2,13 @@ import { Field, Form, Formik } from 'formik';
 import { personCircleOutline } from 'ionicons/icons';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { useCallback, useState } from 'react';
+import { useCallback } from 'react';
 import { useIsLoggedIn } from '../util/auth';
 
 export function Navbar() {
   const isLoggedIn = useIsLoggedIn();
-  const [active, setActive] = useState(false);
-  const toggle = useCallback(() => setActive(a => !!a), [setActive]);
+  // const [active, setActive] = useState(false);
+  // const toggle = useCallback(() => setActive(a => !!a), [setActive]);
 
   const router = useRouter();
   const onSubmit = useCallback(

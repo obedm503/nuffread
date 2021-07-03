@@ -95,10 +95,9 @@ export const SearchBooks = memo<SearchBooksProps>(function SearchBooks({
   searchValue,
 }) {
   console.log({ searchValue });
-  const { error, data, loading, fetchMore } = useQuery<IQuerySearchBooksArgs>(
-    SEARCH_BOOKS,
-    { variables: { query: searchValue, paginate: { limit: 30, offset: 0 } } },
-  );
+  const { error, data } = useQuery<IQuerySearchBooksArgs>(SEARCH_BOOKS, {
+    variables: { query: searchValue, paginate: { limit: 30, offset: 0 } },
+  });
   // const { totalCount, currentCount } = paginatedBooks(data?.searchBooks);
 
   // const getMore = React.useCallback(
@@ -144,7 +143,7 @@ export const SearchBooks = memo<SearchBooksProps>(function SearchBooks({
 });
 
 function Search() {
-  const { onClick, onSearch, searchValue } = useSearch();
+  const { onClick, searchValue } = useSearch();
   return (
     <Layout>
       {searchValue.length ? (
