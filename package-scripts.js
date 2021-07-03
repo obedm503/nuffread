@@ -31,7 +31,7 @@ module.exports.scripts = {
     ),
     types: 'graphql-codegen --config codegen.yml --watch',
     web: series('cd web', 'npm run dev'),
-    beta: series('cd beta', 'npm run dev'),
+    beta: series('cd beta', 'yarn dev'),
     api: {
       default: concurrent.nps('dev.api.build', 'dev.api.start'),
       build: series('cd api', 'npm run dev:build'),
@@ -49,7 +49,7 @@ module.exports.scripts = {
     web: series('cd web', 'npm run build'),
     api: series('cd api', 'npm run build'),
     admin: series('cd admin', 'npm run build'),
-    beta: series('cd beta', 'npm run build'),
+    beta: series('cd beta', 'yarn build'),
   },
   clean: rimraf('.cache web/build api/dist'),
   start: {
