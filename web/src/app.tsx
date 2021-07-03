@@ -50,9 +50,9 @@ const rootPage = memoizeOne(function (
 });
 
 export const App = () => {
-  const { data, error, loading } = useQuery(ME);
+  const res = useQuery(ME);
 
-  const me = data?.me || undefined;
+  const me = res.data?.me || undefined;
   React.useEffect(() => {
     if (me) {
       tracker.identify({ email: me.email });
@@ -63,7 +63,7 @@ export const App = () => {
     }
   }, [me]);
 
-  if (loading) {
+  if (res.loading) {
     return (
       <div className="loading-page">
         <div className="spinner-wrapper">
@@ -72,8 +72,8 @@ export const App = () => {
       </div>
     );
   }
-  if (error) {
-    return <Error value={error} />;
+  if (res.error) {
+    return <Error value={res.error} />;
   }
 
   const Root = rootPage(me);

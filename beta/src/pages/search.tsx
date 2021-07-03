@@ -1,11 +1,12 @@
 import { gql } from '@apollo/client';
 import { useRouter } from 'next/router';
 import { memo, useCallback } from 'react';
-import { makeGetSSP, withGraphQL } from '../apollo-client';
+import { useQuery } from '../apollo/client';
+import { makeApolloSSR } from '../apollo/ssr';
+import { withApollo } from '../apollo/with-apollo';
 import { Layout } from '../components/layout';
 import { BASIC_LISTING, BOOK } from '../queries';
 import { IQuerySearchBooksArgs } from '../schema.gql';
-import { useQuery } from '../util/apollo';
 
 function useSearch() {
   const router = useRouter();
@@ -156,5 +157,5 @@ function Search() {
   );
 }
 
-export default withGraphQL(Search);
-export const getServerSideProps = makeGetSSP(Search);
+export default withApollo(Search);
+export const getServerSideProps = makeApolloSSR(Search);

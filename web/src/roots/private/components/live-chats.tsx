@@ -58,16 +58,16 @@ function onSubscriptionData({
 }
 
 export function LiveChats() {
-  const { data, loading } = useSubscription(CHATS, { onSubscriptionData });
+  const res = useSubscription(CHATS, { onSubscriptionData });
 
-  const id = data?.newMessage.id;
+  const id = res.data?.newMessage.id;
   React.useLayoutEffect(() => {
-    if (id && !loading) {
+    if (id && !res.loading) {
       setTimeout(() => {
         const el = document.querySelector(`#message-${id}`);
         el?.scrollIntoView({ behavior: 'smooth' });
       }, 0);
     }
-  }, [id, loading]);
+  }, [id, res]);
   return null;
 }

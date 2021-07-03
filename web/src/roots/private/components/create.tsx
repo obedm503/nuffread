@@ -209,14 +209,14 @@ export const CreateModal = ({ isOpen, onClose: closeModal }) => {
     [closeModal],
   );
 
-  const { loading: bookLoading, data } = useQuery<IQueryGoogleBookArgs>(
+  const resBook = useQuery<IQueryGoogleBookArgs>(
     GOOGLE_BOOK,
     { variables: { id: state.googleId }, skip: !state.googleId },
   );
 
-  const loading = createLoading || bookLoading;
+  const loading = createLoading || resBook.loading;
 
-  const googleBook = data?.googleBook;
+  const googleBook = resBook.data?.googleBook;
   const possibleCovers = googleBook?.possibleCovers;
 
   return (

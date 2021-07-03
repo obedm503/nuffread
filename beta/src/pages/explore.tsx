@@ -2,12 +2,14 @@ import { gql } from '@apollo/client';
 import Head from 'next/head';
 import Link from 'next/link';
 import { memo } from 'react';
-import { makeGetSSP, withGraphQL } from '../apollo-client';
+import { useQuery } from '../apollo/client';
+import { makeApolloSSR } from '../apollo/ssr';
+import { withApollo } from '../apollo/with-apollo';
 import { RelativeDate } from '../components/date';
 import { Layout } from '../components/layout';
 import { BASIC_LISTING } from '../queries';
 import { IListing } from '../schema.gql';
-import { useQuery } from '../util/apollo';
+import { useIsLoggedIn } from '../util/auth';
 import { conditionNames } from '../util/index';
 
 const TOP_LISTINGS = gql`
@@ -35,27 +37,26 @@ const TOP_LISTINGS = gql`
 
 function Listings({ children }) {
   return (
-    <div className="p-6 flex flex-wrap items-end justify-center">
+    <div className="m-6 flex flex-wrap items-end justify-center">
       {children}
     </div>
   );
 }
 
 const Listing = memo<{ listing: IListing }>(({ listing }) => {
+  const isLoggedIn = useIsLoggedIn();
   return (
-    <div
-      className="flex-shrink-0 m-4 relative overflow-hidden rounded-lg w-40 shadow-sm hover:shadow-lg border-light"
-      style={{ borderWidth: '1px' }}
-    >
+    <div className="flex-shrink-0 m-4 relative overflow-hidden rounded-lg w-40 shadow-sm hover:shadow-lg border-light border">
       <div className="relative bg-light">
         <img
           className="w-40"
           alt={`${listing.book.title} book cover`}
-          src={listing.book.thumbnail}
+          src={listing.book.thumbnail || ''}
         />
       </div>
-      <div className="px-3 pb-3 mt-3">
-        {/* <span className="block font-semibold text-sm">
+      {isLoggedIn ? (
+        <div className="px-3 pb-3 mt-3">
+          {/* <span className="block font-semibold text-sm">
           {listing.book.title}
         </span>
 
@@ -67,29 +68,34 @@ const Listing = memo<{ listing: IListing }>(({ listing }) => {
           {listing.book.authors.join(', ')}
         </span> */}
 
-        <span className="block opacity-75 -mb-1 text-xs">
-          <RelativeDate date={listing.createdAt} />
-        </span>
-
-        <div className="flex justify-between">
-          <span className="block font-semibold text-xs">
-            {listing.condition ? conditionNames[listing.condition] : ''}
+          <span className="block opacity-75 -mb-1 text-xs">
+            <RelativeDate date={listing.createdAt} />
           </span>
 
-          <span className="bg-primary rounded-full text-white text-xs font-semibold px-3 py-2 leading-none flex items-center">
-            ${(listing.price / 100).toFixed(2)}
-          </span>
+          <div className="flex justify-between">
+            <span className="block font-semibold text-xs">
+              {listing.condition ? conditionNames[listing.condition] : ''}
+            </span>
+
+            <span className="bg-primary rounded-full text-white text-xs font-semibold px-3 py-2 leading-none flex items-center">
+              ${(listing.price / 100).toFixed(2)}
+            </span>
+          </div>
         </div>
-      </div>
+      ) : null}
     </div>
   );
 });
 
 function Explore() {
-  const { loading, data, error } = useQuery(TOP_LISTINGS);
+  const res = useQuery(TOP_LISTINGS);
 
-  if (error) {
-    console.error(error);
+  if (res.loading) {
+    return null;
+  }
+
+  if (res.error) {
+    console.error(res.error);
     return (
       <Layout>
         <Head>
@@ -107,7 +113,7 @@ function Explore() {
       </Head>
 
       <Listings>
-        {data?.top.items.map(listing => (
+        {res.data.top.items.map(listing => (
           <Link key={listing.id} href={`/b/${listing.book.id}`}>
             <a>
               <Listing listing={listing} />
@@ -119,5 +125,5 @@ function Explore() {
   );
 }
 
-export default withGraphQL(Explore);
-export const getServerSideProps = makeGetSSP(Explore);
+export default withApollo(Explore);
+export const getServerSideProps = makeApolloSSR(Explore);

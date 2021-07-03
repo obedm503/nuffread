@@ -21,6 +21,7 @@ generates:
     config:
       skipTypename: false
       immutableTypes: true
+      maybeValue: T | undefined
       scalars:
         Date: string
 

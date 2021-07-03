@@ -35,23 +35,23 @@ const GET_RECENT_LISTINGS = gql`
 `;
 const RecentListings = React.memo<{ onClick: (id: string) => void }>(
   function RecentListings({ onClick }) {
-    const { error, loading, data } = useQuery(GET_RECENT_LISTINGS);
+    const res = useQuery(GET_RECENT_LISTINGS);
 
-    if (error) {
-      return <Error value={error} />;
+    if (res.error) {
+      return <Error value={res.error} />;
     }
-    if (loading || !data) {
+    if (res.loading) {
       return <ListWrapper title="Recent">{ListingBasic.loading}</ListWrapper>;
     }
-    if (!data.me || data.me.__typename !== 'User') {
+    if (!res.data.me || res.data.me.__typename !== 'User') {
       return null;
     }
 
     return (
       <Listings
         title="Recent"
-        loading={loading}
-        listings={data.me.recent}
+        loading={res.loading}
+        listings={res.data.me?.recent}
         component={ListingBasic}
         onClick={onClick}
       />

@@ -1,16 +1,17 @@
 import { gql } from '@apollo/client';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
-import { makeGetSSP, withGraphQL } from '../../apollo-client';
+import { useQuery } from '../../apollo/client';
+import { makeApolloSSR } from '../../apollo/ssr';
+import { withApollo } from '../../apollo/with-apollo';
 import { RelativeDate } from '../../components/date';
 import { Layout } from '../../components/layout';
 import { BOOK, LISTING } from '../../queries';
 import { conditionNames } from '../../util';
-import { useQuery } from '../../util/apollo';
 
 function Listings({ children }) {
   return (
-    <div className="p-6 flex flex-wrap items-end justify-center">
+    <div className="m-6 flex flex-wrap items-end justify-center">
       {children}
     </div>
   );
@@ -42,15 +43,15 @@ function BookPage() {
   const router = useRouter();
   const bookId = router?.query.id;
 
-  const { loading, data, error } = useQuery(GET_BOOK, {
+  const res = useQuery(GET_BOOK, {
     variables: { id: bookId },
   });
-  if (loading) {
+  if (res.loading) {
     return null;
   }
 
-  if (error) {
-    console.error(error);
+  if (res.error) {
+    console.error(res.error);
     return (
       <Layout>
         <Head>
@@ -60,7 +61,7 @@ function BookPage() {
       </Layout>
     );
   }
-  const book = data.book;
+  const book = res.data.book!;
 
   return (
     <Layout>
@@ -70,16 +71,16 @@ function BookPage() {
 
       <div className="container">
         <div className="flex">
-          <div className="w-1/2 p-6">
+          <div className="w-1/2 m-6">
             <div className="w-80 ml-auto overflow-hidden rounded-lg shadow-lg">
               <img
                 className="w-80"
                 alt={`${book.title} book cover`}
-                src={book.thumbnail}
+                src={book.thumbnail ?? ''}
               />
             </div>
           </div>
-          <div className="w-1/2 p-6">
+          <div className="w-1/2 m-6">
             <span className="block font-semibold text-md">{book.title}</span>
 
             {book.subTitle ? (
@@ -106,7 +107,6 @@ function BookPage() {
                   className={`my-4 mr-4 p-4 rounded-lg shadow-sm hover:shadow-lg ${
                     bookId === listing.id ? 'border-primary border' : ''
                   } border-light`}
-                  style={{ borderWidth: '1px' }}
                 >
                   <span className="block opacity-75 -mb-1 text-sm">
                     <RelativeDate date={listing.createdAt} />
@@ -135,5 +135,5 @@ function BookPage() {
   );
 }
 
-export default withGraphQL(BookPage);
-export const getServerSideProps = makeGetSSP(BookPage);
+export default withApollo(BookPage);
+export const getServerSideProps = makeApolloSSR(BookPage);

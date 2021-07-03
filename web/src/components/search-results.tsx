@@ -30,15 +30,14 @@ export const SearchBooks = React.memo<SearchBooksProps>(function SearchBooks({
   onClick: handleClick,
   searchValue,
 }) {
-  const { error, data, loading, fetchMore } = useQuery<IQuerySearchBooksArgs>(
-    SEARCH_BOOKS,
-    { variables: { query: searchValue, paginate: { offset: 0 } } },
-  );
-  const { totalCount, currentCount } = paginatedBooks(data?.searchBooks);
+  const res = useQuery<IQuerySearchBooksArgs>(SEARCH_BOOKS, {
+    variables: { query: searchValue, paginate: { offset: 0 } },
+  });
+  const { totalCount, currentCount } = paginatedBooks(res.data?.searchBooks);
 
   const getMore = React.useCallback(
     async e => {
-      await fetchMore({
+      await res.fetchMore({
         variables: { query: searchValue, paginate: { offset: currentCount } },
         updateQuery: (prev, { fetchMoreResult }) => {
           if (!fetchMoreResult) return prev;
@@ -57,19 +56,19 @@ export const SearchBooks = React.memo<SearchBooksProps>(function SearchBooks({
       });
       (e.target! as HTMLIonInfiniteScrollElement).complete();
     },
-    [currentCount, searchValue, fetchMore],
+    [currentCount, searchValue, res],
   );
 
-  if (error) {
-    return <Error value={error} />;
+  if (res.error) {
+    return <Error value={res.error} />;
   }
 
   return (
     <>
       <Books
-        loading={loading}
+        loading={res.loading}
         onClick={handleClick}
-        books={data?.searchBooks.items}
+        books={res.data?.searchBooks.items}
         title={'Results for: ' + searchValue}
         component={BookBasic}
       />

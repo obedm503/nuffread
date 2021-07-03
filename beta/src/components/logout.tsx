@@ -1,7 +1,7 @@
 import { gql, useApolloClient } from '@apollo/client';
 import Router from 'next/router';
 import { useCallback } from 'react';
-import { useMutation } from '../util/apollo';
+import { useMutation } from '../apollo/client';
 
 const LOGOUT = gql`
   mutation Logout {

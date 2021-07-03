@@ -64,9 +64,42 @@ export function Navbar() {
           style={{ display: 'table-cell', verticalAlign: 'middle' }}
         >
           {isLoggedIn ? (
-            <a className="ml-2 pl-2 pr-2 pb-1 pt-1 rounded-full">
-              <img className="w-8 inline" src={personCircleOutline} alt="" />
-            </a>
+            <div className="group inline-block">
+              <style>{`
+                /* since nested groupes are not supported we have to use 
+                  regular css for the nested dropdowns 
+                */
+                li>ul                 { transform: translatex(100%) scale(0) }
+                li:hover>ul           { transform: translatex(101%) scale(1) }
+              
+                /* Below styles fake what can be achieved with the tailwind config
+                  you need to add the group-hover variant to scale and define your custom
+                  min width style.
+                  See https://codesandbox.io/s/tailwindcss-multilevel-dropdown-y91j7?file=/index.html
+                  for implementation with config file
+                */
+                .group:hover .group-hover\\:scale-100 { transform: scale(1) }
+                .group:hover .group-hover\\:-rotate-180 { transform: rotate(180deg) }
+                .scale-0 { transform: scale(0) }
+              `}</style>
+              <button className="outline-none focus:outline-none px-3 py-1 bg-white rounded-full flex items-center">
+                <img className="w-8 inline" src={personCircleOutline} alt="" />
+              </button>
+              <ul
+                className="bg-white border border-light rounded-md transform scale-0 group-hover:scale-100 absolute 
+  transition duration-150 ease-in-out origin-top-right right-8"
+              >
+                <li className="rounded-sm px-3 py-1 hover:bg-gray-100">
+                  Logout
+                </li>
+                <li className="rounded-sm px-3 py-1 hover:bg-gray-100">
+                  DevOps
+                </li>
+                <li className="rounded-sm px-3 py-1 hover:bg-gray-100">
+                  Testing
+                </li>
+              </ul>
+            </div>
           ) : (
             <>
               <Link href="/login">
