@@ -1,11 +1,10 @@
 import { makeApolloSSR } from '../apollo/ssr';
 import { withApollo } from '../apollo/with-apollo';
 import { Layout } from '../components/layout';
-import { withToLogin } from '../util/auth';
 
-const Schools = withToLogin(function Schools() {
-  return <Layout>profile</Layout>;
-});
+function Cart() {
+  return <Layout>cart</Layout>;
+}
 
-export default withApollo(Schools);
-export const getServerSideProps = makeApolloSSR(Schools);
+export default withApollo(Cart);
+export const getServerSideProps = makeApolloSSR(Cart);
