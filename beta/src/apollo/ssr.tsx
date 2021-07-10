@@ -9,7 +9,7 @@ import { ParsedUrlQuery } from 'querystring';
 import {
   APOLLO_CLIENT_PROP_NAME,
   APOLLO_STATE_PROP_NAME,
-  initializeApollo,
+  initializeApolloClient,
   withApollo,
 } from './with-apollo';
 
@@ -18,7 +18,7 @@ export function makeApolloSSR<P, Q extends ParsedUrlQuery>(
   getServerSideProps?: GetServerSideProps<P, Q>,
 ): GetServerSideProps<P, Q> {
   return async ctx => {
-    const apolloClient = initializeApollo(undefined, ctx);
+    const apolloClient = initializeApolloClient(ctx);
 
     let ssProps: P = {} as any;
     if (getServerSideProps) {

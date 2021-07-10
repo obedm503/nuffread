@@ -95,11 +95,10 @@ function Explore() {
   }
 
   if (res.error) {
-    console.error(res.error);
     return (
       <Layout>
         <Head>
-          <title>Explore | Nuffread</title>
+          <title>Explore - nuffread</title>
         </Head>
         <Listings>Something went wrong</Listings>
       </Layout>
@@ -109,7 +108,7 @@ function Explore() {
   return (
     <Layout>
       <Head>
-        <title>Explore | Nuffread</title>
+        <title>Explore - nuffread</title>
       </Head>
 
       <Listings>

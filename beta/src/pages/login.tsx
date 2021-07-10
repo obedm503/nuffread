@@ -1,35 +1,19 @@
 import { gql } from '@apollo/client';
-import { Field, Form, Formik } from 'formik';
+import { Form, Formik } from 'formik';
 import Head from 'next/head';
-import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { useCallback, useEffect } from 'react';
+import { useCallback } from 'react';
+import { object } from 'yup';
 import { useMutation } from '../apollo/client';
 import { makeApolloSSR } from '../apollo/ssr';
-import { useApolloClient, withApollo } from '../apollo/with-apollo';
-import { Navbar } from '../components/navbar';
+import { withApollo } from '../apollo/with-apollo';
+import { apolloFormErrors, Email, Passphase } from '../components/controls';
+import { Link } from '../components/link';
+import { LoginLayout } from '../components/login-wrapper';
+import { SubmitButton } from '../components/submit-button';
 import { IMutationLoginArgs, SystemUserType } from '../schema.gql';
-import { useMe } from '../util/auth';
-
-const Control = (
-  props: React.DetailedHTMLProps<
-    React.InputHTMLAttributes<HTMLInputElement>,
-    HTMLInputElement
-  >,
-) => (
-  <div className="relative w-full mb-3">
-    <label className="block uppercase text-light-700 text-xs font-bold">
-      {props.placeholder}
-
-      <Field
-        className="mt-2 px-3 py-3 placeholder-light-400 text-light-700 bg-white rounded text-sm shadow focus:outline-none focus:shadow-outline w-full border border-light"
-        style={{ transition: 'all .15s ease' }}
-        required
-        {...props}
-      />
-    </label>
-  </div>
-);
+import { emailSchema, passwordSchema } from '../util';
+import { withToHome } from '../util/auth';
 
 const LOGIN = gql`
   mutation Login($email: String!, $password: String!, $type: SystemUserType!) {
@@ -41,115 +25,76 @@ const LOGIN = gql`
     }
   }
 `;
+const Errors = apolloFormErrors({
+  NOT_CONFIRMED:
+    'Email is not yet confirmed. Click the link on the email we sent you to confirm it.',
+  WRONG_CREDENTIALS: 'Wrong email or passphrase.',
+});
 
-function withToHome(Children) {
-  return () => {
-    const router = useRouter();
-    const { me, loading } = useMe();
-    const hasUser = !!me;
-
-    useEffect(() => {
-      if (loading) return;
-      if (hasUser) {
-        router.push('/');
-      }
-    }, [loading, hasUser, router]);
-
-    if (loading || hasUser) {
-      return null;
-    }
-
-    return <Children />;
-  };
-}
+type FormSchema = { email: string; password: string };
+const schema = object().shape({
+  email: emailSchema,
+  password: passwordSchema,
+});
 
 const Login = withToHome(function Login(props) {
   const router = useRouter();
-  const [login] = useMutation<IMutationLoginArgs>(LOGIN);
-  const client = useApolloClient(props);
+  const [login, res] = useMutation<IMutationLoginArgs>(LOGIN);
+  const client = res.client;
   const onSubmit = useCallback(
     async ({ email, password }) => {
-      const res = await login({
-        variables: {
-          email,
-          password,
-          type: SystemUserType.User,
-        },
-      });
+      try {
+        const res = await login({
+          variables: {
+            email,
+            password,
+            type: SystemUserType.User,
+          },
+        });
 
-      if (res?.data?.login) {
-        await client.resetStore();
-        await router.push('/');
-      }
+        if (res.data?.login) {
+          await client.resetStore();
+          await router.push('/');
+        }
+      } catch (e) {}
     },
     [client, login, router],
   );
 
   return (
-    <div className="h-screen bg-primary">
-      <Navbar />
+    <LoginLayout>
+      <Head>
+        <title>Login - nuffread</title>
+      </Head>
 
-      <main className="max-w-6xl mx-auto">
-        <Head>
-          <title>Login | Nuffread</title>
-        </Head>
+      <div className="w-full">
+        <Formik<FormSchema>
+          onSubmit={onSubmit}
+          validationSchema={schema}
+          initialValues={{ email: '', password: '' }}
+        >
+          <Form>
+            <Email label="Email" name="email" disabled={res.loading} />
+            <Passphase
+              label="Passphase"
+              name="password"
+              disabled={res.loading}
+            />
 
-        <div className="flex" style={{ marginTop: '15vh' }}>
-          <div className="w-2/3 m-6">
-            <div className="bg-medium" style={{ height: '50vh' }}></div>
-          </div>
-          <div className="w-1/3 m-6">
-            <div
-              className="bg-white rounded-lg shadow-lg p-4"
-              style={{ height: '50vh' }}
-            >
-              <Formik
-                onSubmit={onSubmit}
-                initialValues={{ email: '', password: '' }}
-              >
-                <Form>
-                  <Control
-                    placeholder="Email"
-                    name="email"
-                    type="email"
-                    autoComplete="username"
-                    maxLength={255}
-                  />
-                  <Control
-                    placeholder="Password"
-                    name="password"
-                    type="password"
-                    autoComplete="current-password"
-                    maxLength={32}
-                  />
+            <Errors error={res.error} />
 
-                  <div className="text-center mt-6">
-                    <button
-                      className="bg-primary hover:bg-secondary text-white text-sm font-bold uppercase px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 w-full"
-                      type="submit"
-                      style={{ transition: 'all .15s ease' }}
-                    >
-                      Sign In
-                    </button>
-                  </div>
-                </Form>
-              </Formik>
-
-              <Link href="/reset">
-                <a className="block text-center hover:underline hover:text-secondary m-2">
-                  Forgot password?
-                </a>
-              </Link>
-              <Link href="/join">
-                <a className="block text-center hover:underline hover:text-secondary">
-                  Or Join
-                </a>
-              </Link>
+            <div className="text-center mt-6">
+              <SubmitButton disabled={res.loading}>Sign In</SubmitButton>
             </div>
-          </div>
+          </Form>
+        </Formik>
+
+        <div className="m-2">
+          <Link href="/reset">Forgot password?</Link>
+          <Link href="/join">Or Join</Link>
         </div>
-      </main>
-    </div>
+      </div>
+    </LoginLayout>
   );
 });
 

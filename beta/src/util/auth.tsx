@@ -61,3 +61,24 @@ export function withToLogin(Children) {
     return <Children />;
   };
 }
+
+export function withToHome(Children) {
+  return () => {
+    const router = useRouter();
+    const { me, loading } = useMe();
+    const hasUser = !!me;
+
+    useEffect(() => {
+      if (loading) return;
+      if (hasUser) {
+        router.push('/');
+      }
+    }, [loading, hasUser, router]);
+
+    if (loading || hasUser) {
+      return null;
+    }
+
+    return <Children />;
+  };
+}

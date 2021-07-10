@@ -1,6 +1,13 @@
 // const { colors } = require('tailwindcss/defaultTheme');
 
 module.exports = {
+  variants: {
+    extend: {
+      opacity: ['disabled'],
+      pointerEvents: ['disabled'],
+      scale: ['group-hover'],
+    },
+  },
   theme: {
     colors: {
       primary: '#15a0bf',

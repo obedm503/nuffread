@@ -1,6 +1,8 @@
 import {
   ApolloClient,
+  ApolloLink,
   ApolloProvider,
+  HttpLink,
   InMemoryCache,
   NormalizedCacheObject,
 } from '@apollo/client';
@@ -15,29 +17,57 @@ export const APOLLO_CLIENT_PROP_NAME = '__APOLLO_CLIENT__';
 type Client = ApolloClient<NormalizedCacheObject>;
 let apolloClient: Client;
 
-function createApolloClient(ctx?: NextPageContext | GetServerSidePropsContext) {
+function createApolloClient({
+  req,
+  res,
+}: NextPageContext | GetServerSidePropsContext) {
   const ssrMode = typeof window === 'undefined';
+
+  // incoming headers
   let headers = {};
-  if (ssrMode && ctx?.req) {
-    const h = ctx.req.headers;
-    headers = { cookie: h.cookie, 'user-agent': h['user-agent'] };
+  if (ssrMode && req) {
+    const incomingHeaders = req.headers;
+    headers = {
+      cookie: incomingHeaders.cookie,
+      'user-agent': incomingHeaders['user-agent'],
+    };
   }
-  return new ApolloClient({
-    ssrMode,
+
+  const httpLink = new HttpLink({
     uri: process.env.NEXT_PUBLIC_GRAPHQL_API,
     credentials: 'include',
     headers,
+  });
+
+  // returning headers
+  let link: any = httpLink;
+  if (ssrMode && res) {
+    link = new ApolloLink((op, forward) => {
+      return forward(op).map(forwardRes => {
+        const context = op.getContext();
+        const returningHeaders = context.response.headers as Headers;
+        const setCookie = returningHeaders.get('Set-Cookie');
+        if (setCookie) {
+          res.setHeader('Set-Cookie', setCookie);
+        }
+        return forwardRes;
+      });
+    }).concat(httpLink);
+  }
+
+  return new ApolloClient({
+    ssrMode,
     cache: new InMemoryCache({
-      possibleTypes: {
-        SystemUser: ['Admin', 'User'],
-      },
+      possibleTypes: { SystemUser: ['Admin', 'User'] },
     }),
+    link,
+    connectToDevTools: process.env.NODE_ENV !== 'production',
   });
 }
 
-export function initializeApollo(
+export function initializeApolloClient(
+  ctx: NextPageContext | GetServerSidePropsContext,
   initialState?: NormalizedCacheObject,
-  ctx?: NextPageContext | GetServerSidePropsContext,
 ): ApolloClient<NormalizedCacheObject> {
   const _apolloClient = apolloClient ?? createApolloClient(ctx);
 
@@ -84,7 +114,7 @@ export function useApolloClient(pageProps: Props<NextPageContext>) {
   const client = useMemo(
     () =>
       (pageProps as any)[APOLLO_CLIENT_PROP_NAME] ??
-      initializeApollo(state, pageProps),
+      initializeApolloClient(pageProps, state),
     [state, pageProps],
   );
   return client;
@@ -96,7 +126,7 @@ export function withApollo<P, IP>(
   return function WithApollo(props) {
     const client =
       props[APOLLO_CLIENT_PROP_NAME] ??
-      initializeApollo(props[APOLLO_STATE_PROP_NAME], props as any);
+      initializeApolloClient(props as any, props[APOLLO_STATE_PROP_NAME]);
 
     return (
       <ApolloProvider client={client}>
