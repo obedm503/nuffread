@@ -3,3 +3,22 @@
 @tailwind components;
 /* purgecss end ignore */
 @tailwind utilities;
+
+.ionicon {
+  stroke: currentColor;
+}
+
+.icon-inner,
+.ionicon,
+svg {
+  display: block;
+  height: 100%;
+  width: 100%;
+}
+
+.ionicon-stroke-width {
+  stroke-width: 2em;
+}
+.ionicon-fill-none {
+  fill: none;
+}

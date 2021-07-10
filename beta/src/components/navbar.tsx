@@ -1,14 +1,40 @@
+import { gql } from '@apollo/client';
 import { Field, Form, Formik } from 'formik';
-import { personCircleOutline } from 'ionicons/icons';
+import { logOutOutline, personCircleOutline } from 'ionicons/icons';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useCallback } from 'react';
+import { useMutation } from '../apollo/client';
 import { useIsLoggedIn } from '../util/auth';
+import { Icon } from './icon';
+
+const LOGOUT = gql`
+  mutation Logout {
+    logout
+  }
+`;
+function useLogout() {
+  const [logout, { client }] = useMutation(LOGOUT);
+  const router = useRouter();
+
+  return {
+    handleLogout: useCallback(async () => {
+      try {
+        const res = await logout();
+        if (res.data?.logout) {
+          await client.resetStore();
+          await router.push('/');
+        }
+      } catch {}
+    }, [logout, client, router]),
+  };
+}
 
 export function Navbar() {
   const isLoggedIn = useIsLoggedIn();
   // const [active, setActive] = useState(false);
   // const toggle = useCallback(() => setActive(a => !!a), [setActive]);
+  const { handleLogout } = useLogout();
 
   const router = useRouter();
   const onSubmit = useCallback(
@@ -32,7 +58,7 @@ export function Navbar() {
           onSubmit={onSubmit}
           initialValues={{ search: router.query?.q || '' }}
         >
-          <Form className="relative mx-auto text-gray-600">
+          <Form className="relative mx-auto text-medium">
             <Field
               className="w-full border-2 border-light bg-white h-10 px-5 pr-16 rounded-lg text-sm focus:outline-none"
               type="search"
@@ -65,40 +91,21 @@ export function Navbar() {
         >
           {isLoggedIn ? (
             <div className="group inline-block">
-              <style>{`
-                /* since nested groupes are not supported we have to use 
-                  regular css for the nested dropdowns 
-                */
-                li>ul                 { transform: translatex(100%) scale(0) }
-                li:hover>ul           { transform: translatex(101%) scale(1) }
-              
-                /* Below styles fake what can be achieved with the tailwind config
-                  you need to add the group-hover variant to scale and define your custom
-                  min width style.
-                  See https://codesandbox.io/s/tailwindcss-multilevel-dropdown-y91j7?file=/index.html
-                  for implementation with config file
-                */
-                .group:hover .group-hover\\:scale-100 { transform: scale(1) }
-                .group:hover .group-hover\\:-rotate-180 { transform: rotate(180deg) }
-                .scale-0 { transform: scale(0) }
-              `}</style>
               <button className="outline-none focus:outline-none px-3 py-1 bg-white rounded-full flex items-center">
-                <img className="w-8 inline" src={personCircleOutline} alt="" />
+                <Icon icon={personCircleOutline} className="w-8" />
               </button>
-              <ul
-                className="bg-white border border-light rounded-md transform scale-0 group-hover:scale-100 absolute 
+              <div
+                className="bg-white border border-light shadow rounded-md transform scale-0 group-hover:scale-100 absolute 
   transition duration-150 ease-in-out origin-top-right right-8"
               >
-                <li className="rounded-sm px-3 py-1 hover:bg-gray-100">
-                  Logout
-                </li>
-                <li className="rounded-sm px-3 py-1 hover:bg-gray-100">
-                  DevOps
-                </li>
-                <li className="rounded-sm px-3 py-1 hover:bg-gray-100">
-                  Testing
-                </li>
-              </ul>
+                <button
+                  type="button"
+                  className="rounded-sm px-3 py-1 hover:bg-gray-100 text-lg"
+                  onClick={handleLogout}
+                >
+                  <Icon icon={logOutOutline} /> Logout
+                </button>
+              </div>
             </div>
           ) : (
             <>
