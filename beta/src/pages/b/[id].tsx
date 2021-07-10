@@ -66,7 +66,7 @@ function BookPage() {
   return (
     <Layout>
       <Head>
-        <title>{book.title} | Nuffread</title>
+        <title>{book.title} - nuffread</title>
       </Head>
 
       <div className="container">
