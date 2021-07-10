@@ -163,13 +163,26 @@ export function useMutation<TVariables = never>(
   options?: MutationHookOptions<IMutation, TVariables>,
 ): [
   Mutate<TVariables>,
-  (LoadingResult | ErrorResult | SuccessResult<IMutation>) &
+  (WaitingResult | LoadingResult | ErrorResult | SuccessResult<IMutation>) &
     MutationResult<IMutation>,
 ] {
   const [mutate, { loading, error, data, ...rest }] = useApolloMutation(
     query,
     options,
   );
+
+  if (!rest.called) {
+    return [
+      mutate,
+      {
+        status: 'WAITING',
+        loading: false,
+        error: undefined,
+        data: undefined,
+        ...rest,
+      },
+    ];
+  }
 
   if (loading) {
     return [
