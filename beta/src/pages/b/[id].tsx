@@ -1,4 +1,3 @@
-import { gql } from '@apollo/client';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { useQuery } from '../../apollo/client';
@@ -6,7 +5,7 @@ import { makeApolloSSR } from '../../apollo/ssr';
 import { withApollo } from '../../apollo/with-apollo';
 import { RelativeDate } from '../../components/date';
 import { Layout } from '../../components/layout';
-import { BOOK, LISTING } from '../../queries';
+import { Get_BookDocument as GET_BOOK } from '../../queries';
 import { conditionNames } from '../../util';
 
 function Listings({ children }) {
@@ -16,28 +15,6 @@ function Listings({ children }) {
     </div>
   );
 }
-
-const GET_BOOK = gql`
-  ${LISTING}
-  ${BOOK}
-
-  query GetBook($id: ID!) {
-    book(id: $id) {
-      ...Book
-      listings(paginate: { limit: 30 }) {
-        totalCount
-        items {
-          ...Listing
-          user {
-            id
-            name
-            email
-          }
-        }
-      }
-    }
-  }
-`;
 
 function BookPage() {
   const router = useRouter();

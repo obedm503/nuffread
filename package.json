@@ -22,8 +22,11 @@
   },
   "devDependencies": {
     "@graphql-codegen/cli": "^1.21.3",
+    "@graphql-codegen/typed-document-node": "^1.18.9",
     "@graphql-codegen/typescript": "^1.21.1",
+    "@graphql-codegen/typescript-operations": "^1.18.3",
     "@graphql-codegen/typescript-resolvers": "^1.19.0",
+    "@graphql-typed-document-node/core": "^3.1.0",
     "graphql": "^15.5.1",
     "husky": "^7.0.0",
     "prettier": "^2.2.1"

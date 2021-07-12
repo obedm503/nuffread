@@ -1,4 +1,3 @@
-import { gql } from '@apollo/client';
 import Head from 'next/head';
 import Link from 'next/link';
 import { memo } from 'react';
@@ -7,33 +6,12 @@ import { makeApolloSSR } from '../apollo/ssr';
 import { withApollo } from '../apollo/with-apollo';
 import { RelativeDate } from '../components/date';
 import { Layout } from '../components/layout';
-import { BASIC_LISTING } from '../queries';
-import { IListing } from '../schema.gql';
+import {
+  ITop_ListingsQuery,
+  Top_ListingsDocument as TOP_LISTINGS,
+} from '../queries';
 import { useIsLoggedIn } from '../util/auth';
 import { conditionNames } from '../util/index';
-
-const TOP_LISTINGS = gql`
-  ${BASIC_LISTING}
-
-  query TopListings {
-    top(paginate: { limit: 20 }) {
-      totalCount
-      items {
-        ...BasicListing
-
-        user {
-          id
-          name
-          email
-          school {
-            id
-            name
-          }
-        }
-      }
-    }
-  }
-`;
 
 function Listings({ children }) {
   return (
@@ -43,7 +21,9 @@ function Listings({ children }) {
   );
 }
 
-const Listing = memo<{ listing: IListing }>(({ listing }) => {
+const Listing = memo<{
+  listing: ITop_ListingsQuery['top']['items'][0];
+}>(({ listing }) => {
   const isLoggedIn = useIsLoggedIn();
   return (
     <div className="flex-shrink-0 m-4 relative overflow-hidden rounded-lg w-40 shadow-sm hover:shadow-lg border-light border">

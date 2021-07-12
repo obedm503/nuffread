@@ -1,18 +1,13 @@
-import { gql } from '@apollo/client';
 import { Field, Form, Formik } from 'formik';
 import { logOutOutline, personCircleOutline } from 'ionicons/icons';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useCallback } from 'react';
 import { useMutation } from '../apollo/client';
+import { LogoutDocument as LOGOUT } from '../queries';
 import { useIsLoggedIn } from '../util/auth';
 import { Icon } from './icon';
 
-const LOGOUT = gql`
-  mutation Logout {
-    logout
-  }
-`;
 function useLogout() {
   const [logout, { client }] = useMutation(LOGOUT);
   const router = useRouter();

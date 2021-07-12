@@ -1,4 +1,3 @@
-import { gql } from '@apollo/client';
 import { Form, Formik } from 'formik';
 import { key } from 'ionicons/icons';
 import Head from 'next/head';
@@ -12,15 +11,10 @@ import { apolloFormErrors, Passphase } from '../../components/controls';
 import { Icon } from '../../components/icon';
 import { LoginLayout } from '../../components/login-wrapper';
 import { SubmitButton } from '../../components/submit-button';
-import { IMutationResetPasswordArgs } from '../../schema.gql';
+import { Reset_PasswordDocument as RESET_PASSWORD } from '../../queries';
 import { strongPasswordSchema } from '../../util';
 import { withToHome } from '../../util/auth';
 
-const RESET = gql`
-  mutation resetPassword($token: String!, $password: String!) {
-    resetPassword(token: $token, password: $password)
-  }
-`;
 const Errors = apolloFormErrors({
   WRONG_CREDENTIALS:
     'An error occurred while trying to reset the passphrase. Make sure you clicked the correct link.',
@@ -28,7 +22,7 @@ const Errors = apolloFormErrors({
 
 const schema = object().shape({ password: strongPasswordSchema });
 const ResetForm: React.FC<{ token: string }> = ({ token }) => {
-  const [reset, res] = useMutation<IMutationResetPasswordArgs>(RESET);
+  const [reset, res] = useMutation(RESET_PASSWORD);
   const { push } = useRouter();
 
   const onSubmit = useCallback(
