@@ -13,12 +13,13 @@ import {
   QueryTuple,
   SubscriptionHookOptions,
   SubscriptionResult,
+  TypedDocumentNode,
   useLazyQuery as useApolloLazyQuery,
   useMutation as useApolloMutation,
   useQuery as useApolloQuery,
   useSubscription as useApolloSubscription,
 } from '@apollo/client';
-import { IMutation, IQuery, ISubscription } from '../schema.gql';
+import { IMutation, IQuery, ISubscription } from '../queries';
 
 type WaitingResult = {
   status: 'WAITING';
@@ -48,11 +49,11 @@ type SuccessResult<TData> = {
   error: undefined;
 };
 
-export function useQuery<TVariables = never>(
-  query: DocumentNode,
-  options?: QueryHookOptions<IQuery, TVariables>,
-): (LoadingResult | ErrorResult | SuccessResult<IQuery>) &
-  QueryResult<IQuery, TVariables> {
+export function useQuery<TData = IQuery, TVariables = never>(
+  query: DocumentNode | TypedDocumentNode<TData, TVariables>,
+  options?: QueryHookOptions<TData, TVariables>,
+): (LoadingResult | ErrorResult | SuccessResult<TData>) &
+  QueryResult<TData, TVariables> {
   const { loading, error, data, ...rest } = useApolloQuery(query, options);
 
   if (loading) {
@@ -88,14 +89,13 @@ export function useQuery<TVariables = never>(
   throw new Error('unknown request state');
 }
 
-type CallLazyQuery<TVariables> = QueryTuple<IQuery, TVariables>['0'];
-export function useLazyQuery<TVariables = never>(
-  query: DocumentNode,
-  options?: LazyQueryHookOptions<IQuery, TVariables>,
+export function useLazyQuery<TData = IQuery, TVariables = never>(
+  query: DocumentNode | TypedDocumentNode<TData, TVariables>,
+  options?: LazyQueryHookOptions<TData, TVariables>,
 ): [
-  CallLazyQuery<TVariables>,
-  (WaitingResult | LoadingResult | ErrorResult | SuccessResult<IQuery>) &
-    LazyQueryResult<IQuery, TVariables>,
+  QueryTuple<TData, TVariables>['0'],
+  (WaitingResult | LoadingResult | ErrorResult | SuccessResult<TData>) &
+    LazyQueryResult<TData, TVariables>,
 ] {
   const [func, { loading, error, data, ...rest }] = useApolloLazyQuery(
     query,
@@ -157,14 +157,13 @@ export function useLazyQuery<TVariables = never>(
   throw new Error('unknown request state');
 }
 
-type Mutate<TVariables> = MutationTuple<IMutation, TVariables>['0'];
-export function useMutation<TVariables = never>(
-  query: DocumentNode,
-  options?: MutationHookOptions<IMutation, TVariables>,
+export function useMutation<TData = IMutation, TVariables = never>(
+  query: DocumentNode | TypedDocumentNode<TData, TVariables>,
+  options?: MutationHookOptions<TData, TVariables>,
 ): [
-  Mutate<TVariables>,
-  (WaitingResult | LoadingResult | ErrorResult | SuccessResult<IMutation>) &
-    MutationResult<IMutation>,
+  MutationTuple<TData, TVariables>['0'],
+  (WaitingResult | LoadingResult | ErrorResult | SuccessResult<TData>) &
+    MutationResult<TData>,
 ] {
   const [mutate, { loading, error, data, ...rest }] = useApolloMutation(
     query,
@@ -226,11 +225,11 @@ export function useMutation<TVariables = never>(
   throw new Error('unknown request state');
 }
 
-export function useSubscription<TVariables = never>(
-  query: DocumentNode,
-  options?: SubscriptionHookOptions<ISubscription, TVariables>,
-): (LoadingResult | ErrorResult | SuccessResult<ISubscription>) &
-  SubscriptionResult<ISubscription> {
+export function useSubscription<TData = ISubscription, TVariables = never>(
+  query: DocumentNode | TypedDocumentNode<TData, TVariables>,
+  options?: SubscriptionHookOptions<TData, TVariables>,
+): (LoadingResult | ErrorResult | SuccessResult<TData>) &
+  SubscriptionResult<TData> {
   const { loading, error, data, ...rest } = useApolloSubscription(
     query,
     options,

@@ -1,0 +1,168 @@
+mutation REGISTER($email: String!, $password: String!) {
+  register(email: $email, password: $password) {
+    id
+    email
+  }
+}
+
+mutation CONFIRM_EMAIL($code: String!) {
+  confirm(code: $code)
+}
+
+mutation REQUEST_RESET_PASSWORD($email: String!) {
+  requestResetPassword(email: $email)
+}
+
+mutation RESET_PASSWORD($token: String!, $password: String!) {
+  resetPassword(token: $token, password: $password)
+}
+
+mutation LOGIN($email: String!, $password: String!, $type: SystemUserType!) {
+  login(email: $email, password: $password, type: $type) {
+    ... on User {
+      id
+      email
+    }
+  }
+}
+
+mutation LOGOUT {
+  logout
+}
+
+query GET_ME {
+  me {
+    ... on User {
+      id
+      email
+    }
+  }
+}
+
+fragment Book on Book {
+  id
+  googleId
+  isbn
+  thumbnail
+  title
+  subTitle
+  publishedAt
+  authors
+}
+
+fragment Listing on Listing {
+  id
+  createdAt
+  price
+  description
+  saved
+  soldAt
+  soldPrice
+  condition
+  school {
+    id
+    name
+  }
+}
+
+fragment BasicListing on Listing {
+  ...Listing
+  book {
+    ...Book
+  }
+}
+
+query GET_RECENT_LISTINGS {
+  me {
+    ... on User {
+      id
+      recent {
+        ...BasicListing
+      }
+    }
+  }
+}
+
+query SEARCH_BOOKS($query: String!, $paginate: PaginationInput!) {
+  searchBooks(query: $query, paginate: $paginate) {
+    totalCount
+    items {
+      ...Book
+    }
+  }
+}
+
+query TOP_LISTINGS {
+  top(paginate: { limit: 20 }) {
+    totalCount
+    items {
+      ...BasicListing
+
+      user {
+        id
+        name
+        email
+        school {
+          id
+          name
+        }
+      }
+    }
+  }
+}
+
+query GET_BOOK($id: ID!) {
+  book(id: $id) {
+    ...Book
+    listings(paginate: { limit: 30 }) {
+      totalCount
+      items {
+        ...Listing
+        user {
+          id
+          name
+          email
+        }
+      }
+    }
+  }
+}
+
+query GET_LISTING($id: ID!) {
+  listing(id: $id) {
+    id
+    book {
+      id
+    }
+  }
+}
+
+mutation SAVE_LISTING($listingId: ID!, $saved: Boolean!) {
+  saveListing(listingId: $listingId, saved: $saved) {
+    ...BasicListing
+  }
+}
+
+query GET_SAVED_LISTINGS($offset: Int!) {
+  me {
+    ... on User {
+      id
+      saved(paginate: { offset: $offset }) {
+        totalCount
+        items {
+          ...BasicListing
+
+          user {
+            id
+            name
+            email
+            school {
+              id
+              name
+            }
+          }
+        }
+      }
+    }
+  }
+}

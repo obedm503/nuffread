@@ -1,4 +1,3 @@
-import { gql } from '@apollo/client';
 import { Form, Formik } from 'formik';
 import { key } from 'ionicons/icons';
 import Head from 'next/head';
@@ -11,21 +10,13 @@ import { Email } from '../../components/controls';
 import { Icon } from '../../components/icon';
 import { LoginLayout } from '../../components/login-wrapper';
 import { SubmitButton } from '../../components/submit-button';
-import { IMutationRequestResetPasswordArgs } from '../../schema.gql';
+import { Request_Reset_PasswordDocument as REQUEST_RESET_PASSWORD } from '../../queries';
 import { emailSchema } from '../../util';
 import { withToHome } from '../../util/auth';
 
-const REQUEST_RESET = gql`
-  mutation RequestResetPassword($email: String!) {
-    requestResetPassword(email: $email)
-  }
-`;
-
 const schema = object().shape({ email: emailSchema });
 function RequestToken() {
-  const [reset, res] = useMutation<IMutationRequestResetPasswordArgs>(
-    REQUEST_RESET,
-  );
+  const [reset, res] = useMutation(REQUEST_RESET_PASSWORD);
 
   const onSubmit = useCallback(
     async ({ email }) => {

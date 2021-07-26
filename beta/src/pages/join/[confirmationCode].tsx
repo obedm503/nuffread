@@ -1,13 +1,6 @@
-import { gql } from '@apollo/client';
 import { GetServerSideProps } from 'next';
 import { initializeApolloClient } from '../../apollo/with-apollo';
-import { IMutation, IMutationConfirmArgs } from '../../schema.gql';
-
-const CONFIRM_EMAIL = gql`
-  mutation ConfirmEmail($code: String!) {
-    confirm(code: $code)
-  }
-`;
+import { Confirm_EmailDocument as CONFIRM_EMAIL } from '../../queries';
 
 export default function ConfirmCode() {
   return null;
@@ -17,7 +10,7 @@ export const getServerSideProps: GetServerSideProps = async ctx => {
   const code = ctx.query.confirmationCode as string;
 
   try {
-    const res = await client.mutate<IMutation, IMutationConfirmArgs>({
+    const res = await client.mutate({
       mutation: CONFIRM_EMAIL,
       variables: { code },
     });

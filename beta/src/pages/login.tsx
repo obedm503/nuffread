@@ -1,4 +1,3 @@
-import { gql } from '@apollo/client';
 import { Form, Formik } from 'formik';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
@@ -8,23 +7,13 @@ import { useMutation } from '../apollo/client';
 import { makeApolloSSR } from '../apollo/ssr';
 import { withApollo } from '../apollo/with-apollo';
 import { apolloFormErrors, Email, Passphase } from '../components/controls';
-import { Link } from '../components/link';
+import { TextLink } from '../components/link';
 import { LoginLayout } from '../components/login-wrapper';
 import { SubmitButton } from '../components/submit-button';
-import { IMutationLoginArgs, SystemUserType } from '../schema.gql';
+import { LoginDocument as LOGIN, SystemUserType } from '../queries';
 import { emailSchema, passwordSchema } from '../util';
 import { withToHome } from '../util/auth';
 
-const LOGIN = gql`
-  mutation Login($email: String!, $password: String!, $type: SystemUserType!) {
-    login(email: $email, password: $password, type: $type) {
-      ... on User {
-        id
-        email
-      }
-    }
-  }
-`;
 const Errors = apolloFormErrors({
   NOT_CONFIRMED:
     'Email is not yet confirmed. Click the link on the email we sent you to confirm it.',
@@ -39,7 +28,7 @@ const schema = object().shape({
 
 const Login = withToHome(function Login(props) {
   const router = useRouter();
-  const [login, res] = useMutation<IMutationLoginArgs>(LOGIN);
+  const [login, res] = useMutation(LOGIN);
   const client = res.client;
   const onSubmit = useCallback(
     async ({ email, password }) => {
@@ -90,8 +79,8 @@ const Login = withToHome(function Login(props) {
         </Formik>
 
         <div className="m-2">
-          <Link href="/reset">Forgot password?</Link>
-          <Link href="/join">Or Join</Link>
+          <TextLink href="/reset">Forgot password?</TextLink>
+          <TextLink href="/join">Or Join</TextLink>
         </div>
       </div>
     </LoginLayout>

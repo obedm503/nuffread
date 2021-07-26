@@ -1,4 +1,3 @@
-import { gql } from '@apollo/client';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
@@ -6,20 +5,7 @@ import { useQuery } from '../../apollo/client';
 import { makeApolloSSR } from '../../apollo/ssr';
 import { withApollo } from '../../apollo/with-apollo';
 import { Layout } from '../../components/layout';
-import { BASIC_LISTING } from '../../queries';
-
-const GET_LISTING = gql`
-  ${BASIC_LISTING}
-
-  query GetListing($id: ID!) {
-    listing(id: $id) {
-      id
-      book {
-        id
-      }
-    }
-  }
-`;
+import { Get_ListingDocument as GET_LISTING } from '../../queries';
 
 function Post() {
   const router = useRouter();

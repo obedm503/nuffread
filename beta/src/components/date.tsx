@@ -5,7 +5,7 @@ import {
 } from 'date-fns';
 import upperFirst from 'lodash/upperFirst';
 import { Component } from 'react';
-import { Scalars } from '../schema.gql';
+import { Scalars } from '../queries';
 
 type Props = { date?: Scalars['Date'] };
 export class RelativeDate extends Component<Props> {

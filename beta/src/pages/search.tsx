@@ -1,12 +1,13 @@
-import { gql } from '@apollo/client';
 import { useRouter } from 'next/router';
 import { memo, useCallback } from 'react';
 import { useQuery } from '../apollo/client';
 import { makeApolloSSR } from '../apollo/ssr';
 import { withApollo } from '../apollo/with-apollo';
 import { Layout } from '../components/layout';
-import { BASIC_LISTING, BOOK } from '../queries';
-import { IQuerySearchBooksArgs } from '../schema.gql';
+import {
+  Get_Recent_ListingsDocument as GET_RECENT_LISTINGS,
+  Search_BooksDocument as SEARCH_BOOKS,
+} from '../queries';
 
 function useSearch() {
   const router = useRouter();
@@ -40,20 +41,6 @@ function useSearch() {
   };
 }
 
-const GET_RECENT_LISTINGS = gql`
-  ${BASIC_LISTING}
-
-  query GetRecentListings {
-    me {
-      ... on User {
-        id
-        recent {
-          ...BasicListing
-        }
-      }
-    }
-  }
-`;
 const RecentListings = memo<{ onClick: (id: string) => void }>(
   function RecentListings({ onClick }) {
     const { error, loading, data } = useQuery(GET_RECENT_LISTINGS);
@@ -73,19 +60,6 @@ const RecentListings = memo<{ onClick: (id: string) => void }>(
   },
 );
 
-export const SEARCH_BOOKS = gql`
-  ${BOOK}
-
-  query SearchBooks($query: String!, $paginate: PaginationInput!) {
-    searchBooks(query: $query, paginate: $paginate) {
-      totalCount
-      items {
-        ...Book
-      }
-    }
-  }
-`;
-
 type SearchBooksProps = {
   onClick: (id: string) => void;
   searchValue: string;
@@ -95,7 +69,7 @@ export const SearchBooks = memo<SearchBooksProps>(function SearchBooks({
   searchValue,
 }) {
   console.log({ searchValue });
-  const { error, data } = useQuery<IQuerySearchBooksArgs>(SEARCH_BOOKS, {
+  const { error, data } = useQuery(SEARCH_BOOKS, {
     variables: { query: searchValue, paginate: { limit: 30, offset: 0 } },
   });
   // const { totalCount, currentCount } = paginatedBooks(data?.searchBooks);

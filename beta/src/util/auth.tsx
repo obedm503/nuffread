@@ -1,22 +1,10 @@
-import { gql } from '@apollo/client';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 import { useQuery } from '../apollo/client';
-import { IUser } from '../schema.gql';
+import { Get_MeDocument as GET_ME } from '../queries';
 
-const ME = gql`
-  query GetMe {
-    me {
-      ... on User {
-        id
-        email
-      }
-    }
-  }
-`;
-
-export function useMe(): { me?: IUser; loading: boolean } {
-  const { data, error, loading } = useQuery(ME);
+export function useMe() {
+  const { data, error, loading } = useQuery(GET_ME);
 
   if (error) {
     console.error(error);

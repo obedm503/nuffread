@@ -1,5 +1,5 @@
-overwrite: true
 schema: 'schema.gql'
+overwrite: true
 config:
   typesPrefix: I
   enumPrefix: false
@@ -15,9 +15,12 @@ generates:
       scalars:
         Date: string
 
-  beta/src/schema.gql.ts:
+  beta/src/queries.ts:
+    documents: './beta/src/queries.gql'
     plugins:
       - typescript
+      - typescript-operations
+      - typed-document-node
     config:
       skipTypename: false
       immutableTypes: true

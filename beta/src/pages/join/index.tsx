@@ -1,4 +1,3 @@
-import { gql } from '@apollo/client';
 import { Form, Formik } from 'formik';
 import { addOutline } from 'ionicons/icons';
 import Head from 'next/head';
@@ -9,28 +8,20 @@ import { makeApolloSSR } from '../../apollo/ssr';
 import { withApollo } from '../../apollo/with-apollo';
 import { apolloFormErrors, Email, Passphase } from '../../components/controls';
 import { Icon } from '../../components/icon';
-import { Link } from '../../components/link';
+import { TextLink } from '../../components/link';
 import { LoginLayout } from '../../components/login-wrapper';
 import { SubmitButton } from '../../components/submit-button';
-import { IMutation, IMutationRegisterArgs } from '../../schema.gql';
+import { IMutation, RegisterDocument as REGISTER } from '../../queries';
 import { strongPasswordSchema, studentEmailSchema } from '../../util';
 import { withToHome } from '../../util/auth';
 
-const REGISTER = gql`
-  mutation Register($email: String!, $password: String!) {
-    register(email: $email, password: $password) {
-      id
-      email
-    }
-  }
-`;
 const Errors = apolloFormErrors({
   DUPLICATE_USER: (
     <>
       This email is already registered.{' '}
-      <Link href="/login" block={false}>
+      <TextLink href="/login" block={false}>
         Login?
-      </Link>
+      </TextLink>
     </>
   ),
 });
@@ -50,7 +41,7 @@ const onCompleted = (data: IMutation) => {
 };
 
 function Register() {
-  const [join, res] = useMutation<IMutationRegisterArgs>(REGISTER, {
+  const [join, res] = useMutation(REGISTER, {
     onCompleted,
   });
   const onSubmit = useCallback(

@@ -1,5 +1,5 @@
 import { string } from 'yup';
-import { ListingCondition } from '../schema.gql';
+import { ListingCondition } from '../queries';
 
 const filterKeys = (o: { [key: string]: any }): string[] =>
   Object.keys(o).filter(key => o[key]);

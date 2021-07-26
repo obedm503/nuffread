@@ -17,10 +17,10 @@ export const APOLLO_CLIENT_PROP_NAME = '__APOLLO_CLIENT__';
 type Client = ApolloClient<NormalizedCacheObject>;
 let apolloClient: Client;
 
-function createApolloClient({
-  req,
-  res,
-}: NextPageContext | GetServerSidePropsContext) {
+type ReqRes = Pick<NextPageContext | GetServerSidePropsContext, 'req' | 'res'>;
+type Req = ReqRes['req'];
+type Res = ReqRes['res'];
+function createApolloClient(req: Req, res: Res) {
   const ssrMode = typeof window === 'undefined';
 
   // incoming headers
@@ -66,10 +66,10 @@ function createApolloClient({
 }
 
 export function initializeApolloClient(
-  ctx: NextPageContext | GetServerSidePropsContext,
+  { req, res }: ReqRes,
   initialState?: NormalizedCacheObject,
 ): ApolloClient<NormalizedCacheObject> {
-  const _apolloClient = apolloClient ?? createApolloClient(ctx);
+  const _apolloClient = apolloClient ?? createApolloClient(req, res);
 
   // If your page has Next.js data fetching methods that use Apollo Client, the initial state
   // gets hydrated here
@@ -110,10 +110,10 @@ type Props<P> = P & {
   [APOLLO_STATE_PROP_NAME]?: NormalizedCacheObject;
 };
 export function useApolloClient(pageProps: Props<NextPageContext>) {
-  const state = (pageProps as any)[APOLLO_STATE_PROP_NAME];
+  const state = pageProps[APOLLO_STATE_PROP_NAME];
   const client = useMemo(
     () =>
-      (pageProps as any)[APOLLO_CLIENT_PROP_NAME] ??
+      pageProps[APOLLO_CLIENT_PROP_NAME] ??
       initializeApolloClient(pageProps, state),
     [state, pageProps],
   );
@@ -122,11 +122,19 @@ export function useApolloClient(pageProps: Props<NextPageContext>) {
 
 export function withApollo<P, IP>(
   Page: NextPage<P, IP>,
-): NextPage<Props<P>, IP> {
+): NextPage<
+  Props<
+    P & {
+      [APOLLO_CLIENT_PROP_NAME]?: ApolloClient<NormalizedCacheObject>;
+      [APOLLO_STATE_PROP_NAME]?: NormalizedCacheObject;
+    }
+  >,
+  IP
+> {
   return function WithApollo(props) {
     const client =
       props[APOLLO_CLIENT_PROP_NAME] ??
-      initializeApolloClient(props as any, props[APOLLO_STATE_PROP_NAME]);
+      initializeApolloClient({}, props[APOLLO_STATE_PROP_NAME]);
 
     return (
       <ApolloProvider client={client}>
