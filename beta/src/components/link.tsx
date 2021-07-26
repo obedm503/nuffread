@@ -1,7 +1,7 @@
 import NextLink from 'next/link';
 import { classes } from '../util';
 
-export function Link({ href, children, block = true }) {
+export function TextLink({ href, children, block = true }) {
   return (
     <NextLink href={href}>
       <a

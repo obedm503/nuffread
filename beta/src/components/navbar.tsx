@@ -1,5 +1,5 @@
 import { Field, Form, Formik } from 'formik';
-import { logOutOutline, personCircleOutline } from 'ionicons/icons';
+import { cart, logOutOutline, personCircleOutline } from 'ionicons/icons';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useCallback } from 'react';
@@ -80,37 +80,43 @@ export function Navbar() {
         </Formik>
       </div>
       <div className="sm:mb-0 self-center">
-        <div
-          className="h-10"
-          style={{ display: 'table-cell', verticalAlign: 'middle' }}
-        >
+        <div className="h-10 flex align-middle">
           {isLoggedIn ? (
-            <div className="group inline-block">
-              <button className="outline-none focus:outline-none px-3 py-1 bg-white rounded-full flex items-center">
-                <Icon icon={personCircleOutline} className="w-8" />
-              </button>
-              <div
-                className="bg-white border border-light shadow rounded-md transform scale-0 group-hover:scale-100 absolute 
-  transition duration-150 ease-in-out origin-top-right right-8"
-              >
-                <button
-                  type="button"
-                  className="rounded-sm px-3 py-1 hover:bg-gray-100 text-lg"
-                  onClick={handleLogout}
-                >
-                  <Icon icon={logOutOutline} /> Logout
+            <>
+              <Link href="/cart">
+                <a className="outline-none focus:outline-none px-3 py-1 bg-white rounded-full flex items-center border border-black hover:bg-black hover:text-white">
+                  <Icon icon={cart} className="mr-2" />
+                  Cart
+                </a>
+              </Link>
+
+              <div className="group inline-block">
+                <button className="outline-none focus:outline-none px-3 py-1 bg-white rounded-full flex items-center">
+                  <Icon icon={personCircleOutline} className="w-8" />
                 </button>
+                <div
+                  className="bg-white border border-light shadow rounded-md transform scale-0 group-hover:scale-100 absolute
+  transition duration-150 ease-in-out origin-top-right right-8"
+                >
+                  <button
+                    type="button"
+                    className="rounded-sm px-3 py-1 hover:bg-gray-100 text-lg"
+                    onClick={handleLogout}
+                  >
+                    <Icon icon={logOutOutline} /> Logout
+                  </button>
+                </div>
               </div>
-            </div>
+            </>
           ) : (
             <>
               <Link href="/login">
-                <a className="text-lg font-semibold no-underline text-primary uppercase ml-2">
+                <a className="text-lg font-semibold no-underline text-primary uppercase p-2">
                   Login
                 </a>
               </Link>
               <Link href="/join">
-                <a className="text-lg font-semibold no-underline bg-primary text-white uppercase ml-2 pl-2 pr-2 pb-1 pt-1 rounded-sm">
+                <a className="text-lg font-semibold no-underline bg-primary text-white uppercase ml-2 p-2 rounded-sm">
                   Join
                 </a>
               </Link>

@@ -136,3 +136,33 @@ query GET_LISTING($id: ID!) {
     }
   }
 }
+
+mutation SAVE_LISTING($listingId: ID!, $saved: Boolean!) {
+  saveListing(listingId: $listingId, saved: $saved) {
+    ...BasicListing
+  }
+}
+
+query GET_SAVED_LISTINGS($offset: Int!) {
+  me {
+    ... on User {
+      id
+      saved(paginate: { offset: $offset }) {
+        totalCount
+        items {
+          ...BasicListing
+
+          user {
+            id
+            name
+            email
+            school {
+              id
+              name
+            }
+          }
+        }
+      }
+    }
+  }
+}

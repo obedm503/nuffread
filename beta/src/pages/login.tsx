@@ -7,7 +7,7 @@ import { useMutation } from '../apollo/client';
 import { makeApolloSSR } from '../apollo/ssr';
 import { withApollo } from '../apollo/with-apollo';
 import { apolloFormErrors, Email, Passphase } from '../components/controls';
-import { Link } from '../components/link';
+import { TextLink } from '../components/link';
 import { LoginLayout } from '../components/login-wrapper';
 import { SubmitButton } from '../components/submit-button';
 import { LoginDocument as LOGIN, SystemUserType } from '../queries';
@@ -79,8 +79,8 @@ const Login = withToHome(function Login(props) {
         </Formik>
 
         <div className="m-2">
-          <Link href="/reset">Forgot password?</Link>
-          <Link href="/join">Or Join</Link>
+          <TextLink href="/reset">Forgot password?</TextLink>
+          <TextLink href="/join">Or Join</TextLink>
         </div>
       </div>
     </LoginLayout>

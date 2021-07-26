@@ -8,7 +8,7 @@ import { makeApolloSSR } from '../../apollo/ssr';
 import { withApollo } from '../../apollo/with-apollo';
 import { apolloFormErrors, Email, Passphase } from '../../components/controls';
 import { Icon } from '../../components/icon';
-import { Link } from '../../components/link';
+import { TextLink } from '../../components/link';
 import { LoginLayout } from '../../components/login-wrapper';
 import { SubmitButton } from '../../components/submit-button';
 import { IMutation, RegisterDocument as REGISTER } from '../../queries';
@@ -19,9 +19,9 @@ const Errors = apolloFormErrors({
   DUPLICATE_USER: (
     <>
       This email is already registered.{' '}
-      <Link href="/login" block={false}>
+      <TextLink href="/login" block={false}>
         Login?
-      </Link>
+      </TextLink>
     </>
   ),
 });
