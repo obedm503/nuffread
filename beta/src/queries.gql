@@ -166,3 +166,46 @@ query GET_SAVED_LISTINGS($offset: Int!) {
     }
   }
 }
+
+query GET_THREADS($offset: Int!) {
+  me {
+    ... on User {
+      id
+      name
+      email
+      threads(paginate: { limit: 20, offset: $offset }) {
+        totalCount
+        items {
+          id
+          lastMessage {
+            id
+            createdAt
+            content
+          }
+          listingId
+          listing {
+            id
+            book {
+              id
+              title
+              thumbnail
+            }
+          }
+          other {
+            id
+            email
+            name
+          }
+          messages(paginate: { limit: 1 }) {
+            totalCount
+            items {
+              createdAt
+              content
+              fromId
+            }
+          }
+        }
+      }
+    }
+  }
+}
