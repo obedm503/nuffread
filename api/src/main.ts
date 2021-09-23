@@ -26,7 +26,7 @@ const sessionParser = session({
   name: 'session',
   cookie: {
     maxAge: ms('1 week'),
-    domain: isProduction ? 'nuffread.com' : undefined,
+    // domain: isProduction ? 'nuffread.com' : undefined,
   },
   store: new Store({
     conObject: {

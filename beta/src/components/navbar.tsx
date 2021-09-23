@@ -1,5 +1,10 @@
 import { Field, Form, Formik } from 'formik';
-import { cart, logOutOutline, personCircleOutline } from 'ionicons/icons';
+import {
+  cart,
+  chatbubblesOutline,
+  logOutOutline,
+  personCircleOutline,
+} from 'ionicons/icons';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useCallback } from 'react';
@@ -83,8 +88,15 @@ export function Navbar() {
         <div className="h-10 flex align-middle">
           {isLoggedIn ? (
             <>
+              <Link href="/chat">
+                <a className="outline-none focus:outline-none px-3 py-1 bg-white rounded-l-lg flex items-center border border-black hover:bg-black hover:text-white">
+                  <Icon icon={chatbubblesOutline} className="mr-2" />
+                  Chat
+                </a>
+              </Link>
+
               <Link href="/cart">
-                <a className="outline-none focus:outline-none px-3 py-1 bg-white rounded-full flex items-center border border-black hover:bg-black hover:text-white">
+                <a className="outline-none focus:outline-none px-3 py-1 bg-white rounded-r-lg border-l-0 flex items-center border border-black hover:bg-black hover:text-white">
                   <Icon icon={cart} className="mr-2" />
                   Cart
                 </a>
