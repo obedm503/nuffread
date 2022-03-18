@@ -76,6 +76,11 @@ export class NavBar extends React.PureComponent<{
       <IonHeader>
         <Container className="no-padding">
           <IonToolbar color="white">
+            <IonTitle color="dark" style={{ textAlign: 'center' }}>
+              Try the new website at <a href="https://beta.nuffread.com">https://beta.nuffread.com</a>
+            </IonTitle>
+          </IonToolbar>
+          <IonToolbar color="white">
             {start}
 
             <IonTitle color="primary">{name}</IonTitle>
