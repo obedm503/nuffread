@@ -16,20 +16,24 @@
     "prepare": "husky install"
   },
   "dependencies": {
+    "@apollo/client": "^3.5.10",
     "dotenv-safe": "^8.1.0",
+    "lodash": "^4.17.21",
+    "next": "^12.1.0",
     "nps": "^5.10.0",
     "nps-utils": "^1.5.0"
   },
   "devDependencies": {
-    "@graphql-codegen/cli": "^1.21.3",
-    "@graphql-codegen/typed-document-node": "^1.18.9",
-    "@graphql-codegen/typescript": "^1.21.1",
-    "@graphql-codegen/typescript-operations": "^1.18.3",
-    "@graphql-codegen/typescript-resolvers": "^1.19.0",
-    "@graphql-typed-document-node/core": "^3.1.0",
+    "@graphql-codegen/cli": "^2.6.2",
+    "@graphql-codegen/typed-document-node": "^2.2.8",
+    "@graphql-codegen/typescript": "^2.4.8",
+    "@graphql-codegen/typescript-operations": "^2.3.5",
+    "@graphql-codegen/typescript-resolvers": "^2.6.1",
+    "@graphql-typed-document-node/core": "^3.1.1",
     "graphql": "^15.5.1",
     "husky": "^7.0.0",
-    "prettier": "^2.2.1"
+    "prettier": "^2.6.0",
+    "typescript": "^4.3.5"
   },
   "resolutions": {
     "graphql": "^15.5.1",
@@ -37,6 +41,6 @@
     "react-dom": "^17.0.2"
   },
   "engines": {
-    "node": "12.22.3"
+    "node": "12.22.11"
   }
 }

@@ -15,11 +15,6 @@ import {
 import { useMemo } from 'react';
 import { ParsedUrlQuery } from 'querystring';
 
-const uri =
-  process.env.NODE_ENV === 'production'
-    ? '/graphql'
-    : process.env.NEXT_PUBLIC_API;
-
 export const APOLLO_STATE_PROP_NAME = '__APOLLO_STATE__';
 export const APOLLO_CLIENT_PROP_NAME = '__APOLLO_CLIENT__';
 
@@ -34,7 +29,7 @@ function createApolloClient(ctx?: NextPageContext | GetServerSidePropsContext) {
   }
   return new ApolloClient({
     ssrMode,
-    uri,
+    uri: `${process.env.NEXT_PUBLIC_SELF_ORIGIN}/graphql`,
     credentials: 'include',
     headers,
     cache: new InMemoryCache({
@@ -129,7 +124,7 @@ export function makeGetSSP<P, Q extends ParsedUrlQuery>(
     if (getServerSideProps) {
       const res = await getServerSideProps(ctx);
       if ('props' in res) {
-        resProps = res.props;
+        resProps = await res.props;
       }
     }
 

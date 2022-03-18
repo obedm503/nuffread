@@ -15,5 +15,5 @@ module.exports = {
       white: '#ffffff',
     },
   },
-  purge: ['./src/pages/**/*.tsx', './src/components/**/*.tsx'],
+  content: ['./src/pages/**/*.tsx', './src/components/**/*.tsx'],
 };
