@@ -174,7 +174,7 @@ const useData = (
   const getMore = React.useCallback(
     async e => {
       if (fetchMore) {
-        await fetchMore<keyof (IQueryThreadArgs & IPaginationInput)>({
+        await fetchMore({
           query: MORE_MESSAGES,
           variables: { id: threadId, offset: currentCount },
           updateQuery: (prev, { fetchMoreResult }) => {

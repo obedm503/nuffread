@@ -24,5 +24,5 @@ module.exports = {
       scale: ['group-hover'],
     },
   },
-  purge: ['./src/pages/**/*.tsx', './src/components/**/*.tsx'],
+  content: ['./src/pages/**/*.tsx', './src/components/**/*.tsx'],
 };

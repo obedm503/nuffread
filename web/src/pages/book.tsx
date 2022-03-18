@@ -227,10 +227,10 @@ const useGetBookListings = ({ bookId }) => {
   const getMore = React.useCallback(
     async e => {
       if (fetchMore) {
-        await fetchMore<keyof (IQueryBookArgs & IPaginationInput)>({
+        await fetchMore({
           query: GET_MORE_BOOK_LISTINGS,
           variables: { id: bookId, offset: currentCount },
-          updateQuery: (prev, { fetchMoreResult }) => {
+          updateQuery: (prev: any, { fetchMoreResult }: any) => {
             if (!fetchMoreResult || !fetchMoreResult.book || !prev.book) {
               return prev;
             }
