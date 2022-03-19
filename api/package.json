@@ -6,8 +6,6 @@
     "typeorm": "ts-node ../node_modules/typeorm/cli.js",
     "migrate": "yarn typeorm migration:generate --config ormconfig.ts --name",
     "dev": "NODE_ENV=development ts-node-dev src/main.ts",
-    "dev:build": "tsc --project tsconfig.json --watch --pretty --preserveWatchOutput",
-    "dev:start": "nodemon --delay 500ms --watch 'dist' --exec 'node dist/main.js'",
     "build": "NODE_ENV=production tsc --project tsconfig.json --pretty",
     "start": "NODE_ENV=production node --optimize_for_size --max_old_space_size=512 --gc_interval=100 dist/main.js"
   },

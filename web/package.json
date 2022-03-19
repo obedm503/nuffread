@@ -41,8 +41,8 @@
     "@types/react-router": "^5.1.12",
     "@types/react-router-dom": "^5.1.7",
     "@types/yup": "^0.29.11",
-    "node-sass": "^5.0.0",
     "react-scripts": "^4.0.3",
+    "sass": "^1.49.9",
     "serve": "^11.3.0"
   }
 }
