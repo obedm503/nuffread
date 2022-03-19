@@ -111,7 +111,7 @@ function Listings({ children }) {
 
 function BookPage() {
   const router = useRouter();
-  const bookId = router?.query.id;
+  const bookId = router.query.id as string;
 
   const res = useQuery(GET_BOOK, {
     variables: { id: bookId },

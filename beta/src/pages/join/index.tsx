@@ -11,7 +11,7 @@ import { Icon } from '../../components/icon';
 import { TextLink } from '../../components/link';
 import { LoginLayout } from '../../components/login-wrapper';
 import { SubmitButton } from '../../components/submit-button';
-import { IMutation, RegisterDocument as REGISTER } from '../../queries';
+import { IRegisterMutation, RegisterDocument as REGISTER } from '../../queries';
 import { strongPasswordSchema, studentEmailSchema } from '../../util';
 import { withToHome } from '../../util/auth';
 
@@ -32,7 +32,7 @@ const schema = object().shape({
   password: strongPasswordSchema,
 });
 
-const onCompleted = (data: IMutation) => {
+const onCompleted = (data: IRegisterMutation) => {
   if (!data.register) {
     return;
   }
