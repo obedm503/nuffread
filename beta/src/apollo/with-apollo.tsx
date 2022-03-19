@@ -34,7 +34,7 @@ function createApolloClient(req: Req, res: Res) {
   }
 
   const httpLink = new HttpLink({
-    uri: `${process.env.NEXT_PUBLIC_SELF_ORIGIN}/graphql`,
+    uri: ssrMode ? process.env.NEXT_PUBLIC_GRAPHQL_API : '/graphql',
     credentials: 'include',
     headers,
   });
