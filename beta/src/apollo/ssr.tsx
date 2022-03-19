@@ -4,7 +4,7 @@ import { getDataFromTree } from '@apollo/client/react/ssr';
 import { GetServerSideProps, NextPage } from 'next';
 // NOTICE: technically using an internal api
 // https://github.com/vercel/next.js/discussions/11957#discussioncomment-126931
-import { RouterContext } from 'next/dist/next-server/lib/router-context';
+import { RouterContext } from 'next/dist/shared/lib/router-context';
 import { ParsedUrlQuery } from 'querystring';
 import {
   APOLLO_CLIENT_PROP_NAME,
@@ -24,7 +24,7 @@ export function makeApolloSSR<P, Q extends ParsedUrlQuery>(
     if (getServerSideProps) {
       const res = await getServerSideProps(ctx);
       if ('props' in res) {
-        ssProps = res.props;
+        ssProps = await res.props;
       }
     }
 
