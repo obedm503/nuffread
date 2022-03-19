@@ -9,7 +9,7 @@ import { Get_ListingDocument as GET_LISTING } from '../../queries';
 
 function Post() {
   const router = useRouter();
-  const listingId = router?.query.id;
+  const listingId = router.query.id as string;
 
   const { loading, data, error } = useQuery(GET_LISTING, {
     variables: { id: listingId },
