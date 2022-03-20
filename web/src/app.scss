@@ -446,7 +446,7 @@ ion-modal {
   @each $name, $pixels in $ionic-breakpoints {
     @if $pixels > 0 {
       @include from($name) {
-        --messages-width: calc(60vw - #{$pixels / 2});
+        --messages-width: calc(60vw - #{div($pixels, 2)});
         @content;
       }
     }
