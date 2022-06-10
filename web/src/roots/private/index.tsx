@@ -70,10 +70,11 @@ const validRoots = [
 
 const mapRoutesMemo = memoizeOne(mapRoutes);
 
-const Private = React.memo(function Private() {
+function Private() {
   const [isOpen, setModalOpen] = React.useState(false);
   const closeModal = React.useCallback(() => setModalOpen(false), []);
   const showModal = React.useCallback(e => {
+    console.log('show modal');
     e.preventDefault();
     setModalOpen(true);
   }, []);
@@ -100,10 +101,21 @@ const Private = React.memo(function Private() {
             </IonTabButton>
           ) : null}
 
-          <IonTabButton onClick={showModal}>
-            {isOpen ? <CreateModal isOpen onClose={closeModal} /> : null}
+          <IonTabButton>
+            <CreateModal isOpen={isOpen} onClose={closeModal} />
 
-            <IonIcon icon={addOutline} ariaLabel="Create" />
+            <button
+              type="button"
+              onClick={showModal}
+              style={{
+                width: '100%',
+                height: '100%',
+                background: 'transparent',
+                fontSize: '24px',
+              }}
+            >
+              <IonIcon icon={addOutline} ariaLabel="Create" />
+            </button>
           </IonTabButton>
 
           {!isAdmin ? (
@@ -121,7 +133,7 @@ const Private = React.memo(function Private() {
       </IonTabs>
     </>
   );
-});
+}
 
 const getRoutes = memoizeOne(globalRoutes =>
   globalRoutes.concat({ path: '/', component: Private }),

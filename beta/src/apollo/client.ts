@@ -1,7 +1,7 @@
 import {
-  ApolloClient,
+  ApolloCache,
   ApolloError,
-  DataProxy,
+  Cache,
   DocumentNode,
   LazyQueryHookOptions,
   LazyQueryResult,
@@ -54,19 +54,19 @@ export function useQuery<TData, TVariables = never>(
 ): RequestResult<TData> & QueryResult<TData, TVariables> {
   const { loading, error, data, ...rest } = useApolloQuery(query, options);
 
-  if ((loading && !data) || options?.skip) {
+  if (error) {
     return {
-      loading: true,
-      error: undefined,
+      loading: false,
+      error,
       data: undefined,
       ...rest,
     };
   }
 
-  if (error) {
+  if (loading || !data || options?.skip) {
     return {
-      loading: false,
-      error,
+      loading: true,
+      error: undefined,
       data: undefined,
       ...rest,
     };
@@ -159,6 +159,18 @@ export function useMutation<TData, TVariables = never>(
     options,
   );
 
+  if (error) {
+    return [
+      mutate,
+      {
+        loading: false,
+        error,
+        data: undefined,
+        ...rest,
+      },
+    ];
+  }
+
   if (!rest.called) {
     return [
       mutate,
@@ -177,18 +189,6 @@ export function useMutation<TData, TVariables = never>(
       {
         loading: true,
         error: undefined,
-        data: undefined,
-        ...rest,
-      },
-    ];
-  }
-
-  if (error) {
-    return [
-      mutate,
-      {
-        loading: false,
-        error,
         data: undefined,
         ...rest,
       },
@@ -255,14 +255,14 @@ export function useSubscription<TData, TVariables = never>(
  * https://github.com/apollographql/apollo-client/issues/1542
  */
 export function readQuery<TData, TVariables = never>(
-  client: ApolloClient<any>,
-  options: DataProxy.Query<TVariables, TData> & {
+  cache: ApolloCache<any>,
+  options: Cache.ReadQueryOptions<TData, TVariables> & {
     query: DocumentNode | TypedDocumentNode<TData, TVariables>;
   },
   optimistic?: boolean,
 ): TData | null | undefined {
   try {
-    return client.readQuery(options, optimistic);
+    return cache.readQuery(options, optimistic);
   } catch {
     return undefined;
   }

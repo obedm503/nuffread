@@ -8,7 +8,8 @@ export const Icon = memo<{ icon: string; className?: string }>(
     return (
       <div
         className={classes(
-          'w-5 align-middle inline-block fill-current',
+          'align-middle inline-block fill-current',
+          className?.includes('w-') ? '' : 'w-5',
           className,
         )}
         dangerouslySetInnerHTML={{ __html: iconSvg }}

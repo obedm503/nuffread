@@ -43,3 +43,10 @@ export const strongPasswordSchema = passwordSchema
   .test('number', 'Passphrase must contain at least 1 number', value => {
     return !!value && /\d+/.test(value);
   });
+export const queryLoading = ({
+  called,
+  loading,
+}: {
+  called: boolean;
+  loading: boolean;
+}) => (!called ? true : loading);

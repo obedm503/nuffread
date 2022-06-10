@@ -22,3 +22,13 @@ svg {
 .ionicon-fill-none {
   fill: none;
 }
+
+
+@screen sm {
+  .messages {
+    height: calc(100vh - (56px + 60px));
+  }
+}
+.messages {
+  min-height: calc(100vh - (56px + 146px));
+}
