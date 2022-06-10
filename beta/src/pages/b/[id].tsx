@@ -1,84 +1,48 @@
-import { cart, cartOutline, syncOutline } from 'ionicons/icons';
+import { chatbubblesOutline, syncOutline } from 'ionicons/icons';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { useCallback } from 'react';
-import { readQuery, useMutation, useQuery } from '../../apollo/client';
+import { useMutation, useQuery } from '../../apollo/client';
 import { makeApolloSSR } from '../../apollo/ssr';
 import { withApollo } from '../../apollo/with-apollo';
 import { RelativeDate } from '../../components/date';
 import { Icon } from '../../components/icon';
 import { Layout } from '../../components/layout';
+import { SaveListingButton } from '../../components/save-listing-button';
 import {
   Get_BookDocument as GET_BOOK,
-  Get_Saved_ListingsDocument as SAVED_LISTINGS,
-  Save_ListingDocument as SAVE_LISTING,
+  Start_ThreadDocument as START_THREAD,
 } from '../../queries';
 import { classes, conditionNames } from '../../util';
-import { useIsLoggedIn } from '../../util/auth';
+import { useMe } from '../../util/auth';
 
-function SaveListingButton({ listingId, saved }) {
-  const isLoggedIn = useIsLoggedIn();
-  const [save, res] = useMutation(SAVE_LISTING, {
-    variables: { listingId, saved: !saved },
-  });
-  const client = res.client;
-  const cartIcon = saved ? cart : cartOutline;
-  const icon = res.loading ? syncOutline : cartIcon;
+function GoToChat({
+  listingId,
+  sellerId,
+}: {
+  listingId: string;
+  sellerId: string;
+}) {
+  const router = useRouter();
+  const { me } = useMe();
+  const [save, res] = useMutation(START_THREAD);
 
   const onClick = useCallback(async () => {
-    try {
-      const res = await save();
-      if (!res.data) {
-        return;
-      }
-      const updatedListing = res.data.saveListing;
-      if (updatedListing.saved) {
-        // tracker.event('SAVE_POST', { listingId: updatedListing.id });
-      } else {
-        // tracker.event('UNSAVE_POST', { listingId: updatedListing.id });
-      }
+    const { data } = await save({ variables: { listingId } });
 
-      const listingsData = readQuery(client, {
-        query: SAVED_LISTINGS,
-        variables: { offset: 0 },
-      });
+    const newThread = data?.startThread;
+    if (!newThread) {
+      return;
+    }
 
-      if (
-        !(listingsData?.me?.__typename === 'User') ||
-        !listingsData?.me?.saved
-      ) {
-        return;
-      }
+    // tracker.event('START_THREAD', { listingId });
+    router.push(`/chat/${newThread.id}`);
+  }, [save, router, listingId]);
 
-      let totalCount = listingsData.me.saved.totalCount;
-      let listings = listingsData.me.saved.items;
-      if (updatedListing.saved) {
-        listings = [updatedListing, ...listings];
-        totalCount += 1;
-      } else {
-        listings = listings.filter(item => item.id !== updatedListing.id);
-        totalCount -= 1;
-      }
-
-      client.writeQuery({
-        query: SAVED_LISTINGS,
-        data: {
-          ...listingsData,
-          me: {
-            ...listingsData.me,
-            saved: {
-              ...listingsData.me.saved,
-              totalCount,
-              items: listings,
-            },
-          },
-        },
-        variables: { offset: 0 },
-      });
-    } catch {}
-  }, [save, client]);
-
-  if (!isLoggedIn) {
+  if (!me) {
+    return null;
+  }
+  if (sellerId === me.id) {
     return null;
   }
 
@@ -87,16 +51,16 @@ function SaveListingButton({ listingId, saved }) {
       type="button"
       disabled={res.loading}
       className={classes(
-        'outline-none focus:outline-none px-3 py-1 bg-white rounded-full flex items-center border border-black disabled:opacity-50 disabled:pointer-events-none whitespace-nowrap float-right',
+        'outline-none focus:outline-none px-3 py-1 bg-white rounded-full flex items-center border border-black disabled:opacity-50 disabled:pointer-events-none whitespace-nowrap',
         { 'hover:bg-black hover:text-white': !res.loading },
       )}
       onClick={onClick}
     >
       <Icon
-        icon={icon}
+        icon={res.loading ? syncOutline : chatbubblesOutline}
         className={classes('mr-2', { 'animate-spin': res.loading })}
-      />{' '}
-      {saved ? 'Remove from cart' : 'Save to cart'}
+      />
+      Text seller
     </button>
   );
 }
@@ -113,9 +77,7 @@ function BookPage() {
   const router = useRouter();
   const bookId = router.query.id as string;
 
-  const res = useQuery(GET_BOOK, {
-    variables: { id: bookId },
-  });
+  const res = useQuery(GET_BOOK, { variables: { id: bookId } });
   if (res.loading) {
     return null;
   }
@@ -135,78 +97,89 @@ function BookPage() {
 
   return (
     <Layout title={book.title}>
-      <Head>
-        <title>{book.title} - nuffread</title>
-      </Head>
-
-      <div className="flex">
-        <div className="w-1/2 m-6">
-          <div className="w-80 ml-auto overflow-hidden rounded-lg shadow-lg">
+      <div className="md:flex md:max-w-4xl md:mx-auto">
+        <div className="md:w-1/2 m-6">
+          <div className="w-full mx-auto md:ml-auto overflow-hidden rounded-lg shadow-lg">
             <img
-              className="w-80"
+              className="w-full"
               alt={`${book.title} book cover`}
               src={book.thumbnail ?? ''}
             />
           </div>
         </div>
-        <div className="w-1/2 m-6">
-          <span className="block font-semibold text-md">{book.title}</span>
+        <div className="md:w-1/2 m-6">
+          <div className="rounded-lg shadow-lg p-4 bg-white">
+            <span className="block font-semibold text-lg">{book.title}</span>
 
-          {book.subTitle ? (
-            <span className="block text-sm">{book.subTitle}</span>
-          ) : null}
+            {book.subTitle ? (
+              <span className="block text-md">{book.subTitle}</span>
+            ) : null}
 
-          <span className="block opacity-75 text-xs">
-            {book.authors.join(', ')}
-          </span>
+            <span className="block opacity-75">{book.authors.join(', ')}</span>
 
-          {book.isbn.map(isbn => (
-            <span className="block" key={isbn}>
-              <b>ISBN: </b> {isbn}
+            {book.isbn.length ? (
+              <span className="block">
+                <b>ISBN </b> {book.isbn.join(', ')}
+              </span>
+            ) : null}
+            <span className="block">
+              <b>Published </b>
+              <RelativeDate date={book.publishedAt} />
             </span>
-          ))}
-          <span className="block">
-            <b>Published on: </b> <RelativeDate date={book.publishedAt} />
-          </span>
+          </div>
 
-          <div className="max-h-96 overflow-x-auto">
-            {book.listings.items.map(listing => (
-              <div
-                key={listing.id}
-                className={`relative border shadow-md my-4 p-4 rounded-lg hover:shadow-lg ${
-                  bookId === listing.id ? 'border-primary border' : ''
-                } border-light`}
-              >
-                <div className="flex justify-between">
-                  <div>
-                    <span className="block opacity-75 -mb-1 text-sm">
-                      <RelativeDate date={listing.createdAt} />
-                    </span>
+          <div>
+            <h2 className="font-semibold text-3xl mt-8 px-4 text-white">
+              Listings
+            </h2>
+            <div className="max-h-96">
+              {book.listings.items.map(listing => (
+                <div
+                  key={listing.id}
+                  className={`relative my-4 p-4 bg-white rounded-lg shadow-lg hover:scale-105 transition duration-200 ease-in-out ${
+                    bookId === listing.id ? 'border-primary border' : ''
+                  }`}
+                >
+                  <div className="flex justify-between items-center">
+                    <div>
+                      <span className="block opacity-75 -mb-1 text-sm">
+                        <RelativeDate date={listing.createdAt} />
+                      </span>
 
-                    <span className="block font-semibold text-lg">
-                      {listing.condition
-                        ? conditionNames[listing.condition]
-                        : ''}
-                    </span>
+                      <span className="block font-semibold text-lg">
+                        {listing.condition
+                          ? conditionNames[listing.condition]
+                          : ''}
+                      </span>
+                    </div>
+
+                    {listing.user ? (
+                      <GoToChat
+                        listingId={listing.id}
+                        sellerId={listing.user.id}
+                      />
+                    ) : null}
                   </div>
 
-                  <div>
-                    <span className="bg-primary rounded-full text-white text-md font-semibold px-3 py-2 leading-none flex items-center mt-auto">
-                      ${(listing.price / 100).toFixed(2)}
-                    </span>
+                  <div className="overflow-hidden">
+                    <p className="py-3 px-2">{listing.description}</p>
+
+                    <div className="flex justify-between">
+                      <div>
+                        <span className="bg-primary rounded-full text-white text-md font-semibold px-3 py-2 leading-none flex items-center mt-auto">
+                          ${(listing.price / 100).toFixed(2)}
+                        </span>
+                      </div>
+
+                      <SaveListingButton
+                        listingId={listing.id}
+                        saved={listing.saved}
+                      />
+                    </div>
                   </div>
                 </div>
-
-                <div className="overflow-hidden">
-                  <p>{listing.description}</p>
-
-                  <SaveListingButton
-                    listingId={listing.id}
-                    saved={listing.saved}
-                  />
-                </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         </div>
       </div>

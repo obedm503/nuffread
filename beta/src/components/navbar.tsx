@@ -1,5 +1,6 @@
 import { Field, Form, Formik } from 'formik';
 import {
+  addOutline,
   cart,
   chatbubblesOutline,
   logOutOutline,
@@ -30,12 +31,51 @@ function useLogout() {
   };
 }
 
+function LoggedInButtons() {
+  const { handleLogout } = useLogout();
+  return (
+    <>
+      <Link href="/cart">
+        <a className="outline-none focus:outline-none px-3 py-1 bg-white rounded-l-lg border-r-0 flex items-center border border-black hover:bg-black hover:text-white">
+          <Icon icon={cart} className="mr-2" />
+          Cart
+        </a>
+      </Link>
+
+      <Link href="/chat">
+        <a className="outline-none focus:outline-none px-3 py-1 bg-white border-r-0 flex items-center border border-black hover:bg-black hover:text-white">
+          <Icon icon={chatbubblesOutline} className="mr-2" />
+          Chat
+        </a>
+      </Link>
+
+      <Link href="/post">
+        <a className="outline-none focus:outline-none px-3 py-1 bg-white rounded-r-lg flex items-center border border-black hover:bg-black hover:text-white">
+          <Icon icon={addOutline} className="mr-2" />
+          Post
+        </a>
+      </Link>
+
+      <div className="ml-4 group inline-block">
+        <button className="outline-none focus:outline-none bg-white rounded-full flex items-center">
+          <Icon icon={personCircleOutline} className="w-8" />
+        </button>
+        <div className="bg-white border border-dark shadow rounded-md transform scale-0 group-hover:scale-100 absolute transition duration-150 ease-in-out origin-top-right right-8 z-10 overflow-hidden">
+          <button
+            type="button"
+            className="px-3 py-1 hover:bg-gray-100 text-lg"
+            onClick={handleLogout}
+          >
+            <Icon icon={logOutOutline} /> Logout
+          </button>
+        </div>
+      </div>
+    </>
+  );
+}
+
 export function Navbar() {
   const isLoggedIn = useIsLoggedIn();
-  // const [active, setActive] = useState(false);
-  // const toggle = useCallback(() => setActive(a => !!a), [setActive]);
-  const { handleLogout } = useLogout();
-
   const router = useRouter();
   const onSubmit = useCallback(
     ({ search }) => {
@@ -53,7 +93,7 @@ export function Navbar() {
           </a>
         </Link>
       </div>
-      <div className="sm:mb-0 self-center w-full mx-10">
+      <div className="sm:mb-0 self-center w-full mx-5">
         <Formik
           onSubmit={onSubmit}
           initialValues={{ search: router.query?.q || '' }}
@@ -85,41 +125,9 @@ export function Navbar() {
         </Formik>
       </div>
       <div className="sm:mb-0 self-center">
-        <div className="h-10 flex align-middle">
+        <div className="flex items-center pt-2 sm:p-0">
           {isLoggedIn ? (
-            <>
-              <Link href="/chat">
-                <a className="outline-none focus:outline-none px-3 py-1 bg-white rounded-l-lg flex items-center border border-black hover:bg-black hover:text-white">
-                  <Icon icon={chatbubblesOutline} className="mr-2" />
-                  Chat
-                </a>
-              </Link>
-
-              <Link href="/cart">
-                <a className="outline-none focus:outline-none px-3 py-1 bg-white rounded-r-lg border-l-0 flex items-center border border-black hover:bg-black hover:text-white">
-                  <Icon icon={cart} className="mr-2" />
-                  Cart
-                </a>
-              </Link>
-
-              <div className="group inline-block">
-                <button className="outline-none focus:outline-none px-3 py-1 bg-white rounded-full flex items-center">
-                  <Icon icon={personCircleOutline} className="w-8" />
-                </button>
-                <div
-                  className="bg-white border border-light shadow rounded-md transform scale-0 group-hover:scale-100 absolute
-  transition duration-150 ease-in-out origin-top-right right-8"
-                >
-                  <button
-                    type="button"
-                    className="rounded-sm px-3 py-1 hover:bg-gray-100 text-lg"
-                    onClick={handleLogout}
-                  >
-                    <Icon icon={logOutOutline} /> Logout
-                  </button>
-                </div>
-              </div>
-            </>
+            <LoggedInButtons />
           ) : (
             <>
               <Link href="/login">

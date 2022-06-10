@@ -7,6 +7,7 @@
     "web"
   ],
   "scripts": {
+    "schema": "graphql-codegen --config codegen.yml",
     "dev": "nps dev",
     "build:api": "NODE_ENV=production nps deploy.api",
     "heroku-postbuild": "npm run build:api",

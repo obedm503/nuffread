@@ -140,6 +140,15 @@ query GET_LISTING($id: ID!) {
 mutation SAVE_LISTING($listingId: ID!, $saved: Boolean!) {
   saveListing(listingId: $listingId, saved: $saved) {
     ...BasicListing
+    user {
+      id
+      name
+      email
+      school {
+        id
+        name
+      }
+    }
   }
 }
 
@@ -167,6 +176,12 @@ query GET_SAVED_LISTINGS($offset: Int!) {
   }
 }
 
+mutation START_THREAD($listingId: ID!) {
+  startThread(listingId: $listingId) {
+    id
+  }
+}
+
 query GET_THREADS($offset: Int!) {
   me {
     ... on User {
@@ -189,6 +204,7 @@ query GET_THREADS($offset: Int!) {
               id
               title
               thumbnail
+              authors
             }
           }
           other {
@@ -207,5 +223,64 @@ query GET_THREADS($offset: Int!) {
         }
       }
     }
+  }
+}
+
+fragment Message on Message {
+  id
+  createdAt
+  content
+  fromId
+}
+fragment PaginatedMessages on PaginatedMessages {
+  totalCount
+  items {
+    ...Message
+  }
+}
+query THREAD($id: ID!, $offset: Int!) {
+  thread(id: $id) {
+    id
+    lastMessage {
+      id
+      createdAt
+      content
+    }
+    listing {
+      id
+      book {
+        id
+        title
+      }
+    }
+    otherId
+    other {
+      id
+      email
+      name
+    }
+    messages(paginate: { limit: 20, offset: $offset }) {
+      ...PaginatedMessages
+    }
+  }
+}
+
+query MORE_MESSAGES($id: ID!, $offset: Int!) {
+  thread(id: $id) {
+    id
+    lastMessage {
+      id
+      createdAt
+      content
+    }
+    messages(paginate: { limit: 50, offset: $offset }) {
+      ...PaginatedMessages
+    }
+  }
+}
+
+mutation SEND_MESSAGE($threadId: ID!, $content: String!) {
+  sendMessage(threadId: $threadId, content: $content) {
+    ...Message
   }
 }
