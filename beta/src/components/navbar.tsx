@@ -85,15 +85,15 @@ export function Navbar() {
   );
 
   return (
-    <nav className="flex flex-col text-center content-center sm:flex-row sm:text-left sm:justify-between py-2 px-6 bg-white shadow sm:items-baseline w-full">
-      <div className="mb-2 sm:mb-0 inner self-center">
+    <nav className="flex flex-col-reverse sm:flex-row text-center content-center sm:text-left sm:justify-between py-2 px-6 bg-white shadow sm:items-center w-full">
+      <div className="inner self-center">
         <Link href="/">
-          <a className="text-2xl no-underline text-primary font-sans">
+          <a className="text-2xl no-underline text-primary font-sans font-semibold">
             nuffread
           </a>
         </Link>
       </div>
-      <div className="sm:mb-0 self-center w-full mx-5">
+      <div className="self-center w-full mx-5 my-3 sm:my-0">
         <Formik
           onSubmit={onSubmit}
           initialValues={{ search: router.query?.q || '' }}
@@ -124,8 +124,8 @@ export function Navbar() {
           </Form>
         </Formik>
       </div>
-      <div className="sm:mb-0 self-center">
-        <div className="flex items-center pt-2 sm:p-0">
+      <div className="self-center">
+        <div className="flex items-center">
           {isLoggedIn ? (
             <LoggedInButtons />
           ) : (
