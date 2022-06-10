@@ -284,3 +284,13 @@ mutation SEND_MESSAGE($threadId: ID!, $content: String!) {
     ...Message
   }
 }
+
+subscription SUB_MESSAGES {
+  newMessage {
+    id
+    createdAt
+    content
+    fromId
+    threadId
+  }
+}

@@ -1,10 +1,11 @@
+import { OnSubscriptionDataOptions } from '@apollo/client';
 import { Field, Form, Formik, FormikHelpers } from 'formik';
 import { personCircleOutline, sendSharp } from 'ionicons/icons';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
-import { useCallback, useMemo } from 'react';
+import { useCallback, useLayoutEffect, useMemo } from 'react';
 import { object, string } from 'yup';
-import { useMutation, useQuery } from '../../apollo/client';
+import { useMutation, useQuery, useSubscription } from '../../apollo/client';
 import { makeApolloSSR } from '../../apollo/ssr';
 import { withApollo } from '../../apollo/with-apollo';
 import { Icon } from '../../components/icon';
@@ -13,12 +14,64 @@ import { Navbar } from '../../components/navbar';
 import {
   IMessageFragment,
   IPaginatedMessagesFragment,
+  ISub_MessagesSubscription,
   More_MessagesDocument as MORE_MESSAGES,
   Send_MessageDocument as SEND_MESSAGE,
+  Sub_MessagesDocument as SUB_MESSAGES,
   ThreadDocument as THREAD,
 } from '../../queries';
 import { classes, queryLoading } from '../../util';
 import { useMe } from '../../util/auth';
+
+function onSubscriptionData({
+  client,
+  subscriptionData: { data, loading },
+}: OnSubscriptionDataOptions<ISub_MessagesSubscription>) {
+  const newMessage = data?.newMessage;
+  if (!newMessage || loading) {
+    return;
+  }
+
+  // best effort update
+  client.cache.updateQuery(
+    {
+      query: THREAD,
+      variables: { id: newMessage.threadId, offset: 0 },
+    },
+    messagesData => {
+      if (!messagesData?.thread?.messages.items) {
+        return;
+      }
+
+      const messages = messagesData?.thread?.messages.items;
+      return {
+        ...messagesData,
+        thread: {
+          ...messagesData.thread,
+          messages: {
+            ...messagesData.thread.messages,
+            totalCount: messagesData.thread.messages.totalCount + 1,
+            items: [newMessage, ...messages],
+          },
+        },
+      };
+    },
+  );
+}
+function SubscribeToLiveMessages() {
+  const res = useSubscription(SUB_MESSAGES, { onSubscriptionData });
+
+  const id = res.data?.newMessage.id;
+  useLayoutEffect(() => {
+    if (id && !res.loading) {
+      setTimeout(() => {
+        const el = document.querySelector(`#message-${id}`);
+        el?.scrollIntoView({ behavior: 'smooth' });
+      }, 0);
+    }
+  }, [id, res]);
+  return null;
+}
 
 function groupMessages(
   messages: readonly IMessageFragment[],
@@ -185,6 +238,8 @@ function Chat() {
   const otherId = res.data.thread.otherId;
   return (
     <div className="min-h-screen bg-white">
+      <SubscribeToLiveMessages />
+
       <Head>
         <title>{res.data.thread.listing.book.title} - Chat - nuffread</title>
       </Head>
@@ -218,6 +273,7 @@ function Chat() {
                     return (
                       <div
                         key={msg.id}
+                        id={`message-${msg.id}`}
                         className={classes(
                           'px-4 py-3 max-w-[60vw] sm:max-w-[50vw] md:max-w-[40vw] lg:max-w-[35vw] xl:max-w-[30vw]',
                           isOther
