@@ -55,7 +55,7 @@ export function useQuery<TVariables = never>(
   QueryResult<IQuery, TVariables> {
   const { loading, error, data, ...rest } = useApolloQuery(query, options);
 
-  if (loading) {
+  if (loading || options?.skip) {
     return {
       status: 'LOADING',
       loading: true,

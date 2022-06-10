@@ -170,13 +170,15 @@ const useListingState = () => {
 function ConditionOptions() {
   return (
     <>
-      {([
-        ListingCondition.New,
-        ListingCondition.LikeNew,
-        ListingCondition.VeryGood,
-        ListingCondition.Good,
-        ListingCondition.Acceptable,
-      ] as ListingCondition[]).map(cond => (
+      {(
+        [
+          ListingCondition.New,
+          ListingCondition.LikeNew,
+          ListingCondition.VeryGood,
+          ListingCondition.Good,
+          ListingCondition.Acceptable,
+        ] as ListingCondition[]
+      ).map(cond => (
         <IonSelectOption key={cond} value={cond}>
           {conditionNames[cond]}
         </IonSelectOption>
@@ -185,7 +187,7 @@ function ConditionOptions() {
   );
 }
 
-export const CreateModal = ({ isOpen, onClose: closeModal }) => {
+export function CreateModal({ isOpen, onClose: closeModal }) {
   const {
     state,
     pickBook,
@@ -195,10 +197,12 @@ export const CreateModal = ({ isOpen, onClose: closeModal }) => {
     onFocus,
     setCondition,
   } = useListingState();
-  const { create, loading: createLoading, error, listing } = useCreateListing(
-    state,
-    closeModal,
-  );
+  const {
+    create,
+    loading: createLoading,
+    error,
+    listing,
+  } = useCreateListing(state, closeModal);
 
   const onClick = React.useCallback(
     (e: React.MouseEvent | CustomEvent) => {
@@ -209,10 +213,10 @@ export const CreateModal = ({ isOpen, onClose: closeModal }) => {
     [closeModal],
   );
 
-  const resBook = useQuery<IQueryGoogleBookArgs>(
-    GOOGLE_BOOK,
-    { variables: { id: state.googleId }, skip: !state.googleId },
-  );
+  const resBook = useQuery<IQueryGoogleBookArgs>(GOOGLE_BOOK, {
+    variables: { id: state.googleId },
+    skip: !state.googleId,
+  });
 
   const loading = createLoading || resBook.loading;
 
@@ -342,4 +346,4 @@ export const CreateModal = ({ isOpen, onClose: closeModal }) => {
       ) : null}
     </IonModal>
   );
-};
+}
