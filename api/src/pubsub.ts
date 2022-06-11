@@ -1,19 +1,22 @@
-import { PubSub } from 'apollo-server-express';
+import { PubSub } from 'graphql-subscriptions';
 import { Message } from './db/entities';
 
 const engine = new PubSub();
-export type Channel<T> = AsyncIterator<T, any, undefined> & {
-  [Symbol.asyncIterator](): Channel<T>;
-};
 
 const NEW_MESSAGE = 'NEW_MESSAGE';
 
-export const subscriptions = new (class {
-  get(channel: typeof NEW_MESSAGE): Channel<{ newMessage: Message }>;
-  get(channel: string) {
-    return engine.asyncIterator(channel);
-  }
+export type Channels = {
+  [NEW_MESSAGE]: { newMessage: Message };
+};
+export type Channel<T extends keyof Channels> = AsyncIterator<Channels[T], any, undefined> & {
+  [Symbol.asyncIterator](): Channel<T>;
+};
+
+export const subscriptions = {
+  get<T extends keyof Channels>(channel: T) {
+    return engine.asyncIterator<Channels[T]>(channel) as Channel<T>;
+  },
   newMessage(m: Message) {
     return engine.publish(NEW_MESSAGE, { newMessage: m });
-  }
-})();
+  },
+};

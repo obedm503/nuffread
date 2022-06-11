@@ -3,12 +3,12 @@ import {
   ApolloProvider,
   createHttpLink,
   InMemoryCache,
-  split,
+  split
 } from '@apollo/client';
 import { onError } from '@apollo/client/link/error';
-import { WebSocketLink } from '@apollo/client/link/ws';
+import { GraphQLWsLink } from '@apollo/client/link/subscriptions';
 import { getMainDefinition } from '@apollo/client/utilities';
-import React from 'react';
+import { createClient } from 'graphql-ws';
 import { render } from 'react-dom';
 import { HelmetProvider } from 'react-helmet-async';
 import { App } from './app';
@@ -33,10 +33,12 @@ const httpLink = createHttpLink({
   uri: process.env.REACT_APP_API,
   credentials: 'include',
 });
-const wsLink = new WebSocketLink({
-  uri: process.env.REACT_APP_WS!,
-  options: { reconnect: true },
-});
+const wsLink = new GraphQLWsLink(
+  createClient({
+    url: process.env.REACT_APP_WS!,
+    retryAttempts: 2,
+  }),
+);
 
 const client = new ApolloClient({
   link: errorLink.concat(

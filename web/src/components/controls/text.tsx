@@ -16,9 +16,10 @@ export const Text: React.FC<Props> = React.memo(function Text({
   error,
   label,
   name,
+  hideError,
   ...inputProps
 }) {
-  const controlProps: ControlProps = { error, label, name };
+  const controlProps: ControlProps = { error, label, name, hideError };
   const { setFieldTouched, setFieldValue, values } = useFormikContext<any>();
 
   // use custom handlers to use ionic's events

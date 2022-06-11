@@ -1,5 +1,6 @@
 import DataLoader from 'dataloader';
 import { Request, Response } from 'express';
+import { IncomingMessage } from 'http';
 import {
   Admin,
   Book,
@@ -30,7 +31,7 @@ export type Session = UserSession | AdminSession | PublicSession;
 
 export type GetMe = () => Promise<User | Admin | undefined>;
 export type IContext = {
-  req?: Request;
+  req: Request | IncomingMessage;
   res?: Response;
   session?: Session;
   getMe: GetMe;

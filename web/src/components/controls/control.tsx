@@ -20,6 +20,7 @@ export type ControlProps = {
   name: string;
   disabled?: boolean;
   color?: string;
+  hideError?: boolean;
 };
 
 export const Control: React.FC<ControlProps> = React.memo(function Control({
@@ -27,13 +28,14 @@ export const Control: React.FC<ControlProps> = React.memo(function Control({
   error,
   name,
   color,
+  hideError,
   children,
 }) {
   const { touched, errors, submitCount } = useFormikContext<any>();
 
   const isSubmitted = submitCount > 0;
   const isTouched = isSubmitted && !!(touched && touched[name]);
-  const showError = isTouched && errors[name];
+  const hasError = isTouched && errors[name];
   const errorMessage = error || (errors[name] ? errors[name] : '');
 
   return (
@@ -41,21 +43,27 @@ export const Control: React.FC<ControlProps> = React.memo(function Control({
       <IonItem
         color={color}
         lines="full"
-        style={{
-          '--highlight-height': '2px', // always show highlight
-          '--highlight-color-focused': showError
-            ? 'var(--ion-color-danger)'
-            : isTouched
-            ? 'var(--ion-color-success)'
-            : '',
-        }}
+        style={
+          hideError
+            ? undefined
+            : {
+                '--highlight-height': '2px', // always show highlight
+                '--highlight-color-focused': hasError
+                  ? 'var(--ion-color-danger)'
+                  : isTouched
+                  ? 'var(--ion-color-success)'
+                  : '',
+              }
+        }
       >
         <IonLabel position="floating">{label}</IonLabel>
 
         {children}
       </IonItem>
 
-      {showError ? <ControlError>{errorMessage}</ControlError> : null}
+      {hasError && !hideError ? (
+        <ControlError>{errorMessage}</ControlError>
+      ) : null}
     </>
   );
 });

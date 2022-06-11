@@ -83,14 +83,16 @@ function getImages(book: GoogleBook): string[] {
     return [];
   }
   return uniq(
-    ([
-      images.extraLarge,
-      images.large,
-      images.medium,
-      images.small,
-      images.thumbnail,
-      images.smallThumbnail,
-    ] as any[])
+    (
+      [
+        images.extraLarge,
+        images.large,
+        images.medium,
+        images.small,
+        images.thumbnail,
+        images.smallThumbnail,
+      ] as any[]
+    )
       .filter(link => typeof link === 'string' && !!link)
       .map(processImageLink),
   );
@@ -129,7 +131,7 @@ const formatBook = (book: GoogleBook): IGoogleBook | undefined => {
       thumbnail: possibleCovers[0],
       possibleCovers,
     };
-  } catch (e) {
+  } catch (e: any) {
     logger.error(e);
   }
 };
