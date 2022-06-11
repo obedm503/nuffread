@@ -77,6 +77,22 @@ function LoggedInButtons() {
     </>
   );
 }
+function LoggedOutButtons() {
+  return (
+    <>
+      <Link href="/login">
+        <a className="text-lg font-semibold no-underline text-primary uppercase px-2 py-1">
+          Login
+        </a>
+      </Link>
+      <Link href="/join">
+        <a className="text-lg font-semibold no-underline bg-primary text-white uppercase ml-2 px-2 py-1 rounded-sm">
+          Join
+        </a>
+      </Link>
+    </>
+  );
+}
 
 function SearchBar() {
   const router = useRouter();
@@ -131,37 +147,20 @@ export function Navbar() {
           </a>
         </Link>
 
-        {isLoggedIn ? (
-          <div className="sm:hidden">
-            <AccountButton />
-          </div>
-        ) : (
-          <div>
-            <Link href="/login">
-              <a className="text-lg font-semibold no-underline text-primary uppercase px-2 py-1">
-                Login
-              </a>
-            </Link>
-            <Link href="/join">
-              <a className="text-lg font-semibold no-underline bg-primary text-white uppercase ml-2 px-2 py-1 rounded-sm">
-                Join
-              </a>
-            </Link>
-          </div>
-        )}
+        <div className="sm:hidden">
+          {isLoggedIn ? <AccountButton /> : <LoggedOutButtons />}
+        </div>
       </div>
 
       <div className="w-full sm:mx-5 sm:my-0">
         <SearchBar />
       </div>
 
-      {isLoggedIn ? (
-        <div className="self-center">
-          <div className="flex items-center">
-            <LoggedInButtons />
-          </div>
+      <div className="self-center">
+        <div className="flex items-center">
+          {isLoggedIn ? <LoggedInButtons /> : <LoggedOutButtons />}
         </div>
-      ) : null}
+      </div>
     </nav>
   );
 }
