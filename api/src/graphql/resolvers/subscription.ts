@@ -1,10 +1,10 @@
-import { Channel, subscriptions } from '../../pubsub';
+import { Channel, Channels, subscriptions } from '../../pubsub';
 import { ensureUser } from '../auth';
 import { ISubscriptionResolvers } from '../schema.gql';
 
-async function* filter<T>(
+async function* filter<T extends keyof Channels>(
   source: Channel<T>,
-  filterFn: (item: T) => boolean,
+  filterFn: (item: Channels[T]) => boolean,
 ): Channel<T> {
   for await (const item of source) {
     if (filterFn(item)) {
@@ -15,10 +15,7 @@ async function* filter<T>(
 
 export const SubscriptionResolver: ISubscriptionResolvers = {
   newMessage: {
-    // TODO: must use a plain function instead of AsyncGenerator until
-    // https://github.com/apollographql/subscriptions-transport-ws/issues/182
-    // is resolved. If not error response is not correctly formatted
-    async subscribe(_, {}, { session }) {
+    subscribe(_, {}, { session }) {
       ensureUser(session);
 
       return filter(

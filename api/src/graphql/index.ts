@@ -1,1 +1,0 @@
-export { getApollo } from './apollo';

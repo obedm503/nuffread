@@ -19,7 +19,7 @@ import * as React from 'react';
 import { Redirect } from 'react-router';
 import { object, string } from 'yup';
 import { IonSubmit, NavBar, useWillEnter } from '../../components';
-import { TextArea } from '../../components/controls/text-area';
+import { Text } from '../../components/controls/text';
 import { THREAD } from '../../queries';
 import {
   IMessage,
@@ -145,9 +145,7 @@ const MORE_MESSAGES = gql`
   }
 `;
 
-function paginated(
-  messages?: IPaginatedMessages,
-): {
+function paginated(messages?: IPaginatedMessages): {
   messages: readonly IMessage[] | undefined;
   currentCount: number;
   totalCount: number;
@@ -242,43 +240,46 @@ export const Thread = React.memo<{
 
   const me = useUser();
   const client = useApolloClient();
-  const [send] = useMutation<IMutationSendMessageArgs>(SEND_MESSAGE, {
-    update(proxy, { data }) {
-      const newMessage = data?.sendMessage;
-      if (!newMessage) {
-        return;
-      }
+  const [send, messageRes] = useMutation<IMutationSendMessageArgs>(
+    SEND_MESSAGE,
+    {
+      update(proxy, { data }) {
+        const newMessage = data?.sendMessage;
+        if (!newMessage) {
+          return;
+        }
 
-      // best effort update
-      const messagesData = readQuery<
-        IQuery,
-        IQueryThreadArgs & IPaginationInput
-      >(client, {
-        query: THREAD,
-        variables: { id: threadId, offset: 0 },
-      });
-      if (!messagesData?.thread?.messages.items) {
-        return;
-      }
-      const messages = messagesData?.thread?.messages.items;
-      client.writeQuery({
-        query: THREAD,
-        variables: { id: threadId, offset: 0 },
-        data: {
-          ...messagesData,
-          thread: {
-            ...messagesData.thread,
-            lastMessage: newMessage,
-            messages: {
-              ...messagesData.thread.messages,
-              totalCount: messagesData.thread.messages.totalCount + 1,
-              items: [newMessage, ...messages],
+        // best effort update
+        const messagesData = readQuery<
+          IQuery,
+          IQueryThreadArgs & IPaginationInput
+        >(client, {
+          query: THREAD,
+          variables: { id: threadId, offset: 0 },
+        });
+        if (!messagesData?.thread?.messages.items) {
+          return;
+        }
+        const messages = messagesData?.thread?.messages.items;
+        client.writeQuery({
+          query: THREAD,
+          variables: { id: threadId, offset: 0 },
+          data: {
+            ...messagesData,
+            thread: {
+              ...messagesData.thread,
+              lastMessage: newMessage,
+              messages: {
+                ...messagesData.thread.messages,
+                totalCount: messagesData.thread.messages.totalCount + 1,
+                items: [newMessage, ...messages],
+              },
             },
           },
-        },
-      });
+        });
+      },
     },
-  });
+  );
 
   const onSubmit = React.useCallback(
     ({ content }, { setFieldValue }: FormikHelpers<{ content: string }>) => {
@@ -354,24 +355,20 @@ export const Thread = React.memo<{
           validationSchema={messageSchema}
           initialValues={{ content: '' }}
         >
-          <Form>
-            <TextArea
-              label=""
-              name="content"
-              autoGrow
-              rows={1}
-              color="light"
-              placeholder="Message..."
-            >
-              <IonSubmit
-                slot="end"
-                fill="clear"
-                style={{ marginBottom: 'auto' }}
-              >
-                <IonIcon slot="icon-only" color="primary" icon={sendSharp} />
-              </IonSubmit>
-            </TextArea>
-          </Form>
+          {({ isValid }) => (
+            <Form>
+              <Text label="" name="content" placeholder="Message..." hideError>
+                <IonSubmit
+                  slot="end"
+                  disabled={!isValid || messageRes.loading}
+                  fill="clear"
+                  style={{ marginBottom: 'auto' }}
+                >
+                  <IonIcon slot="icon-only" color="primary" icon={sendSharp} />
+                </IonSubmit>
+              </Text>
+            </Form>
+          )}
         </Formik>
       </IonFooter>
     </IonPage>

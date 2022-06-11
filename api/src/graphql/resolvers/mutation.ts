@@ -254,7 +254,7 @@ export const MutationResolver: IMutationResolvers = {
 
     try {
       await jwt.verify(token); // verify token is not expired
-    } catch (e) {
+    } catch (e: any) {
       logger.error(e, { email: user.email });
 
       // token is expired, delete it
@@ -510,7 +510,7 @@ export const MutationResolver: IMutationResolvers = {
       content,
     }).save();
     // notify subscriptions
-    await subscriptions.newMessage(msg);
+    subscriptions.newMessage(msg);
     return msg;
   },
 };

@@ -60,7 +60,7 @@ function onSubscriptionData({
 export function LiveChats() {
   const res = useSubscription(CHATS, { onSubscriptionData });
 
-  const id = res.data?.newMessage.id;
+  const id = res.data?.newMessage?.id;
   React.useLayoutEffect(() => {
     if (id && !res.loading) {
       setTimeout(() => {

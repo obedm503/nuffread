@@ -23,12 +23,11 @@ svg {
   fill: none;
 }
 
-
 @screen sm {
   .messages {
-    height: calc(100vh - (56px + 60px));
+    height: calc(100vh - (56px + 60px)) !important;
   }
 }
 .messages {
-  min-height: calc(100vh - (56px + 146px));
+  height: calc(100vh - (56px + 146px));
 }
