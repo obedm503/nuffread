@@ -5,8 +5,13 @@ import {
   HttpLink,
   InMemoryCache,
   NormalizedCacheObject,
+  split,
 } from '@apollo/client';
+import { onError } from '@apollo/client/link/error';
+import { GraphQLWsLink } from '@apollo/client/link/subscriptions';
+import { getMainDefinition } from '@apollo/client/utilities';
 import merge from 'deepmerge';
+import { createClient } from 'graphql-ws';
 import isEqual from 'lodash/isEqual';
 import { GetServerSidePropsContext, NextPage, NextPageContext } from 'next';
 import { useMemo } from 'react';
@@ -33,6 +38,24 @@ function createApolloClient(req: Req, res: Res) {
     };
   }
 
+  const errorLink = onError(({ graphQLErrors, networkError }) => {
+    if (graphQLErrors) {
+      for (const e of graphQLErrors) {
+        console.error(e);
+      }
+
+      // tracker.event('GRAPHQL_ERROR', {
+      //   errors: graphQLErrors,
+      // });
+    }
+
+    if (networkError) {
+      // tracker.event('NETWORK_ERROR', {
+      // error: networkError,
+      // });
+      console.error(networkError);
+    }
+  });
   const httpLink = new HttpLink({
     uri: ssrMode ? process.env.NEXT_PUBLIC_GRAPHQL_API : '/graphql',
     credentials: 'include',
@@ -47,12 +70,31 @@ function createApolloClient(req: Req, res: Res) {
         const context = op.getContext();
         const returningHeaders = context.response.headers as Headers;
         const setCookie = returningHeaders.get('Set-Cookie');
-        if (setCookie) {
+        if (setCookie && !res.headersSent) {
           res.setHeader('Set-Cookie', setCookie);
         }
         return forwardRes;
       });
     }).concat(httpLink);
+  } else if (!ssrMode) {
+    const wsLink = new GraphQLWsLink(
+      createClient({
+        url: process.env.NEXT_PUBLIC_GRAPHQL_API_WS!,
+        retryAttempts: 2,
+      }),
+    );
+    // split based on operation type
+    link = split(
+      ({ query }) => {
+        const definition = getMainDefinition(query);
+        return (
+          definition.kind === 'OperationDefinition' &&
+          definition.operation === 'subscription'
+        );
+      },
+      wsLink,
+      httpLink,
+    );
   }
 
   return new ApolloClient({
@@ -60,7 +102,7 @@ function createApolloClient(req: Req, res: Res) {
     cache: new InMemoryCache({
       possibleTypes: { SystemUser: ['Admin', 'User'] },
     }),
-    link,
+    link: errorLink.concat(link),
     connectToDevTools: process.env.NODE_ENV !== 'production',
   });
 }

@@ -3,7 +3,7 @@ import { Field, Form, Formik, FormikHelpers } from 'formik';
 import { personCircleOutline, sendSharp } from 'ionicons/icons';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
-import { useCallback, useLayoutEffect, useMemo } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import { object, string } from 'yup';
 import { useMutation, useQuery, useSubscription } from '../../apollo/client';
 import { makeApolloSSR } from '../../apollo/ssr';
@@ -61,8 +61,8 @@ function onSubscriptionData({
 function SubscribeToLiveMessages() {
   const res = useSubscription(SUB_MESSAGES, { onSubscriptionData });
 
-  const id = res.data?.newMessage.id;
-  useLayoutEffect(() => {
+  const id = res.data?.newMessage?.id;
+  useEffect(() => {
     if (id && !res.loading) {
       setTimeout(() => {
         const el = document.querySelector(`#message-${id}`);
