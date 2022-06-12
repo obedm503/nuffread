@@ -11,6 +11,7 @@ import { withApollo } from '../../apollo/with-apollo';
 import { Icon } from '../../components/icon';
 import { Layout } from '../../components/layout';
 import { Navbar } from '../../components/navbar';
+import { Threads } from '../../components/threads';
 import {
   IMessageFragment,
   IPaginatedMessagesFragment,
@@ -59,7 +60,10 @@ function onSubscriptionData({
   );
 }
 function SubscribeToLiveMessages() {
-  const res = useSubscription(SUB_MESSAGES, { onSubscriptionData });
+  const res = useSubscription(SUB_MESSAGES, {
+    onSubscriptionData,
+    skip: typeof window === 'undefined',
+  });
 
   const id = res.data?.newMessage?.id;
   useEffect(() => {
@@ -237,7 +241,7 @@ function Chat() {
 
   const otherId = res.data.thread.otherId;
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white md:bg-primary">
       <SubscribeToLiveMessages />
 
       <Head>
@@ -246,84 +250,90 @@ function Chat() {
 
       <Navbar />
 
-      <main>
-        <div className="messages flex flex-col-reverse mt-auto overflow-auto">
-          {grouped?.map((group, i) => {
-            const isOther = group.fromId === otherId;
-            return (
-              <div
-                key={i}
-                className={classes(
-                  'flex items-end m-4 md:max-w-6xl',
-                  isOther
-                    ? 'ml-4 sm:ml-20 md:ml-40 lg:ml-60 xl:ml-96 mr-auto'
-                    : 'mr-4 sm:mr-20 md:mr-40 lg:mr-60 xl:mr-96 ml-auto',
-                )}
-              >
-                {isOther ? (
-                  <div className="p-2">
-                    <Icon className="w-8" icon={personCircleOutline} />
-                  </div>
-                ) : null}
-
-                <div className="space-y-[0.18rem]">
-                  {group.messages.map((msg, i, arr) => {
-                    const isFirst = i === 0;
-                    const isLast = i === arr.length - 1;
-                    return (
-                      <div
-                        key={msg.id}
-                        id={`message-${msg.id}`}
-                        className={classes(
-                          'px-4 py-3 max-w-[60vw] sm:max-w-[50vw] md:max-w-[40vw] lg:max-w-[35vw] xl:max-w-[30vw]',
-                          isOther
-                            ? 'rounded-r-xl rounded-l-sm bg-light'
-                            : 'rounded-l-xl rounded-r-sm bg-primary text-white',
-                          isFirst
-                            ? isOther
-                              ? 'rounded-tl-xl'
-                              : 'rounded-tr-xl'
-                            : '',
-                          isLast
-                            ? isOther
-                              ? 'rounded-bl-xl'
-                              : 'rounded-br-xl'
-                            : '',
-                        )}
-                      >
-                        {msg.content}
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-            );
-          })}
+      <main className="md:flex">
+        <div className="hidden md:block w-1/3 m-6 space-y-4">
+          <Threads />
         </div>
 
-        <Formik
-          initialValues={{ content: '' }}
-          onSubmit={handleSubmit}
-          validationSchema={messageSchema}
-        >
-          {({ isValid }) => (
-            <Form className="bg-light flex justify-between relative">
-              <Field
-                name="content"
-                type="text"
-                placeholder="Message..."
-                className="p-4 pr-16 w-full outline-none bg-light border-t-2 active:border-t-dark focus:border-t-dark text-md"
-              />
-              <button
-                type="submit"
-                disabled={messageRes.loading || !isValid}
-                className="absolute right-4 top-4 text-primary disabled:opacity-60 disabled:pointer-events-none"
-              >
-                <Icon icon={sendSharp} className="w-7" />
-              </button>
-            </Form>
-          )}
-        </Formik>
+        <div className="md:w-2/3 md:bg-white">
+          <div className="messages flex flex-col-reverse mt-auto overflow-auto">
+            {grouped?.map((group, i) => {
+              const isOther = group.fromId === otherId;
+              return (
+                <div
+                  key={i}
+                  className={classes(
+                    'flex items-end m-4 md:max-w-6xl',
+                    isOther
+                      ? 'ml-4 sm:ml-20 mr-auto'
+                      : 'mr-4 sm:mr-20 ml-auto',
+                  )}
+                >
+                  {isOther ? (
+                    <div className="p-2">
+                      <Icon className="w-8" icon={personCircleOutline} />
+                    </div>
+                  ) : null}
+
+                  <div className="space-y-[0.18rem]">
+                    {group.messages.map((msg, i, arr) => {
+                      const isFirst = i === 0;
+                      const isLast = i === arr.length - 1;
+                      return (
+                        <div
+                          key={msg.id}
+                          id={`message-${msg.id}`}
+                          className={classes(
+                            'px-4 py-3 max-w-[60vw] sm:max-w-[50vw] md:max-w-[40vw] lg:max-w-[35vw] xl:max-w-[30vw]',
+                            isOther
+                              ? 'rounded-r-xl rounded-l-sm bg-light'
+                              : 'rounded-l-xl rounded-r-sm bg-primary text-white',
+                            isFirst
+                              ? isOther
+                                ? 'rounded-tl-xl'
+                                : 'rounded-tr-xl'
+                              : '',
+                            isLast
+                              ? isOther
+                                ? 'rounded-bl-xl'
+                                : 'rounded-br-xl'
+                              : '',
+                          )}
+                        >
+                          {msg.content}
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          <Formik
+            initialValues={{ content: '' }}
+            onSubmit={handleSubmit}
+            validationSchema={messageSchema}
+          >
+            {({ isValid }) => (
+              <Form className="bg-light flex justify-between relative">
+                <Field
+                  name="content"
+                  type="text"
+                  placeholder="Message..."
+                  className="p-4 pr-16 w-full outline-none bg-light border-t-2 active:border-t-dark focus:border-t-dark text-md"
+                />
+                <button
+                  type="submit"
+                  disabled={messageRes.loading || !isValid}
+                  className="absolute right-4 top-4 text-primary disabled:opacity-60 disabled:pointer-events-none"
+                >
+                  <Icon icon={sendSharp} className="w-7" />
+                </button>
+              </Form>
+            )}
+          </Formik>
+        </div>
       </main>
     </div>
   );

@@ -23,6 +23,9 @@ export function makeApolloSSR<P, Q extends ParsedUrlQuery>(
     let ssProps: P = {} as any;
     if (getServerSideProps) {
       const res = await getServerSideProps(ctx);
+      if ('redirect' in res) {
+        return res;
+      }
       if ('props' in res) {
         ssProps = await res.props;
       }
