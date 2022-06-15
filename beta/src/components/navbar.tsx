@@ -1,3 +1,4 @@
+import { Menu, Transition } from '@headlessui/react';
 import { Field, Form, Formik } from 'formik';
 import {
   addOutline,
@@ -8,7 +9,7 @@ import {
 } from 'ionicons/icons';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { useCallback } from 'react';
+import { Fragment, useCallback } from 'react';
 import { useMutation } from '../apollo/client';
 import { LogoutDocument as LOGOUT } from '../queries';
 import { useIsLoggedIn } from '../util/auth';
@@ -28,20 +29,41 @@ function AccountButton() {
   }, [logout, client, router]);
 
   return (
-    <div className="ml-4 group">
-      <button className="outline-none focus:outline-none bg-white rounded-full flex items-center">
+    <Menu as="div" className="relative">
+      <Menu.Button className="ml-4 rounded-full focus:outline-none flex items-center">
         <Icon icon={personCircleOutline} />
-      </button>
-      <div className="bg-white border border-dark shadow rounded-md transform scale-0 group-hover:scale-100 absolute transition duration-150 ease-in-out origin-top-right right-8 z-10 overflow-hidden">
-        <button
-          type="button"
-          className="px-3 py-1 hover:bg-gray-100 text-lg"
-          onClick={handleLogout}
-        >
-          <Icon icon={logOutOutline} /> Logout
-        </button>
-      </div>
-    </div>
+      </Menu.Button>
+
+      <Transition
+        as={Fragment}
+        enter="transition ease-out duration-100"
+        enterFrom="transform opacity-0 scale-95"
+        enterTo="transform opacity-100 scale-100"
+        leave="transition ease-in duration-75"
+        leaveFrom="transform opacity-100 scale-100"
+        leaveTo="transform opacity-0 scale-95"
+      >
+        <Menu.Items className="absolute top-6 right-0 mt-2 text-right origin-top-right rounded-md bg-white shadow-lg focus:outline-none border border-dark z-10">
+          <div className="px-1 py-1 flex flex-col">
+            <Menu.Item>
+              <Link href="/profile">
+                <a className="hover:bg-primary hover:text-white text-gray-900 group rounded-md px-2 py-2 flex items-center justify-start">
+                  <Icon icon={personCircleOutline} className="mr-2" /> Profile
+                </a>
+              </Link>
+            </Menu.Item>
+            <Menu.Item>
+              <button
+                onClick={handleLogout}
+                className="hover:bg-primary hover:text-white text-gray-900 group rounded-md px-2 py-2 flex items-center justify-start"
+              >
+                <Icon icon={logOutOutline} className="mr-2" /> Logout
+              </button>
+            </Menu.Item>
+          </div>
+        </Menu.Items>
+      </Transition>
+    </Menu>
   );
 }
 
