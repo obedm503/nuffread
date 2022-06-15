@@ -130,7 +130,7 @@ function BookPage() {
 
           <div>
             <h2 className="font-semibold text-3xl mt-8 px-4 text-white">
-              Listings
+              Sellers
             </h2>
             <div className="max-h-96">
               {book.listings.items.map(listing => (

@@ -13,46 +13,63 @@ export function BookPreviews({ children }) {
   );
 }
 
-export const BookPreview = memo<{ listing: IBasicListingFragment }>(
-  ({ listing }) => {
-    return (
-      <Link href={`/b/${listing.book.id}`}>
-        <a className="md:p-3">
-          <div className="overflow-hidden rounded-lg md:w-44 bg-white shadow-lg hover:scale-105 transition duration-200 ease-in-out">
-            <div className="relative bg-light">
-              <img
-                className="w-full md:w-44"
-                alt={`${listing.book.title} book cover`}
-                src={listing.book.thumbnail || ''}
-              />
-            </div>
+export const Book = memo<{
+  listing: IBasicListingFragment;
+  isPreview?: boolean;
+}>(({ listing, isPreview }) => {
+  const preview = (
+    <div className="block overflow-hidden rounded-lg bg-white shadow-lg hover:scale-105 transition duration-200 ease-in-out">
+      <div className="relative bg-light">
+        <img
+          className="w-full"
+          alt={`${listing.book.title} book cover`}
+          src={listing.book.thumbnail || ''}
+        />
+      </div>
 
-            <div className="px-3 pb-3 mt-3 space-y-3">
-              <span className="block opacity-75 text-xs px-3">
-                <RelativeDate date={listing.createdAt} />
-              </span>
+      <div className="px-3 pb-3 mt-3 space-y-3">
+        <div className="px-3 font-semibold leading-tight">
+          {listing.book.title}
+        </div>
+        <div className="px-3 leading-tight">
+          {listing.book.authors.join(', ')}
+        </div>
 
-              {listing.condition ? (
-                <span className="block font-semibold text-xs px-3">
-                  {conditionNames[listing.condition]}
-                </span>
-              ) : null}
+        <span className="block opacity-75 text-xs px-3">
+          <RelativeDate date={listing.createdAt} />
+        </span>
 
-              <div className="flex justify-between">
-                <span className="bg-primary rounded-full text-white text-xs font-semibold px-3 py-2 leading-none flex items-center">
-                  ${(listing.price / 100).toFixed(2)}
-                </span>
+        {listing.condition ? (
+          <span className="block font-semibold text-xs px-3">
+            {conditionNames[listing.condition]}
+          </span>
+        ) : null}
 
-                <SaveListingButton
-                  small
-                  listingId={listing.id}
-                  saved={listing.saved}
-                />
-              </div>
-            </div>
-          </div>
-        </a>
-      </Link>
-    );
-  },
-);
+        {isPreview ? (
+          <div className="px-3 leading-tight">{listing.description}</div>
+        ) : null}
+
+        <div className="flex justify-between">
+          <span className="bg-primary rounded-full text-white text-xs font-semibold px-3 py-2 leading-none flex items-center">
+            ${(listing.price / 100).toFixed(2)}
+          </span>
+
+          {isPreview ? null : (
+            <SaveListingButton
+              small
+              listingId={listing.id}
+              saved={listing.saved}
+            />
+          )}
+        </div>
+      </div>
+    </div>
+  );
+  return isPreview ? (
+    preview
+  ) : (
+    <Link href={`/b/${listing.book.id}`}>
+      <a>{preview}</a>
+    </Link>
+  );
+});

@@ -264,14 +264,12 @@ function Chat() {
                   key={i}
                   className={classes(
                     'flex items-end m-4 md:max-w-6xl',
-                    isOther
-                      ? 'ml-4 sm:ml-20 mr-auto'
-                      : 'mr-4 sm:mr-20 ml-auto',
+                    isOther ? 'ml-4 sm:ml-20 mr-auto' : 'mr-4 sm:mr-20 ml-auto',
                   )}
                 >
                   {isOther ? (
                     <div className="p-2">
-                      <Icon className="w-8" icon={personCircleOutline} />
+                      <Icon icon={personCircleOutline} />
                     </div>
                   ) : null}
 
@@ -328,7 +326,7 @@ function Chat() {
                   disabled={messageRes.loading || !isValid}
                   className="absolute right-4 top-4 text-primary disabled:opacity-60 disabled:pointer-events-none"
                 >
-                  <Icon icon={sendSharp} className="w-7" />
+                  <Icon icon={sendSharp} />
                 </button>
               </Form>
             )}

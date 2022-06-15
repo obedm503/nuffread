@@ -1,6 +1,6 @@
 import { Field, Form, Formik } from 'formik';
 import {
-  // addOutline,
+  addOutline,
   cart,
   chatbubblesOutline,
   logOutOutline,
@@ -30,7 +30,7 @@ function AccountButton() {
   return (
     <div className="ml-4 group">
       <button className="outline-none focus:outline-none bg-white rounded-full flex items-center">
-        <Icon icon={personCircleOutline} className="w-8" />
+        <Icon icon={personCircleOutline} />
       </button>
       <div className="bg-white border border-dark shadow rounded-md transform scale-0 group-hover:scale-100 absolute transition duration-150 ease-in-out origin-top-right right-8 z-10 overflow-hidden">
         <button
@@ -63,12 +63,12 @@ function LoggedInButtons() {
           </a>
         </Link>
 
-        {/* <Link href="/post">
+        <Link href="/post">
           <a className="outline-none focus:outline-none px-3 py-1 bg-white border-l border-l-dark flex items-center hover:bg-dark hover:text-white">
             <Icon icon={addOutline} className="mr-2" />
             Post
           </a>
-        </Link> */}
+        </Link>
       </div>
 
       <div className="hidden sm:inline-block ">

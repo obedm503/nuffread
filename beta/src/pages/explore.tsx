@@ -1,7 +1,7 @@
 import { useQuery } from '../apollo/client';
 import { makeApolloSSR } from '../apollo/ssr';
 import { withApollo } from '../apollo/with-apollo';
-import { BookPreview, BookPreviews } from '../components/book-preview';
+import { Book, BookPreviews } from '../components/book-preview';
 import { Layout } from '../components/layout';
 import { Top_ListingsDocument as TOP_LISTINGS } from '../queries';
 
@@ -24,7 +24,9 @@ function Explore() {
     <Layout title="Explore">
       <BookPreviews>
         {res.data.top.items.map(listing => (
-          <BookPreview key={listing.id} listing={listing} />
+          <div key={listing.id} className="md:w-52 md:p-3">
+            <Book listing={listing} />
+          </div>
         ))}
       </BookPreviews>
     </Layout>

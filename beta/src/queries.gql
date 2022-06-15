@@ -59,10 +59,10 @@ fragment Listing on Listing {
   soldAt
   soldPrice
   condition
-  school {
-    id
-    name
-  }
+  # school {
+  #   id
+  #   name
+  # }
 }
 
 fragment BasicListing on Listing {
@@ -292,5 +292,54 @@ subscription SUB_MESSAGES {
     content
     fromId
     threadId
+  }
+}
+
+fragment SearchGoogleBook on GoogleBook {
+  googleId
+  isbn
+  thumbnail
+  title
+  subTitle
+  publishedAt
+  authors
+}
+query SEARCH_GOOGLE($query: String!) {
+  searchGoogle(query: $query) {
+    ...SearchGoogleBook
+  }
+}
+
+fragment GoogleBook on GoogleBook {
+  etag
+  googleId
+  authors
+  isbn
+  publishedAt
+  title
+  subTitle
+  possibleCovers
+}
+
+query GOOGLE_BOOK($id: ID!) {
+  googleBook(id: $id) {
+    ...GoogleBook
+  }
+}
+
+mutation CREATE_LISTING($listing: ListingInput!) {
+  createListing(listing: $listing) {
+    ...BasicListing
+  }
+}
+
+query MY_LISTINGS {
+  me {
+    ... on User {
+      id
+      listings {
+        ...BasicListing
+      }
+    }
   }
 }
