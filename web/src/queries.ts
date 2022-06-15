@@ -85,20 +85,6 @@ export const MY_LISTINGS = gql`
   }
 `;
 
-export const SEARCH_GOOGLE = gql`
-  query SearchGoogle($query: String!) {
-    searchGoogle(query: $query) {
-      googleId
-      isbn
-      thumbnail
-      title
-      subTitle
-      publishedAt
-      authors
-    }
-  }
-`;
-
 export const GET_LISTING = gql`
   ${BASIC_LISTING}
 
