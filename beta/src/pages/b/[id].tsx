@@ -164,11 +164,9 @@ function BookPage() {
                   <div className="overflow-hidden">
                     <p className="py-3 px-2">{listing.description}</p>
 
-                    <div className="flex justify-between">
-                      <div>
-                        <span className="bg-primary rounded-full text-white text-md font-semibold px-3 py-2 leading-none flex items-center mt-auto">
-                          ${(listing.price / 100).toFixed(2)}
-                        </span>
+                    <div className="flex justify-between items-center">
+                      <div className="bg-primary rounded-lg text-white font-medium p-2">
+                        ${(listing.price / 100).toFixed(2)}
                       </div>
 
                       <SaveListingButton

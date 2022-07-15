@@ -77,7 +77,7 @@ function ListingPreview({
       id: createdAt,
     } as IBasicListingFragment;
   }, [book, condition, description, price, thumbnail]);
-  return <Book isPreview listing={listing} />;
+  return <Book isPreview listing={listing} book={listing.book} />;
 }
 
 function GoogleBookPreview({

@@ -7,7 +7,7 @@ export function Layout({
   title,
   className,
 }: {
-  children;
+  children?;
   title?: string;
   className?: string;
 }) {
@@ -21,7 +21,7 @@ export function Layout({
 
       <Navbar />
 
-      <main className="md:max-w-7xl md:mx-auto">{children}</main>
+      <main className="md:max-w-7xl md:mx-auto py-4">{children}</main>
     </div>
   );
 }

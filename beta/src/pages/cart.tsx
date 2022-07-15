@@ -1,7 +1,7 @@
 import { useQuery } from '../apollo/client';
 import { makeApolloSSR } from '../apollo/ssr';
 import { withApollo } from '../apollo/with-apollo';
-import { Book, BookPreviews } from '../components/book-preview';
+import { Book, BookPreviews, BookWrapper } from '../components/book-preview';
 import { Layout } from '../components/layout';
 import { Get_Saved_ListingsDocument as GET_SAVED_LISTINGS } from '../queries';
 
@@ -24,9 +24,9 @@ function Cart() {
     <Layout title="Cart">
       <BookPreviews>
         {res.data.me.saved.items.map(listing => (
-          <div key={listing.id} className="md:w-52 md:p-3">
-            <Book listing={listing} />
-          </div>
+          <BookWrapper key={listing.id}>
+            <Book listing={listing} book={listing.book} />
+          </BookWrapper>
         ))}
       </BookPreviews>
     </Layout>
