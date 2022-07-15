@@ -1,11 +1,11 @@
 import { Brackets, getConnection } from 'typeorm';
-import { Book, RecentListing, School, User } from '../../db/entities';
+import { Book, Listing, RecentListing, School, User } from '../../db/entities';
 import { logger } from '../../util';
 import { getBook, searchBooks } from '../../util/google-books';
 import { ensureAdmin, ensureUser, userSession } from '../auth';
 import { InternalError } from '../error';
 import { IQueryResolvers, ISession, SystemUserType } from '../schema.gql';
-import { paginationOptions, sameSchoolListings } from '../util';
+import { paginationOptions } from '../util';
 
 export const QueryResolver: IQueryResolvers = {
   async searchBooks(_, { query, paginate }, { session, getMe }) {
@@ -109,7 +109,7 @@ export const QueryResolver: IQueryResolvers = {
 
     const { take, skip } = paginationOptions(paginate);
 
-    const builder = (await sameSchoolListings({ session, getMe }))
+    const builder = Listing.createQueryBuilder('listing')
       .innerJoinAndSelect('listing.book', 'book')
       .where('listing.soldAt IS NULL')
       // skip and take break with custom ORDER BY expression
@@ -151,11 +151,10 @@ export const QueryResolver: IQueryResolvers = {
     };
   },
 
-  async top(_, { paginate }, { session, getMe }) {
+  async top(_, { paginate }) {
     const { take, skip } = paginationOptions(paginate);
 
-    const query = await sameSchoolListings({ session, getMe });
-    const [items, totalCount] = await query
+    const [items, totalCount] = await Listing.createQueryBuilder('listing')
       .where('listing.soldAt IS NULL')
       .orderBy('listing.created_at', 'DESC')
       .innerJoinAndSelect('listing.book', 'book')

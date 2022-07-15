@@ -87,7 +87,7 @@ export function SaveListingButton({
       type="button"
       disabled={res.loading}
       className={classes(
-        'outline-none focus:outline-none px-3 py-1 bg-white rounded-full flex items-center border border-black disabled:opacity-50 disabled:pointer-events-none whitespace-nowrap',
+        'outline-none focus:outline-none p-2 bg-white rounded-lg flex items-center border border-black disabled:opacity-50 disabled:pointer-events-none whitespace-nowrap',
         { 'hover:bg-black hover:text-white': !res.loading },
       )}
       onClick={onClick}

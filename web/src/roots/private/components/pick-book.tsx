@@ -1,3 +1,4 @@
+import { gql } from '@apollo/client';
 import { IonItem, IonLabel } from '@ionic/react';
 import React from 'react';
 import {
@@ -7,9 +8,22 @@ import {
   ListWrapper,
   SearchBar,
 } from '../../../components';
-import { SEARCH_GOOGLE } from '../../../queries';
 import { IGoogleBook, IQuerySearchGoogleArgs } from '../../../schema.gql';
 import { useQuery } from '../../../state';
+
+export const SEARCH_GOOGLE = gql`
+  query SearchGoogle($query: String!) {
+    searchGoogle(query: $query) {
+      googleId
+      isbn
+      thumbnail
+      title
+      subTitle
+      publishedAt
+      authors
+    }
+  }
+`;
 
 const SearchResultBook: React.FC<{
   book: IGoogleBook;

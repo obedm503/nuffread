@@ -1,7 +1,7 @@
 {
   "recommendations": [
     "esbenp.prettier-vscode",
-    "prisma.vscode-graphql",
+    "graphql.vscode-graphql",
     "mikestead.dotenv",
     "bradlc.vscode-tailwindcss",
     "dbaeumer.vscode-eslint"

@@ -1,8 +1,9 @@
 import { useRouter } from 'next/router';
-import { memo, useCallback } from 'react';
+import { useCallback } from 'react';
 import { useQuery } from '../apollo/client';
 import { makeApolloSSR } from '../apollo/ssr';
 import { withApollo } from '../apollo/with-apollo';
+import { Book, BookPreviews, BookWrapper } from '../components/book-preview';
 import { Layout } from '../components/layout';
 import {
   Get_Recent_ListingsDocument as GET_RECENT_LISTINGS,
@@ -21,55 +22,38 @@ function useSearch() {
     [router],
   );
 
-  console.log(router.query);
   const q = router.query?.q;
   const searchValue = Array.isArray(q) ? q[0] : q ?? '';
 
-  const onClick = useCallback(
-    (id: string) => {
-      router.push(`/b/${id}?q=${searchValue}`, undefined, {
-        shallow: true,
-      });
-    },
-    [router, searchValue],
-  );
-
-  return {
-    searchValue,
-    onSearch,
-    onClick,
-  };
+  return { searchValue, onSearch };
 }
 
-const RecentListings = memo<{ onClick: (id: string) => void }>(
-  function RecentListings({ onClick }) {
-    const { error, loading, data } = useQuery(GET_RECENT_LISTINGS);
+function RecentListings() {
+  const res = useQuery(GET_RECENT_LISTINGS);
 
-    if (error) {
-      console.error(error);
-      return <div>Something went wrong.</div>;
-    }
-    if (loading || !data) {
-      return <div>loading</div>;
-    }
-    if (!data.me || data.me.__typename !== 'User') {
-      return null;
-    }
+  if (res.error) {
+    return <BookPreviews>Something went wrong.</BookPreviews>;
+  }
+  if (res.loading || !res.data) {
+    return null;
+  }
+  if (!res.data.me || res.data.me.__typename !== 'User') {
+    return null;
+  }
 
-    return <>{JSON.stringify(data.me.recent, null, 2)}</>;
-  },
-);
+  return (
+    <BookPreviews>
+      {res.data.me.recent.map(listing => (
+        <BookWrapper key={listing.id}>
+          <Book listing={listing} book={listing.book} />
+        </BookWrapper>
+      ))}
+    </BookPreviews>
+  );
+}
 
-type SearchBooksProps = {
-  onClick: (id: string) => void;
-  searchValue: string;
-};
-export const SearchBooks = memo<SearchBooksProps>(function SearchBooks({
-  onClick: handleClick,
-  searchValue,
-}) {
-  console.log({ searchValue });
-  const { error, data } = useQuery(SEARCH_BOOKS, {
+function SearchBooks({ searchValue }: { searchValue: string }) {
+  const res = useQuery(SEARCH_BOOKS, {
     variables: { query: searchValue, paginate: { limit: 30, offset: 0 } },
   });
   // const { totalCount, currentCount } = paginatedBooks(data?.searchBooks);
@@ -98,34 +82,36 @@ export const SearchBooks = memo<SearchBooksProps>(function SearchBooks({
   //   [currentCount, searchValue, fetchMore],
   // );
 
-  if (error) {
-    console.error(error);
-    return <div>Something went wrong.</div>;
+  if (res.error) {
+    console.error(res.error);
+    return <BookPreviews>Something went wrong.</BookPreviews>;
   }
 
   return (
-    <>
-      {JSON.stringify(data?.searchBooks, null, 2)}
-
+    <BookPreviews>
       {/* {currentCount < totalCount ? (
-        <IonInfiniteScroll onIonInfinite={getMore}>
-          {BookBasic.loading}
-        </IonInfiniteScroll>
-      ) : null} */}
-    </>
+          <IonInfiniteScroll onIonInfinite={getMore}>
+            {BookBasic.loading}
+          </IonInfiniteScroll>
+        ) : null} */}
+      {res.data?.searchBooks.items.map(book => (
+        <BookWrapper key={book.id}>
+          <Book book={book} />
+        </BookWrapper>
+      ))}
+    </BookPreviews>
   );
-});
+}
 
 function Search() {
-  const { onClick, searchValue } = useSearch();
+  const { searchValue } = useSearch();
   return (
-    <Layout>
+    <Layout title={searchValue ? `Search: ${searchValue}` : 'Search'}>
       {searchValue.length ? (
-        <SearchBooks onClick={onClick} searchValue={searchValue} />
+        <SearchBooks searchValue={searchValue} />
       ) : (
-        <RecentListings onClick={onClick} />
+        <RecentListings />
       )}
-      <div>{searchValue}</div>
     </Layout>
   );
 }

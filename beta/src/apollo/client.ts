@@ -219,7 +219,7 @@ export function useSubscription<TData, TVariables = never>(
     options,
   );
 
-  if (loading) {
+  if (loading || options?.skip) {
     return {
       loading: true,
       error: undefined,
