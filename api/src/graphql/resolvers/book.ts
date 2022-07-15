@@ -1,6 +1,7 @@
+import { Listing } from '../../db/entities';
 import { processImageLink } from '../../util/google-books';
 import { IBookResolvers } from '../schema.gql';
-import { paginationOptions, sameSchoolListings } from '../util';
+import { paginationOptions } from '../util';
 
 export const BookResolver: IBookResolvers = {
   thumbnail({ thumbnail }) {
@@ -9,11 +10,10 @@ export const BookResolver: IBookResolvers = {
     }
     return processImageLink(thumbnail);
   },
-  async listings({ id }, { paginate }, { session, getMe }) {
+  async listings({ id }, { paginate }) {
     const { take, skip } = paginationOptions(paginate);
 
-    const query = await sameSchoolListings({ session, getMe });
-    const [items, totalCount] = await query
+    const [items, totalCount] = await Listing.createQueryBuilder('listing')
       .where('listing.bookId = :bookId', { bookId: id })
       .andWhere('listing.soldAt IS NULL')
       .orderBy('listing.createdAt', 'DESC')
