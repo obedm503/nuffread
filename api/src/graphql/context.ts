@@ -87,12 +87,12 @@ export async function getContext({
         // in format listingId::userId
         logger.debug(`data-loader ${SavedListing.name}`, ids);
 
-        const items = await SavedListing.find({
+        const items: SavedListing[] = (await SavedListing.find({
           where: ids.map(id => {
             const [listingId, userId] = id.split('::');
             return { listingId, userId };
           }),
-        });
+        })) as any;
 
         return ids.map(id => {
           const [listingId, userId] = id.split('::');

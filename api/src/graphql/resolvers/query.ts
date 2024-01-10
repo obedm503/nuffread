@@ -1,4 +1,4 @@
-import { Brackets, getConnection } from 'typeorm';
+import { Brackets, FindConditions, getConnection } from 'typeorm';
 import { Book, Listing, RecentListing, School, User } from '../../db/entities';
 import { logger } from '../../util';
 import { getBook, searchBooks } from '../../util/google-books';
@@ -183,12 +183,15 @@ export const QueryResolver: IQueryResolvers = {
       return listing;
     }
 
-    const partial = { listingId: id, userId: session.userId };
+    const partial = { listingId: id, userId: session.userId as string };
     const saved = await RecentListing.findOne({ where: partial });
 
     if (saved) {
       // update updated_at field
-      await RecentListing.update(partial, partial);
+      await RecentListing.update(
+        partial as FindConditions<RecentListing>,
+        partial,
+      );
     } else {
       await RecentListing.create(partial).save();
     }

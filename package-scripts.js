@@ -29,9 +29,9 @@ module.exports.scripts = {
       'dev.admin',
     ),
     types: 'graphql-codegen --config codegen.yml --watch',
-    web: series('cd web', 'yarn dev'),
-    beta: series('cd beta', 'yarn dev'),
-    api: series('cd api', 'yarn dev'),
+    web: series('cd web', 'pnpm run dev'),
+    beta: series('cd beta', 'pnpm run dev'),
+    api: series('cd api', 'pnpm run dev'),
     admin: series('cd admin', 'npm run dev'),
   },
   build: {
@@ -44,7 +44,7 @@ module.exports.scripts = {
     web: series('cd web', 'npm run build'),
     api: series('cd api', 'npm run build'),
     admin: series('cd admin', 'npm run build'),
-    beta: series('cd beta', 'yarn build'),
+    beta: series('cd beta', 'pnpm run build'),
   },
   clean: rimraf('.cache web/build api/dist'),
   start: {
