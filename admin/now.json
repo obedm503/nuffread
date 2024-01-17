@@ -2,7 +2,7 @@
   "routes": [
     {
       "src": "/graphql",
-      "dest": "https://nuffread.herokuapp.com",
+      "dest": "https://api.nuffread.com",
       "status": 200
     }
   ]
